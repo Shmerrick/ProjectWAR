@@ -1,19 +1,19 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj": {}
+    "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj": {}
   },
   "projects": {
-    "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj": {
+    "C:\\ac\\ProjectWAR\\Common\\Common.csproj": {
       "restore": {
-        "projectUniqueName": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\ac\\ProjectWAR\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj",
+        "projectPath": "C:\\ac\\ProjectWAR\\Common\\Common.csproj",
         "frameworks": {
           "net48": {
             "projectReferences": {
-              "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
-                "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj"
+              "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
+                "projectPath": "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj"
               }
             }
           }
@@ -23,11 +23,11 @@
         "net48": {}
       }
     },
-    "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
+    "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
       "restore": {
-        "projectUniqueName": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj",
+        "projectUniqueName": "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj",
         "projectName": "FrameWork",
-        "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj",
+        "projectPath": "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj",
         "frameworks": {
           "net48": {
             "projectReferences": {}
@@ -38,18 +38,18 @@
         "net48": {}
       }
     },
-    "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj": {
+    "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj",
+        "projectUniqueName": "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj",
         "projectName": "Launcher",
-        "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj",
-        "packagesPath": "C:\\Users\\6800k\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\obj\\",
+        "projectPath": "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj",
+        "packagesPath": "C:\\Users\\lysan\\.nuget\\packages\\",
+        "outputPath": "C:\\ac\\ProjectWAR\\Launcher\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
-          "C:\\Users\\6800k\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lysan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,16 +57,16 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Users\\lysan\\Downloads\\nugets": {}
         },
         "frameworks": {
           "net48": {
             "projectReferences": {
-              "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj": {
-                "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj"
+              "C:\\ac\\ProjectWAR\\Common\\Common.csproj": {
+                "projectPath": "C:\\ac\\ProjectWAR\\Common\\Common.csproj"
               },
-              "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
-                "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj"
+              "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
+                "projectPath": "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj"
               }
             }
           }
@@ -77,7 +77,7 @@
           "dependencies": {
             "NLog": {
               "target": "Package",
-              "version": "[5.0.4, )"
+              "version": "[5.1.1, )"
             }
           }
         }

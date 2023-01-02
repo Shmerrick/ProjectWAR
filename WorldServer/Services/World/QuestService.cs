@@ -64,13 +64,13 @@ namespace WorldServer.Services.World
                 Quest Q;
                 foreach (Quest_Creature_Starter Start in Starters)
                 {
-                    if (!_CreatureStarter.ContainsKey(Start.CreatureID))
-                        _CreatureStarter.Add(Start.CreatureID, new List<Quest>());
+                    if (!_CreatureStarter.ContainsKey(Start.StartCreatureId))
+                        _CreatureStarter.Add(Start.StartCreatureId, new List<Quest>());
 
                     Q = GetQuest(Start.Entry);
 
                     if (Q != null)
-                        _CreatureStarter[Start.CreatureID].Add(Q);
+                        _CreatureStarter[Start.StartCreatureId].Add(Q);
                 }
             }
 
@@ -97,13 +97,13 @@ namespace WorldServer.Services.World
                 Quest Q;
                 foreach (Quest_Creature_Finisher Finisher in Finishers)
                 {
-                    if (!_CreatureFinisher.ContainsKey(Finisher.CreatureID))
-                        _CreatureFinisher.Add(Finisher.CreatureID, new List<Quest>());
+                    if (!_CreatureFinisher.ContainsKey(Finisher.FinishCreatureId))
+                        _CreatureFinisher.Add(Finisher.FinishCreatureId, new List<Quest>());
 
                     Q = GetQuest(Finisher.Entry);
 
                     if (Q != null)
-                        _CreatureFinisher[Finisher.CreatureID].Add(Q);
+                        _CreatureFinisher[Finisher.FinishCreatureId].Add(Q);
                 }
             }
 

@@ -1,0 +1,15 @@
+C:\ac\ProjectWAR\bin\Release\Abilities\Chaos humans login-logout all classes.txt
+C:\ac\ProjectWAR\bin\Release\Abilities\Dark elves login-logout all classes.txt
+C:\ac\ProjectWAR\bin\Release\Abilities\Dwarves and their classes login-logout.txt
+C:\ac\ProjectWAR\bin\Release\Abilities\High elves and their classes login-logout.txt
+C:\ac\ProjectWAR\bin\Release\Abilities\Humans and their classes login-logout.txt
+C:\ac\ProjectWAR\bin\Release\Abilities\Orcs login-logout all classes.txt
+C:\ac\ProjectWAR\bin\Release\WarZone.dll
+C:\ac\ProjectWAR\bin\Release\NLog.config
+C:\ac\ProjectWAR\bin\Release\WorldServer.exe.config
+C:\ac\ProjectWAR\bin\Release\WorldServer.exe
+C:\ac\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.AssemblyReference.cache
+C:\ac\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.SuggestedBindingRedirects.cache
+C:\ac\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.CoreCompileInputs.cache
+C:\ac\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.CopyComplete
+C:\ac\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.exe

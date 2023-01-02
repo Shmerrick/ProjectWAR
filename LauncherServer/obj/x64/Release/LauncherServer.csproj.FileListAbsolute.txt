@@ -1,0 +1,7 @@
+C:\ac\ProjectWAR\bin\Release\LauncherServer.exe.config
+C:\ac\ProjectWAR\bin\Release\LauncherServer.exe
+C:\ac\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.AssemblyReference.cache
+C:\ac\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.SuggestedBindingRedirects.cache
+C:\ac\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.CoreCompileInputs.cache
+C:\ac\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.CopyComplete
+C:\ac\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.exe

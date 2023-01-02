@@ -299,7 +299,7 @@ namespace WorldServer.World.Interfaces
 
         public void AddKill(ushort type)
         {
-            Tok_Bestary TB = TokService.GetTokBestary(type);
+            Tok_Bestiary TB = TokService.GetTokBestary(type);
             if (TB == null)
                 return;
 
@@ -369,7 +369,7 @@ namespace WorldServer.World.Interfaces
 
         public void CheckTokKills(ushort type, uint count)
         {
-            Tok_Bestary TB = TokService.GetTokBestary(type);
+            Tok_Bestiary TB = TokService.GetTokBestary(type);
             if (TB == null)
                 return;
 

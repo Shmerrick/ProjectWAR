@@ -13,7 +13,7 @@ namespace Launcher
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ApocLauncher());
+            Application.Run(new WarLauncher());
         }
     }
 }

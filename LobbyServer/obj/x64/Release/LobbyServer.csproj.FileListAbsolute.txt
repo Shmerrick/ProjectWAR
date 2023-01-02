@@ -1,0 +1,7 @@
+C:\ac\ProjectWAR\bin\Release\LobbyServer.exe.config
+C:\ac\ProjectWAR\bin\Release\LobbyServer.exe
+C:\ac\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.AssemblyReference.cache
+C:\ac\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.SuggestedBindingRedirects.cache
+C:\ac\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.CoreCompileInputs.cache
+C:\ac\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.CopyComplete
+C:\ac\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.exe

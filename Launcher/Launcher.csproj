@@ -19,6 +19,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,12 +35,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,7 +64,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>WAR.ico</ApplicationIcon>
+    <ApplicationIcon>war-skull.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -186,14 +186,24 @@
   <ItemGroup>
     <Content Include="Artwork\background.png" />
     <None Include="Artwork\logo-2_yellow.png" />
+    <None Include="Artwork\launcher_back.jpg" />
     <Content Include="Artwork\WAR.ico" />
     <Content Include="Artwork\WAR.png" />
+    <None Include="Resources\casloantvl.ttf" />
     <None Include="Resources\M55rLv3.jpg" />
+    <None Include="Resources\war_background.bmp" />
+    <None Include="Resources\war-skull.ico" />
+    <None Include="Resources\play_button_emp.png" />
+    <None Include="Resources\play_button_emp_hover.png" />
+    <None Include="Resources\play_button_emp_pressed.png" />
+    <None Include="Resources\int_play.wav" />
+    <None Include="Resources\play_button_pressed.png" />
+    <Content Include="war-skull.ico" />
     <Content Include="WAR.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">
-      <Version>5.0.4</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

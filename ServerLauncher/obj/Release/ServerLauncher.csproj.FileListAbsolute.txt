@@ -1,0 +1,11 @@
+C:\ac\ProjectWAR\bin\Release\ServerLauncher.exe.config
+C:\ac\ProjectWAR\bin\Release\ServerLauncher.exe
+C:\ac\ProjectWAR\bin\Release\ServerLauncher.pdb
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.AssemblyReference.cache
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.SuggestedBindingRedirects.cache
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.Form1.resources
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.Properties.Resources.resources
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.GenerateResource.cache
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.CoreCompileInputs.cache
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.exe
+C:\ac\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.pdb

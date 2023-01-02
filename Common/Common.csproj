@@ -176,7 +176,7 @@
     <Compile Include="Database\World\Characters\Random_names.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_stats.cs" />
     <Compile Include="Database\World\Characters\HonorReward.cs" />
-    <Compile Include="Database\World\Characters\Tok_Bestary.cs" />
+    <Compile Include="Database\World\Characters\Tok_Bestiary.cs" />
     <Compile Include="Database\World\Creatures\Boss_Spawn.cs" />
     <Compile Include="Database\World\Creatures\Boss_Phases.cs" />
     <Compile Include="Database\World\Creatures\Creature_Smart_Abilities.cs" />

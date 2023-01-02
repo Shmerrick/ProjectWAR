@@ -18,7 +18,7 @@ namespace WorldServer
     /* Quest: Hearts And Minds
      * (needs verifing)
      * The quests requires you to talk to some farmers to get them to take up arms,
-     * they turn agressive once you talk to them and once ou do enough damage to them
+     * they turn agressive once you talk to them and once you do enough damage to them
      * they are meant to turn back to allies and they'd be 'persuaded' to take up arms.
      * 
      * Whats working:

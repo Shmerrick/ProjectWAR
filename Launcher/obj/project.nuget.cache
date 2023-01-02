@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "YinFe2CpVQkkAHHe5FixR4avBgfVAHfBOk3YGTiEsOivCc5n20P4pm/ivXfyVBxb+zqLL0eUQ9rEemgMBz38hA==",
+  "success": true,
+  "projectFilePath": "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lysan\\.nuget\\packages\\nlog\\5.1.1\\nlog.5.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Media;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -11,13 +12,13 @@ using System.Windows.Forms;
 
 namespace Launcher
 {
-    public partial class ApocLauncher : Form
+    public partial class WarLauncher : Form
     {
         public bool LaunchLocalServer { get; }
         public bool AllowMYPPatch { get; }
         public bool AllowServerPatch { get; }
         public bool AllowWarClientLaunch { get; }
-        public static ApocLauncher Acc;
+        public static WarLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
         public static string TestServerIP = "127.0.0.1";
@@ -25,10 +26,11 @@ namespace Launcher
         public static int TestServerPort = 8000;
         private static HttpClient client = new HttpClient();
         private Patcher patcher;
+        private SoundPlayer player = new SoundPlayer();
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher()
+        public WarLauncher()
         {
             // Read optional app settings (they may not exist in the app.config file)
             AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
@@ -159,6 +161,12 @@ namespace Launcher
 
         private void bnConnectToServer_Click(object sender, EventArgs e)
         {
+
+            player.Stream = global::Launcher.Properties.Resources.int_play;
+            player.Play();
+
+            this.bnConnectToServer.Image = global::Launcher.Properties.Resources.play_button_emp_pressed;
+
             Client.Connect(TestServerIP, TestServerPort);
             lblConnection.Text = $@"Connecting to : {TestServerIP}:{TestServerPort}";
 
@@ -200,7 +208,14 @@ namespace Launcher
 
         private void buttonPanelCreateAccount_Click(object sender, EventArgs e)
         {
-            panelCreateAccount.Visible = true;
+            if (panelCreateAccount.Visible == true)
+            {
+                panelCreateAccount.Visible = false;
+            }
+            else 
+            {
+                panelCreateAccount.Visible = true;
+            }
         }
 
         /// <summary>
@@ -344,6 +359,16 @@ namespace Launcher
         private void bnMinimise_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void bnConnectToServer_MouseHover(object sender, EventArgs e)
+        {
+            this.bnConnectToServer.Image = global::Launcher.Properties.Resources.play_button_emp_hover;
+        }
+
+        private void bnConnectToServer_MouseLeave(object sender, EventArgs e)
+        {
+            this.bnConnectToServer.Image = global::Launcher.Properties.Resources.play_button_emp;
         }
     }
 }

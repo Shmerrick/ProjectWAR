@@ -1,0 +1,14 @@
+C:\ac\ProjectWAR\bin\Release\Launcher\NLog.config
+C:\ac\ProjectWAR\bin\Release\Launcher\NLog.xsd
+C:\ac\ProjectWAR\bin\Release\Launcher\Launcher.exe.config
+C:\ac\ProjectWAR\bin\Release\Launcher\Launcher.exe
+C:\ac\ProjectWAR\bin\Release\Launcher\Launcher.pdb
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.csproj.AssemblyReference.cache
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.csproj.SuggestedBindingRedirects.cache
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.Properties.Resources.resources
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.csproj.GenerateResource.cache
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.csproj.CoreCompileInputs.cache
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.csproj.CopyComplete
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.exe
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.pdb
+C:\ac\ProjectWAR\Launcher\obj\Release\Launcher.WarLauncher.resources

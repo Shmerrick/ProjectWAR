@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.8": {
-      "NLog/5.0.4": {
+      "NLog/5.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System",
@@ -45,7 +45,7 @@
       }
     },
     ".NETFramework,Version=v4.8/win": {
-      "NLog/5.0.4": {
+      "NLog/5.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System",
@@ -88,7 +88,7 @@
       }
     },
     ".NETFramework,Version=v4.8/win-x64": {
-      "NLog/5.0.4": {
+      "NLog/5.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System",
@@ -131,7 +131,7 @@
       }
     },
     ".NETFramework,Version=v4.8/win-x86": {
-      "NLog/5.0.4": {
+      "NLog/5.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System",
@@ -175,10 +175,10 @@
     }
   },
   "libraries": {
-    "NLog/5.0.4": {
-      "sha512": "hMyC7jq1m7c339DZXTRz96b+0YsIYSwAUB8sAWMtqXd2uwJjYe+y1k74fbItODPqDuE/krd6A4mxew9gLMS+PQ==",
+    "NLog/5.1.1": {
+      "sha512": "YBfUDzipCaucs+8ieCDp8XECumiWsQbZwSUVLlt9i7FGV03nOPqoVzLtmlhbTxq4TN92BBsLacqPAE/ZyDDJ1g==",
       "type": "package",
-      "path": "nlog/5.0.4",
+      "path": "nlog/5.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -195,7 +195,7 @@
         "lib/netstandard1.5/NLog.xml",
         "lib/netstandard2.0/NLog.dll",
         "lib/netstandard2.0/NLog.xml",
-        "nlog.5.0.4.nupkg.sha512",
+        "nlog.5.1.1.nupkg.sha512",
         "nlog.nuspec"
       ]
     },
@@ -214,24 +214,24 @@
     ".NETFramework,Version=v4.8": [
       "Common >= 1.0.0",
       "FrameWork >= 1.0.0",
-      "NLog >= 5.0.4"
+      "NLog >= 5.1.1"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\6800k\\.nuget\\packages\\": {}
+    "C:\\Users\\lysan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj",
+      "projectUniqueName": "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj",
       "projectName": "Launcher",
-      "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\Launcher.csproj",
-      "packagesPath": "C:\\Users\\6800k\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Launcher\\obj\\",
+      "projectPath": "C:\\ac\\ProjectWAR\\Launcher\\Launcher.csproj",
+      "packagesPath": "C:\\Users\\lysan\\.nuget\\packages\\",
+      "outputPath": "C:\\ac\\ProjectWAR\\Launcher\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
-        "C:\\Users\\6800k\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\lysan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -239,16 +239,16 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Users\\lysan\\Downloads\\nugets": {}
       },
       "frameworks": {
         "net48": {
           "projectReferences": {
-            "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj": {
-              "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\Common\\Common.csproj"
+            "C:\\ac\\ProjectWAR\\Common\\Common.csproj": {
+              "projectPath": "C:\\ac\\ProjectWAR\\Common\\Common.csproj"
             },
-            "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
-              "projectPath": "C:\\Users\\6800k\\Desktop\\github warhammer\\ProjectWAR\\FrameWork\\FrameWork.csproj"
+            "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
+              "projectPath": "C:\\ac\\ProjectWAR\\FrameWork\\FrameWork.csproj"
             }
           }
         }
@@ -259,7 +259,7 @@
         "dependencies": {
           "NLog": {
             "target": "Package",
-            "version": "[5.0.4, )"
+            "version": "[5.1.1, )"
           }
         }
       }
