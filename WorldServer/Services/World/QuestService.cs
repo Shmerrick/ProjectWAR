@@ -57,12 +57,12 @@ namespace WorldServer.Services.World
         {
             _CreatureStarter = new Dictionary<uint, List<Quest>>();
 
-            IList<Quest_Creature_Starter> Starters = Database.SelectAllObjects<Quest_Creature_Starter>();
+            IList<Quest> Starters = Database.SelectAllObjects<Quest>();
 
             if (Starters != null)
             {
                 Quest Q;
-                foreach (Quest_Creature_Starter Start in Starters)
+                foreach (Quest Start in Starters)
                 {
                     if (!_CreatureStarter.ContainsKey(Start.StartCreatureId))
                         _CreatureStarter.Add(Start.StartCreatureId, new List<Quest>());
@@ -90,12 +90,12 @@ namespace WorldServer.Services.World
         {
             _CreatureFinisher = new Dictionary<uint, List<Quest>>();
 
-            IList<Quest_Creature_Finisher> Finishers = Database.SelectAllObjects<Quest_Creature_Finisher>();
+            IList<Quest> Finishers = Database.SelectAllObjects<Quest>();
 
             if (Finishers != null)
             {
                 Quest Q;
-                foreach (Quest_Creature_Finisher Finisher in Finishers)
+                foreach (Quest Finisher in Finishers)
                 {
                     if (!_CreatureFinisher.ContainsKey(Finisher.FinishCreatureId))
                         _CreatureFinisher.Add(Finisher.FinishCreatureId, new List<Quest>());
