@@ -236,8 +236,6 @@
     <Compile Include="Database\World\PQuests\PQuest_Objective.cs" />
     <Compile Include="Database\World\PQuests\PQuest_Spawn.cs" />
     <Compile Include="Database\World\Quests\Quests.cs" />
-    <Compile Include="Database\World\Quests\Quests_Creature_Finisher.cs" />
-    <Compile Include="Database\World\Quests\Quests_Creature_Starter.cs" />
     <Compile Include="Database\World\Quests\Quests_Map.cs" />
     <Compile Include="Database\World\Quests\Quests_Objectives.cs" />
     <Compile Include="Database\World\Scenarios\Scenario_Object.cs" />
