@@ -1,0 +1,26 @@
+﻿<Window x:Name="PWARServerLauncher" x:Class="PWARServerLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PWARServerLauncher"
+        mc:Ignorable="d"
+        Title="ProjectWAR Server Launcher" Height="450" Width="580" FontSize="20" ResizeMode="CanMinimize" WindowStartupLocation="Manual" WindowState="Normal" Icon="/WAR.ico" BorderBrush="#FF120505" Cursor="Arrow" WindowStyle="ToolWindow">
+    <Window.Background>
+        <ImageBrush ImageSource="/LauncherTitleImage.jpg" Stretch="Fill" TileMode="Tile" />
+    </Window.Background>
+    <Grid>
+        <Button x:Name="button_StartSelected" Content="START SERVER"
+                HorizontalAlignment="Left" Margin="19,98,0,0"
+                VerticalAlignment="Top" Background="{x:Null}"
+                BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
+                FontFamily="Calisto MT" FontSize="32" Padding="5 0"
+                Click="Button_StartSelected_Click" />
+        <Button x:Name="button_StopSelected" Content="STOP SERVER"
+                HorizontalAlignment="Left" Margin="61,154,0,0"
+                VerticalAlignment="Top" Background="{x:Null}"
+                BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
+                FontFamily="Calisto MT" FontSize="32" Padding="5 0"
+                Click="Button_StopSelected_Click" />
+    </Grid>
+</Window>
