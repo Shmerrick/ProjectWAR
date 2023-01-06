@@ -1,0 +1,175 @@
+﻿<Window
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:Converters="clr-namespace:PWARAbilityTool.Client.Converters" x:Class="PWARAbilityTool.Client.Ui.WarAbilitiesDmgHealsPage"
+      mc:Ignorable="d"
+      x:Name="AbilityDmgHealsPage"
+      Title="{Binding WindowTitle}"  
+      Height="485" Width="722" WindowStartupLocation="CenterScreen" Icon="/AbilityTool;component/Images/AppIcon.jpg">
+    <Window.Resources>
+        <Converters:AttackingStatConverter x:Key="AttackingStatConverter"/>
+        <Converters:DamageTypeConverter x:Key="DmgTypeConverter"/>
+        <Converters:DmgHealIndexConverter x:Key="IndexConverter"/>
+        <Converters:WeaponDmgConverter x:Key="WeaponDmgConverter"/>
+        <Converters:NoCritsConverter x:Key="NoCritsConverter"/>
+        <Converters:UndefendableConverter x:Key="UndefendableConverter"/>
+        <x:Array x:Key="dmgType" Type="sys:String">
+            <sys:String>Physical</sys:String>
+            <sys:String>Healing</sys:String>
+            <sys:String>Corporeal</sys:String>
+            <sys:String>Elemental</sys:String>
+            <sys:String>Spiritual</sys:String>
+            <sys:String>RawDamage</sys:String>
+            <sys:String>RawHealing</sys:String>
+        </x:Array>
+        <x:Array x:Key="wpDmgFrom" Type="sys:String">
+            <sys:String>MainHand</sys:String>
+            <sys:String>Ranged</sys:String>
+            <sys:String>DualWield</sys:String>
+            <sys:String>MainAndRanged</sys:String>
+            <sys:String>OffHand</sys:String>
+        </x:Array>
+        <x:Array x:Key="dmgHealIndex" Type="sys:String">
+            <sys:String>Normal Damage Info</sys:String>
+            <sys:String>Buff Damage Info</sys:String>
+            <sys:String>Extra Damage Info</sys:String>
+        </x:Array>
+        <x:Array x:Key="atStact" Type="sys:String">
+            <sys:String>Strength and Weaponskill</sys:String>
+            <sys:String>Ballistic and Initiative</sys:String>
+            <sys:String>Intelligence and Willpower</sys:String>
+        </x:Array>
+        <x:Array x:Key="noCrits" Type="sys:String">
+            <sys:String>no</sys:String>
+            <sys:String>yes</sys:String>
+        </x:Array>
+        <x:Array x:Key="undefendable" Type="sys:String">
+            <sys:String>no</sys:String>
+            <sys:String>yes</sys:String>
+        </x:Array>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="Entry:"/>
+            <TextBox x:Name="entryBox" MinWidth="100" Margin="5,5,5,5" 
+                     Text="{Binding AbilityDamageHealsModel.Entry, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Name:"/>
+            <TextBox x:Name="nameBox" MinWidth="200" Margin="5,5,5,5" 
+                     Text="{Binding AbilityDamageHealsModel.Name, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Label Content="MinDmg:"/>
+            <TextBox x:Name="minDmg" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.MinDamage, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="MaxDmg:"/>
+            <TextBox x:Name="maxDmg" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.MaxDamage, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="WeaponDamageScale:"/>
+            <TextBox x:Name="wpDmgScale" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.WeaponDamageScale, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <Label Content="StatDamageScale:"/>
+            <TextBox x:Name="statScale" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.StatDamageScale, FallbackValue=1, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="HatredScale:"/>
+            <TextBox x:Name="hScale" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.HatredScale, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="HealHatredScale:"/>
+            <TextBox x:Name="hhScale" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.HealHatredScale, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="7" Orientation="Horizontal">
+            <Label Content="ParentCommandId:"/>
+            <TextBox x:Name="pcid" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.ParentCommandID, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="ParentCommandSequence:"/>
+            <TextBox x:Name="pcseq" MinWidth="100" Margin="5,5,5,5"
+                     Text="{Binding AbilityDamageHealsModel.ParentCommandSequence, FallbackValue=0, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="9" Orientation="Horizontal">
+            <Label Content="Index:"/>
+            <ComboBox x:Name="index" Margin="5,5,5,5" ItemsSource="{StaticResource dmgHealIndex}"
+                     SelectedItem="{Binding AbilityDamageHealsModel.Index, Converter={StaticResource IndexConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Damagetype:"/>
+            <ComboBox x:Name="dmgType" Margin="5,5,5,5" ItemsSource="{StaticResource dmgType}"
+                     SelectedItem="{Binding AbilityDamageHealsModel.DamageType, Converter={StaticResource DmgTypeConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Weapondmg from:"/>
+            <ComboBox x:Name="wpdmgF" Margin="5,5,5,5" ItemsSource="{StaticResource wpDmgFrom}"
+                     SelectedItem="{Binding AbilityDamageHealsModel.WeaponDamageFrom, Converter={StaticResource WeaponDmgConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="StatUsed:"/>
+            <ComboBox x:Name="su" MinWidth="100" Margin="5,5,5,5" ItemsSource="{StaticResource atStact}"
+                     SelectedItem="{Binding AbilityDamageHealsModel.StatUsed, Converter={StaticResource AttackingStatConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="15" Orientation="Horizontal" Width="Auto">
+            <Expander Header="Advanced">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Label Content="DisplayEntry:"/>
+                        <TextBox x:Name="dEntry" MinWidth ="50" Margin="5,5,5,5"
+                                 Text="{Binding AbilityDamageHealsModel.DisplayEntry, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="DamageVariance:"/>
+                        <TextBox x:Name="dmgVar" MinWidth ="50" Margin="5,5,5,5"
+                                 Text="{Binding AbilityDamageHealsModel.DamageVariance, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="CastTimeDamageMult:"/>
+                        <TextBox x:Name="ctdm" MinWidth ="50" Margin="5,5,5,5"
+                                 Text="{Binding AbilityDamageHealsModel.CastTimeDamageMult, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <Label Content="ArmorResistPenFactor:"/>
+                        <TextBox x:Name="aresipen" MinWidth ="50" Margin="5,5,5,5"
+                                 Text="{Binding AbilityDamageHealsModel.ArmorResistPenFactor, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="PriStatMultiplier:"/>
+                        <TextBox x:Name="pristatmult" MinWidth ="50" Margin="5,5,5,5"
+                                 Text="{Binding AbilityDamageHealsModel.PriStatMultiplier, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Orientation="Horizontal">
+                        <Label Content="No Crits:"/>
+                        <ComboBox x:Name="nc" MinWidth ="50" Margin="5,5,5,5" ItemsSource="{StaticResource noCrits}"
+                                 SelectedItem="{Binding AbilityDamageHealsModel.NoCrits, Converter={StaticResource NoCritsConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Content="Undefendable:"/>
+                        <ComboBox x:Name="undef" MinWidth ="50" Margin="5,5,5,5" ItemsSource="{StaticResource undefendable}"
+                                 SelectedItem="{Binding AbilityDamageHealsModel.Undefendable, Converter={StaticResource UndefendableConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+        </StackPanel>
+        <Button Grid.Row="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                Width="50" Height="20" Content="Save" Command="{Binding SaveCommand, Mode=OneWay}"/>
+    </Grid>
+</Window>
