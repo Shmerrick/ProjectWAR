@@ -1,0 +1,284 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.8": {
+      "NLog/5.2.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.IO.Compression",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "FrameWork": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
+      },
+      "FrameWork/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/FrameWork.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FrameWork.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win": {
+      "NLog/5.2.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.IO.Compression",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "FrameWork": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
+      },
+      "FrameWork/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/FrameWork.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FrameWork.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x64": {
+      "NLog/5.2.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.IO.Compression",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "FrameWork": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
+      },
+      "FrameWork/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/FrameWork.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FrameWork.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x86": {
+      "NLog/5.2.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.IO.Compression",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net46/NLog.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "FrameWork": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
+      },
+      "FrameWork/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/FrameWork.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FrameWork.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NLog/5.2.0": {
+      "sha512": "uYBgseY0m/9lQUbZYGsQsTBFOWrfs3iaekzzYMH6vFmpoOAvV8/bp1XxG/suZkwB5h8nAiTJAp7VENWRDKtKPA==",
+      "type": "package",
+      "path": "nlog/5.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "N.png",
+        "lib/net35/NLog.dll",
+        "lib/net35/NLog.xml",
+        "lib/net45/NLog.dll",
+        "lib/net45/NLog.xml",
+        "lib/net46/NLog.dll",
+        "lib/net46/NLog.xml",
+        "lib/netstandard1.3/NLog.dll",
+        "lib/netstandard1.3/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
+        "nlog.5.2.0.nupkg.sha512",
+        "nlog.nuspec"
+      ]
+    },
+    "Common/1.0.0": {
+      "type": "project",
+      "path": "../Common/Common.csproj",
+      "msbuildProject": "../Common/Common.csproj"
+    },
+    "FrameWork/1.0.0": {
+      "type": "project",
+      "path": "../FrameWork/FrameWork.csproj",
+      "msbuildProject": "../FrameWork/FrameWork.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.8": [
+      "Common >= 1.0.0",
+      "FrameWork >= 1.0.0",
+      "NLog >= 5.2.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\wardwalf\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Launcher\\Launcher.csproj",
+      "projectName": "Launcher",
+      "projectPath": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Launcher\\Launcher.csproj",
+      "packagesPath": "C:\\Users\\wardwalf\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Launcher\\obj\\",
+      "projectStyle": "PackageReference",
+      "skipContentFileWrite": true,
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\wardwalf\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net48"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net48": {
+          "projectReferences": {
+            "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Common\\Common.csproj": {
+              "projectPath": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Common\\Common.csproj"
+            },
+            "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\FrameWork\\FrameWork.csproj": {
+              "projectPath": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\FrameWork\\FrameWork.csproj"
+            }
+          }
+        }
+      }
+    },
+    "frameworks": {
+      "net48": {
+        "dependencies": {
+          "NLog": {
+            "target": "Package",
+            "version": "[5.2.0, )"
+          }
+        }
+      }
+    },
+    "runtimes": {
+      "win": {
+        "#import": []
+      },
+      "win-x64": {
+        "#import": []
+      },
+      "win-x86": {
+        "#import": []
+      }
+    }
+  }
+}

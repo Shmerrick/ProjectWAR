@@ -623,7 +623,7 @@ namespace WorldServer.World.Interfaces
                                     if (target != null)
                                     {
                                         GameObject go = target.GetGameObject();
-                                        if (go != null && go.IsGameObject())
+                                        if (go != null && go.IsGameObject()&& go.Interactable)
                                         {
                                             if (go.Spawn.AllowVfxUpdate == 1) go.VfxState = 1;
                                             go.Interactable = false;
@@ -1073,16 +1073,13 @@ namespace WorldServer.World.Interfaces
             {
                 if (obj.IsGameObject())
                 {
-                    gameObject = obj.GetGameObject();
-                    //Loot Loots = LootsMgr.GenerateLoot(GameObject, _Owner.GetPlayer());
-                    //if (Loots != null && Loots.IsLootable())
-                    gameObject.SendRemove(_Owner.GetPlayer());
+					gameObject = obj.GetGameObject();
                     Timer timer = new Timer(delegate (object state)
                     {
                         Player plr2 = ((object[])state)[0] as Player;
                         if (plr2 != null)
                             gameObject.SendMeTo(plr2);
-                    }, (object)(new object[] { _Owner.GetPlayer() }), 500, Timeout.Infinite);
+                    }, (object)(new object[] { _Owner.GetPlayer() }), 100, Timeout.Infinite);
                 }
             }
         }

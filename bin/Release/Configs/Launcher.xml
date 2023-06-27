@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<LauncherConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IConfiguredTheFile>true</IConfiguredTheFile>
+  <LauncherServerPort>8000</LauncherServerPort>
+  <Version>1</Version>
+  <Message>Invalid launcher version.</Message>
+  <SeverOnConnect>true</SeverOnConnect>
+  <RpcInfo>
+    <RpcLocalIp>127.0.0.1</RpcLocalIp>
+    <RpcServerIp>127.0.0.1</RpcServerIp>
+    <RpcServerPort>6800</RpcServerPort>
+  </RpcInfo>
+  <LogLevel>
+    <Info>true</Info>
+    <Successs>true</Successs>
+    <Notice>true</Notice>
+    <Error>true</Error>
+    <Debug>false</Debug>
+    <Tcp>false</Tcp>
+    <Dump>false</Dump>
+  </LogLevel>
+  <PatcherFilesPath>PatcherFilesDirectory</PatcherFilesPath>
+  <TempFilesPath>TempFilesDirectory</TempFilesPath>
+  <ServerState>CLOSED</ServerState>
+  <PatchNotes>Welcome to Warhammer Online: Age of Reckoning!</PatchNotes>
+</LauncherConfig>

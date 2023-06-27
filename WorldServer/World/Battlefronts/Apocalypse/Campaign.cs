@@ -376,6 +376,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (status.RegionId != Region.RegionId)
                 return;
 
+            if (BattleFrontManager.GetActiveCampaign().Tier != 1)
+			if (BattleFrontManager.GetActiveCampaign().Tier != 2)
+            if (BattleFrontManager.GetActiveCampaign().Tier != 3)
             if (BattleFrontManager.GetActiveCampaign().Tier != 4)
                 return;
 
@@ -429,6 +432,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (status.RegionId != Region.RegionId)
                 return;
 
+			if (BattleFrontManager.GetActiveCampaign().Tier != 1)
+			if (BattleFrontManager.GetActiveCampaign().Tier != 2)
+            if (BattleFrontManager.GetActiveCampaign().Tier != 3)
             if (BattleFrontManager.GetActiveCampaign().Tier != 4)
                 return;
 

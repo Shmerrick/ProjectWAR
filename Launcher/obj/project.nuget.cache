@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "R8+SoAn4vk/GRHS2OI0II+550rFLwQSLl2cFcn0Kx85YQSe43P0nPpsSU5e+rVmwhD73UrwhFVzn2APxfYmPDg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\wardwalf\\Desktop\\projectwar server\\ProjectWAR\\Launcher\\Launcher.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wardwalf\\.nuget\\packages\\nlog\\5.2.0\\nlog.5.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}

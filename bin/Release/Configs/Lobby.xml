@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<LobbyConfigs xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IConfiguredTheFile>true</IConfiguredTheFile>
+  <ClientPort>8048</ClientPort>
+  <ClientVersion>1.4.8</ClientVersion>
+  <SeverOnFinish>true</SeverOnFinish>
+  <RpcInfo>
+    <RpcLocalIp>127.0.0.1</RpcLocalIp>
+    <RpcServerIp>127.0.0.1</RpcServerIp>
+    <RpcServerPort>6800</RpcServerPort>
+  </RpcInfo>
+  <LogLevel>
+    <Info>true</Info>
+    <Successs>true</Successs>
+    <Notice>true</Notice>
+    <Error>true</Error>
+    <Debug>false</Debug>
+    <Tcp>false</Tcp>
+    <Dump>false</Dump>
+  </LogLevel>
+</LobbyConfigs>

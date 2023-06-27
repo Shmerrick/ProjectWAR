@@ -1,0 +1,973 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Evolve</name>
+    </assembly>
+    <members>
+        <member name="T:EvolveDb.Configuration.CommandOptions">
+            <summary>
+                The base commands for Evolve.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.DoNothing">
+            <summary>
+                Does nothing.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.Migrate">
+            <summary>
+                Migrates the database.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.Repair">
+            <summary>
+                Corrects checksums of the applied migrations in the metadata table,
+                with the ones from migration scripts.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.Erase">
+            <summary>
+                Erases the database schemas listed in <see cref="P:EvolveDb.Configuration.IEvolveConfiguration.Schemas"/>.
+                Only works if Evolve has created the schema at first or found it empty.
+                Otherwise Evolve won't do anything.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.Info">
+            <summary>
+                Prints details about migrations, what has been applied and what is pending.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.CommandOptions.Validate">
+            <summary>
+                Validate Evolve configuration to detect if schema(s) could be recreated exactly.
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Configuration.IEvolveConfiguration">
+            <summary>
+                <para>
+                    Evolve configuration for sql migrations.
+                </para>
+                <para>
+                    Sql migrations have the following file name structure: prefixVERSIONseparatorDESCRIPTIONsuffix
+                    Example: V1_3_1__Migration_description.sql
+                </para>
+                <para>
+                    Placeholders are strings to replace in sql migrations.
+                    Example: ${schema}
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.Locations">
+            <summary>
+                Defines the paths (separated by semicolon) to scan recursively for migrations. (default: Sql_Scripts)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.Command">
+            <summary>
+                <para>
+                    The base command for Evolve. (default: doNothing)
+                </para>
+            
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.DoNothing"/> : Does nothing.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.Migrate"/> : Migrates the database.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.Erase"/> : Erases the database schemas listed in <see cref="P:EvolveDb.Configuration.IEvolveConfiguration.Schemas"/>.
+                                                         Only works if Evolve has created the schema at first or found it empty.
+                                                         Otherwise Evolve won't do anything.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.Repair"/> : Corrects checksums of the applied migrations in the metadata table,
+                                                          with the ones from migration scripts.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.Info"/> : Prints details about migrations, what has been applied and what is pending.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.CommandOptions.Validate"/> : Validate Evolve configuration to detect if schema(s) could be recreated exactly.
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.IsEraseDisabled">
+            <summary>
+                <para>
+                    When true, ensures that Evolve will never erase schemas. (default: false;)
+                </para>
+                <para>
+                    Highly recommended in production !
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.MustEraseOnValidationError">
+            <summary>
+                <para>
+                    When true, if incoherent migration checksums are found during validation phase,
+                    Evolve will erase the database schemas and will re-execute migration scripts from scratch. (default: false)
+                </para>
+                <para>
+                    Do not use in production !
+                </para>
+                <para>
+                    Obviously useful during development.
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.Encoding">
+            <summary>
+                Defines the encoding of Sql migrations. (default: UTF-8)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.SqlMigrationPrefix">
+            <summary>
+                Defines the file name prefix for sql migrations. (default: V)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.SqlRepeatableMigrationPrefix">
+            <summary>
+                Defines the file name prefix for sql repeatable migrations. (default: R)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.SqlMigrationSeparator">
+            <summary>
+                Defines the file name separator for sql migrations. (default: __)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.SqlMigrationSuffix">
+            <summary>
+                Defines the file name suffix for sql migrations. (default: .sql)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.Schemas">
+            <summary>
+                Defines the semicolon separated list of schema managed by Evolve. 
+                (default: If empty, the default schema for the datasource connection.)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.MetadataTableSchema">
+            <summary>
+                Defines the schema containing the metadata table. 
+                (default: If empty, the first schema defined in <see cref="P:EvolveDb.Configuration.IEvolveConfiguration.Schemas"/> or the one of the datasource connection.)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.MetadataTableName">
+            <summary>
+                Defines the metadata table name. (default: changelog)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.PlaceholderPrefix">
+            <summary>
+                Defines the prefix of the placeholders. (default: ${)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.PlaceholderSuffix">
+            <summary>
+                Defines the suffix of the placeholders. (default: })
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.Placeholders">
+            <summary>
+                <para>
+                    List of supplied placeholders/values defined in the configuration file.
+                </para>
+                <para>
+                    Placeholders are strings prefixed by: "Evolve.Placeholder." to replace in sql migrations.
+                </para>
+                <para>
+                    Example: ${schema} will be replaced by the value defined by the property 
+                    Evolve.Placeholder.schema in the configuration file.
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.TargetVersion">
+            <summary>
+                Target version to reach. If null or empty, it evolves all the way up.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.StartVersion">
+            <summary>
+                Version used as a starting point for migrations. If null or empty it returns 0.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.EnableClusterMode">
+            <summary>
+                When true, Evolve will use a session level lock to coordinate the migrations on multiple nodes. (default: true)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.OutOfOrder">
+            <summary>
+                When true, allows migrations to be run "out of order".
+                If you already have versions 1 and 3 applied, and now a version 2 is found,
+                it will be applied too instead of being ignored. (default: false;)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.CommandTimeout">
+            <summary>
+               Defines the wait time before terminating the attempt to execute 
+                a migration and generating an error. (The default is 30 seconds.)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.EmbeddedResourceAssemblies">
+            <summary>
+                When set, Evolve will scan the given list of assembly to load embedded migration scripts.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.EmbeddedResourceFilters">
+            <summary>
+                When set, exclude embedded migration scripts that do not start with one of these filters.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.RetryRepeatableMigrationsUntilNoError">
+            <summary>
+                When true, execute repeatedly all repeatable migrations for as long as the number of errors decreases.
+                This option allows repeatable migrations to be executed in any order regarding their dependencies, so that you can name them more easily.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.TransactionMode">
+            <summary>
+                <para>
+                    Defines the Evolve transaction scope. (default: CommitEach)
+                </para>
+                
+                <para>
+                    <see cref="F:EvolveDb.Configuration.TransactionKind.CommitEach"/> : commit each successful migration script.
+                </para>
+                <para>
+                    <see cref="F:EvolveDb.Configuration.TransactionKind.CommitAll"/> : commit all the scripts at once and rollback them all if one fails.
+                </para>
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.SkipNextMigrations">
+            <summary>
+                When true, mark all subsequent migrations as applied. (default: false;)
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Configuration.IEvolveConfiguration.MigrationLoader">
+            <summary>
+                A custom <see cref="T:EvolveDb.Migration.IMigrationLoader"/> used to load all migrations (applied, pending, ignored...) 
+                that replaces the built-in ones (<see cref="T:EvolveDb.Migration.FileMigrationLoader"/> <see cref="T:EvolveDb.Migration.EmbeddedResourceMigrationLoader"/>)
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Configuration.TransactionKind">
+            <summary>
+                Define Evolve transaction mode.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.TransactionKind.CommitEach">
+            <summary>
+                Commit each successful script and rollback only the one that fails (default mode).
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.TransactionKind.CommitAll">
+            <summary>
+                Commit all the scripts at once and rollback them all if one fails.
+                Either all succedeed or nothing is applied.
+            </summary>
+        </member>
+        <member name="F:EvolveDb.Configuration.TransactionKind.RollbackAll">
+            <summary>
+                Execute the scripts of the migration and then rollback them all, in order
+                to preview/validate the changes Evolve would make to the database.
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Connection.WrappedConnection">
+            <summary>
+                A wrapper of <see cref="T:System.Data.IDbConnection"/> used to managed all the queries and transactions to the database to evolve.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.#ctor(System.Data.Common.DbConnection)">
+            <summary>
+                Initializes a new instance of <see cref="T:EvolveDb.Connection.WrappedConnection"/>.
+            </summary>
+            <param name="connection"> The connection used to interact with the database. </param>
+        </member>
+        <member name="P:EvolveDb.Connection.WrappedConnection.DbConnection">
+            <summary>
+                Gets the underlying <see cref="P:EvolveDb.Connection.WrappedConnection.DbConnection" /> used to connect to the database.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Connection.WrappedConnection.CurrentTx">
+            <summary>
+                Gets the current transaction.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Connection.WrappedConnection.SQLiteInMemoryDatabase">
+            <summary>
+                Return true if we are connected to an in-memomry SQLite database, false otherwise.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Connection.WrappedConnection.CassandraCluster">
+            <summary>
+                Returns true if we are connected to a Cassandra cluster, false otherwise.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.UseAmbientTransaction">
+            <summary>
+                Enlist the Evolve database connection in the ambient transaction.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.BeginTransaction(System.Data.IsolationLevel)">
+            <summary>
+                Begins a new transaction.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Commit">
+            <summary>
+                Commits all changes made to the database in the current transaction.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Rollback">
+            <summary>
+                Discards all changes made to the database in the current transaction.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Open">
+            <summary>
+                Opens the connection to the database.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Close">
+            <summary>
+                Never close the connection since it will release the database 
+                lock used to prevent concurrent execution of Evolve.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Validate">
+            <summary>
+                Validate the database connection by opening and closing it.
+            </summary>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException if validation fails. </exception>
+        </member>
+        <member name="M:EvolveDb.Connection.WrappedConnection.Dispose">
+            <summary>
+                Close the underlying connection.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.Cassandra.CassandraCluster.TryAcquireApplicationLock">
+            <summary>
+                Will check for a predefined keyspace and table to see if there is a lock.
+                Otherwise, always returns true, because the lock is granted at table level.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.Cassandra.CassandraCluster.ReleaseApplicationLock">
+            <summary>
+                Returns always true, because the lock is released at table level.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.CockroachDB.CockroachDBMetadataTable.InternalTryLock">
+            <summary>
+                Implementing advisory locks in CockroachDB is being discussed, see:
+                https://forum.cockroachlabs.com/t/alternatives-to-pg-advisory-locks/742
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.MySQL.MySQLMetadataTable.#ctor(System.String,System.String,EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="schema"> Existing database schema name. </param>
+            <param name="tableName"> Metadata table name. </param>
+            <param name="database"> A database helper used to change and restore schema of the metadata table. </param>
+        </member>
+        <member name="M:EvolveDb.Dialect.MySQL.MySQLMetadataTable.InternalTryLock">
+            <summary>
+                Returns always true, because the lock is granted at application level.
+                <see cref="M:EvolveDb.Dialect.MySQL.MySQLDatabase.TryAcquireApplicationLock"/>
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.MySQL.MySQLMetadataTable.InternalReleaseLock">
+            <summary>
+                Returns always true, because the lock is released at application level.
+                <see cref="M:EvolveDb.Dialect.MySQL.MySQLDatabase.ReleaseApplicationLock"/>
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.PostgreSQL.PostgreSQLMetadataTable.#ctor(System.String,System.String,EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="schema"> Existing database schema name. </param>
+            <param name="tableName"> Metadata table name. </param>
+            <param name="database"> A database helper used to change and restore schema of the metadata table. </param>
+        </member>
+        <member name="M:EvolveDb.Dialect.PostgreSQL.PostgreSQLMetadataTable.InternalTryLock">
+            <summary>
+                Returns always true, because the lock is granted at application level.
+                <see cref="M:EvolveDb.Dialect.PostgreSQL.PostgreSQLDatabase.TryAcquireApplicationLock"/>
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.PostgreSQL.PostgreSQLMetadataTable.InternalReleaseLock">
+            <summary>
+                Returns always true, because the lock is released at application level.
+                <see cref="M:EvolveDb.Dialect.PostgreSQL.PostgreSQLDatabase.ReleaseApplicationLock"/>
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Dialect.SimpleSqlStatementBuilder">
+            <summary>
+                A simple sql statement builder that does nothing and returns only one 
+                sql statement that must be enlists in a transacation.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteDatabase.TryAcquireApplicationLock">
+            <summary>
+                Not supported in SQLite.
+            </summary>
+            <returns> Always true </returns>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteDatabase.ReleaseApplicationLock">
+            <summary>
+                Not supported in SQLite.
+            </summary>
+            <returns> Always true </returns>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteMetadataTable.#ctor(System.String,EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="tableName"> Metadata table name. </param>
+            <param name="database"> A database helper used to change and restore schema of the metadata table. </param>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteMetadataTable.InternalTryLock">
+            <summary>
+                Returns always true, because SQLite does not support locking. 
+                No concurrent migration supported.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteMetadataTable.InternalReleaseLock">
+            <summary>
+                Returns always true, because SQLite does not support locking. 
+                No concurrent migration supported.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteSchema.Create">
+            <summary>
+                SQLite does not support creating schemas.
+            </summary>
+            <returns> false. </returns>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLite.SQLiteSchema.Drop">
+            <summary>
+                SQLite does not support dropping schemas.
+            </summary>
+            <returns> false. </returns>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLServer.SQLServerDatabase.GetCurrentSchemaName">
+            <summary>
+                In SQL Server, when using Windows Groups as a database user, it is possible to set the DEFAULT_SCHEMA to NULL.
+                https://github.com/lecaillon/Evolve/issues/156
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLServer.SQLServerMetadataTable.#ctor(System.String,System.String,EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="schema"> Existing database schema name. </param>
+            <param name="tableName"> Metadata table name. </param>
+            <param name="database"> A database helper used to change and restore schema of the metadata table. </param>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLServer.SQLServerMetadataTable.InternalTryLock">
+            <summary>
+                Returns always true, because the lock is granted at application level.
+                <see cref="M:EvolveDb.Dialect.SQLServer.SQLServerDatabase.TryAcquireApplicationLock"/>
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SQLServer.SQLServerMetadataTable.InternalReleaseLock">
+            <summary>
+                Returns always true, because the lock is released at application level.
+                <see cref="M:EvolveDb.Dialect.SQLServer.SQLServerDatabase.ReleaseApplicationLock"/>
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Dialect.SQLServer.SQLServerStatementBuilder">
+            <summary>
+                A SQL Server dedicated builder which handles the statement delimiter GO.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Dialect.SQLServer.SQLServerStatementBuilder.BatchDelimiter">
+            <inheritdoc />
+        </member>
+        <member name="T:EvolveDb.Dialect.SqlStatement">
+            <summary>
+                A SQL statement from a script that can be executed at once against a database.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SqlStatement.#ctor(System.String,System.Boolean,System.Int32)">
+            <summary>
+                Initialize a instance of the <see cref="T:EvolveDb.Dialect.SqlStatement"/> class.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Dialect.SqlStatement.LineNumber">
+            <summary>
+                Gets the line number where this statement is located in the script.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Dialect.SqlStatement.Sql">
+            <summary>
+                Gets the SQL statement to execute.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Dialect.SqlStatement.MustExecuteInTransaction">
+            <summary>
+                Returns true if the statement must be executed inside a transaction, false otherwise.
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Dialect.SqlStatementBuilderBase">
+            <summary>
+                A base class used to parse a SQL script and return a list of sql statements.
+                Each statement can then be executed depending its own database constraints,enlisted or not in a transaction.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Dialect.SqlStatementBuilderBase.BatchDelimiter">
+            <summary>
+                Gets the database bacth delimiter.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Dialect.SqlStatementBuilderBase.LoadSqlStatements(EvolveDb.Migration.MigrationScript,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+                Returns a <see cref="T:System.Collections.Generic.List`1"/> given a <paramref name="migrationScript"/>.
+            </summary>
+            <remarks>
+                Placeholders are replaced by their values in the migration script.
+                The result is then parsed in sql statements: <see cref="M:EvolveDb.Dialect.SqlStatementBuilderBase.Parse(System.String,System.Boolean)"/>.
+            </remarks>
+            <param name="migrationScript"> The sql script to parse. </param>
+            <param name="placeholders"> The placeholders to replace. </param>
+            <returns> A <see cref="T:System.Collections.Generic.List`1"/> to execute individually in a command. </returns>
+        </member>
+        <member name="M:EvolveDb.Dialect.SqlStatementBuilderBase.Parse(System.String,System.Boolean)">
+            <summary>
+                Parse a SQL script into a list of SQL statement to execute.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.#ctor(System.Data.Common.DbConnection,System.Action{System.String},System.Nullable{EvolveDb.Dialect.DBMS})">
+            <summary>
+                Initialize a new instance of the <see cref="T:EvolveDb.Evolve"/> class.
+            </summary>
+            <param name="dbConnection"> The database connection used to apply the migrations. </param>
+            <param name="logDelegate"> An optional logger. </param>
+            <param name="dbms"> Optional default dbms</param>
+        </member>
+        <member name="P:EvolveDb.Evolve.Options">
+            <summary>
+                Returns Evolve configfuration.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.NbMigration">
+            <summary>
+                Number of migration script applied during the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.NbReparation">
+            <summary>
+                Number of migration script repaired during the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.NbSchemaErased">
+            <summary>
+                Number of database schema erased during the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.NbSchemaToEraseSkipped">
+            <summary>
+                Number of database schema not erased during the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.TotalTimeElapsedInMs">
+            <summary>
+                Total elapsed time in milliseconds taken by the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.AppliedMigrations">
+            <summary>
+                List of the applied migrations of the last Evolve execution.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Evolve.DBMS">
+            <summary>
+                Name of the database management system Evolve is connected to.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.Validate">
+            <summary>
+                Validate Evolve configuration to detect if schema(s) could be recreated exactly.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.Info">
+            <summary>
+                Returns details about migrations, what has been applied and what is pending.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.Migrate">
+            <summary>
+                Migrates the database.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.ExecuteAllOutOfOrderMigration(EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Execute OutOfOrder migration when allowed and needed
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.ExecuteAllMigration(EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Execute new versioned migrations considering <see cref="P:EvolveDb.Evolve.StartVersion"/> and <see cref="P:EvolveDb.Evolve.TargetVersion"/>.
+            </summary>
+            <returns> The version of the last applied versioned migration or <see cref="P:EvolveDb.Migration.MigrationVersion.MinVersion"/> if none. </returns>
+        </member>
+        <member name="M:EvolveDb.Evolve.ExecuteAllRepeatableMigration(EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Execute new repeatable migrations and all those for which the checksum has changed since the last execution.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.Repair">
+            <summary>
+                Corrects checksums of the applied migrations in the metadata table, with the ones from migration scripts.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Evolve.Erase">
+            <summary>
+                Erases the database schemas listed in <see cref="P:EvolveDb.Evolve.Schemas"/>.
+                Only works if Evolve has created the schema at first or found it empty.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.MiscEx.TruncateWithEllipsis(System.String,System.Int32)">
+            <summary>
+                Truncates a string to be no longer than a certain length.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.MiscEx.NormalizeSqlString(System.String,System.Int32)">
+            <summary>
+                Normalize string before SQL insert.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.MiscEx.IsNullOrWhiteSpace(System.String)">
+            <summary>
+                Indicates whether a specified string is null, empty, or consists only of white-space characters.
+            </summary>
+            <param name="s"> The string to test. </param>
+            <returns> True if the value parameter is null or String.Empty, or if value consists exclusively of white-space characters. </returns>
+        </member>
+        <member name="M:EvolveDb.MiscEx.GetValue``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+                Returns the value of the given dictionary key or default if not found.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.TryLock">
+            <summary>
+                Try to lock the access to the metadata store to others migration processes.
+                Only one migration at a time is authorized.
+            </summary>
+            <returns> Returns true if the lock was successfully granted, false otherwise. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.ReleaseLock">
+            <summary>
+                Release the lock previously granted.
+            </summary>
+            <returns> Returns true if the lock was successfully released, false otherwise. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.IsExists">
+            <summary>
+                Check if Evolve metadata exists in the database or not.
+            </summary>
+            <returns> True if metadata exists, false otherwise. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.CreateIfNotExists">
+            <summary>
+                Create the metadata store if not exists.
+            </summary>
+            <returns> True if created, false if it already exists. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.SaveMigration(EvolveDb.Migration.MigrationScript,System.Boolean,System.Nullable{System.TimeSpan})">
+            <summary>
+                Save the metadata of an executed migration.
+            </summary>
+            <param name="migration"> The migration script metadata. </param>
+            <param name="success"> True if the migration succeeded, false otherwise. </param>
+            <param name="elapsed"> Optional execution time. </param>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.Save(EvolveDb.Metadata.MetadataType,System.String,System.String,System.String)">
+            <summary>
+                <para>
+                    Save generic Evolve metadata.
+                </para>
+                <para>
+                    Use <see cref="F:EvolveDb.Metadata.MetadataType.NewSchema"/> when Evolve has created the schema.
+                </para>
+                <para>
+                    Use <see cref="F:EvolveDb.Metadata.MetadataType.EmptySchema"/> when the schema already exists but is empty when Evolve first run.
+                </para>
+                <para>
+                    Use <see cref="F:EvolveDb.Metadata.MetadataType.StartVersion"/> to define a version used as a starting point for the future migration.
+                </para>
+            </summary>
+            <param name="type"> Metadata type to save. Cannot be null. </param>
+            <param name="version"> Version of the record. Cannot be null. </param>
+            <param name="description"> Metadata description. Cannot be null. </param>
+            <param name="name"> Metadata name. Cannot be null. </param>
+            <exception cref="T:System.ArgumentException">
+                Throws ArgumentException when the type of the metadata to save is 
+                <see cref="F:EvolveDb.Metadata.MetadataType.Migration"/> or <see cref="F:EvolveDb.Metadata.MetadataType.RepeatableMigration"/>. 
+            </exception>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.UpdateChecksum(System.Int32,System.String)">
+            <summary>
+                Update the checksum of a migration given its Id.
+            </summary>
+            <param name="migrationId"> Id of the migration metadata to update. </param>
+            <param name="checksum"> The new checksum. </param>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.GetAllMetadata">
+            <summary>
+                Returns all metadata ordered by id.
+            </summary>
+            <returns> The ordered list of all metadata. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.GetAllAppliedMigration">
+            <summary>
+                Returns all the applied migration metadata ordered by version.
+            </summary>
+            <returns> The ordered by version list of all applied migration metadata. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.GetAllAppliedRepeatableMigration">
+            <summary>
+                Returns all the applied repeatable migration metadata ordered by name.
+            </summary>
+            <returns> The ordered by name list of all applied repeatable migration metadata. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.CanDropSchema(System.String)">
+            <summary>
+                <para>
+                    Returns True if Evolve can drop the schema, false otherwise.
+                </para>
+                <para>
+                    Evolve can drop the schema if it created it in the first place.
+                </para>
+            </summary>
+            <returns> True if Evolve can drop the schema, false otherwise. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.CanEraseSchema(System.String)">
+            <summary>
+                <para>
+                    Returns True if Evolve can erase the schema, false otherwise.
+                </para>
+                <para>
+                    Evolve can erase the schema if it was empty when it first run.
+                </para>
+            </summary>
+            <returns> True if Evolve can erase the schema, false otherwise. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.FindStartVersion">
+            <summary>
+                <para>
+                    Returns the version where the migration shall begin. (default: 0)
+                </para>
+                <para>
+                    All the migration scripts prior to this mark are ignored.
+                </para>
+            </summary>
+            <returns> The migration starting point. </returns>
+        </member>
+        <member name="M:EvolveDb.Metadata.IEvolveMetadata.FindLastAppliedVersion">
+            <summary>
+                Returns the version of the last applied migration.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Metadata.MetadataTable.#ctor(System.String,System.String,EvolveDb.Dialect.DatabaseHelper)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="schema"> Existing database schema name. </param>
+            <param name="tableName"> Metadata table name. </param>
+            <param name="database"> A database helper used to change and restore schema of the metadata table. </param>
+        </member>
+        <member name="T:EvolveDb.Migration.EmbeddedResourceMigrationLoader">
+            <summary>
+                A migration loader that searchs migrations embedded in assemblies. 
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Migration.EmbeddedResourceMigrationLoader.#ctor(EvolveDb.Configuration.IEvolveConfiguration@)">
+            <summary>
+                Initialize a new instance of the <see cref="T:EvolveDb.Migration.FileMigrationLoader"/> class.
+            </summary>
+            <param name="options"> Evolve configuration </param>
+        </member>
+        <member name="M:EvolveDb.Migration.EmbeddedResourceMigrationLoader.GetMigrations">
+            <summary>
+                Returns a list of migration scripts ordered by version.
+            </summary>
+            <returns> A list of migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate version found. </exception>
+        </member>
+        <member name="M:EvolveDb.Migration.EmbeddedResourceMigrationLoader.GetRepeatableMigrations">
+            <summary>
+                Returns a list of repeatable migration scripts ordered by name.
+            </summary>
+            <returns> A list of repeatable migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate name found. </exception>
+        </member>
+        <member name="T:EvolveDb.Migration.FileMigrationLoader">
+            <summary>
+                A migration loader that searchs recursively in <see cref="P:EvolveDb.Configuration.IEvolveConfiguration.Locations"/> 
+                for migration files with a specific file name structure.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Migration.FileMigrationLoader.#ctor(EvolveDb.Configuration.IEvolveConfiguration@)">
+            <summary>
+                Initialize a new instance of the <see cref="T:EvolveDb.Migration.FileMigrationLoader"/> class.
+            </summary>
+            <param name="options"> Evolve configuration </param>
+        </member>
+        <member name="M:EvolveDb.Migration.FileMigrationLoader.GetMigrations">
+            <summary>
+                Returns a list of migration scripts ordered by version.
+            </summary>
+            <returns> A list of migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate version found. </exception>
+        </member>
+        <member name="M:EvolveDb.Migration.FileMigrationLoader.GetRepeatableMigrations">
+            <summary>
+                Returns a list of repeatable migration scripts ordered by name.
+            </summary>
+            <returns> A list of repeatable migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate name found. </exception>
+        </member>
+        <member name="M:EvolveDb.Migration.FileMigrationScript.ValidateChecksum(System.String)">
+            <summary>
+                Validates the given <paramref name="checksum"/> against the <see cref="T:EvolveDb.Migration.MigrationScript"/>.
+                If the validation fails, use the pre v1.8.0 version of the method.
+            </summary>
+            <param name="checksum"> The given checksum. </param>
+            <exception cref="T:System.Exception"> Throws when the validation fails. </exception>
+        </member>
+        <member name="M:EvolveDb.Migration.FileMigrationScript.FallbackCheck">
+            <summary>
+                Calculate the checksum with the pre v1.8.0 version.
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Migration.IMigrationLoader">
+            <summary>
+                Defines methods used to load all migrations (applied, pending, ignored...)
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Migration.IMigrationLoader.GetMigrations">
+            <summary>
+                Returns a list of migration scripts ordered by version.
+            </summary>
+            <returns> A list of migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate version found. </exception>
+        </member>
+        <member name="M:EvolveDb.Migration.IMigrationLoader.GetRepeatableMigrations">
+            <summary>
+                Returns a list of repeatable migration scripts ordered by name.
+            </summary>
+            <returns> A list of repeatable migration script. </returns>
+            <exception cref="T:EvolveDb.EvolveException"> Throws EvolveException when duplicate name found. </exception>
+        </member>
+        <member name="P:EvolveDb.Migration.MigrationBase.Version">
+            <summary>
+                Returns the version of the migration.
+                Can be null in case of <see cref="F:EvolveDb.Metadata.MetadataType.RepeatableMigration"/>.
+            </summary>
+        </member>
+        <member name="T:EvolveDb.Migration.MigrationScript">
+            <summary>
+                Provide a common abstraction for versioned and repeatable migrations.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Migration.MigrationScript.Content">
+            <summary>
+                Gets the raw content of a migration script.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Migration.MigrationScript.IsTransactionEnabled">
+            <summary>
+                Returns false if the special comment "evolve-tx-off" is found in the first line of the script, true otherwise.
+            </summary>
+        </member>
+        <member name="P:EvolveDb.Migration.MigrationScript.MustRepeatAlways">
+            <summary>
+                Returns true if the special comment "evolve-repeat-always" is found in the first line of the script, false otherwise.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Migration.MigrationScript.ValidateChecksum(System.String)">
+            <summary>
+                Validates the <paramref name="checksum"/> against the actual migration one.
+                Throws on mismatch.
+            </summary>
+            <param name="checksum"> The applied migration checksum. </param>
+            <exception cref="T:EvolveDb.EvolveValidationException"></exception>
+        </member>
+        <member name="M:EvolveDb.Migration.MigrationScript.CalculateChecksum">
+            <summary>
+                Returns the checksum where <code>crlf</code> and <code>lf</code> line endings have been previously normalized to <code>lf</code>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EvolveDb.Migration.MigrationScript.NormalizeLineEndings(System.String)">
+            <summary>
+                <code>crlf</code> and <code>lf</code> line endings will be normalized to <code>lf</code>
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Migration.MigrationVersion.#ctor(System.String)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="version"> Version of the script. Example: 1_1_0_11 </param>
+            <exception cref="T:EvolveDb.EvolveConfigurationException"> Thrown when the format of the version is invalid. </exception>
+        </member>
+        <member name="T:EvolveDb.Utilities.Check">
+            <summary>
+                Static convenience methods to check that a method or a constructor is invoked with proper parameter or not.
+            </summary>
+        </member>
+        <member name="M:EvolveDb.Utilities.Check.NotNullOrEmpty(System.String,System.String)">
+            <summary>
+                Ensures that the string passed as a parameter is neither null or empty.
+            </summary>
+            <param name="text"> The string to test. </param>
+            <param name="parameterName"> The name of the parameter to test. </param>
+            <returns> The not null or empty string that was validated. </returns>
+            <exception cref="T:System.ArgumentNullException"> Throws ArgumentNullException if the string is null. </exception>
+            <exception cref="T:System.ArgumentException"> Throws ArgumentException if the string is empty. </exception>
+        </member>
+        <member name="M:EvolveDb.Utilities.Check.NotNull``1(``0,System.String)">
+            <summary>
+                Ensures that an object <paramref name="reference"/> passed as a parameter is not null.
+            </summary>
+            <typeparam name="T"> The type of the reference to test. </typeparam>
+            <param name="reference"> An object reference. </param>
+            <param name="parameterName"> The name of the parameter to test. </param>
+            <returns> The non-null reference that was validated. </returns>
+            <exception cref="T:System.ArgumentNullException"> Throws ArgumentNullException if the reference is null. </exception>
+        </member>
+        <member name="M:EvolveDb.Utilities.Check.HasNoNulls``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+                Ensures that a <paramref name="enumerable"/> does not contain a null element.
+            </summary>
+            <typeparam name="T"> The type of the enumerable to test. </typeparam>
+            <param name="enumerable"> The enumerable to test. </param>
+            <param name="parameterName"> The name of the parameter to test. </param>
+            <returns> The enumerable without null element that was validated. </returns>
+            <exception cref="T:System.ArgumentNullException"> Throws ArgumentNullException if the enumerable is null. </exception>
+            <exception cref="T:System.ArgumentException"> Throws ArgumentException if the enumerable contains at least one null element. </exception>
+        </member>
+        <member name="M:EvolveDb.Utilities.Check.FileExists(System.String,System.String)">
+            <summary>
+                Ensures that the specified file exists.
+            </summary>
+            <param name="filePath"> The full path of the file to test. </param>
+            <param name="parameterName"> The name of the parameter to test. </param>
+            <returns> The full path of the file tested and found. </returns>
+            <exception cref="T:System.ArgumentNullException"> Throws ArgumentNullException if the path is null. </exception>
+            <exception cref="T:System.ArgumentException"> Throws ArgumentException (with an inner FileNotFoundException) if the file is not found. </exception>
+        </member>
+        <member name="T:ConsoleTables.ConsoleTable">
+            <summary>
+                Print out a nicely formatted table in a console application C#
+            </summary>
+        </member>
+        <member name="P:ConsoleTables.ConsoleTableOptions.NumberAlignment">
+            <summary>
+            Enable only from a list of objects
+            </summary>
+        </member>
+    </members>
+</doc>

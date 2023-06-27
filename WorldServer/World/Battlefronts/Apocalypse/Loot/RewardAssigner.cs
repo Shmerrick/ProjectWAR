@@ -81,7 +81,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public List<LootBagTypeDefinition> AssignLootToPlayers(int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers,
             IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses,
-            Dictionary<uint, int> pairingContributionBonuses, WorldConfig configSettings)
+            Dictionary<uint, int> pairingContributionBonuses, WorldConfigs configSettings)
         {
             var characterKeepTrackerList = new List<KeepLockTracker>();
             // Preload the tracker
