@@ -1,7 +1,0 @@
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\bin\Release\AccountCacher.exe.config
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\bin\Release\AccountCacher.exe
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.AssemblyReference.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.SuggestedBindingRedirects.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.CoreCompileInputs.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.CopyComplete
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.exe

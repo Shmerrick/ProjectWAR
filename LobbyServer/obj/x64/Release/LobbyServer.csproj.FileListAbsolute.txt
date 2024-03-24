@@ -1,7 +1,0 @@
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\bin\Release\LobbyServer.exe.config
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\bin\Release\LobbyServer.exe
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.AssemblyReference.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.SuggestedBindingRedirects.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.CoreCompileInputs.cache
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.csproj.CopyComplete
-C:\Users\wardwalf\Desktop\projectwar server\ProjectWAR\LobbyServer\obj\x64\Release\LobbyServer.exe
