@@ -1,0 +1,4 @@
+piece #,x pixel offset,y pixel offset,x size,y size
+1,0,0,1024,1024
+2,0,0,1024,1024
+3,224,240,512,512

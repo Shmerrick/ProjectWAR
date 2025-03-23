@@ -1,0 +1,167 @@
+﻿using FrameWork;
+using System;
+
+namespace Common
+{
+    // Fixed value of a character
+    [DataTable(PreCache = false, TableName = "creature_spawns", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [Serializable]
+    public class Creature_spawn : DataObject
+    {
+        public Creature_proto Proto;
+
+        private uint _Guid;
+        private uint _Entry;
+        private ushort _ZoneId;
+        private int _WorldX;
+        private int _WorldY;
+        private int _WorldZ;
+        private int _WorldO;
+        private byte _Icone;
+        private byte _Emote;
+        private byte _Faction;
+        private byte _Level;
+        private uint _Oid;
+        private byte _Enabled;
+
+        [PrimaryKey(AutoIncrement = true)]
+        public uint Guid
+        {
+            get { return _Guid; }
+            set { _Guid = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint Entry
+        {
+            get { return _Entry; }
+            set { _Entry = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort ZoneId
+        {
+            get { return _ZoneId; }
+            set { _ZoneId = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int WorldX
+        {
+            get { return _WorldX; }
+            set { _WorldX = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int WorldY
+        {
+            get { return _WorldY; }
+            set { _WorldY = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int WorldZ
+        {
+            get { return _WorldZ; }
+            set { _WorldZ = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int WorldO
+        {
+            get { return _WorldO; }
+            set { _WorldO = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Icone
+        {
+            get { return _Icone; }
+            set { _Icone = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Emote
+        {
+            get { return _Emote; }
+            set { _Emote = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort RespawnMinutes { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Faction
+        {
+            get { return _Faction; }
+            set { _Faction = value; Dirty = true; }
+        }
+
+        [DataElement()]
+        public byte WaypointType { get; set; } = 0; // 0 = Loop Start->End->Start, 1 = Start->End, 2 = Random
+
+        [DataElement(AllowDbNull = false)]
+        public byte Level
+        {
+            get { return _Level; }
+            set { _Level = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint Oid
+        {
+            get { return _Oid; }
+            set { _Oid = value; Dirty = true; }
+        }
+
+        public void BuildFromProto(Creature_proto Proto)
+        {
+            if (Proto == null)
+                return;
+            this.Proto = Proto;
+            Entry = Proto.Entry;
+            Emote = Proto.Emote;
+            Icone = Proto.Icone;
+        }
+
+        public void CreatureDeathState()
+        {
+        }
+
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+        }
+
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO, byte level)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+            _Level = level;
+        }
+
+        public Creature_spawn()
+        {
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Enabled
+        {
+            get { return _Enabled; }
+            set { _Enabled = value; Dirty = true; }
+        }
+
+        public byte NoRespawn = 0;
+    }
+}
