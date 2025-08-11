@@ -25,6 +25,7 @@ namespace WorldServer
     {
         public static WorldConfigs Config;
         public static AccountConfig AccountConfig;
+        public static CitySiegeConfigs CitySiegeConfig;
         public static RpcClient Client;
         public static AccountMgr AcctMgr => Client?.GetServerObject<AccountMgr>();
         public static TCPServer Server;
@@ -132,6 +133,7 @@ namespace WorldServer
             ConfigMgr.LoadConfigs();
             Config = ConfigMgr.GetConfig<WorldConfigs>();
             AccountConfig = ConfigMgr.GetConfig<AccountConfig>();
+            CitySiegeConfig = ConfigMgr.GetConfig<CitySiegeConfigs>();
 
             // Loading log level from file
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))

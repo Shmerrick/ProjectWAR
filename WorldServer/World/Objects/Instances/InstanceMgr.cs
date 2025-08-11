@@ -179,7 +179,7 @@ namespace WorldServer.World.Objects.Instances
                             {
                                 // Altdorf
                                 case 200:
-                                    // ints.Script = new AltdorfSiege();
+                                    ints.Script = new World.Scripting.Dungeons.AltdorfSiege();
                                     break;
                                 // Inevitable City
                                 case 163:
