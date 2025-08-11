@@ -25,6 +25,7 @@ using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 using WorldServer.World.Objects.Instances.Tombs;
 using WorldServer.World.Objects.Instances.WarpbladeTunnels1;
 using WorldServer.World.Objects.Instances.WarpbladeTunnels2;
+using WorldServer.World.Scripting;
 
 namespace WorldServer.World.Objects.Instances
 {
@@ -62,6 +63,7 @@ namespace WorldServer.World.Objects.Instances
         public bool EncounterInProgress = false;
 
         public uint CurrentBossId { get; set; } = 0;
+        public InstanceScript Script { get; set; }
 
         public Instance(ushort zoneid, ushort id, byte realm, Instance_Lockouts lockouts)
         {
@@ -132,6 +134,8 @@ namespace WorldServer.World.Objects.Instances
                 CheckInstanceEmpty();
                 CheckPlayers();
 
+                Script?.Update(500);
+
                 Thread.Sleep(500);
             }
         }
@@ -143,7 +147,9 @@ namespace WorldServer.World.Objects.Instances
                 for (int i = 0; i < Players.Count; i++)
                     if (Players[i].IsDisposed)
                     {
+                        Player plr = Players[i];
                         Players.RemoveAt(i);
+                        Script?.OnPlayerLeave(plr);
                         InstanceService.SavePlayerIDs(ZoneID + ":" + ID, Players);
                     }
             }
@@ -249,6 +255,8 @@ namespace WorldServer.World.Objects.Instances
 
                 player.SendClientMessage("Registered players: " + players, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 player.SendClientMessage("Note: Wait for your party leader to get into the instance if you find yourself in another instance ID.", SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+
+                Script?.OnPlayerEnter(player);
             }
         }
 

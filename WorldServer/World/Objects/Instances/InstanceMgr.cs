@@ -6,6 +6,7 @@ using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects.Instances.TomboftheVultureLord;
+using WorldServer.World.Scripting;
 
 namespace WorldServer.World.Objects.Instances
 {
@@ -172,6 +173,26 @@ namespace WorldServer.World.Objects.Instances
                             }
                             //ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
                             ints = new Instance(Jump.ZoneID, i, (byte)player.Realm, deadbosses);
+
+                            // Attach a script to the instance if one is defined for this zone.
+                            switch (Jump.ZoneID)
+                            {
+                                // Altdorf
+                                case 200:
+                                    // ints.Script = new AltdorfSiege();
+                                    break;
+                                // Inevitable City
+                                case 163:
+                                    // ints.Script = new InevitableCitySiege();
+                                    break;
+                            }
+
+                            if (ints.Script != null)
+                            {
+                                ints.Script.Instance = ints;
+                                ints.Script.OnInstanceLoad();
+                            }
+
                             _instances.Add(i, ints);
                             return i;
                         }

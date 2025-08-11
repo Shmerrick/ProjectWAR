@@ -1358,5 +1358,38 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
         }
+
+        public void DistributeCitySiegeStageReward(Player player, int stage, bool wonStage, int cityRating)
+        {
+            if (player == null)
+                return;
+
+            uint renown = 0;
+            uint crests = 0;
+
+            if (wonStage)
+            {
+                if (stage == 1 || stage == 2)
+                    renown = 10000;
+                else if (stage == 3)
+                    renown = 20000;
+
+                crests = (uint)(cityRating * 10);
+            }
+            else // Lost stage
+            {
+                crests = (uint)(cityRating * 4);
+            }
+
+            player.AddRenown(renown, false, RewardType.None, $"City Siege Stage {stage} {(wonStage ? "Win" : "Loss")}");
+            if (crests > 0)
+            {
+                // War Crest Item ID is 208470, but we'll use the constant from this class
+                player.ItmInterface.CreateItem((uint)INSIGNIA_ITEM_ID, (ushort)crests);
+            }
+
+            player.SendClientMessage($"You have been awarded {renown} Renown and {crests} War Crests for your efforts in the city siege.", ChatLogFilters.CHATLOGFILTERS_RVR);
+            Logger.Info("CitySiegeReward", $"Player {player.Name} received {renown} RR and {crests} crests for Stage {stage} (Won: {wonStage}, Rating: {cityRating})");
+        }
     }
 }
