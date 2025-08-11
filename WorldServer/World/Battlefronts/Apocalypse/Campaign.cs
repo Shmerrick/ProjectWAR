@@ -1354,6 +1354,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)
         {
+            // Do not advance the campaign if a city siege is already active.
+            if (CitySiegeService.IsSiegeActive)
+            {
+                BattlefrontLogger.Info("ExecuteBattleFrontLock called but a city siege is active. Aborting campaign advancement.");
+                return;
+            }
+
+            // Check for T4 campaign victory before proceeding
+            if (CitySiegeService.CheckCampaignVictory(lockingRealm, this.BattleFrontManager))
+            {
+                CitySiegeService.BeginSiege(lockingRealm);
+
+                // Lock the current zone but do not advance to the next one.
+                var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
+                BattlefrontLogger.Info($"Executing FINAL BattleFront Lock on {oldBattleFront.Description} for {lockingRealm} to trigger city siege.");
+                GenerateZoneLockRewards(lockingRealm, oldBattleFront.ZoneId);
+                BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
+                ClearDictionaries();
+
+                // IMPORTANT: We do not advance the battlefront here. The server is now in a siege state.
+                return;
+            }
+
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
             Logger.Info($"***Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}***");

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CitySiege>
+  <!-- Controls the city siege feature.
+       Enabled: Can be "true" (enables normal T4 lock trigger), "false" (disables completely), or "always" (siege is always on, for testing).
+  -->
+  <Enabled>true</Enabled>
+
+  <!-- Total number of players per instance (should be a multiple of 2, e.g., 48 for 24v24). -->
+  <ParticipantsPerInstance>48</ParticipantsPerInstance>
+
+  <!-- Duration of each stage in minutes. -->
+  <Stage1DurationMinutes>45</Stage1DurationMinutes>
+  <Stage2DurationMinutes>30</Stage2DurationMinutes>
+  <Stage3DurationMinutes>30</Stage3DurationMinutes>
+
+  <!-- Time added to Stage 1 when an objective is captured. -->
+  <Stage1ObjectiveTimeBonusMinutes>5</Stage1ObjectiveTimeBonusMinutes>
+
+  <!-- Time between stages in seconds, to allow for rewards and preparation. -->
+  <TransitionDurationSeconds>60</TransitionDurationSeconds>
+
+</CitySiege>
