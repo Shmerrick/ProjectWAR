@@ -19,21 +19,32 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
+    // This is the base class for every single thing that exists in the game world.
+    // It's like the "thing" in "thingamajig". Everything from players to monsters to treasure chests
+    // is a type of Object. It has all the basic stuff that everything in the world needs,
+    // like a position, a name, and the ability to be seen by players.
     public class Object : Point3D
     {
+        // This is how often we check for things that are in range of this object.
         public static int RANGE_UPDATE_INTERVAL = 300; // Check des Ranged toutes les 300Ms
 
+        // Every object has a list of "interfaces" that give it special abilities.
+        // For example, a monster might have a "combat interface" that lets it fight.
         public List<BaseInterface> Interfaces = new List<BaseInterface>();
 
+        // These are special interfaces for handling events and scripts.
         public EventInterface EvtInterface;
         public ScriptsInterface ScrInterface;
 
+        // This is a temporary number used to give the object a unique ID.
         // This is an int for the purpose of the atomic Interlocked functions.
         // Its value should not exceed 65535.
         private int _pendingOid;
 
+        // This is the object's unique ID in the world. It's how the server keeps track of everything.
         public ushort Oid { get; private set; }
 
+        // This is the name of the object, like "Grimgor Ironhide" or "A mysterious chest".
         public virtual string Name { get; set; }
 
         public Object()
@@ -48,9 +59,11 @@ namespace WorldServer.World.Objects
 
         #region Disposal
 
+        // These are used to safely remove the object from the world when it's no longer needed.
         public bool IsDisposed { get; protected set; }
         public bool PendingDisposal { get; set; }
 
+        // This starts the process of destroying the object.
         public virtual void Destroy()
         {
             if (IsInWorld())
@@ -62,6 +75,7 @@ namespace WorldServer.World.Objects
             }
         }
 
+        // This does the actual work of cleaning up the object.
         public virtual void Dispose()
         {
             if (IsDisposed)
@@ -77,6 +91,7 @@ namespace WorldServer.World.Objects
 
         #endregion Disposal
 
+        // This is called every "tick" of the game to update the object's state.
         public virtual void Update(long msTick)
         {
             if (PendingDisposal)
@@ -91,6 +106,7 @@ namespace WorldServer.World.Objects
 
         #region Load/Save
 
+        // These are for loading the object's data from the database and saving it back.
         public bool Loaded;
 
         public void Load()
@@ -129,6 +145,7 @@ namespace WorldServer.World.Objects
 
         #region Interfaces
 
+        // These methods are for adding and removing special ability interfaces to the object.
         public BaseInterface AddInterface(BaseInterface Interface)
         {
             lock (Interfaces)
@@ -153,6 +170,7 @@ namespace WorldServer.World.Objects
             return (T)Interface;
         }
 
+        // This plays a visual effect at the object's position, like an explosion or a magical glow.
         public void PlayEffect(ushort effectID, Point3D position = null)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_EFFECT, 30);
@@ -191,6 +209,7 @@ namespace WorldServer.World.Objects
             DispatchPacket(Packets.UpdateCreatureState(Oid, state), false);
         }
 
+        // This plays a sound at the object's position.
         public void PlaySound(ushort soundID, Boolean sendarea = true)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_SOUND, 30);
@@ -249,10 +268,12 @@ namespace WorldServer.World.Objects
 
         #region Sender
 
+        // This sends the object's information to a player so they can see it.
         public virtual void SendMeTo(Player plr)
         {
         }
 
+        // This tells a player to remove the object from their view.
         public virtual void SendRemove(Player plr)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_REMOVE_PLAYER, 4);
@@ -264,16 +285,19 @@ namespace WorldServer.World.Objects
                 DispatchPacket(Out, false);
         }
 
+        // This is called when a player interacts with the object.
         public virtual void SendInteract(Player player, InteractMenu menu)
         {
             ScrInterface.OnInteract(this, player, menu);
             WorldMgr.GeneralScripts.OnWorldPlayerEvent("INTERACT", player, this);
         }
 
+        // This is called when a player stops interacting with the object.
         public virtual void SendInteractEnd(Player plr)
         {
         }
 
+        // This makes the object say something that nearby players can hear.
         public virtual void Say(string message, ChatLogFilters chatFilter = ChatLogFilters.CHATLOGFILTERS_SAY)
         {
             if (string.IsNullOrEmpty(message))
@@ -283,6 +307,7 @@ namespace WorldServer.World.Objects
                 Plr.SendMessage(this, message, chatFilter);
         }
 
+        // These methods send data packets to players who are in range of the object.
         public virtual void DispatchPacketUnreliable(PacketOut Out, bool sendToSelf, Unit sender)
         {
             if (PlayersInRange.Count > 100)
@@ -312,6 +337,7 @@ namespace WorldServer.World.Objects
 
         #region Detection
 
+        // These methods are for checking what type of object this is.
         public bool IsPlayer()
         {
             return this is Player;
@@ -347,6 +373,7 @@ namespace WorldServer.World.Objects
             return this is ChapterObject;
         }
 
+        // These methods are for getting the object as a specific type, if it is that type.
         public Creature ToCreature()
         {
             return IsCreature() ? (this as Creature) : null;
@@ -406,16 +433,21 @@ namespace WorldServer.World.Objects
 
         #region Position
 
+        // This gives a string representation of the object, which is useful for debugging.
         public override string ToString()
         {
             return $"(OffX = {XOffset}, OffY = {YOffset}, Heading = {Heading}, Oid = {Oid}, Name= {Name}, Radius= {BaseRadius}, Active= {_isActive})" + base.ToString();
         }
 
+        // This is the direction the object is facing.
         public ushort Heading;
+        // These are the object's position within a larger region.
         public ushort XOffset, YOffset;
 
+        // This is the object's size, for collision detection.
         public float BaseRadius { get; set; } = 4.5f;
 
+        // This is the cell on the world map that the object is currently in.
         public CellMgr _Cell;
 
         /// <summary>Current zone containing the object, may be null</summary>
@@ -434,8 +466,10 @@ namespace WorldServer.World.Objects
         /// <summary>True is zone is not null</summary>
         public bool IsInWorld() => Zone != null;
 
+        // This is the object's exact position in the world.
         public readonly Point3D WorldPosition = new Point3D();
 
+        // This sets the zone that the object is in.
         public virtual void SetZone(ZoneMgr newZone)
         {
             if (newZone == null)
@@ -448,6 +482,7 @@ namespace WorldServer.World.Objects
             Zone = null;
         }
 
+        // This removes the object from the world.
         public void RemoveFromWorld()
         {
             if (!IsInWorld())
@@ -456,6 +491,7 @@ namespace WorldServer.World.Objects
             Region.RemoveObject(this);
         }
 
+        // This updates the object's offset within the region.
         public void UpdateOffset()
         {
             if (!IsInWorld() || X == 0 || Y == 0)
@@ -468,6 +504,7 @@ namespace WorldServer.World.Objects
                 SetOffset(offX, offY);
         }
 
+        // This updates the object's exact world position.
         public void UpdateWorldPosition()
         {
             //int x = X > 32768 ? X - 32768 : X;
@@ -522,6 +559,7 @@ namespace WorldServer.World.Objects
 
         #region Distance and Heading Checks
 
+        // These methods are for calculating distances and angles between objects.
         public int Get2DDistanceToWorldPoint(Point2D point)
         {
             double dx = WorldPosition.X - point.X;
@@ -840,6 +878,7 @@ namespace WorldServer.World.Objects
 
         #region Range
 
+        // These lists keep track of all the objects and players that are close to this object.
         public List<Object> ObjectsInRange = new List<Object>();
         public List<Player> PlayersInRange = new List<Player>();
 
@@ -971,6 +1010,7 @@ namespace WorldServer.World.Objects
 
         #region Interaction
 
+        // These are for handling interactions with the object, like clicking on it.
         public long CountdownTimerEnd { get; set; }
         public RigidBody PhysicsRigidBody { get; internal set; }
         public object PQCreature { get; set; }

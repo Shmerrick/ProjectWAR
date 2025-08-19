@@ -12,8 +12,10 @@ using WorldServer.World.Objects;
 using Item = WorldServer.World.Objects.Item;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
+// This file is all about loot! It decides what treasures you get when you defeat enemies or open chests.
 namespace WorldServer.Managers
 {
+    // This is a simple helper class that holds information about a single item that can be looted.
     public class LootInfo
     {
         public LootInfo(Item_Info Item)
@@ -24,6 +26,8 @@ namespace WorldServer.Managers
         public Item_Info Item;
     }
 
+    // This class is like a treasure chest. It holds all the loot (money and items) that you can get
+    // from a single source, like a defeated monster. It also handles what happens when you try to take the loot.
     public class LootContainer
     {
         public uint Money;
@@ -34,15 +38,19 @@ namespace WorldServer.Managers
             LootInfo = new List<LootInfo>();
         }
 
+        // Checks if there's anything to loot in this container.
         public bool IsLootable()
         {
             return LootCount > 0 || Money > 0;
         }
 
+        // How many items are in the container?
         public int LootCount => LootInfo?.Count ?? 0;
 
+        // This is called when a player interacts with the loot (e.g., opens the loot window).
         public void SendInteract(Player player, InteractMenu menu, Creature crea = null)
         {
+            // First, give the player any money that was in the loot.
             if (Money > 0)
             {
                 if (player.PriorityGroup == null)
@@ -57,17 +65,18 @@ namespace WorldServer.Managers
                 Money = 0;
             }
 
+            // What did the player do?
             switch (menu.Menu)
             {
-                case 15: // Closing loot window.
+                case 15: // Closing the loot window.
                     return;
 
-                case 13:
+                case 13: // Clicking "Loot All".
                     TakeAll(player, false);
                     if (crea != null && crea.Spawn.Proto.LairBoss == false) crea.IsActive = false;
                     break;
 
-                case 12:
+                case 12: // Clicking on a single item to loot it.
                     if (TakeLoot(player, menu.Num))
                         ClientUpdateLoot(player);
 
@@ -75,7 +84,7 @@ namespace WorldServer.Managers
                         if (crea != null && crea.Spawn.Proto.LairBoss == false) crea.IsActive = false;
                     break;
 
-                default:
+                default: // Just opening the loot window.
                     ClientUpdateLoot(player);
 
                     if (crea != null && LootCount < 1)
@@ -84,6 +93,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This handles taking a single item from the loot container.
         public bool TakeLoot(Player player, byte slot)
         {
             if (slot >= LootInfo.Count || LootInfo[slot] == null)
@@ -92,6 +102,7 @@ namespace WorldServer.Managers
                 return false;
             }
 
+            // Try to add the item to the player's inventory.
             ItemResult result = player.ItmInterface.CreateItem(LootInfo[slot].Item, 1);
 
             if (result == ItemResult.RESULT_OK)
@@ -102,12 +113,14 @@ namespace WorldServer.Managers
                 return true;
             }
 
+            // If the player's bags are full, let them know.
             if (result == ItemResult.RESULT_MAX_BAG)
                 player.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_OVERAGE_CANT_LOOT);
 
             return false;
         }
 
+        // This handles taking all the items from the loot container.
         public void TakeAll(Player player, bool announce)
         {
             if (player.ItmInterface.GetTotalFreeInventorySlot() < LootCount)
@@ -128,6 +141,7 @@ namespace WorldServer.Managers
                 ClientUpdateLoot(player);
         }
 
+        // This sends an update to the player's client to show them what's in the loot window.
         private void ClientUpdateLoot(Player player)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 32);
@@ -145,17 +159,11 @@ namespace WorldServer.Managers
         }
     }
 
+    // This is the Loot Manager. It's the main class that decides what loot to give to players.
     public static class LootsMgr
     {
-        /*private const float DROP_BONUS_CHAMP = 0.2f;
-        private const float DROP_BONUS_HERO = 0.04f;
-
-        private const float RARITY_COMMON_GEAR = 20.0f;
-
-        private static readonly float[] RARITIES = { 5.0f, 0.4f, 0.02f };
-
-        private const byte MAX_EASE_IN_LEVEL = 7;*/
-
+        // This is the main function for generating loot. It figures out what kind of kill it was (player vs. player,
+        // player vs. monster, or opening a chest) and then calls the right logic to generate the loot.
         public static LootContainer GenerateLoot(Unit corpse, Unit looter, float dropMod)
         {
             // Declare kill event constants for bitfields
@@ -539,6 +547,7 @@ namespace WorldServer.Managers
             return null;
         }
 
+        // This function is specifically for generating loot in scenarios (the small, instanced PvP battles).
         public static LootContainer GetScenarioLoot(Player player, int scenTier, ZoneMgr zone)
         {
             List<LootInfo> lootList = new List<LootInfo>();

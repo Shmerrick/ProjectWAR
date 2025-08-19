@@ -8,8 +8,11 @@ using System.Linq;
 using WorldServer.Services.World;
 using Color = System.Drawing.Color;
 
+// This file is all about loading and managing data from the game client's files.
+// It reads things like maps and other data from images and CSV files to build the game world.
 namespace WorldServer.Managers
 {
+    // A simple helper to hold information about which realm has influence over a specific area.
     public struct AreaInfluence
     {
         public ushort AreaNumber;
@@ -17,55 +20,8 @@ namespace WorldServer.Managers
         public ushort InfluenceId;
     }
 
-    /*
-    public class MapPiece
-    {
-        public byte Id;
-        public ushort ZoneId;
-        public ushort PositionX, PositionY;
-        public ushort SizeX, SizeY;
-        public Color[,] Colors;
-        public BitArray[] PieceMap { get; set; }
-        public Zone_Area Area;
-
-        public bool IsPvp(byte realm)
-        {
-            if (!Program.Config.OpenRvR && Area != null && Area.Realm != 0)
-                return false;
-
-            return true;
-        }
-
-        public bool IsRvR()
-        {
-            if (Area != null && Area.Realm == 0)
-                return true;
-
-            return false;
-        }
-
-        public bool IsOn(ushort pinX, ushort pinY, ushort zoneId)
-        {
-            if (ZoneId != zoneId)
-                return false;
-
-            if (pinX >= PositionX && pinX < PositionX + SizeX)
-            {
-                if (pinY >= PositionY && pinY < PositionY + SizeY && PieceMap[pinX - PositionX][pinY - PositionY])
-                    return true;
-            }
-
-            return false;
-        }
-
-        public override string ToString()
-        {
-            return "Id:" + Id + ",Area:" + Area;
-        }
-    }
-
-    */
-
+    // This class holds all the information about a single zone that we load from the client files.
+    // It's like a folder for all the map data for one part of the world.
     public class ClientZoneInfo
     {
         public ushort ZoneId;
@@ -75,7 +31,9 @@ namespace WorldServer.Managers
         public List<PQuest_Info> PQAreas;
         public Color[,] HeightMapOffset;
         public Color[,] HeightMapTerrain;
+        // This is a 2D map of the zone, where each pixel represents an area.
         public byte[,] AreaPixels = new byte[1024, 1024];
+        // This is a 2D map of the zone, where each pixel represents a Public Quest area.
         public byte[,] PQAreaPixels = new byte[1024, 1024];
 
         public ClientZoneInfo(ushort zoneId)
@@ -87,12 +45,10 @@ namespace WorldServer.Managers
 
             try
             {
-                //LoadHeightMap();
+                // When a new ClientZoneInfo is created, it loads all the necessary data from the files.
                 LoadInfluences();
                 LoadAreaMap();
                 LoadPQAreaMap();
-
-                //Log.Success("ClientFile", zoneId + " Loaded " + Influences.Count + " influence entries and " + Areas.Count + " area infos.");
             }
             catch (Exception e)
             {
@@ -100,6 +56,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This loads the height map images for the zone. (Currently commented out)
         public void LoadHeightMap()
         {
             string filePath = Path.Combine(Folder, "offset.png");
@@ -134,12 +91,13 @@ namespace WorldServer.Managers
             }
         }
 
+        // This loads the area map from an image file. Each pixel's color in the image
+        // corresponds to a specific area in the zone.
         public void LoadAreaMap()
         {
             string filePath = Path.Combine(Folder, "areas" + $"{ZoneId:000}" + ".png");
             if (File.Exists(filePath))
             {
-                //Log.Success("LoadAreaMap", "Loading area map for zone ID "+ZoneId);
                 using (Bitmap map = new Bitmap(filePath))
                 {
                     for (int x = 0; x < 1024; ++x)
@@ -151,21 +109,16 @@ namespace WorldServer.Managers
                         }
                     }
                 }
-
-                //Log.Success("LoadAreaMap", "Loaded area map for zone ID " + ZoneId);
             }
-
-            //else Log.Error("LoadAreaMap", "No area map found for zone ID "+ZoneId);
         }
 
-        //Use 1024x1024 PNG color overlay to define a PQ area.
-        //Color must be different for each pq for the pq to function correctly.
+        // This loads the Public Quest area map from an image file. It works just like the area map,
+        // but for Public Quests.
         public void LoadPQAreaMap()
         {
             string filePath = Path.Combine(Folder, "pqarea" + $"{ZoneId:000}" + ".png");
             if (File.Exists(filePath))
             {
-                //Log.Success("LoadPQAreaMap", "Loading PQ area map for zone ID " + ZoneId);
                 using (Bitmap map = new Bitmap(filePath))
                 {
                     for (int x = 0; x < 1024; ++x)
@@ -177,13 +130,10 @@ namespace WorldServer.Managers
                         }
                     }
                 }
-
-                //Log.Success("LoadPQAreaMap", "Loaded PQ area map for zone ID " + ZoneId);
             }
-
-            //else Log.Error("LoadPQAreaMap", "No PQ area map found for zone ID " + ZoneId);
         }
 
+        // This loads the influence data from a CSV file.
         public void LoadInfluences()
         {
             string filePath = Path.Combine(Folder, "influenceids.csv");
@@ -211,10 +161,10 @@ namespace WorldServer.Managers
             }
         }
 
+        // This figures out which area a player is in based on their coordinates.
         public Zone_Area GetZoneAreaFor(ushort pinX, ushort pinY, ushort zoneId, ushort pinz = 0)
         {
             byte areaId = AreaPixels[pinX >> 6, pinY >> 6];
-            // Log.Error("areaid", "    " + areaId);
             // fix for black craig keep in the dungeon
             if (ZoneId == 3 && areaId > 20)
             {
@@ -231,12 +181,15 @@ namespace WorldServer.Managers
             return null;
         }
 
+        // This figures out which Public Quest area a player is in.
         public byte GetPQAreaFor(ushort pinX, ushort pinY, ushort zoneId)
         {
             return PQAreaPixels[pinX >> 6, pinY >> 6];
         }
     }
 
+    // This class holds the height map information for a zone.
+    // A height map is like a topographical map that tells you how high the ground is at any point.
     public class HeightMapInfo
     {
         public HeightMapInfo(int zoneID)
@@ -250,6 +203,7 @@ namespace WorldServer.Managers
 
         private bool _loaded;
 
+        // This gets the height of the ground at a specific x, y coordinate.
         public int GetHeight(int pinX, int pinY)
         {
             Load();
@@ -308,6 +262,7 @@ namespace WorldServer.Managers
             return (int)fZValue - 30;
         }
 
+        // This loads the height map image files from the disk.
         public void Load()
         {
             if (_loaded)
@@ -327,12 +282,16 @@ namespace WorldServer.Managers
         }
     }
 
+    // This is the Client File Manager. It keeps all the loaded client file data in memory
+    // so we don't have to read it from the disk every time we need it. It's a cache.
     public static class ClientFileMgr
     {
         #region HeightMap Images
 
+        // This holds all the loaded height map information.
         public static Dictionary<int, HeightMapInfo> Heights = new Dictionary<int, HeightMapInfo>();
 
+        // This gets the height of the ground in a specific zone.
         public static int GetHeight(int zoneID, int pinX, int pinY)
         {
             HeightMapInfo info;
@@ -350,8 +309,10 @@ namespace WorldServer.Managers
 
         #region MapPiece and CSV
 
+        // This holds all the loaded zone information.
         public static Dictionary<ushort, ClientZoneInfo> ClientZoneFiles = new Dictionary<ushort, ClientZoneInfo>();
 
+        // This gets the zone information for a specific zone.
         public static ClientZoneInfo GetZoneInfo(ushort zoneId)
         {
             ClientZoneInfo info;

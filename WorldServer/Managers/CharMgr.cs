@@ -20,11 +20,14 @@ using Item = WorldServer.World.Objects.Item;
 
 namespace WorldServer.Managers
 {
+    // This class holds all the characters that belong to a single player account.
+    // Think of it as a folder for all of your characters.
     public class AccountChars
     {
         public int AccountId;
         public Realms Realm = Realms.REALMS_REALM_NEUTRAL;
 
+        // This tells us if the characters for this account have been fully loaded from the database.
         public bool Loaded { get; set; }
 
         public AccountChars(int accountId)
@@ -32,8 +35,10 @@ namespace WorldServer.Managers
             AccountId = accountId;
         }
 
+        // An array to hold up to 20 characters for the account.
         public Character[] Chars = new Character[CharMgr.MaxSlot];
 
+        // Finds the next empty character slot.
         public byte GenerateFreeSlot()
         {
             for (byte i = 0; i < Chars.Length; i++)
@@ -43,6 +48,7 @@ namespace WorldServer.Managers
             return CharMgr.MaxSlot;
         }
 
+        // Adds a new character to the account's character list.
         public bool AddChar(Character Char)
         {
             if (Char == null)
@@ -55,6 +61,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // Removes a character from a specific slot.
         public uint RemoveCharacter(byte slot)
         {
             uint characterId = 0;
@@ -64,6 +71,7 @@ namespace WorldServer.Managers
             Chars[slot] = null;
             Realm = Realms.REALMS_REALM_NEUTRAL;
 
+            // After removing a character, it re-checks which realm the account belongs to.
             foreach (Character Char in Chars)
                 if (Char != null)
                 {
@@ -74,6 +82,7 @@ namespace WorldServer.Managers
             return characterId;
         }
 
+        // Gets a character from a specific slot.
         public Character GetCharacterBySlot(byte slot)
         {
             if (slot > Chars.Length)
@@ -83,6 +92,8 @@ namespace WorldServer.Managers
         }
     };
 
+    // This is the Character Manager. It's like the main office for everything related to characters.
+    // It loads them from the database, creates new ones, and keeps track of all their information.
     [Service(
         typeof(ZoneService),
         typeof(PQuestService),
@@ -90,19 +101,31 @@ namespace WorldServer.Managers
         typeof(ItemService))]
     public static class CharMgr
     {
+        // This is the connection to the character database.
         public static IObjectDatabase Database = null;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region CharacterInfo
 
+        // This section loads and stores all the basic information about the different character classes (careers).
+        // It's like the rulebook for how each class works.
+
+        // Holds information for each character career.
         public static Dictionary<byte, CharacterInfo> CharacterInfos = new Dictionary<byte, CharacterInfo>();
+        // Holds the starting items for each career.
         public static ConcurrentDictionary<byte, List<CharacterInfo_item>> CharacterStartingItems = new ConcurrentDictionary<byte, List<CharacterInfo_item>>();
+        // Holds the renown abilities that can be unlocked.
         public static Dictionary<byte, List<CharacterInfoRenown>> RenownAbilityInfo = new Dictionary<byte, List<CharacterInfoRenown>>();
+        // Holds the base stats for each career at each level.
         public static Dictionary<byte, List<CharacterInfo_stats>> CharacterBaseStats = new Dictionary<byte, List<CharacterInfo_stats>>();
+        // Holds special stat overrides for pets.
         public static Dictionary<byte, List<PetStatOverride>> PetOverrideStats = new Dictionary<byte, List<PetStatOverride>>();
+        // Holds special mastery modifiers for pets.
         public static Dictionary<byte, List<PetMasteryModifiers>> PetMasteryMods = new Dictionary<byte, List<PetMasteryModifiers>>();
+        // Holds a list of random names that can be used for characters.
         public static List<Random_name> RandomNameList = new List<Random_name>();
 
+        // This function is called when the server starts to load all the character career information.
         [LoadingFunction(true)]
         public static void LoadCharacterInfos()
         {
@@ -116,6 +139,7 @@ namespace WorldServer.Managers
             Log.Success("CharacterMgr", "Loaded " + chars.Count + " CharacterInfo");
         }
 
+        // This function loads all the starting items for each character class.
         [LoadingFunction(true)]
         public static void LoadDefaultCharacterItems()
         {
@@ -134,18 +158,10 @@ namespace WorldServer.Managers
                         });
                 }
             }
-
-            //if (!CharacterStartingItems.ContainsKey(info.CareerLine))
-            //{
-            //    List<CharacterInfo_item> items = new List<CharacterInfo_item>(1);
-            //    items.Add(info);
-            //    CharacterStartingItems.Add(info.CareerLine, items);
-            //}
-            //else CharacterStartingItems[info.CareerLine].Add(info);
-
             Log.Success("CharacterMgr", "Loaded " + CharacterStartingItems.Count + " CharacterInfo_Item");
         }
 
+        // This function loads the renown ability information.
         [LoadingFunction(true)]
         public static void LoadCharacterRenownInfo()
         {
@@ -162,6 +178,7 @@ namespace WorldServer.Managers
             Log.Success("CharacterMgr", "Loaded " + RenownAbilityInfo.Count + " CharacterInfo_renown");
         }
 
+        // This function loads the base stats for each character class.
         [LoadingFunction(true)]
         public static void LoadCharacterBaseStats()
         {
@@ -179,6 +196,7 @@ namespace WorldServer.Managers
             Log.Success("CharacterMgr", "Loaded " + characterStatInfo.Count + " CharacterInfo_Stats");
         }
 
+        // Gets the basic information for a specific career.
         public static CharacterInfo GetCharacterInfo(byte career)
         {
             lock (CharacterInfos)
@@ -190,6 +208,7 @@ namespace WorldServer.Managers
 
         public static Dictionary<ushort, List<CharacterInfo_stats>> CareerLevelStats = new Dictionary<ushort, List<CharacterInfo_stats>>();
 
+        // Gets the stats for a specific career at a specific level.
         public static List<CharacterInfo_stats> GetCharacterInfoStats(byte careerLine, byte level)
         {
             List<CharacterInfo_stats> stats = new List<CharacterInfo_stats>();
@@ -212,6 +231,7 @@ namespace WorldServer.Managers
             return stats;
         }
 
+        // Reloads all the pet-related modifiers from the database.
         public static void ReloadPetModifiers()
         {
             PetOverrideStats.Clear();
@@ -223,6 +243,7 @@ namespace WorldServer.Managers
             LoadCharacterBaseStats();
         }
 
+        // Loads the special stat overrides for pets.
         [LoadingFunction(true)]
         public static void LoadPetStatOverrides()
         {
@@ -241,12 +262,11 @@ namespace WorldServer.Managers
 
         public static Dictionary<ushort, List<PetStatOverride>> PetOverriddenStats = new Dictionary<ushort, List<PetStatOverride>>();
 
+        // Gets the stat overrides for a specific pet type.
         public static List<PetStatOverride> GetPetStatOverride(byte careerLine)
         {
             List<PetStatOverride> overrides = new List<PetStatOverride>();
 
-            // if (!PetOverriddenStats.TryGetValue((ushort)(careerLine << 8), out overrides))
-            // {
             overrides = new List<PetStatOverride>();
 
             List<PetStatOverride> infoOverrides;
@@ -260,11 +280,11 @@ namespace WorldServer.Managers
             }
 
             PetOverriddenStats[(ushort)(careerLine << 8)] = overrides;
-            // }
 
             return overrides;
         }
 
+        // Loads the mastery modifiers for pets.
         [LoadingFunction(true)]
         public static void LoadPetMasteryMods()
         {
@@ -283,6 +303,7 @@ namespace WorldServer.Managers
 
         public static Dictionary<ushort, List<PetMasteryModifiers>> PetModifiedMastery = new Dictionary<ushort, List<PetMasteryModifiers>>();
 
+        // Gets the mastery modifiers for a specific pet type.
         public static List<PetMasteryModifiers> GetPetMasteryModifiers(byte careerLine)
         {
             List<PetMasteryModifiers> modifiers = new List<PetMasteryModifiers>();
@@ -303,6 +324,7 @@ namespace WorldServer.Managers
             return modifiers;
         }
 
+        // Gets the starting items for a specific career.
         public static List<CharacterInfo_item> GetCharacterInfoItem(byte careerLine)
         {
             List<CharacterInfo_item> items;
@@ -314,6 +336,7 @@ namespace WorldServer.Managers
             return items;
         }
 
+        // Gets the list of random names.
         public static List<Random_name> GetRandomNames()
         {
             return RandomNameList;
@@ -323,16 +346,23 @@ namespace WorldServer.Managers
 
         #region Characters
 
-        // Only 20 will work
+        // This section manages all the individual player characters in the game.
+
+        // The maximum number of characters a player can have on their account.
         public static byte MaxSlot = 20;
 
+        // This keeps track of the highest character ID used, so we can generate new unique IDs.
         private static long _maxCharGuid = 1;
+        // This holds all the characters that are currently loaded in the server's memory.
         public static Dictionary<uint, Character> Chars = new Dictionary<uint, Character>();
+        // This lets us quickly look up a character's ID by their name.
         public static Dictionary<string, uint> CharIdLookup = new Dictionary<string, uint>();
+        // This holds all the account character lists.
         public static Dictionary<int, AccountChars> AcctChars = new Dictionary<int, AccountChars>();
 
         public static long RecentHistoryTime = (TCPManager.GetTimeStamp() - ((60 * 60 * 24 * 7 * 4 * 2)));
 
+        // This function loads all the characters from the database when the server starts.
         [LoadingFunction(true)]
         public static void LoadCharacters()
         {
@@ -380,17 +410,6 @@ namespace WorldServer.Managers
             else
             {
                 string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM `{Core.AcctMgr.GetAccountSchemaName()}`.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
-                /*_maxCharGuid = Database.GetMaxColValue<Character>("CharacterId");
-
-                Log.Success("LoadCharacters", _maxCharGuid + " is the max char GUID.");
-
-                List<Character> auctionSellers = (List<Character>)Database.SelectObjects<Character>("CharacterId IN (SELECT SellerId FROM war_characters.auctions)");
-
-                foreach (Character seller in auctionSellers)
-                {
-                    if (!Chars.ContainsKey(seller.CharacterId))
-                        AddChar(seller);
-                }*/
 
                 // Full load
                 List<Character> chars = (List<Character>)Database.SelectAllObjects<Character>();
@@ -443,6 +462,7 @@ namespace WorldServer.Managers
             LoadAlliances();
         }
 
+        // Loads a single character's information from the database.
         public static Character LoadCharacterInfo(string name, bool fullLoad)
         {
             Character Char = Database.SelectObject<Character>("Name='" + Database.Escape(name) + "'");
@@ -462,6 +482,7 @@ namespace WorldServer.Managers
             return Char;
         }
 
+        // Loads a single character's information from the database using their ID.
         public static Character LoadCharacterInfo(uint id, bool fullLoad)
         {
             Character Char = Database.SelectObject<Character>("CharacterId='" + id + "'");
@@ -482,6 +503,7 @@ namespace WorldServer.Managers
             return Char;
         }
 
+        // Loads all the extra stuff for a character, like their friends list, quests, etc.
         private static void LoadAdditionalCharacterInfo(Character Char)
         {
             Char.Socials = (List<Character_social>)Database.SelectObjects<Character_social>("CharacterId=" + Char.CharacterId);
@@ -497,11 +519,13 @@ namespace WorldServer.Managers
                 Char.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId=" + Char.CharacterId);
         }
 
+        // Generates a new unique ID for a character.
         public static uint GenerateMaxCharId()
         {
             return (uint)Interlocked.Increment(ref _maxCharGuid);
         }
 
+        // Creates a new character and saves it to the database.
         public static bool CreateChar(Character Char)
         {
             AccountChars chars = GetAccountChar(Char.AccountId);
@@ -533,6 +557,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // This adds a character that has been loaded from the database into the server's memory.
         public static void AddChar(Character Char)
         {
             lock (Chars)
@@ -552,12 +577,14 @@ namespace WorldServer.Managers
                 CharIdLookup.Add(Char.Name, Char.CharacterId);
         }
 
+        // This gets a character's ID from their name.
         public static uint GetCharacterId(string name)
         {
             lock (CharIdLookup)
                 return CharIdLookup.ContainsKey(name) ? CharIdLookup[name] : 0;
         }
 
+        // This updates a character's name.
         public static void UpdateCharacterName(Character chara, string newName)
         {
             lock (CharIdLookup)
@@ -571,6 +598,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This gets a character from the server's memory. If the character isn't loaded, it will load it from the database.
         public static Character GetCharacter(string name, bool fullLoad)
         {
             uint characterId = GetCharacterId(name);
@@ -588,6 +616,7 @@ namespace WorldServer.Managers
             return LoadCharacterInfo(name, fullLoad);
         }
 
+        // This gets a character by their ID. If they aren't loaded, it will load them.
         public static Character GetCharacter(uint id, bool fullLoad)
         {
             lock (Chars)
@@ -597,6 +626,7 @@ namespace WorldServer.Managers
             return LoadCharacterInfo(id, fullLoad);
         }
 
+        // This finds all characters with a given name (including old names).
         public static void GetCharactersWithName(string name, List<Character> inList)
         {
             uint characterId = GetCharacterId(name);
@@ -612,6 +642,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This deletes a character from the game.
         public static void RemoveCharacter(byte slot, GameClient client)
         {
             int accountId = client._Account.AccountId;
@@ -642,6 +673,7 @@ namespace WorldServer.Managers
                 }
         }
 
+        // This deletes a character, initiated by a GM.
         public static void RemoveCharacter(Player deleter, int accountId, byte slot)
         {
             uint characterId = GetAccountChar(accountId).RemoveCharacter(slot);
@@ -670,6 +702,7 @@ namespace WorldServer.Managers
                 }
         }
 
+        // This performs the actual deletion of a character's data from the database.
         public static bool DeleteChar(Character Char)
         {
             lock (CharIdLookup)
@@ -712,6 +745,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // Gets the character list for a specific account.
         public static AccountChars GetAccountChar(int accountId)
         {
             lock (AcctChars)
@@ -723,6 +757,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // Checks if a character name is already being used.
         public static bool NameIsUsed(string name)
         {
             return Database.SelectObject<Character>("Name='" + Database.Escape(name) + "'") != null;
@@ -993,20 +1028,25 @@ namespace WorldServer.Managers
             return Out.ToArray();
         }
 
+        // Gets the realm of the characters on an account.
         public static Realms GetAccountRealm(int accountId) => GetAccountChar(accountId).Realm;
 
         #endregion Characters
 
         #region Name filtering
 
+        // This section is for making sure players don't use bad words in their names.
+
         private static List<BannedNameRecord> BannedNameRecords;
 
+        // Loads the list of banned names from the database.
         [LoadingFunction(false)]
         public static void LoadBannedNames()
         {
             BannedNameRecords = (List<BannedNameRecord>)Database.SelectAllObjects<BannedNameRecord>();
         }
 
+        // Adds a new name to the banned list.
         public static bool AddBannedName(string name, NameFilterType filtertype)
         {
             if (!AllowName(name))
@@ -1028,6 +1068,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // Removes a name from the banned list.
         public static bool RemoveBannedName(string name)
         {
             lock (BannedNameRecords)
@@ -1044,6 +1085,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // Sends a list of all blocked names to a player (likely a GM command).
         public static void ListBlockedNames(Player requester)
         {
             lock (BannedNameRecords)
@@ -1057,6 +1099,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // A helper function to print blocked names.
         private static void PrintBlockedNamesMatching(Player requester, NameFilterType filter)
         {
             int count = 0;
@@ -1086,6 +1129,7 @@ namespace WorldServer.Managers
                 requester.SendClientMessage(names.ToString());
         }
 
+        // This checks if a name is allowed.
         public static bool AllowName(string name)
         {
             lock (BannedNameRecords)
@@ -1119,6 +1163,9 @@ namespace WorldServer.Managers
 
         #region Guilds
 
+        // This section handles loading all the guild information from the database.
+
+        // Loads all guild alliances.
         public static void LoadAlliances()
         {
             Log.Info("LoadGuildAllianes", "Loading guild Allianes...");
@@ -1135,6 +1182,7 @@ namespace WorldServer.Managers
             LoadGuilds();
         }
 
+        // Loads all guilds and their related information (members, ranks, logs, etc.).
         public static void LoadGuilds()
         {
             Log.Info("LoadGuilds", "Loading guilds...");
@@ -1315,6 +1363,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // Changes a guild's name.
         public static bool ChangeGuildName(Guild_info guild, string newName)
         {
             guild.Name = newName;
@@ -1323,6 +1372,7 @@ namespace WorldServer.Managers
             return true;
         }
 
+        // Deletes a guild.
         public static bool DeleteGuild(Guild_info guild)
         {
             Database.DeleteObject(guild);
@@ -1346,8 +1396,12 @@ namespace WorldServer.Managers
 
         #region CharacterItems
 
+        // This section manages all the items in the players' inventories.
+
+        // This holds all the items for every character loaded in memory.
         public static Dictionary<uint, List<CharacterItem>> CharItems = new Dictionary<uint, List<CharacterItem>>();
 
+        // This loads all character items from the database when the server starts.
         [LoadingFunction(true)]
         public static void LoadItems()
         {
@@ -1378,6 +1432,7 @@ namespace WorldServer.Managers
             Log.Success("LoadItems", $"{myCount} inventory items {(Core.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
         }
 
+        // Creates a new item in the database and in memory.
         public static void CreateItem(CharacterItem item)
         {
             LoadItem(item);
@@ -1385,6 +1440,7 @@ namespace WorldServer.Managers
             Database.ForceSave();
         }
 
+        // Loads a single item into the in-memory cache.
         public static void LoadItem(CharacterItem charItem)
         {
             lock (CharItems)
@@ -1396,6 +1452,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This gets all the items for a specific character.
         public static List<CharacterItem> GetItemsForCharacter(Character chara)
         {
             try
@@ -1466,6 +1523,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // Saves all the items for a character.
         public static void SaveItems(uint characterId, List<Item> oldItems)
         {
             List<CharacterItem> newItems = new List<CharacterItem>();
@@ -1480,6 +1538,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // Deletes a single item from the database and memory.
         public static void DeleteItem(CharacterItem itm)
         {
             lock (CharItems)
@@ -1491,6 +1550,7 @@ namespace WorldServer.Managers
             Database.DeleteObject(itm);
         }
 
+        // Removes all items belonging to a character.
         public static void RemoveItemsFromCharacterId(uint characterId, bool excludeBook = false)
         {
             lock (CharItems)
@@ -1524,13 +1584,17 @@ namespace WorldServer.Managers
 
         #region CharacterMail
 
+        // This section manages the in-game mail system.
+
         private static int _maxMailGuid = 1;
 
+        // Generates a new unique ID for a piece of mail.
         public static int GenerateMailGuid()
         {
             return Interlocked.Increment(ref _maxMailGuid);
         }
 
+        // Loads the total number of mail items from the database at startup.
         [LoadingFunction(true)]
         public static void LoadMailCount()
         {
@@ -1571,6 +1635,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This adds a new mail to the game.
         public static void AddMail(Character_mail mail)
         {
             Character character = GetCharacter(mail.CharacterId, false);
@@ -1594,6 +1659,7 @@ namespace WorldServer.Managers
             receiver?.MlInterface?.AddMail(mail);
         }
 
+        // Deletes a piece of mail.
         public static void DeleteMail(Character_mail mail)
         {
             Chars[mail.CharacterId].Mails.Remove(mail);
@@ -1603,6 +1669,7 @@ namespace WorldServer.Managers
             receiver?.MlInterface?.RemoveMail(mail);
         }
 
+        // Removes all mail for a specific character.
         public static void RemoveMailFromCharacter(Character chara)
         {
             if (chara.Mails == null)
@@ -1618,8 +1685,11 @@ namespace WorldServer.Managers
 
         #region Support Tickets
 
+        // This section handles player support tickets.
+
         public static List<Bug_report> _report = new List<Bug_report>();
 
+        // Loads all support tickets from the database.
         [LoadingFunction(true)]
         public static void LoadTickets()
         {
@@ -1631,6 +1701,7 @@ namespace WorldServer.Managers
             Log.Success("CharacterMgr", "Loaded " + _report.Count + " Support Tickets");
         }
 
+        // Gets a specific support ticket by its ID.
         public static Bug_report GetReport(string reportID)
         {
             var ticket = _report.Find(x => x.ObjectId == reportID);
@@ -1643,6 +1714,7 @@ namespace WorldServer.Managers
 
         #endregion Support Tickets
 
+        // Removes all quests from a character.
         public static void RemoveQuestsFromCharacter(Character chara)
         {
             if (chara.Quests == null)
@@ -1653,6 +1725,7 @@ namespace WorldServer.Managers
             chara.Quests.Clear();
         }
 
+        // Removes all Tome of Knowledge entries from a character.
         public static void RemoveToKsFromCharacter(Character chara)
         {
             if (chara.Toks == null)
@@ -1663,6 +1736,7 @@ namespace WorldServer.Managers
             chara.Toks.Clear();
         }
 
+        // Removes all Tome of Knowledge kill entries from a character.
         public static void RemoveToKKillsFromCharacter(Character chara)
         {
             if (chara.TokKills == null)

@@ -3,10 +3,13 @@ using System;
 
 namespace Common
 {
+    // This tells the computer that this class represents a table in the database for game servers (realms).
+    // A realm is like a separate world where players can play.
     [DataTable(PreCache = false, TableName = "realms", DatabaseName = "Accounts", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Realm : DataObject
     {
+        // These are all the different pieces of information about a realm.
         private string _Name;
         private string _Language;
         private string _Adresse;
@@ -29,9 +32,11 @@ namespace Common
         private string _Rp = "1";
         private string _Status = "0";
 
+        // This is the unique number for each realm.
         [PrimaryKey]
         public byte RealmId { get; set; }
 
+        // This is the name of the realm, like "Averland" or "Badlands".
         [DataElement(Varchar = 255)]
         public string Name
         {
@@ -39,6 +44,7 @@ namespace Common
             set { _Name = value; Dirty = true; }
         }
 
+        // This is the language of the realm, like "English" or "German".
         [DataElement(Varchar = 255)]
         public string Language
         {
@@ -46,6 +52,7 @@ namespace Common
             set { _Language = value; Dirty = true; }
         }
 
+        // This is the address of the realm on the internet.
         [DataElement(Varchar = 255)]
         public string Adresse
         {
@@ -53,6 +60,7 @@ namespace Common
             set { _Adresse = value; Dirty = true; }
         }
 
+        // This is the port number that players connect to.
         [DataElement(AllowDbNull = false)]
         public int Port
         {
@@ -60,6 +68,7 @@ namespace Common
             set { _Port = value; Dirty = true; }
         }
 
+        // This says if trial accounts are allowed on this realm.
         [DataElement(Varchar = 255)]
         public string AllowTrials
         {
@@ -67,6 +76,7 @@ namespace Common
             set { _Allow_trials = value; Dirty = true; }
         }
 
+        // This says if character transfers are available on this realm.
         [DataElement(Varchar = 255)]
         public string CharfxerAvailable
         {
@@ -74,6 +84,7 @@ namespace Common
             set { _Charfxeravailable = value; Dirty = true; }
         }
 
+        // This says if this is a legacy realm.
         [DataElement(Varchar = 255)]
         public string Legacy
         {
@@ -81,6 +92,7 @@ namespace Common
             set { _Legacy = value; Dirty = true; }
         }
 
+        // This is the bonus that Destruction players get on this realm.
         [DataElement(Varchar = 255)]
         public string BonusDestruction
         {
@@ -88,6 +100,7 @@ namespace Common
             set { _Bonus_destruction = value; Dirty = true; }
         }
 
+        // This is the bonus that Order players get on this realm.
         [DataElement(Varchar = 255)]
         public string BonusOrder
         {
@@ -95,6 +108,7 @@ namespace Common
             set { _Bonus_order = value; Dirty = true; }
         }
 
+        // This says if players should be redirected to another realm.
         [DataElement(Varchar = 255)]
         public string Redirect
         {
@@ -102,6 +116,7 @@ namespace Common
             set { _Redirect = value; Dirty = true; }
         }
 
+        // This is the region of the realm, like "North America" or "Europe".
         [DataElement(Varchar = 255)]
         public string Region
         {
@@ -109,6 +124,7 @@ namespace Common
             set { _Region = value; Dirty = true; }
         }
 
+        // This says if the realm is retired and no longer in use.
         [DataElement(Varchar = 255)]
         public string Retired
         {
@@ -116,6 +132,7 @@ namespace Common
             set { _Retired = value; Dirty = true; }
         }
 
+        // This is the number of Destruction players waiting to get into the realm.
         [DataElement(Varchar = 255)]
         public string WaitingDestruction
         {
@@ -123,6 +140,7 @@ namespace Common
             set { _Waiting_destruction = value; Dirty = true; }
         }
 
+        // This is the number of Order players waiting to get into the realm.
         [DataElement(Varchar = 255)]
         public string WaitingOrder
         {
@@ -130,6 +148,7 @@ namespace Common
             set { _Waiting_order = value; Dirty = true; }
         }
 
+        // This is how crowded the realm is with Destruction players.
         [DataElement(Varchar = 255)]
         public string DensityDestruction
         {
@@ -137,6 +156,7 @@ namespace Common
             set { _Density_destruction = value; Dirty = true; }
         }
 
+        // This is how crowded the realm is with Order players.
         [DataElement(Varchar = 255)]
         public string DensityOrder
         {
@@ -144,6 +164,7 @@ namespace Common
             set { _Density_order = value; Dirty = true; }
         }
 
+        // This says if Open Realm vs. Realm is enabled on this realm.
         [DataElement(Varchar = 255)]
         public string OpenRvr
         {
@@ -151,6 +172,7 @@ namespace Common
             set { _Openrvr = value; Dirty = true; }
         }
 
+        // This says if this is a role-playing realm.
         [DataElement(Varchar = 255)]
         public string Rp
         {
@@ -158,6 +180,7 @@ namespace Common
             set { _Rp = value; Dirty = true; }
         }
 
+        // This is the status of the realm, like "Online" or "Offline".
         [DataElement(Varchar = 255)]
         public string Status
         {
@@ -165,38 +188,49 @@ namespace Common
             set { _Status = value; Dirty = true; }
         }
 
+        // This says if the realm is online (1) or offline (0).
         [DataElement(AllowDbNull = false)]
         public byte Online { get; set; }
 
+        // This is the last time the realm was online.
         [DataElement]
         public DateTime OnlineDate { get; set; }
 
+        // This is the number of players currently online on the realm.
         [DataElement]
         public uint OnlinePlayers { get; set; }
 
+        // This is the number of Order players online.
         [DataElement]
         public uint OrderCount { get; set; }
 
+        // This is the number of Destruction players online.
         [DataElement]
         public uint DestructionCount { get; set; }
 
+        // This is the maximum number of players allowed on the realm.
         [DataElement]
         public uint MaxPlayers { get; set; }
 
+        // This is the total number of Order characters on the realm.
         [DataElement]
         public uint OrderCharacters { get; set; }
 
+        // This is the total number of Destruction characters on the realm.
         [DataElement]
         public uint DestruCharacters { get; set; }
 
         private long _nextRotationTime;
 
+        // This is the time when the scenarios (mini-games) will change.
         [DataElement]
         public long NextRotationTime { get { return _nextRotationTime; } set { _nextRotationTime = value; Dirty = true; } }
 
+        // This is the special password that Game Masters can use to log in.
         [DataElement]
         public string MasterPassword { get; set; }
 
+        // This is the time when the realm was last started.
         [DataElement]
         public int BootTime { get; set; }
     }

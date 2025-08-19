@@ -29,60 +29,75 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers
 {
+    // This is the World Manager. It's like the brain of the entire game world.
+    // It knows about everything that's happening, from the different lands (regions) and areas (zones)
+    // to the players, monsters, and big battles. It starts up all the different parts of the game
+    // and makes sure they all work together.
     [Service(
-        typeof(AnnounceService),
-        typeof(BattleFrontService),
-        typeof(BountyService),
-        typeof(CellSpawnService),
-        typeof(ChapterService),
-        typeof(CreatureService),
-        typeof(DyeService),
-        typeof(GameObjectService),
-        typeof(GuildService),
-        typeof(ItemService),
-        typeof(PQuestService),
-        typeof(QuestService),
-        typeof(RallyPointService),
-        typeof(RVRProgressionService),
-        typeof(RewardService),
-        typeof(ScenarioService),
-        typeof(TokService),
-        typeof(VendorService),
-        typeof(WaypointService),
-        typeof(XpRenownService),
-        typeof(ZoneService))]
+        typeof(AnnounceService), // For sending messages to everyone
+        typeof(BattleFrontService), // For the big Realm vs. Realm battles
+        typeof(BountyService), // For putting bounties on players
+        typeof(CellSpawnService), // For making monsters and objects appear in the world
+        typeof(ChapterService), // For the story chapters in each area
+        typeof(CreatureService), // For all the monsters and animals
+        typeof(DyeService), // For changing the color of your armor
+        typeof(GameObjectService), // For things you can interact with, like doors and chests
+        typeof(GuildService), // For player guilds
+        typeof(ItemService), // For all the items in the game
+        typeof(PQuestService), // For Public Quests
+        typeof(QuestService), // For regular quests
+        typeof(RallyPointService), // For rally points that let you respawn closer to the action
+        typeof(RVRProgressionService), // For tracking the progress of the big war
+        typeof(RewardService), // For giving out rewards
+        typeof(ScenarioService), // For the small, instanced battles
+        typeof(TokService), // For the "Tome of Knowledge" achievements
+        typeof(VendorService), // For the shopkeepers
+        typeof(WaypointService), // For flight paths
+        typeof(XpRenownService), // For experience and renown points
+        typeof(ZoneService))] // For all the different zones in the world
     public static class WorldMgr
     {
+        // This is our connection to the world database, where all the information about the world is stored.
         public static IObjectDatabase Database;
+        // These are special "threads" that run in the background to keep the world and player groups updated.
         private static Thread _worldThread;
         private static Thread _groupThread;
+        // This is a switch to tell the threads to keep running or to stop.
         private static bool _running = true;
+        // This decides which big battle pairing is active when the server starts.
         public static long StartingPairing;
 
-        // DEV - Development mode, PRD - Production Mode.
+        // This tells us if the server is in "Developer" mode or "Production" (live) mode.
         public static string ServerMode;
 
+        // These manage the big campaigns for high-level and low-level players.
         public static UpperTierCampaignManager UpperTierCampaignManager;
         public static LowerTierCampaignManager LowerTierCampaignManager;
+        // This is for writing messages to the server's log file.
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        // This keeps track of the big RvR areas.
         public static RVRArea RVRArea = new RVRArea();
-
-        //Log.Success("StartingPairing: ", StartingPairing.ToString());
 
         #region Region
 
+        // This is a list of all the big regions in our game world.
         public static List<RegionMgr> _Regions = new List<RegionMgr>();
+        // This helps us safely add or remove regions from the list without causing problems.
         private static ReaderWriterLockSlim RegionsRWLock = new ReaderWriterLockSlim();
 
+        // This gets a specific region from our list. If it doesn't exist, it can create a new one.
         public static RegionMgr GetRegion(ushort RegionId, bool Create, string name = "")
         {
+            // We safely read from the list to find the region.
             RegionsRWLock.EnterReadLock();
             RegionMgr Mgr = _Regions.Find(region => region != null && region.RegionId == RegionId);
             RegionsRWLock.ExitReadLock();
 
+            // If we didn't find it and we're allowed to create it, we make a new one.
             if (Mgr == null && Create)
             {
                 Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name, new ApocCommunications());
+                // We safely write to the list to add the new region.
                 RegionsRWLock.EnterWriteLock();
                 _Regions.Add(Mgr);
                 RegionsRWLock.ExitWriteLock();
@@ -91,12 +106,15 @@ namespace WorldServer.Managers
             return Mgr;
         }
 
+        // This stops the entire world. It's called when the server is shutting down.
         public static void Stop()
         {
             Log.Success("WorldMgr", "Stop");
+            // It tells every region to stop.
             foreach (RegionMgr Mgr in _Regions)
                 Mgr.Stop();
 
+            // It also stops the scenarios and the background threads.
             ScenarioMgr.Stop();
             _running = false;
         }
@@ -105,16 +123,19 @@ namespace WorldServer.Managers
 
         #region Zones
 
+        // This figures out where a player should respawn when they die.
         public static SpawnPoint GetZoneRespawn(ushort zoneId, byte realm, Player player)
         {
+            // If we don't know who the player is, we use the default respawn point for their realm.
             if (player == null)
             {
                 return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
             }
 
+            // If the player is in a specific area...
             if (player.CurrentArea != null)
             {
-                // If player is in a Public Quest
+                // If the player is in a Public Quest, they respawn at the PQ's special respawn point.
                 if (player.QtsInterface.PublicQuest != null)
                 {
                     var pqRespawns = ZoneService.GetZoneRespawns(zoneId);
@@ -125,7 +146,7 @@ namespace WorldServer.Managers
                             return new SpawnPoint(res);
                 }
 
-                // Scenario respawn - random if > 1
+                // If the player is in a Scenario, they respawn at one of the scenario's starting points.
                 if (player.ScnInterface.Scenario != null)
                 {
                     List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
@@ -141,13 +162,14 @@ namespace WorldServer.Managers
                     return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
                 }
 
-                // Keep respawn.
+                // If the player is near a Keep they control, they might respawn there.
                 if (player.CurrentKeep != null)
                 {
                     _logger.Debug($"Player {player.Name} is attached to keep {player.CurrentKeep.Name} - using Keep respawn");
                     return player.CurrentKeep.GetSpawnPoint(player);
                 }
 
+                // Otherwise, we use the respawn point defined for their current area.
                 ushort respawnId = realm == 1
                     ? player.CurrentArea.OrderRespawnId
                     : player.CurrentArea.DestroRespawnId;
@@ -168,7 +190,7 @@ namespace WorldServer.Managers
             }
             else
             {
-                // World Spawns
+                // If we don't know the player's area, we find the closest valid respawn point to where they died.
                 List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
                 float lastDistance = float.MaxValue;
 
@@ -194,6 +216,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This gets a list of all the flight masters (taxis) that a player can use.
         public static List<Zone_Taxi> GetTaxis(Player Plr)
         {
             List<Zone_Taxi> L = new List<Zone_Taxi>();
@@ -244,6 +267,7 @@ namespace WorldServer.Managers
 
         #region Xp / Renown
 
+        // This calculates how much experience a player should get for defeating a monster or another player.
         public static uint GenerateXPCount(Player plr, Unit victim)
         {
             uint KLvl = plr.AdjustedLevel;
@@ -276,6 +300,7 @@ namespace WorldServer.Managers
             return XP;
         }
 
+        // This gives the calculated experience to the player or their group.
         public static void GenerateXP(Player killer, Unit victim, float bonusMod)
         {
             _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} Bonus : {bonusMod}");
@@ -295,6 +320,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This calculates how much renown a player should get for defeating another player.
         public static uint GenerateRenownCount(Player killer, Player victim)
         {
             if (killer == null || victim == null || killer == victim)
@@ -312,6 +338,7 @@ namespace WorldServer.Managers
 
         #region items
 
+        // This sends the list of items from a special "dynamic" vendor to a player.
         public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
         {
             if (plr == null)
@@ -334,6 +361,7 @@ namespace WorldServer.Managers
             plr.ItmInterface.SendBuyBack();
         }
 
+        // This sends the list of items from a regular shopkeeper to a player.
         public static void SendVendor(Player Plr, ushort id)
         {
             if (Plr == null)
@@ -368,6 +396,7 @@ namespace WorldServer.Managers
             Plr.ItmInterface.SendBuyBack();
         }
 
+        // This sends one page of a vendor's items to the player.
         public static void SendVendorPage(Player Plr, ref List<Vendor_items> items, byte Count, byte Page)
         {
             Count = (byte)Math.Min(Count, items.Count);
@@ -420,6 +449,7 @@ namespace WorldServer.Managers
             items.RemoveRange(0, Count);
         }
 
+        // This is called when a player tries to buy an item from a shopkeeper.
         public static void BuyItemVendor(Player Plr, InteractMenu Menu, ushort id)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
@@ -475,6 +505,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This handles buying items from the special Honor vendor.
         public static void BuyItemHonorDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
@@ -530,6 +561,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This handles buying items from the special Realm Captain vendor.
         public static void BuyItemRealmCaptainDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
@@ -555,9 +587,10 @@ namespace WorldServer.Managers
 
         #region Quests
 
-        // TODO move that to QuestService
+        // This sets up the details for a quest objective.
         public static void GenerateObjective(Quest_Objectives Obj, Quest Q)
         {
+            // It figures out what the objective is about based on its type.
             switch ((Objective_Type)Obj.ObjType)
             {
                 case Objective_Type.QUEST_KILL_PLAYERS:
@@ -567,6 +600,7 @@ namespace WorldServer.Managers
                     }
                     break;
 
+                // If it's a "talk to someone" quest, it finds that person's name.
                 case Objective_Type.QUEST_SPEAK_TO:
                     {
                         uint ObjID = 0;
@@ -607,6 +641,7 @@ namespace WorldServer.Managers
                     }
                     break;
 
+                // For example, if it's a "kill mob" quest, it finds the creature's name.
                 case Objective_Type.QUEST_KILL_MOB:
                     {
                         uint ObjID = 0;
@@ -771,11 +806,14 @@ namespace WorldServer.Managers
 
         #region Relation
 
+        // This is a big function that runs when the server starts. It connects all the different
+        // pieces of game data together. It's like building a giant web of information.
         [LoadingFunction(false)]
         public static void LoadRelation()
         {
             Log.Success("LoadRelation", "Loading Relations");
 
+            // It figures out which items belong to which realm (Order or Destruction).
             foreach (Item_Info info in ItemService._Item_Info.Values)
             {
                 if (info.Career != 0)
@@ -797,6 +835,7 @@ namespace WorldServer.Managers
                 }
             }
 
+            // It loads information about chapters, public quests, and quests and links them all together.
             LoadChapters();
             LoadPublicQuests();
             LoadQuestsRelation();
@@ -836,6 +875,7 @@ namespace WorldServer.Managers
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 
+        // This loads all the chapter information and places it in the correct cells of the world map.
         public static void LoadChapters()
         {
             Log.Success("LoadChapters", "Loading Zone from Chapters");
@@ -915,6 +955,7 @@ namespace WorldServer.Managers
                 _logger.Warn("LoadChapters", "[" + InvalidChapters + "] Invalid Chapter(s)");
         }
 
+        // This loads all the Public Quest information.
         public static void LoadPublicQuests()
         {
             Zone_Info Zone = null;
@@ -964,6 +1005,7 @@ namespace WorldServer.Managers
                 Log.Info("Skipped PQs", string.Join(", ", skippedPQs));
         }
 
+        // This connects quests to the creatures that start or finish them.
         public static void LoadQuestsRelation()
         {
             QuestService.LoadQuestCreatureStarter();
@@ -1070,13 +1112,15 @@ namespace WorldServer.Managers
         #endregion Relation
 
         #region Scripts
-        
+
+        // These hold all the special game scripts.
         public static Dictionary<string, Type> LocalScripts = new Dictionary<string, Type>();
         public static Dictionary<string, AGeneralScript> GlobalScripts = new Dictionary<string, AGeneralScript>();
         public static Dictionary<uint, Type> CreatureScripts = new Dictionary<uint, Type>();
         public static Dictionary<uint, Type> GameObjectScripts = new Dictionary<uint, Type>();
         public static ScriptsInterface GeneralScripts;
 
+        // This loads all the scripts from the code when the server starts.
         public static void LoadScripts(bool Reload)
         {
             GeneralScripts = new ScriptsInterface();
@@ -1163,6 +1207,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This gets a specific script to attach to a game object.
         public static AGeneralScript GetScript(Object Obj, string ScriptName)
         {
             if (!string.IsNullOrEmpty(ScriptName))
@@ -1198,6 +1243,7 @@ namespace WorldServer.Managers
             return null;
         }
 
+        // This runs the update logic for all the global scripts.
         public static void UpdateScripts(long Tick)
         {
             GeneralScripts.Update(Tick);
@@ -1207,16 +1253,18 @@ namespace WorldServer.Managers
 
         #region Scenarios
 
+        // These manage the small battles (scenarios) and the dungeons (instances).
         public static ScenarioMgr ScenarioMgr;
-
         public static InstanceMgr InstanceMgr;
 
+        // This starts the scenario manager.
         [LoadingFunction(true)]
         public static void StartScenarioMgr()
         {
             ScenarioMgr = new ScenarioMgr(ScenarioService.ActiveScenarios);
         }
 
+        // This starts the instance manager.
         [LoadingFunction(true)]
         public static void StartInstanceMgr()
         {
@@ -1239,6 +1287,7 @@ namespace WorldServer.Managers
 
         #region Campaign
 
+        // This starts the background thread that updates the world state.
         public static void WorldUpdateStart()
         {
             Log.Debug("WorldMgr", "Starting World Monitor...");
@@ -1247,6 +1296,7 @@ namespace WorldServer.Managers
             _worldThread.Start();
         }
 
+        // This starts the background thread that updates player groups.
         public static void GroupUpdateStart()
         {
             Log.Debug("WorldMgr", "Starting Group Updater...");
@@ -1255,6 +1305,7 @@ namespace WorldServer.Managers
             _groupThread.Start();
         }
 
+        // This gets a list of all the zones where fighting is currently happening.
         public static Dictionary<int, int> GetZonesFightLevel()
         {
             var level = new Dictionary<int, int>();
@@ -1327,6 +1378,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This is the main loop for the world update thread.
         private static void WorldUpdate()
         {
             while (_running)
@@ -1347,6 +1399,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This is the main loop for the group update thread.
         private static void GroupUpdate()
         {
             while (_running)
@@ -1404,10 +1457,12 @@ namespace WorldServer.Managers
 
         #endregion Campaign
 
-        #region Keep registry, to remove it's static bullshit
+        #region Keep registry
 
+        // This holds a list of all the keeps in the game world.
         public static Dictionary<uint, BattleFrontKeep> _Keeps = new Dictionary<uint, BattleFrontKeep>();
 
+        // This sends the status of all keeps to a player.
         public static void SendKeepStatus(Player Plr)
         {
             foreach (List<Keep_Info> list in BattleFrontService._KeepInfos.Values)
@@ -1436,10 +1491,11 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion Keep registry, to remove it's static bullshit
+        #endregion Keep registry
 
         #region Logging
 
+        // This resets the packet logging setting for all accounts when the server starts.
         [LoadingFunction(true)]
         public static void ResetPacketLogSettings()
         {
@@ -1450,6 +1506,7 @@ namespace WorldServer.Managers
 
         #endregion Logging
 
+        // This attaches the big RvR campaigns to the correct regions.
         public static void AttachCampaignsToRegions()
         {
             foreach (var regionMgr in _Regions)
@@ -1487,6 +1544,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This loads the battlefield objectives for a specific region.
         public static List<BattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
@@ -1654,6 +1712,7 @@ namespace WorldServer.Managers
             }
         }
 
+        // This handles buying items from the Black Market vendor.
         public static void BuyItemBlackMarketVendor(Player plr, InteractMenu menu, List<Vendor_items> items)
         {
             int Num = (menu.Page * VendorService.MAX_ITEM_PAGE) + menu.Num;
