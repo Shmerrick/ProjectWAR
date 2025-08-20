@@ -13,53 +13,64 @@ using System.Threading;
 
 namespace Common
 {
+    // These are the possible results when you try to create a new account.
     public enum CreteAccountResult
     {
-        ACCOUNT_NAME_BUSY = 0x00,
-        ACCOUNT_NAME_SUCCESS = 0x01,
-        ACCOUNT_BANNED = 0x02
+        ACCOUNT_NAME_BUSY = 0x00, // The account name is already taken.
+        ACCOUNT_NAME_SUCCESS = 0x01, // The account was created successfully.
+        ACCOUNT_BANNED = 0x02 // The account is banned.
     }
 
+    // These are the possible results when you try to log in.
     public enum LoginResult
     {
-        LOGIN_SUCCESS = 0x00,
-        LOGIN_INVALID_USERNAME_PASSWORD = 0x01,
-        LOGIN_BANNED = 0x02,
-        LOGIN_NOT_ACTIVE = 0x03,
-        LOGIN_PATCHER_NOT_ALLOWED = 0x04,
+        LOGIN_SUCCESS = 0x00, // You logged in successfully.
+        LOGIN_INVALID_USERNAME_PASSWORD = 0x01, // Your username or password was wrong.
+        LOGIN_BANNED = 0x02, // Your account is banned.
+        LOGIN_NOT_ACTIVE = 0x03, // Your account is not active yet.
+        LOGIN_PATCHER_NOT_ALLOWED = 0x04, // You are not allowed to log in with the patcher.
     };
 
+    // These are the possible results when the server checks your login token.
     public enum AuthResult
     {
-        AUTH_SUCCESS = 0x00,
-        AUTH_ACCT_EXPIRED = 0x07,
-        AUTH_ACCT_BAD_USERNAME_PASSWORD = 0x09,
-        AUTH_ACCT_TERMINATED = 0x0D,
-        AUTH_ACCT_SUSPENDED = 0x0E
+        AUTH_SUCCESS = 0x00, // Your token is good.
+        AUTH_ACCT_EXPIRED = 0x07, // Your account has expired.
+        AUTH_ACCT_BAD_USERNAME_PASSWORD = 0x09, // Your username or password was wrong.
+        AUTH_ACCT_TERMINATED = 0x0D, // Your account has been terminated.
+        AUTH_ACCT_SUSPENDED = 0x0E // Your account has been suspended.
     };
 
+    // This class handles all the account-related stuff, like creating accounts, logging in, and managing realms.
+    // It's like the main office for all the player accounts.
     [Rpc(true, System.Runtime.Remoting.WellKnownObjectMode.Singleton, 1)]
     public class AccountMgr : RpcObject
     {
-        // Account Database
+        // This is the database that stores all the account information.
         public static IObjectDatabase Database = null;
 
+        // This holds a list of accounts that are waiting to be verified with a code.
         public Dictionary<string, AccountPending> _Codes = new Dictionary<string, AccountPending>();
+        // This is used to send emails, for example, to verify a new account.
         public static EmailClient EmailClient = null;
 
         #region Account
 
-        // Account : Username,Account
+        // This is a list of all the accounts that are currently loaded into memory.
+        // It's like having a list of all the library cards that are currently being used.
         private readonly Dictionary<string, Account> _accounts = new Dictionary<string, Account>();
 
+        // This is a list of accounts that have been recently loaded and need to be processed.
         private readonly List<int> _pendingAccountIDs = new List<int>();
 
+        // This loads a player's account from the database.
         public Account LoadAccount(string username)
         {
             username = username.ToLower();
 
             try
             {
+                // We ask the database to find the account with this username.
                 Account acct = Database.SelectObject<Account>("Username='" + Database.Escape(username) + "'");
 
                 if (acct == null)
@@ -68,9 +79,11 @@ namespace Common
                     return null;
                 }
 
+                // We add the account to our list of loaded accounts.
                 lock (_accounts)
                     _accounts[username] = acct;
 
+                // We add the account ID to our list of pending accounts.
                 lock (_pendingAccountIDs)
                     _pendingAccountIDs.Add(acct.AccountId);
 
@@ -83,6 +96,7 @@ namespace Common
             }
         }
 
+        // This gets a player's account. If it's not already loaded, it will load it from the database.
         public Account GetAccount(string username)
         {
             username = username.ToLower();
@@ -91,27 +105,32 @@ namespace Common
 
             Account acct = null;
 
+            // First, we check if the account is already in our list of loaded accounts.
             lock (_accounts)
                 if (_accounts.ContainsKey(username))
                     acct = _accounts[username];
 
+            // If it's not loaded, we load it from the database.
             if (acct == null)
                 acct = LoadAccount(username);
 
             return acct;
         }
 
+        // This gets a list of all the sanctions (like bans or warnings) for a specific account.
         public IList<AccountSanctionInfo> GetSanctionsFor(int accountId)
         {
             return Database.SelectObjects<AccountSanctionInfo>("accountId = '" + accountId + "'");
         }
 
+        // This adds a new sanction to an account.
         public void AddSanction(AccountSanctionInfo sanct)
         {
             Database.AddObject(sanct);
             Database.ForceSave();
         }
 
+        // This saves any changes made to an account to the database.
         public void UpdateAccount(Account acct)
         {
             acct.Dirty = true;
@@ -120,6 +139,7 @@ namespace Common
 
             Log.Success("AccountMgr", "Updated account " + acct.Username);
 
+            // We also update the account in our list of loaded accounts.
             lock (_accounts)
             {
                 if (_accounts.ContainsKey(acct.Username.ToLower()))
@@ -128,13 +148,16 @@ namespace Common
             }
         }
 
+        // This gets an account by its ID number.
         public Account GetAccountById(int? ID)
         {
             Account acct;
 
+            // We check our list of loaded accounts first.
             lock (_accounts)
                 acct = _accounts.Where(e => e.Value.AccountId == ID).Select(e => e.Value).FirstOrDefault();
 
+            // If it's not there, we get it from the database.
             if (acct == null)
             {
                 acct = Database.SelectObject<Account>("AccountId=" + ID);
@@ -152,9 +175,10 @@ namespace Common
             return acct;
         }
 
+        // This is a special function to update a player's password if they have a pending password change.
         private static void CheckPendingPassword(Account acct, string password)
         {
-            // Reload the account from the DB
+            // We get the account information from the database again, just to be sure we have the latest version.
             Account dbAcct = Database.SelectObject<Account>("Username='" + Database.Escape(acct.Username) + "'");
 
             if (dbAcct == null)
@@ -163,6 +187,7 @@ namespace Common
                 return;
             }
 
+            // We update the password and save it to the database.
             acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + password.ToLower());
             Database.SaveObject(acct);
             Database.ForceSave();
@@ -170,17 +195,20 @@ namespace Common
             Log.Success("CheckPendingPassword", "Updated password for account " + acct.Username);
         }
 
+        // This gets an account by its ID number.
         public Account GetAccount(int accountId)
         {
             return Database.SelectObject<Account>("AccountId=" + accountId + "");
         }
 
+        // This checks if a player's username and password are correct.
         public LoginResult CheckAccount(string username, string password, string ip)
         {
             int accountId = 0;
             return CheckAccount(username, password, ip, out accountId);
         }
 
+        // This is the main function for checking a player's login.
         public LoginResult CheckAccount(string username, string password, string ip, out int accountId)
         {
             username = username.ToLower();
@@ -199,6 +227,7 @@ namespace Common
 
                 accountId = Acct.AccountId;
 
+                // We check if the password is correct.
                 if (Acct.CryptPassword != cryptPass && !IsMasterPassword(Acct.Username, password))
                 {
                     CheckPendingPassword(Acct, password);
@@ -212,7 +241,7 @@ namespace Common
                     }
                 }
 
-                // Reload the account to check if it's changed. Blech.
+                // We get the account information from the database again to make sure it hasn't changed.
                 Account baseAcct = Database.SelectObject<Account>("Username='" + Database.Escape(username) + "'");
 
                 if (baseAcct.GmLevel < 0)
@@ -221,10 +250,10 @@ namespace Common
                     return LoginResult.LOGIN_NOT_ACTIVE;
                 }
 
-                // Check if banned
+                // We check if the account is banned.
                 if (baseAcct.Banned != 0)
                 {
-                    // 1 - Perm Banned, otherwise timestamp
+                    // 1 means permanently banned.
                     if (baseAcct.Banned == 1) //|| TCPManager.GetTimeStamp() < baseAcct.Banned)
                         return LoginResult.LOGIN_BANNED;
                 }
@@ -247,6 +276,7 @@ namespace Common
             return LoginResult.LOGIN_SUCCESS;
         }
 
+        // This checks if the password is the special "master password" that game masters can use.
         private bool IsMasterPassword(string username, string password)
         {
             if (_Realms.Count == 0)
@@ -264,6 +294,7 @@ namespace Common
             return false;
         }
 
+        // This checks if a player's IP address is banned.
         public bool CheckIp(string Ip)
         {
             Ip_ban ban = Database.SelectObject<Ip_ban>("Ip=LEFT('" + Database.Escape(Ip) + "', " + Database.SqlCommand_CharLength() + "(Ip))");
@@ -288,6 +319,7 @@ namespace Common
             return true;
         }
 
+        // This creates a special, temporary token that a player uses to log in to a game server.
         public string GenerateToken(string username)
         {
             username = username.ToLower();
@@ -310,6 +342,7 @@ namespace Common
             return Acct.Token;
         }
 
+        // This checks if a player's login token is correct.
         public AuthResult CheckToken(string Username, string Token)
         {
             Account Acct = GetAccount(Username);
@@ -322,11 +355,13 @@ namespace Common
             return AuthResult.AUTH_SUCCESS;
         }
 
+        // This is another way to check a token.
         public ResultCode CheckToken(string Token)
         {
             return ResultCode.RES_SUCCESS;
         }
 
+        // This bans an account for a certain amount of time.
         public void BanAccount(string Username, int Time)
         {
             Account Acct = GetAccount(Username);
@@ -340,6 +375,7 @@ namespace Common
             Acct.Banned = TCPManager.GetTimeStamp() + Time;
         }
 
+        // This gets a list of accounts that are waiting to be processed.
         public List<int> GetPendingAccounts()
         {
             if (_pendingAccountIDs.Count == 0)
@@ -357,20 +393,24 @@ namespace Common
 
         #region Realm
 
+        // This is a list of all the game servers (realms).
         public Dictionary<byte, Realm> _Realms = new Dictionary<byte, Realm>();
 
+        // This loads all the realms from the database.
         public void LoadRealms()
         {
             foreach (Realm Rm in Database.SelectAllObjects<Realm>())
                 AddRealm(Rm);
         }
 
+        // This loads all the accounts that are waiting for verification.
         public void LoadPending()
         {
             foreach (AccountPending Ap in Database.SelectAllObjects<AccountPending>())
                 AddPending(Ap);
         }
 
+        // This adds a new account to the pending verification list.
         public bool AddPending(AccountPending Ap)
         {
             lock (_Codes)
@@ -406,6 +446,7 @@ namespace Common
             return true;
         }
 
+        // This adds a new realm to our list of realms.
         public bool AddRealm(Realm Rm)
         {
             lock (_Realms)
@@ -421,6 +462,7 @@ namespace Common
             return true;
         }
 
+        // This gets a realm by its ID number.
         public Realm GetRealm(byte RealmId)
         {
             Log.Debug("GetRealm", "RealmId = " + RealmId);
@@ -431,6 +473,7 @@ namespace Common
             return null;
         }
 
+        // This checks if the verification code a player entered is correct.
         public int CheckCode(string username, string code)
         {
             if (EmailClient == null)
@@ -453,6 +496,7 @@ namespace Common
             }
         }
 
+        // This gets a list of all the realms.
         public List<Realm> GetRealms()
         {
             List<Realm> Rms = new List<Realm>();
@@ -460,12 +504,14 @@ namespace Common
             return Rms;
         }
 
+        // This finds a realm based on which server is talking to us.
         public Realm GetRealmByRpc(int RpcId)
         {
             lock (_Realms)
                 return _Realms.Values.ToList().Find(info => info.Info != null && info.Info.RpcID == RpcId);
         }
 
+        // This updates the time when the scenarios (special mini-games) will change.
         public void UpdateRealmScenarioRotationTime(byte realmId, long nextRotation)
         {
             Realm rm = GetRealm(realmId);
@@ -477,6 +523,7 @@ namespace Common
             }
         }
 
+        // This is called when a game server comes online. It updates the realm's status.
         public bool UpdateRealm(RpcClientInfo Info, byte RealmId)
         {
             Realm Rm = GetRealm(RealmId);
@@ -502,6 +549,7 @@ namespace Common
             return true;
         }
 
+        // This updates the number of players on a realm.
         public void UpdateRealm(byte RealmId, uint OnlinePlayers, uint OrderCount, uint DestructionCount)
         {
             Realm Rm = GetRealm(RealmId);
@@ -518,6 +566,7 @@ namespace Common
             Database.SaveObject(Rm);
         }
 
+        // This updates the number of characters on a realm.
         public void UpdateRealmCharacters(byte RealmId, uint OrderCharacters, uint DestruCharacters)
         {
             Realm Rm = GetRealm(RealmId);
@@ -531,6 +580,7 @@ namespace Common
             Database.ExecuteNonQuery("UPDATE war_accounts.realms SET OrderCharacters =" + OrderCharacters + ", DestruCharacters=" + DestruCharacters + " WHERE RealmId = " + RealmId);
         }
 
+        // This is a helper function to create a property for the cluster list.
         private ClusterProp setProp(string name, string value)
         {
             return ClusterProp.CreateBuilder().SetPropName(name)
@@ -538,6 +588,7 @@ namespace Common
                                               .Build();
         }
 
+        // This builds a list of all the realms (clusters) to send to the game client.
         public byte[] BuildClusterList()
         {
             GetClusterListReply.Builder ClusterListReplay = GetClusterListReply.CreateBuilder();
@@ -592,6 +643,7 @@ namespace Common
             return ClusterListReplay.Build().ToByteArray();
         }
 
+        // This is called when a game server disconnects. It updates the realm's status to offline.
         public override void OnClientDisconnected(RpcClientInfo Info)
         {
             Realm Rm = GetRealmByRpc(Info.RpcID);
@@ -607,8 +659,10 @@ namespace Common
 
         #endregion Realm
 
+        // This is a list of bad words that are not allowed in usernames.
         private string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };
 
+        // This checks if an email address is valid.
         public bool IsValidEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -618,8 +672,10 @@ namespace Common
             return Regex.IsMatch(email, regexString);
         }
 
+        // This is a random number generator.
         private Random _random = new Random();
 
+        // This returns a random character.
         public string RandomChar()
         {
             int rand = (int)_random.Next(1, 16);
@@ -694,6 +750,7 @@ namespace Common
             return "";
         }
 
+        // This creates a random verification code.
         public string ReturnCode()
         {
             string toreturn = "";
@@ -706,6 +763,7 @@ namespace Common
             return toreturn;
         }
 
+        // This creates a new player account.
         public bool CreateAccount(string username, string password, string email, int gmLevel, int langID, string ip = "127.0.0.1")
         {
             Account Acct = GetAccount(username);
@@ -781,6 +839,7 @@ namespace Common
             return true;
         }
 
+        // This removes an account from the pending verification list.
         private void RemovePending(string user)
         {
             Account acc = GetAccount(_Codes[user].Username);
@@ -794,6 +853,7 @@ namespace Common
             Database.ExecuteNonQuery($"DELETE FROM accounts_pending WHERE Username = '{Database.Escape(user)}'");
         }
 
+        // This updates the log from the game patcher for a specific account.
         public void UpdateClientPatcherLog(int accountId, string log)
         {
             var asset = Database.SelectObject<Account>("AccountId=" + accountId);
@@ -806,6 +866,7 @@ namespace Common
             }
         }
 
+        // This updates information about a player's computer and IP address.
         public void UpdateAccountBio(int accountId, string ip, string installID)
         {
             if (installID == "")
@@ -833,6 +894,7 @@ namespace Common
             }
         }
 
+        // This gets the name of the database schema we are using.
         public string GetAccountSchemaName()
         {
             return Database.GetSchemaName();

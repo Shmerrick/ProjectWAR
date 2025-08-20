@@ -19,49 +19,73 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
+    // This is the base class for EVERYTHING that exists in the game world.
+    // Players, monsters, items on the ground, doors... they all start here.
+    // It handles the most basic things that all objects share, like:
+    //  - A unique ID (Oid)
+    //  - A position in the world (X, Y, Z)
+    //  - The ability to be seen by other objects (range checking)
+    //  - A collection of "Interfaces" that add more specific functionality (like combat, quests, etc.)
     public class Object : Point3D
     {
-        public static int RANGE_UPDATE_INTERVAL = 300; // Check des Ranged toutes les 300Ms
+        // How often, in milliseconds, the server checks for objects that have entered or left this object's range.
+        public static int RANGE_UPDATE_INTERVAL = 300;
 
+        // A list of all the "Interfaces" attached to this object.
+        // Interfaces are like plugins that add specific behaviors (e.g., Health, Abilities, Quests).
         public List<BaseInterface> Interfaces = new List<BaseInterface>();
 
-        public EventInterface EvtInterface;
-        public ScriptsInterface ScrInterface;
+        // Specific, commonly used interfaces for quick access.
+        public EventInterface EvtInterface; // Handles events like OnMove, OnDie, etc.
+        public ScriptsInterface ScrInterface; // Handles custom scripts attached to this object.
 
-        // This is an int for the purpose of the atomic Interlocked functions.
-        // Its value should not exceed 65535.
+        // This is a temporary holder for the Oid. Using 'Interlocked' functions on it
+        // prevents race conditions when multiple threads try to assign an Oid at the same time.
         private int _pendingOid;
 
+        // The object's Unique ID in the world. No two objects can have the same Oid.
         public ushort Oid { get; private set; }
 
+        // The object's name. Can be a player's name, a monster's name, etc.
         public virtual string Name { get; set; }
 
         public Object()
         {
+            // All objects except players get an EventInterface by default.
+            // Players have their own special version of this.
             if (EvtInterface == null && !IsPlayer())
                 EvtInterface = AddInterface<EventInterface>();
 
             ScrInterface = AddInterface<ScriptsInterface>();
 
+            // The object is not active (visible/interactive) by default.
             IsActive = false;
         }
 
         #region Disposal
 
+        // This section handles how objects are safely removed from the game world.
+
+        // True if the object has been fully disposed of and removed.
         public bool IsDisposed { get; protected set; }
+        // True if the object is scheduled to be disposed on the next server tick.
         public bool PendingDisposal { get; set; }
 
+        // Call this to start the process of removing the object from the world.
         public virtual void Destroy()
         {
+            // If the object is currently in the world, we mark it for disposal on the next update.
+            // This is to prevent errors from trying to remove it mid-tick.
             if (IsInWorld())
                 PendingDisposal = true;
+            // If it's not in the world, we can dispose of it immediately.
             else
             {
-                //Log.Info(Name, "Object disposed directly.");
                 Dispose();
             }
         }
 
+        // The actual disposal logic. Cleans up all resources used by the object.
         public virtual void Dispose()
         {
             if (IsDisposed)
@@ -69,47 +93,58 @@ namespace WorldServer.World.Objects
 
             IsDisposed = true;
 
+            // Tell all interfaces to stop and clean themselves up.
             for (int i = 0; i < Interfaces.Count; ++i)
                 Interfaces[i].Stop();
 
+            // Remove the object from the region and cell it's in.
             RemoveFromWorld();
         }
 
         #endregion Disposal
 
+        // Called on every server tick for each object in the world.
         public virtual void Update(long msTick)
         {
+            // If the object is waiting to be disposed, do it now and stop.
             if (PendingDisposal)
             {
                 Dispose();
                 return;
             }
 
+            // Tell all interfaces to run their own update logic.
             for (int i = 0; i < Interfaces.Count; ++i)
                 Interfaces[i].Update(msTick);
         }
 
         #region Load/Save
 
+        // This section handles loading the object's data from the database.
+
         public bool Loaded;
 
+        // Called when the object is fully loaded into the world.
         public void Load()
         {
             Loaded = true;
             OnLoad();
         }
 
+        // Can be overridden by child classes to add custom logic after loading.
         public virtual void OnLoad()
         {
             LoadInterfaces();
         }
 
+        // Tells all interfaces to load their data.
         protected virtual void LoadInterfaces()
         {
             foreach (BaseInterface Interface in Interfaces)
                 Interface.Load();
         }
 
+        // Tells all interfaces to save their data to the database.
         public virtual void Save()
         {
             foreach (BaseInterface Interface in Interfaces)
@@ -129,6 +164,9 @@ namespace WorldServer.World.Objects
 
         #region Interfaces
 
+        // This section manages adding, removing, and finding interfaces on the object.
+
+        // Adds a pre-created interface to this object.
         public BaseInterface AddInterface(BaseInterface Interface)
         {
             lock (Interfaces)
@@ -140,6 +178,7 @@ namespace WorldServer.World.Objects
             return Interface;
         }
 
+        // Creates a new interface of a specific type and adds it to this object.
         public T AddInterface<T>() where T : BaseInterface
         {
             BaseInterface Interface = Activator.CreateInstance<T>();
@@ -153,6 +192,7 @@ namespace WorldServer.World.Objects
             return (T)Interface;
         }
 
+        // Plays a visual effect at the object's location (or a specified location).
         public void PlayEffect(ushort effectID, Point3D position = null)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_EFFECT, 30);
@@ -175,6 +215,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(100);
             Out.WriteUInt16(100);
 
+            // Send the effect packet to all nearby players.
             foreach (var p in GetPlayersInRange(400))
                 p.SendPacket(Out);
 
@@ -183,7 +224,7 @@ namespace WorldServer.World.Objects
         }
 
         /// <summary>
-        /// Sets object interaction state
+        /// Sets object interaction state (e.g., making a creature kneel or a door open).
         /// </summary>
         /// <param name="state">1 = interactive, 15=disabled</param>
         public void UpdateInteractState(CreatureStateOpcode state)
@@ -191,7 +232,8 @@ namespace WorldServer.World.Objects
             DispatchPacket(Packets.UpdateCreatureState(Oid, state), false);
         }
 
-        public void PlaySound(ushort soundID, Boolean sendarea = true)
+        // Plays a sound at the object's location.
+        public void PlaySound(ushort soundID, bool sendarea = true)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_SOUND, 30);
             Out.WriteByte(0);
@@ -206,6 +248,7 @@ namespace WorldServer.World.Objects
                 ((Player)this).SendPacket(Out);
         }
 
+        // Removes an interface from the object.
         public BaseInterface RemoveInterface(BaseInterface Interface)
         {
             lock (Interfaces)
@@ -214,6 +257,7 @@ namespace WorldServer.World.Objects
             return Interface;
         }
 
+        // Finds and returns a specific type of interface on this object.
         public T GetInterface<T>() where T : BaseInterface
         {
             lock (Interfaces)
@@ -227,7 +271,8 @@ namespace WorldServer.World.Objects
         #endregion Interfaces
 
         /// <summary>
-        /// Sets the object ID in a thread-safe manner.
+        /// Sets the object ID in a thread-safe manner. This is important because multiple
+        /// region threads could try to assign an ID to the same object at the same time.
         /// </summary>
         public void SetOid(int newOid)
         {
@@ -238,6 +283,7 @@ namespace WorldServer.World.Objects
 
         /// <summary>
         /// Sets the object ID to zero only if it has not been changed by another region.
+        /// This is used to safely de-assign an Oid when an object moves between regions.
         /// </summary>
         /// <param name="oldOid">The Oid previously set by the region which is calling this function.</param>
         public void ZeroOid(int oldOid)
@@ -249,40 +295,53 @@ namespace WorldServer.World.Objects
 
         #region Sender
 
+        // This section handles sending information about this object to players.
+
+        // Sends the "create" packet for this object to a specific player.
+        // This makes the object appear for that player.
+        // Each object type (Player, Creature, etc.) has its own version of this.
         public virtual void SendMeTo(Player plr)
         {
         }
 
+        // Sends the "destroy" packet for this object to players.
+        // This makes the object disappear for them.
         public virtual void SendRemove(Player plr)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_REMOVE_PLAYER, 4);
             Out.WriteUInt16(Oid);
             Out.WriteUInt16(0);
             if (plr != null)
-                plr.SendPacket(Out);
+                plr.SendPacket(Out); // Send to a specific player.
             else
-                DispatchPacket(Out, false);
+                DispatchPacket(Out, false); // Send to all players in range.
         }
 
+        // Called when a player right-clicks on this object.
         public virtual void SendInteract(Player player, InteractMenu menu)
         {
+            // Triggers any scripts associated with interaction.
             ScrInterface.OnInteract(this, player, menu);
             WorldMgr.GeneralScripts.OnWorldPlayerEvent("INTERACT", player, this);
         }
 
+        // Called when a player stops interacting with this object.
         public virtual void SendInteractEnd(Player plr)
         {
         }
 
+        // Makes the object "say" something in chat.
         public virtual void Say(string message, ChatLogFilters chatFilter = ChatLogFilters.CHATLOGFILTERS_SAY)
         {
             if (string.IsNullOrEmpty(message))
                 return;
 
+            // Send the message to all nearby players.
             foreach (Player Plr in PlayersInRange.ToArray())
                 Plr.SendMessage(this, message, chatFilter);
         }
 
+        // Sends a packet to all players in range, but unreliably (UDP). Good for frequent, non-essential updates like movement.
         public virtual void DispatchPacketUnreliable(PacketOut Out, bool sendToSelf, Unit sender)
         {
             if (PlayersInRange.Count > 100)
@@ -301,6 +360,7 @@ namespace WorldServer.World.Objects
                     player.SendCopy(Out);
         }
 
+        // Sends a packet to all players in range, reliably (TCP). Good for essential updates.
         public virtual void DispatchPacket(PacketOut Out, bool sendToSelf, bool playerstate = false)
         {
             lock (PlayersInRange)
@@ -311,6 +371,9 @@ namespace WorldServer.World.Objects
         #endregion Sender
 
         #region Detection
+
+        // This section contains helper methods to quickly check what type of object this is.
+        // This is more efficient and readable than using "is" checks everywhere.
 
         public bool IsPlayer()
         {
@@ -347,6 +410,8 @@ namespace WorldServer.World.Objects
             return this is ChapterObject;
         }
 
+        // These "To" methods are for safely casting the object to a more specific type.
+        // If the cast is invalid, they return null instead of throwing an error.
         public Creature ToCreature()
         {
             return IsCreature() ? (this as Creature) : null;
@@ -367,6 +432,8 @@ namespace WorldServer.World.Objects
             return IsUnit() ? (this as Unit) : null;
         }
 
+        // These "Get" methods are similar to the "To" methods.
+        // They provide a direct cast, which is slightly faster but assumes you already know the type.
         public Unit GetUnit()
         {
             return this as Unit;
@@ -406,16 +473,22 @@ namespace WorldServer.World.Objects
 
         #region Position
 
+        // This section handles everything related to the object's position, zone, and orientation.
+
         public override string ToString()
         {
             return $"(OffX = {XOffset}, OffY = {YOffset}, Heading = {Heading}, Oid = {Oid}, Name= {Name}, Radius= {BaseRadius}, Active= {_isActive})" + base.ToString();
         }
 
+        // The direction the object is facing, from 0 to 4095.
         public ushort Heading;
+        // The zone cell coordinates. The world is divided into a grid of cells.
         public ushort XOffset, YOffset;
 
+        // The object's collision radius in feet. Used for range checks and physics.
         public float BaseRadius { get; set; } = 4.5f;
 
+        // A reference to the cell manager this object is currently in.
         public CellMgr _Cell;
 
         /// <summary>Current zone containing the object, may be null</summary>
@@ -425,7 +498,7 @@ namespace WorldServer.World.Objects
         public ushort? ZoneId
         {
             get => Zone?.ZoneId;
-            set => throw new NotImplementedException();
+            set => throw new NotImplementedException(); // This is read-only.
         }
 
         /// <summary>Current region containing the object, may be null</summary>
@@ -434,8 +507,10 @@ namespace WorldServer.World.Objects
         /// <summary>True is zone is not null</summary>
         public bool IsInWorld() => Zone != null;
 
+        // The object's absolute position in the world (not relative to the zone).
         public readonly Point3D WorldPosition = new Point3D();
 
+        // Sets the object's current zone.
         public virtual void SetZone(ZoneMgr newZone)
         {
             if (newZone == null)
@@ -443,11 +518,13 @@ namespace WorldServer.World.Objects
             Zone = newZone;
         }
 
+        // Removes the object's reference to its zone.
         public void ClearZone()
         {
             Zone = null;
         }
 
+        // Removes the object from its region, which effectively removes it from the world.
         public void RemoveFromWorld()
         {
             if (!IsInWorld())
@@ -456,6 +533,7 @@ namespace WorldServer.World.Objects
             Region.RemoveObject(this);
         }
 
+        // Recalculates the object's cell offset based on its current position.
         public void UpdateOffset()
         {
             if (!IsInWorld() || X == 0 || Y == 0)
@@ -468,6 +546,7 @@ namespace WorldServer.World.Objects
                 SetOffset(offX, offY);
         }
 
+        // Recalculates the object's absolute world position from its zone-relative coordinates.
         public void UpdateWorldPosition()
         {
             //int x = X > 32768 ? X - 32768 : X;
@@ -481,12 +560,9 @@ namespace WorldServer.World.Objects
         }
 
         /// <summary>
-        /// Sets the object's X and Y offsets for coordinate calculations.
-        /// Return whether or not the player's zone changed as a result of this.
+        /// Sets the object's cell offsets. If the new offset moves the object into a
+        /// new zone, this method handles the zone change.
         /// </summary>
-        /// <param name="offX"></param>
-        /// <param name="offY"></param>
-        /// <returns></returns>
         public ushort SetOffset(ushort offX, ushort offY, bool checkZone = true)
         {
             Player player = this as Player;
@@ -500,16 +576,13 @@ namespace WorldServer.World.Objects
             YOffset = offY;
 
             if (checkZone && IsInWorld())
-                return Region.CheckZone(this);
+                return Region.CheckZone(this); // Tell the region to see if we've crossed a zone boundary.
             return 0;
         }
 
         /// <summary>
-        /// Returns the angle towards a target spot in degrees, clockwise
+        /// Returns the angle towards a target point in degrees, clockwise.
         /// </summary>
-        /// <param name="tx">target x</param>
-        /// <param name="ty">target y</param>
-        /// <returns>the angle towards the spot</returns>
         public float GetAngle(IPoint2D point)
         {
             float headingDifference = (GetWorldHeading(point) & 0xFFF) - (Heading & 0xFFF);
@@ -521,6 +594,9 @@ namespace WorldServer.World.Objects
         }
 
         #region Distance and Heading Checks
+
+        // This sub-section contains many helper methods for calculating distances and headings.
+        // These are heavily used for ability ranges, AI, and general game logic.
 
         public int Get2DDistanceToWorldPoint(Point2D point)
         {
@@ -544,14 +620,13 @@ namespace WorldServer.World.Objects
             if (!factorRadius)
                 return (int)range;
 
+            // If factoring radius, subtract the collision radii of both objects to get the distance between their edges.
             return Math.Max(0, (int)(range - (BaseRadius + obj.BaseRadius)));
         }
 
         /// <summary>
         /// Returns the distance between this object's WorldPosition and the supplied world point.
         /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
         public int GetDistanceToWorldPoint(Point3D point)
         {
             double dx = (WorldPosition.X - point.X);
@@ -566,9 +641,6 @@ namespace WorldServer.World.Objects
         /// Returns the distance between the WorldPositions of two objects.
         /// If factorRadius is true, removes the collision radii of the two objects from the returned value.
         /// </summary>
-        /// <param name="obj">The distant object.</param>
-        /// <param name="factorRadius">Whether or not to remove the collision radii of the two objects from the final result (used by ability range checks)</param>
-        /// <returns></returns>
         public int GetDistanceToObject(Object obj, bool factorRadius = false)
         {
             if (obj == null || Region != obj.Region)
@@ -586,6 +658,7 @@ namespace WorldServer.World.Objects
             return Math.Max(0, (int)(range - (BaseRadius + obj.BaseRadius)));
         }
 
+        // Gets the squared distance. This is much faster for comparisons as it avoids a square root calculation.
         public ulong GetDistanceSquare(Point3D target)
         {
             double dx = WorldPosition.X - target.X;
@@ -605,11 +678,13 @@ namespace WorldServer.World.Objects
             return (ulong)((dx * dx + dy * dy + dz * dz) / UNITS_TO_FEET);
         }
 
+        // A special distance check for abilities, which always factors in radius.
         public virtual int GetAbilityRangeTo(Unit caster)
         {
             return GetDistanceToObject(caster, true);
         }
 
+        // Calculates the heading (0-4095) required to face a specific point.
         public ushort GetWorldHeading(IPoint2D point)
         {
             float dx = point.X - WorldPosition.X;
@@ -623,11 +698,13 @@ namespace WorldServer.World.Objects
             return (ushort)heading;
         }
 
+        // Checks if an object is within a given cast range, accounting for the radii of both objects.
         public bool IsInCastRange(Object obj, uint radiusFeet)
         {
             if (obj == null || Region != obj.Region)
                 return false;
 
+            // A small fudge factor for moving targets.
             if (IsMoving && obj.IsMoving && radiusFeet == 5)
                 radiusFeet = 8;
 
@@ -636,11 +713,11 @@ namespace WorldServer.World.Objects
             return WorldPosition.IsWithinRadiusFeet(obj.WorldPosition, (int)radiusFeet);
         }
 
+        // A fast, squared-distance check.
         public bool ObjectWithinRadiusFeet(Object obj, int radius)
         {
             if (obj.WorldPosition == null)
             {
-                //Log.Error(Name, "RadiusFeet check against " + obj.Name + " with NULL WorldPosition");
                 return false;
             }
 
@@ -659,10 +736,7 @@ namespace WorldServer.World.Objects
 
         public bool PointWithinRadiusFeet(Point3D point, int radius)
         {
-            if (WorldPosition == null)
-                return false;
-
-            if (point == null)
+            if (WorldPosition == null || point == null)
                 return false;
 
             radius *= UNITS_TO_FEET;
@@ -679,17 +753,14 @@ namespace WorldServer.World.Objects
         }
 
         /// <summary>
-        /// Determines whether a target object is in front of this one. Optionally factors in the distance between the objects. In front is defined as north +- viewangle/2.
+        /// Determines whether a target object is in front of this one, within a given view angle.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="viewangle"></param>
-        /// <param name="rangeCheck"></param>
-        /// <returns></returns>
         public virtual bool IsObjectInFront(Object target, double viewangle, uint MaxRadius = 0)
         {
             if (target == null || target.Zone == null)
                 return false;
             float angle = GetAngle(new Point2D(target.WorldPosition.X, target.WorldPosition.Y));
+            // Check if the angle to the target is within the "cone" of vision.
             if (angle >= 360 - viewangle / 2 || angle < viewangle / 2)
             {
                 return MaxRadius == 0 || IsInCastRange(target, MaxRadius);
@@ -701,7 +772,7 @@ namespace WorldServer.World.Objects
         #endregion Distance and Heading Checks
 
         private bool _isMoving;
-        protected DateTime? _knockbackTime;
+        protected DateTime? _knockbackTime; // Used to track when the object was last knocked back.
 
         public DateTime? KnockbackTime
         {
@@ -725,8 +796,10 @@ namespace WorldServer.World.Objects
             }
         }
 
+        // The last position where a full range check was performed.
         public Point2D LastRangeCheck = new Point2D(0, 0);
 
+        // Sets the initial position of the object when it's first spawned.
         public virtual void InitPosition(ushort OffX, ushort OffY, ushort PinX, ushort PinY)
         {
             X = PinX;
@@ -735,13 +808,13 @@ namespace WorldServer.World.Objects
             YOffset = OffY;
         }
 
+        // Updates the object's position. This is a core function for movement.
         public virtual bool SetPosition(ushort pinX, ushort pinY, ushort pinZ, ushort heading, ushort zoneId, bool sendState = false)
         {
-            //Player plr = this as Player;
-
             bool updated = false;
             bool doUpdate = false;
 
+            // Check if the object has moved to a new zone.
             if (zoneId != Zone.ZoneId)
             {
                 ZoneMgr newZone = Region.GetZoneMgr(zoneId);
@@ -749,22 +822,20 @@ namespace WorldServer.World.Objects
                 if (newZone == null)
                     return false;
 
-                //plr?.DebugMessage("Moving from "+Zone.Info.Name+" to "+newZone.Info.Name, ChatLogFilters.CHATLOGFILTERS_ZONE_AREA, true);
-
+                // Handle the zone transition.
                 Zone.RemoveObject(this);
                 newZone.AddObject(this);
 
                 doUpdate = true;
             }
 
+            // If the position or heading has changed, update everything.
             if (doUpdate || pinX != X || pinY != Y || pinZ != Z || heading != Heading)
             {
                 X = pinX;
                 Y = pinY;
                 Z = pinZ;
                 Heading = heading;
-
-                //plr?.DebugMessage($"Moving to {X}, {Y}, {Z} in {Zone.Info.Name}", ChatLogFilters.CHATLOGFILTERS_ZONE_AREA, true);
 
                 UpdateWorldPosition();
                 UpdateOffset();
@@ -784,6 +855,7 @@ namespace WorldServer.World.Objects
                         return false;
                 }
 
+                // Tell the region to update who can see this object.
                 updated = Region.UpdateRange(this);
             }
             else if (!IsPlayer())
@@ -794,6 +866,7 @@ namespace WorldServer.World.Objects
 
         private bool _isVisible = true;
 
+        // Controls whether the object is visible to players (e.g., for stealth).
         public bool IsVisible
         {
             get
@@ -806,13 +879,14 @@ namespace WorldServer.World.Objects
                 {
                     _isVisible = value;
                     if (IsInWorld())
-                        Region.UpdateRange(this, true);
+                        Region.UpdateRange(this, true); // Force a range update to show/hide the object.
                 }
             }
         }
 
         private bool _isActive;
 
+        // Controls whether the object is "active" (can be interacted with, part of physics, etc.).
         public bool IsActive
         {
             get
@@ -829,9 +903,9 @@ namespace WorldServer.World.Objects
                 if (IsInWorld())
                 {
                     if (_isActive)
-                        Region.UpdateRange(this, true);
+                        Region.UpdateRange(this, true); // Activate, so update range.
                     else
-                        ClearRange();
+                        ClearRange(); // Deactivate, so clear range lists.
                 }
             }
         }
@@ -840,17 +914,24 @@ namespace WorldServer.World.Objects
 
         #region Range
 
+        // This section handles which other objects are "in range" of this object.
+        // This is the core of visibility and interaction in the game.
+
+        // A list of all objects close enough to be seen or interacted with.
         public List<Object> ObjectsInRange = new List<Object>();
+        // A filtered list containing only the players from ObjectsInRange, for quick access.
         public List<Player> PlayersInRange = new List<Player>();
 
         public bool InRegionChange;
 
+        // Checks if a specific object is in our range list.
         public virtual bool HasInRange(Object obj)
         {
             lock (ObjectsInRange)
                 return ObjectsInRange.Contains(obj);
         }
 
+        // Gets a list of all players within a specific distance (in feet).
         public List<Player> GetPlayersInRange(int distance, bool includeSelf = false)
         {
             List<Player> players = new List<Player>();
@@ -866,6 +947,7 @@ namespace WorldServer.World.Objects
             return players;
         }
 
+        // A generic version of GetPlayersInRange that can get any type of object.
         public List<T> GetInRange<T>(int distance) where T : Object
         {
             List<T> objList = new List<T>();
@@ -902,13 +984,13 @@ namespace WorldServer.World.Objects
                 }
             }
 
+            // Trigger any "OnEnterRange" scripts.
             ScrInterface.OnEnterRange(this, obj);
         }
 
         /// <summary>
         /// Called by the Region manager when an object leaves this object's range, and by another object when it clears its ranged object lists.
         /// </summary>
-        /// <param name="obj"></param>
         public virtual void RemoveInRange(Object obj)
         {
             if (obj == null)
@@ -934,12 +1016,14 @@ namespace WorldServer.World.Objects
 
             Player thisPlayer = this as Player;
 
+            // If we are a player, tell the other object to send us its "destroy" packet.
             if (thisPlayer != null)
                 obj.SendRemove(thisPlayer);
         }
 
         /// <summary>
         /// Called by the player when loading a new region and by the Region manager when leaving a region.
+        /// It completely clears all range lists.
         /// </summary>
         public virtual void ClearRange(bool fromNewRegion = false)
         {
@@ -952,7 +1036,7 @@ namespace WorldServer.World.Objects
             lock (ObjectsInRange)
                 rangedObjects.AddRange(ObjectsInRange);
 
-            // Remove this object from other objects' ranged lists
+            // Tell every object in our range to remove us from their range.
             foreach (Object rangedObject in rangedObjects)
                 rangedObject.RemoveInRange(this);
 
@@ -963,6 +1047,7 @@ namespace WorldServer.World.Objects
                 ObjectsInRange.Clear();
         }
 
+        // Called by the region manager after range has been updated.
         public virtual void OnRangeUpdate()
         {
         }
@@ -971,22 +1056,27 @@ namespace WorldServer.World.Objects
 
         #region Interaction
 
+        // This section handles direct interaction with objects, like capturing a flag or talking to an NPC.
+
         public long CountdownTimerEnd { get; set; }
         public RigidBody PhysicsRigidBody { get; internal set; }
-        public object PQCreature { get; set; }
+        public object PQCreature { get; set; } // A reference if this is a Public Quest creature.
 
-        protected Player CapturingPlayer;
+        protected Player CapturingPlayer; // The player currently interacting with/capturing this object.
         protected object CaptureLock = new object();
-        public ushort CaptureDuration;
+        public ushort CaptureDuration; // How long it takes to capture this object.
 
+        // Checks if a player is close enough to interact with this object.
         public virtual bool AllowInteract(Player interactor)
         {
             return GetDistanceToObject(interactor, true) <= 15;
         }
 
+        // Called when a player starts interacting (e.g., starts capturing a flag).
         // Should always be from same thread as this object
         public virtual void BeginInteraction(Player interactor)
         {
+            // Ensure no one else is already capturing it.
             if (CapturingPlayer != null)
             {
                 if (!CapturingPlayer._Value.Online || GetDistanceTo(CapturingPlayer) > 50)
@@ -1000,6 +1090,7 @@ namespace WorldServer.World.Objects
 
             CapturingPlayer = interactor;
 
+            // Apply the "Interaction" buff, which shows a casting bar to the player.
             BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Interaction);
             buffInfo.Duration = CaptureDuration;
             CapturingPlayer.BuffInterface.QueueBuff(new BuffQueueInfo(CapturingPlayer, CapturingPlayer.Level, buffInfo, InteractionBuff.GetNew, LinkToCaptureBuff));
@@ -1008,6 +1099,7 @@ namespace WorldServer.World.Objects
                 interactor.Dismount();
         }
 
+        // Links the capture buff back to this object, so we know when it's broken or complete.
         public virtual void LinkToCaptureBuff(NewBuff b)
         {
             if (b != null)
@@ -1019,12 +1111,14 @@ namespace WorldServer.World.Objects
                 CapturingPlayer = null;
         }
 
+        // Called by the buff if the interaction is broken (e.g., player moves or takes damage).
         public virtual void NotifyInteractionBroken(NewBuff b)
         {
             if (CapturingPlayer == b.Target)
                 CapturingPlayer = null;
         }
 
+        // Called by the buff when the interaction completes successfully.
         public virtual void NotifyInteractionComplete(NewBuff b)
         {
             CapturingPlayer = null;
