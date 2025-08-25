@@ -9,7 +9,10 @@ using System.Reflection;
 
 namespace LauncherServer
 {
-    internal class Core
+    // Exposed for test projects which interact with the server's
+    // singleton-style components. The class only contains static
+    // members so it can safely be made public and static.
+    public static class Core
     {
         public static RpcClient Client;
         public static LauncherConfig Config;

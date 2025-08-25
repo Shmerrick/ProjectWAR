@@ -5,6 +5,7 @@ using FrameWork;
 using LauncherServer;
 using LauncherServer.Server;
 using LauncherServer.Server.Handler;
+using LauncherOpcodes = LauncherServer.Server.Opcodes;
 using Xunit;
 
 namespace LauncherServer.Tests;
@@ -63,7 +64,7 @@ public class LauncherPacketsTests
 
     private static PacketIn BuildCreatePacket(string username, string password, string email, byte langId)
     {
-        var builder = new PacketOut((byte)Opcodes.CL_CREATE);
+        var builder = new PacketOut((byte)LauncherOpcodes.CL_CREATE);
         builder.WriteString(username);
         builder.WriteString(password);
         builder.WriteString(email);
@@ -78,7 +79,7 @@ public class LauncherPacketsTests
 
     private static PacketIn BuildStartPacket(string username, string password)
     {
-        var builder = new PacketOut((byte)Opcodes.CL_START);
+        var builder = new PacketOut((byte)LauncherOpcodes.CL_START);
         builder.WriteString(username);
         builder.WriteString(password);
         builder.WritePacketLength();
@@ -117,7 +118,7 @@ public class LauncherPacketsTests
         LauncherPackets.CL_CREATE(client, packet);
 
         var response = ParseResponse(client.LastPacket!);
-        Assert.Equal((byte)Opcodes.LCR_CREATE, (byte)response.Opcode);
+        Assert.Equal((byte)LauncherOpcodes.LCR_CREATE, (byte)response.Opcode);
         Assert.Equal((byte)CreteAccountResult.ACCOUNT_NAME_SUCCESS, response.GetUint8());
         Core.AcctMgr = null;
     }
@@ -132,7 +133,7 @@ public class LauncherPacketsTests
         LauncherPackets.CL_CREATE(client, packet);
 
         var response = ParseResponse(client.LastPacket!);
-        Assert.Equal((byte)Opcodes.LCR_CREATE, (byte)response.Opcode);
+        Assert.Equal((byte)LauncherOpcodes.LCR_CREATE, (byte)response.Opcode);
         Assert.Equal((byte)CreteAccountResult.ACCOUNT_NAME_BUSY, response.GetUint8());
         Core.AcctMgr = null;
     }
@@ -147,7 +148,7 @@ public class LauncherPacketsTests
         LauncherPackets.CL_START(client, packet);
 
         var response = ParseResponse(client.LastPacket!);
-        Assert.Equal((byte)Opcodes.LCR_START, (byte)response.Opcode);
+        Assert.Equal((byte)LauncherOpcodes.LCR_START, (byte)response.Opcode);
         Assert.Equal((byte)LoginResult.LOGIN_SUCCESS, response.GetUint8());
         Assert.Equal("tok", response.GetString());
         Core.AcctMgr = null;
@@ -163,7 +164,7 @@ public class LauncherPacketsTests
         LauncherPackets.CL_START(client, packet);
 
         var response = ParseResponse(client.LastPacket!);
-        Assert.Equal((byte)Opcodes.LCR_START, (byte)response.Opcode);
+        Assert.Equal((byte)LauncherOpcodes.LCR_START, (byte)response.Opcode);
         Assert.Equal((byte)LoginResult.LOGIN_INVALID_USERNAME_PASSWORD, response.GetUint8());
         Assert.Equal(0, response.Remain());
         Core.AcctMgr = null;
