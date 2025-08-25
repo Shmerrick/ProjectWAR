@@ -18,7 +18,8 @@ namespace Common
     {
         ACCOUNT_NAME_BUSY = 0x00,
         ACCOUNT_NAME_SUCCESS = 0x01,
-        ACCOUNT_BANNED = 0x02
+        ACCOUNT_BANNED = 0x02,
+        ACCOUNT_INVALID = 0x03
     }
 
     public enum LoginResult
@@ -28,6 +29,7 @@ namespace Common
         LOGIN_BANNED = 0x02,
         LOGIN_NOT_ACTIVE = 0x03,
         LOGIN_PATCHER_NOT_ALLOWED = 0x04,
+        LOGIN_INVALID_INPUT = 0x05,
     };
 
     public enum AuthResult
