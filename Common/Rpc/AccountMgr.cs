@@ -9,7 +9,7 @@ using FrameWork;
 using Google.ProtocolBuffers;
 using Common.Database.Account;
 using System.Text.RegularExpressions;
-using AuthenticationServer.Email;
+using LauncherServer.Email;
 using System.Threading;
 
 namespace Common

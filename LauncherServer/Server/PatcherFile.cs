@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class PatcherFile : IDisposable
     {

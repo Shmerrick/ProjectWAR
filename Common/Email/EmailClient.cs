@@ -3,9 +3,9 @@ using System.Net.Mail;
 using System.Threading;
 using System.Net;
 using System;
-using AuthenticationServer;
+using LauncherServer;
 
-namespace AuthenticationServer.Email
+namespace LauncherServer.Email
 {
     public class EmailClient
     {
