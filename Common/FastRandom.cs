@@ -27,17 +27,17 @@ namespace Common
 
         public int randomInt(int range)
         {
-            return fastAbs((int)randomLong() % range);
+            return (int)Math.Abs(randomLong() % range);
         }
 
         public int randomIntAbs()
         {
-            return fastAbs(randomInt());
+            return (int)Math.Abs((long)randomInt());
         }
 
         public int randomIntAbs(int range)
         {
-            return fastAbs(randomInt() % range);
+            return (int)Math.Abs((long)(randomInt() % range));
         }
 
         public double randomDouble()
@@ -98,7 +98,7 @@ namespace Common
 
         public static int fastAbs(int i)
         {
-            return (i >= 0) ? i : -i;
+            return i == int.MinValue ? int.MaxValue : Math.Abs(i);
         }
 
         public static float fastAbs(float d)
@@ -136,17 +136,17 @@ namespace Common
 
         public int randomInt(int range)
         {
-            return fastAbs((int)randomLong() % range);
+            return (int)Math.Abs(randomLong() % range);
         }
 
         public int randomIntAbs()
         {
-            return fastAbs(randomInt());
+            return (int)Math.Abs((long)randomInt());
         }
 
         public int randomIntAbs(int range)
         {
-            return fastAbs(randomInt() % range);
+            return (int)Math.Abs((long)(randomInt() % range));
         }
 
         public double randomDouble()
@@ -207,7 +207,7 @@ namespace Common
 
         public static int fastAbs(int i)
         {
-            return (i >= 0) ? i : -i;
+            return i == int.MinValue ? int.MaxValue : Math.Abs(i);
         }
 
         public static float fastAbs(float d)
