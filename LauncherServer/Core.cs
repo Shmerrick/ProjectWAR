@@ -34,11 +34,16 @@ namespace LauncherServer
         public static FileInfo Info;
         public static string StrInfo;
 
+        private static AccountMgr _acctMgr;
         public static AccountMgr AcctMgr
         {
             get
             {
-                return Client.GetServerObject<AccountMgr>();
+                return _acctMgr ?? Client.GetServerObject<AccountMgr>();
+            }
+            set
+            {
+                _acctMgr = value;
             }
         }
 
