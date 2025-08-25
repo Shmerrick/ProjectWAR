@@ -23,7 +23,7 @@ namespace FrameWork
                 foreach (Type type in assembly.GetTypes())
                 {
                     // Pick up a class
-                    if (type.IsClass != true)
+                    if (!type.IsClass)
                         continue;
 
                     object[] attrib = type.GetCustomAttributes(typeof(aConfigAttributes), true);

@@ -86,7 +86,7 @@ namespace WorldServer.World.Abilities
                 /*
                 byte onehandweaponblockbonus = 0;
 
-                if (cmdInfo.AttackingStat == 1 && Caster.ItmInterface.Items[10] != null && Caster.ItmInterface.Items[10].Info.TwoHanded == false)
+                if (cmdInfo.AttackingStat == 1 && Caster.ItmInterface.Items[10] != null && !Caster.ItmInterface.Items[10].Info.TwoHanded)
                     onehandweaponblockbonus = 10;
                 */
 

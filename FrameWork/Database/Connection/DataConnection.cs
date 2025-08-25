@@ -493,7 +493,7 @@ namespace FrameWork
         // Sauvegarde tous les changements effectué dans le dataset
         public virtual void SaveDataSet(string tableName, DataSet dataSet)
         {
-            if (dataSet.HasChanges() == false)
+            if (!dataSet.HasChanges())
                 return;
 
             switch (ConnectionType)

@@ -253,7 +253,7 @@ namespace WorldServer.Managers
             if (PetOverrideStats.TryGetValue(careerLine, out infoOverrides))
             {
                 foreach (PetStatOverride ovr in infoOverrides)
-                    if (ovr.CareerLine == careerLine && ovr.Active == true)
+                    if (ovr.CareerLine == careerLine && ovr.Active)
                         overrides.Add(ovr);
 
                 overrides = overrides.OrderBy(x => x.PrimaryValue).ToList();
@@ -293,7 +293,7 @@ namespace WorldServer.Managers
             if (PetMasteryMods.TryGetValue(careerLine, out infoModifiers))
             {
                 foreach (PetMasteryModifiers mod in infoModifiers)
-                    if (mod.CareerLine == careerLine && mod.Active == true)
+                    if (mod.CareerLine == careerLine && mod.Active)
                         modifiers.Add(mod);
 
                 modifiers = modifiers.OrderBy(x => x.PrimaryValue).ToList();

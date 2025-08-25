@@ -886,7 +886,7 @@ namespace WorldServer.World.Interfaces
 
         public void SendQuests()
         {
-            List<Character_quest> quests = Quests.Values.ToList().FindAll(q => q.Done == false);
+            List<Character_quest> quests = Quests.Values.ToList().FindAll(q => !q.Done);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_QUEST_LIST, 1 + quests.Count * 14);
             Out.WriteByte((byte)quests.Count);

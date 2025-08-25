@@ -211,7 +211,7 @@ namespace WorldServer.Managers
                 if (Taxis[(byte)Plr.Realm].Info == null)
                     continue;
 
-                if (Taxis[(byte)Plr.Realm].Enable == false)
+                if (!Taxis[(byte)Plr.Realm].Enable)
                     continue;
 
                 if (Taxis[(byte)Plr.Realm].Tier > 0)
@@ -1087,7 +1087,7 @@ namespace WorldServer.Managers
             {
                 foreach (Type type in assembly.GetTypes())
                 {
-                    if (type.IsClass != true)
+                    if (!type.IsClass)
                         continue;
 
                     if (!type.IsSubclassOf(typeof(AGeneralScript)))
@@ -1497,7 +1497,7 @@ namespace WorldServer.Managers
             }
             var resultList = new List<BattlefieldObjective>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
-            foreach (BattleFront_Objective obj in objectives.Where(x => x.KeepSpawn == false))
+            foreach (BattleFront_Objective obj in objectives.Where(x => !x.KeepSpawn))
             {
                 BattlefieldObjective flag = new BattlefieldObjective(regionMgr, obj);
                 resultList.Add(flag);

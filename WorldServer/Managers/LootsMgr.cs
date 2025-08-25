@@ -64,7 +64,7 @@ namespace WorldServer.Managers
 
                 case 13:
                     TakeAll(player, false);
-                    if (crea != null && crea.Spawn.Proto.LairBoss == false) crea.IsActive = false;
+                    if (crea != null && !crea.Spawn.Proto.LairBoss) crea.IsActive = false;
                     break;
 
                 case 12:
@@ -72,15 +72,15 @@ namespace WorldServer.Managers
                         ClientUpdateLoot(player);
 
                     if (crea != null && LootCount < 1)
-                        if (crea != null && crea.Spawn.Proto.LairBoss == false) crea.IsActive = false;
+                        if (crea != null && !crea.Spawn.Proto.LairBoss) crea.IsActive = false;
                     break;
 
                 default:
                     ClientUpdateLoot(player);
 
                     if (crea != null && LootCount < 1)
-                        if (crea != null && crea.Spawn.Proto.LairBoss == false) crea.IsActive = false;
-                    break;
+                        if (crea != null && !crea.Spawn.Proto.LairBoss) crea.IsActive = false;
+            break;
             }
         }
 

@@ -619,7 +619,7 @@ namespace Launcher
                 FileStream fileStream = File.Open("..\\data.myp", FileMode.Open, FileAccess.ReadWrite);
                 MYP myp = new MYP(MythicPackage.ART, (Stream)fileStream);
 
-                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+                if (!File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml"))
                 {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
                     return;

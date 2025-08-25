@@ -139,7 +139,7 @@ namespace WorldServer.World.Guild
         {
             foreach (KeyValuePair<Player, bool> invite in _invites)
             {
-                if (invite.Value == false)
+                if (!invite.Value)
                     return;
             }
 
@@ -945,8 +945,8 @@ namespace WorldServer.World.Guild
                 gev.End = end;
                 gev.Name = name;
                 gev.Description = description;
-                gev.Alliance = alliance == 1 ? true : false;
-                gev.Locked = locked == 1 ? true : false;
+                gev.Alliance = alliance == 1;
+                gev.Locked = locked == 1;
 
                 Info.Event.Add(freeslot, gev);
 
@@ -1085,8 +1085,8 @@ namespace WorldServer.World.Guild
                 events.End = end;
                 events.Name = name;
                 events.Description = description;
-                events.Alliance = alliance == 1 ? true : false;
-                events.Locked = locked == 1 ? true : false;
+                events.Alliance = alliance == 1;
+                events.Locked = locked == 1;
 
                 CharMgr.Database.SaveObject(events);
             }
@@ -1768,7 +1768,7 @@ namespace WorldServer.World.Guild
         public bool CanTakeFrom(Player player, int vaultIndex)
         {
             LogGuildBug(player);
-            GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_TAKE_ITEM; ;
+            GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_TAKE_ITEM;
 
             switch (vaultIndex)
             {

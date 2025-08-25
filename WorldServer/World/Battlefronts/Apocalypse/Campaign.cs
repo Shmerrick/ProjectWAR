@@ -629,7 +629,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             try
             {
-                return ApocBattleFrontStatuses.Single(x => x.Locked == false);
+                return ApocBattleFrontStatuses.Single(x => !x.Locked);
             }
             catch (Exception e)
             {
@@ -1323,7 +1323,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private Tuple<LootChest, LootChest> PlaceChestsAtWarcampEntrances(Point3D orderWarcampEntrance, Point3D destructionWarcampEntrance)
         {
             LootChest orderLootChest = null;
-            LootChest destructionLootChest = null; ;
+            LootChest destructionLootChest = null;
 
             if (orderWarcampEntrance != null)
             {
