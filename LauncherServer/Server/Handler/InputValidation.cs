@@ -4,9 +4,13 @@ namespace LauncherServer.Server.Handler
 {
     public static class InputValidator
     {
-        private static readonly Regex UsernameRegex = new("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled);
-        private static readonly Regex PasswordRegex = new("^[\x21-\x7E]{6,50}$", RegexOptions.Compiled);
-        private static readonly Regex EmailRegex = new(@"^(([^<>()[\]\\.,;:\s@""']+(\.[^<>()[\]\\.,;:\s@""']+)*)|("".+""))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", RegexOptions.Compiled);
+        // Explicit type instantiation is used to remain compatible with older
+        // language versions. The previous implementation relied on C# 9's
+        // target-typed `new()` expressions which are unavailable when the
+        // project is compiled with the current language version setting (7.3).
+        private static readonly Regex UsernameRegex = new Regex("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled);
+        private static readonly Regex PasswordRegex = new Regex("^[\x21-\x7E]{6,50}$", RegexOptions.Compiled);
+        private static readonly Regex EmailRegex = new Regex(@"^(([^<>()[\]\\.,;:\s@""']+(\.[^<>()[\]\\.,;:\s@""']+)*)|("".+""))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", RegexOptions.Compiled);
 
         public static bool IsValidUsername(string username)
         {
