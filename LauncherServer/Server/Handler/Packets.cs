@@ -15,17 +15,26 @@ namespace AuthenticationServer.Server.Handler
         {
             Client cclient = (Client)client;
 
-            string username = packet.GetString();
+            string username = packet.GetString()?.Trim();
             string password = packet.GetString();
-            string email = packet.GetString();
+            string email = packet.GetString()?.Trim();
             byte langID = (byte)packet.ReadByte();
+
+            PacketOut Out = new PacketOut((byte)Opcodes.LCR_CREATE);
+
+            if (!InputValidator.IsValidUsername(username) ||
+                !InputValidator.IsValidPassword(password) ||
+                !InputValidator.IsValidEmail(email))
+            {
+                Out.WriteByte((byte)CreteAccountResult.ACCOUNT_INVALID);
+                cclient.SendPacketNoBlock(Out);
+                return;
+            }
 
             string passwordHash = Account.ConvertSHA256(username.ToLower() + ":" + password);
             Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} lang: {langID}");
 
             CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
-
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_CREATE);
 
             string ip = client.GetIp().Split(':')[0];
 
@@ -59,14 +68,22 @@ namespace AuthenticationServer.Server.Handler
         {
             Client cclient = (Client)client;
 
-            string username = packet.GetString();
+            string username = packet.GetString()?.Trim();
             string password = packet.GetString();
+
+            PacketOut Out = new PacketOut((byte)Opcodes.LCR_START);
+
+            if (!InputValidator.IsValidUsername(username) ||
+                !InputValidator.IsValidPassword(password))
+            {
+                Out.WriteByte((byte)LoginResult.LOGIN_INVALID_INPUT);
+                cclient.SendPacketNoBlock(Out);
+                return;
+            }
 
             string passwordHash = Account.ConvertSHA256(username.ToLower() + ":" + password);
 
             LoginResult result = LoginResult.LOGIN_BANNED;
-
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_START);
 
             string ip = client.GetIp().Split(':')[0];
 
