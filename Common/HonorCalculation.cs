@@ -5,27 +5,24 @@ namespace Common
 {
     public class HonorCalculation
     {
-        private Dictionary<int, int> honorLevelReference = new Dictionary<int, int>();
+        private readonly List<(int Rank, int Threshold)> honorLevelReference = new()
+        {
+            (4, HONOR_RANK_4),
+            (3, HONOR_RANK_3),
+            (2, HONOR_RANK_2),
+            (1, HONOR_RANK_1)
+        };
         public const int HONOR_RANK_1 = 1000;
         public const int HONOR_RANK_2 = 2000;
         public const int HONOR_RANK_3 = 4000;
         public const int HONOR_RANK_4 = 8000;
 
-        public HonorCalculation()
-        {
-            // This list MUST be descending in sequence for this to work ;)
-            honorLevelReference.Add(4, HONOR_RANK_4);
-            honorLevelReference.Add(3, HONOR_RANK_3);
-            honorLevelReference.Add(2, HONOR_RANK_2);
-            honorLevelReference.Add(1, HONOR_RANK_1);
-        }
-
         public int GetHonorLevel(int honorPoints)
         {
-            foreach (var honorLevel in honorLevelReference)
+            foreach (var (rank, threshold) in honorLevelReference)
             {
-                if (honorLevel.Value < honorPoints)
-                    return honorLevel.Key;
+                if (honorPoints >= threshold)
+                    return rank;
             }
             return 0;
         }

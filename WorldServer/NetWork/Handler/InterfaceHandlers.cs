@@ -307,13 +307,14 @@ namespace WorldServer.NetWork.Handler
 
         private static string FindInvalidCharsInLastName(string lastName)
         {
-            // TODO: if special characters (like apostrophe) are allowed, then the name will need to be escaped before going into the db
-
             string result = "";
 
             for (int i = 0; i < lastName.Length; i++)
-                if (!char.IsLetter(lastName[i]))
-                    result = result + lastName[i];
+            {
+                char c = lastName[i];
+                if (!(char.IsLetter(c) || c == '\'' || c == '-'))
+                    result += c;
+            }
 
             return result;
         }

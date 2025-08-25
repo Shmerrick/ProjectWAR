@@ -2850,7 +2850,9 @@ namespace WorldServer.World.Objects
 
             UpdateLastName(lastName);
 
-            CharMgr.Database.SaveObject(Info);
+            // Persist using an escaped value to avoid SQL injection
+            string escaped = CharMgr.Database.Escape(lastName);
+            CharMgr.Database.ExecuteNonQuery($"UPDATE characters SET Surname='{escaped}' WHERE CharacterId={Info.CharacterId}");
         }
 
         private void UpdateLastName(string lastName)
