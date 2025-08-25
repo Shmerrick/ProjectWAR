@@ -249,7 +249,7 @@ namespace Common
         /// <param name="passwordHash">The hashed password to check.</param>
         /// <param name="ip">The IP address of the user trying to log in.</param>
         /// <returns>The result of the login attempt.</returns>
-        public LoginResult CheckAccount(string username, string passwordHash, string ip)
+        public virtual LoginResult CheckAccount(string username, string passwordHash, string ip)
         {
             int accountId = 0;
             return CheckAccount(username, passwordHash, ip, out accountId);
@@ -263,7 +263,7 @@ namespace Common
         /// <param name="ip">The IP address of the user trying to log in.</param>
         /// <param name="accountId">The ID of the account that was checked.</param>
         /// <returns>The result of the login attempt.</returns>
-        public LoginResult CheckAccount(string username, string passwordHash, string ip, out int accountId)
+        public virtual LoginResult CheckAccount(string username, string passwordHash, string ip, out int accountId)
         {
             username = username.ToLower();
             string cryptPass = passwordHash;
@@ -350,7 +350,7 @@ namespace Common
         /// </summary>
         /// <param name="Ip">The IP address to check.</param>
         /// <returns>True if the IP address is not banned, false otherwise.</returns>
-        public bool CheckIp(string Ip)
+        public virtual bool CheckIp(string Ip)
         {
             Ip_ban ban = Database.SelectObject<Ip_ban>("Ip=LEFT('" + Database.Escape(Ip) + "', " + Database.SqlCommand_CharLength() + "(Ip))");
 
@@ -380,7 +380,7 @@ namespace Common
         /// </summary>
         /// <param name="username">The username of the account to generate the token for.</param>
         /// <returns>The new security token.</returns>
-        public string GenerateToken(string username)
+        public virtual string GenerateToken(string username)
         {
             username = username.ToLower();
 
@@ -908,7 +908,7 @@ namespace Common
         /// <param name="langID">The language ID for the new account.</param>
         /// <param name="ip">The IP address of the user creating the account.</param>
         /// <returns>True if the account was created successfully, false otherwise.</returns>
-        public bool CreateAccount(string username, string passwordHash, string email, int gmLevel, int langID, string ip = "127.0.0.1")
+        public virtual bool CreateAccount(string username, string passwordHash, string email, int gmLevel, int langID, string ip = "127.0.0.1")
         {
             Account Acct = GetAccount(username);
             if (Acct != null || _Codes.ContainsKey(username))
