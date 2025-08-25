@@ -165,9 +165,10 @@ namespace FrameWork
 
                         using (MySqlCommand cmd = new MySqlCommand(sqlcommand, (MySqlConnection)conn) { CommandTimeout = 180 })
                         {
-                            MySqlDataReader reader = cmd.ExecuteReader();
-                            callback(reader);
-                            reader.Close();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                callback(reader);
+                            }
 
                             Log.Debug("DataConnection", $"SQL Select ({isolation}) exec time {Environment.TickCount - start}ms");
 
