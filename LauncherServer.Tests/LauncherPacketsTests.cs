@@ -8,6 +8,8 @@ using LauncherServer.Server.Handler;
 using LauncherOpcodes = LauncherServer.Server.Opcodes;
 using Xunit;
 
+#nullable enable
+
 namespace LauncherServer.Tests;
 
 public class LauncherPacketsTests
