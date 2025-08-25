@@ -5,7 +5,7 @@ namespace Common
 {
     public class HonorCalculation
     {
-        private readonly List<(int Rank, int Threshold)> honorLevelReference = new()
+        private readonly List<(int Rank, int Threshold)> honorLevelReference = new List<(int Rank, int Threshold)>()
         {
             (4, HONOR_RANK_4),
             (3, HONOR_RANK_3),
