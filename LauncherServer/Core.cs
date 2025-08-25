@@ -1,5 +1,5 @@
-﻿using AuthenticationServer.Config;
-using AuthenticationServer.Server;
+﻿using LauncherServer.Config;
+using LauncherServer.Server;
 using Common;
 using FrameWork;
 using FrameWork.Misc;
@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace AuthenticationServer
+namespace LauncherServer
 {
     internal class Core
     {

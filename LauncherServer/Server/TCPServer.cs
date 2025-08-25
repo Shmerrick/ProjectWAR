@@ -1,7 +1,7 @@
 ﻿using FrameWork;
 using System.Collections.Generic;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class TCPServer : TCPManager
     {

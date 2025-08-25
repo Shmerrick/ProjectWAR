@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
-namespace AuthenticationServer.Server.Handler
+namespace LauncherServer.Server.Handler
 {
     public class LauncherPackets : IPacketHandler
     {

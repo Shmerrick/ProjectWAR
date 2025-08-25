@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AuthenticationServer.Server.Handler
+namespace LauncherServer.Server.Handler
 {
     public static class InputValidator
     {

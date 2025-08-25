@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class Client : BaseClient
     {

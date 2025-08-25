@@ -1,12 +1,12 @@
-﻿using AuthenticationServer.Server;
+﻿using LauncherServer.Server;
 using Common.Database.Account;
 using FrameWork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Opcodes = AuthenticationServer.Server.Opcodes;
+using Opcodes = LauncherServer.Server.Opcodes;
 
-namespace AuthenticationServer
+namespace LauncherServer
 {
     public class PatchFile
     {

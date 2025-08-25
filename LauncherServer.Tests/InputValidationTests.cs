@@ -1,4 +1,4 @@
-using AuthenticationServer.Server.Handler;
+using LauncherServer.Server.Handler;
 using Xunit;
 
 namespace LauncherServer.Tests

@@ -1,4 +1,4 @@
-﻿namespace AuthenticationServer.Server
+﻿namespace LauncherServer.Server
 {
     public enum Opcodes : byte
     {
