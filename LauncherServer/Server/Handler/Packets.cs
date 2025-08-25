@@ -19,7 +19,9 @@ namespace AuthenticationServer.Server.Handler
             string password = packet.GetString();
             string email = packet.GetString();
             byte langID = (byte)packet.ReadByte();
-            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} {email} lang: {langID}");
+
+            string passwordHash = Account.ConvertSHA256(username.ToLower() + ":" + password);
+            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} lang: {langID}");
 
             CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
 
@@ -32,7 +34,7 @@ namespace AuthenticationServer.Server.Handler
             {
                 Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
 
-                if (Core.AcctMgr.CreateAccount(username, password, email, 1, langID, ip))
+                if (Core.AcctMgr.CreateAccount(username, passwordHash, email, 1, langID, ip))
                 {
                     result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
                     Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
@@ -60,6 +62,8 @@ namespace AuthenticationServer.Server.Handler
             string username = packet.GetString();
             string password = packet.GetString();
 
+            string passwordHash = Account.ConvertSHA256(username.ToLower() + ":" + password);
+
             LoginResult result = LoginResult.LOGIN_BANNED;
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_START);
@@ -69,7 +73,7 @@ namespace AuthenticationServer.Server.Handler
             // Check Ip Ban
             if (Core.AcctMgr.CheckIp(ip))
             {
-                result = Core.AcctMgr.CheckAccount(username, password, ip);
+                result = Core.AcctMgr.CheckAccount(username, passwordHash, ip);
                 Log.Debug("CL_START", "Authentication Request : " + username + " " + result);
 
                 Out.WriteByte((byte)result);
@@ -77,7 +81,7 @@ namespace AuthenticationServer.Server.Handler
                 if (result == LoginResult.LOGIN_SUCCESS)
                 {
                     var token = Core.AcctMgr.GenerateToken(username);
-                    Log.Debug("CL_START", "Sending token to client : " + username + " token : " + token);
+                    Log.Debug("CL_START", "Sending token to client : " + username);
                     Out.WriteString(token);
                 }
             }

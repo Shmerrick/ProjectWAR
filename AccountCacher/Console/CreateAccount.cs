@@ -16,7 +16,9 @@ namespace AccountCacher
             string Mail = args[2];
             int GmLevel = int.Parse(args[3]);
 
-            return Core.AcctMgr.CreateAccount(Username, Password, Mail, GmLevel, 0);
+            string passwordHash = Account.ConvertSHA256(Username.ToLower() + ":" + Password);
+
+            return Core.AcctMgr.CreateAccount(Username, passwordHash, Mail, GmLevel, 0);
         }
     }
 
