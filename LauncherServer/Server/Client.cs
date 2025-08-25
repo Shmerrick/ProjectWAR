@@ -66,6 +66,7 @@ namespace AuthenticationServer.Server
                 sb.Append(hash[i].ToString("x2"));
 
             var password = sb.ToString();
+            string passwordHash = Account.ConvertSHA256(username.ToLower() + ":" + password.ToLower());
 
             string ip = GetIp().Split(':')[0];
             LoginResult result = LoginResult.LOGIN_BANNED;
@@ -75,7 +76,7 @@ namespace AuthenticationServer.Server
             {
                 int accountId;
 
-                result = Core.AcctMgr.CheckAccount(username, password, ip, out accountId);
+                result = Core.AcctMgr.CheckAccount(username, passwordHash, ip, out accountId);
 
                 var account = Core.AcctMgr.GetAccount(accountId);
                 if (account == null)

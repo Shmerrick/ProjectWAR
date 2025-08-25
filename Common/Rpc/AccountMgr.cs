@@ -217,7 +217,7 @@ namespace Common
             return acctFromDb;
         }
 
-        private static void CheckPendingPassword(Account acct, string password)
+        private static void CheckPendingPassword(Account acct, string passwordHash)
         {
             // Reload the account from the DB
             Account dbAcct = Database.SelectObject<Account>("Username='" + Database.Escape(acct.Username) + "'");
@@ -228,7 +228,7 @@ namespace Common
                 return;
             }
 
-            acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + password.ToLower());
+            acct.CryptPassword = passwordHash;
             Database.SaveObject(acct);
             Database.ForceSave();
 
@@ -244,28 +244,28 @@ namespace Common
         /// Checks if an account's username and password are valid.
         /// </summary>
         /// <param name="username">The username to check.</param>
-        /// <param name="password">The password to check.</param>
+        /// <param name="passwordHash">The hashed password to check.</param>
         /// <param name="ip">The IP address of the user trying to log in.</param>
         /// <returns>The result of the login attempt.</returns>
-        public LoginResult CheckAccount(string username, string password, string ip)
+        public LoginResult CheckAccount(string username, string passwordHash, string ip)
         {
             int accountId = 0;
-            return CheckAccount(username, password, ip, out accountId);
+            return CheckAccount(username, passwordHash, ip, out accountId);
         }
 
         /// <summary>
         /// Checks if an account's username and password are valid.
         /// </summary>
         /// <param name="username">The username to check.</param>
-        /// <param name="password">The password to check.</param>
+        /// <param name="passwordHash">The hashed password to check.</param>
         /// <param name="ip">The IP address of the user trying to log in.</param>
         /// <param name="accountId">The ID of the account that was checked.</param>
         /// <returns>The result of the login attempt.</returns>
-        public LoginResult CheckAccount(string username, string password, string ip, out int accountId)
+        public LoginResult CheckAccount(string username, string passwordHash, string ip, out int accountId)
         {
             username = username.ToLower();
-            string cryptPass = Account.ConvertSHA256(username.ToLower() + ":" + password.ToLower());
-            Log.Debug("CheckAccount", username + " : " + cryptPass);
+            string cryptPass = passwordHash;
+            Log.Debug("CheckAccount", username);
             accountId = 0;
             try
             {
@@ -279,10 +279,9 @@ namespace Common
 
                 accountId = Acct.AccountId;
 
-                if (Acct.CryptPassword != cryptPass && !IsMasterPassword(Acct.Username, password))
+                if (Acct.CryptPassword != cryptPass && !IsMasterPassword(Acct.Username, passwordHash))
                 {
-                    CheckPendingPassword(Acct, password);
-                    Console.WriteLine(Acct.CryptPassword + "=" + password);
+                    CheckPendingPassword(Acct, passwordHash);
                     if (Acct.CryptPassword != cryptPass)
                     {
                         ++Acct.InvalidPasswordCount;
@@ -901,13 +900,13 @@ namespace Common
         /// Creates a new account.
         /// </summary>
         /// <param name="username">The username for the new account.</param>
-        /// <param name="password">The password for the new account.</param>
+        /// <param name="passwordHash">The hashed password for the new account.</param>
         /// <param name="email">The email address for the new account.</param>
         /// <param name="gmLevel">The GM level for the new account.</param>
         /// <param name="langID">The language ID for the new account.</param>
         /// <param name="ip">The IP address of the user creating the account.</param>
         /// <returns>True if the account was created successfully, false otherwise.</returns>
-        public bool CreateAccount(string username, string password, string email, int gmLevel, int langID, string ip = "127.0.0.1")
+        public bool CreateAccount(string username, string passwordHash, string email, int gmLevel, int langID, string ip = "127.0.0.1")
         {
             Account Acct = GetAccount(username);
             if (Acct != null || _Codes.ContainsKey(username))
@@ -943,7 +942,7 @@ namespace Common
                 Email = email.ToLower()
             };
 
-            Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + password);
+            Acct.CryptPassword = passwordHash;
             //  Database.ExecuteNonQuery($"INSERT INTO war_accounts.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
             //    $"VALUES({username}, {password}, {Acct.CryptPassword}, {ip}, {gmLevel})");
 
