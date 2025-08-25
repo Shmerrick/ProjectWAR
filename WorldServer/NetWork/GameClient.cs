@@ -26,6 +26,7 @@ namespace WorldServer.NetWork
         public Account _Account = null;
         public Player Plr = null;
         private Thread _logThread = null;
+        private CancellationTokenSource _logCts = null;
         private List<string> _packetLog = new List<string>();
 
         private CircularBuffer<object> _pLogBuf = new CircularBuffer<object>(100);
@@ -61,13 +62,11 @@ namespace WorldServer.NetWork
             if (_logThread != null)
             {
                 FlushPacketLog();
-                try
-                {
-                    _logThread.Abort();
-                }
-                catch (Exception)
-                {
-                }
+                _logCts?.Cancel();
+                _logThread.Join();
+                _logCts?.Dispose();
+                _logCts = null;
+                _logThread = null;
             }
 
             if (Plr != null)
@@ -103,7 +102,8 @@ namespace WorldServer.NetWork
         {
             if (_logThread == null)
             {
-                _logThread = new Thread(new ThreadStart(PacketLogThread));
+                _logCts = new CancellationTokenSource();
+                _logThread = new Thread(() => PacketLogThread(_logCts.Token));
                 _logThread.Start();
             }
 
@@ -117,7 +117,8 @@ namespace WorldServer.NetWork
         {
             if (_logThread == null)
             {
-                _logThread = new Thread(new ThreadStart(PacketLogThread));
+                _logCts = new CancellationTokenSource();
+                _logThread = new Thread(() => PacketLogThread(_logCts.Token));
                 _logThread.Start();
             }
 
@@ -127,9 +128,9 @@ namespace WorldServer.NetWork
             }
         }
 
-        private void PacketLogThread()
+        private void PacketLogThread(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 FlushPacketLog();
                 if (!Socket.Connected)
