@@ -29,6 +29,9 @@ namespace WorldServer.NetWork
         private CancellationTokenSource _logCts = null;
         private List<string> _packetLog = new List<string>();
 
+        // Lock to synchronize packet reception without locking on the GameClient instance itself.
+        private readonly object _receiveLock = new object();
+
         private CircularBuffer<object> _pLogBuf = new CircularBuffer<object>(100);
 
         public CircularBuffer<object> PLogBuf
@@ -202,7 +205,7 @@ namespace WorldServer.NetWork
             Log.Debug("HandlePacket", $"Packet...{packetBuffer.Length}");
             PacketIn inStream = new PacketIn(packetBuffer, 0, packetBuffer.Length, true, true);
 
-            lock (this)
+            lock (_receiveLock)
             {
                 long bufferLength = inStream.Length;
 
