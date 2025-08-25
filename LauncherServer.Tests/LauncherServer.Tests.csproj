@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <IsPackable>false</IsPackable>
+    <LangVersion>10.0</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../LauncherServer/Server/Handler/InputValidation.cs" Link="InputValidation.cs" />

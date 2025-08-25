@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+      <LangVersion>10.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -31,7 +31,7 @@
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+      <LangVersion>10.0</LangVersion>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
