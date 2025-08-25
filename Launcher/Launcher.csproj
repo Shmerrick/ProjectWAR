@@ -130,6 +130,7 @@
     <Compile Include="NetWork\PacketIn.cs" />
     <Compile Include="NetWork\PacketOut.cs" />
     <Compile Include="Patcher.cs" />
+    <Compile Include="NLogStub.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ApocLauncher.resx">
@@ -152,9 +153,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -193,9 +191,6 @@
     <Content Include="WAR.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog">
-      <Version>6.0.3</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
