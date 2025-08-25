@@ -99,36 +99,40 @@ namespace WorldServer.World.Objects
 
             try
             {
-                foreach (var lootBag in LootBags)
+                if (LootBags != null && LootBags.Count > 0)
                 {
-                    var character = CharMgr.GetCharacter(lootBag.Key, false);
-                    var characterName = character?.Name;
-
-                    // Forced to have some value here.
-                    if (Content == null)
-                        Content = "mail";
-                    if (String.IsNullOrEmpty(Content))
-                        Content = "mail";
-
-                    Character_mail mail = new Character_mail
+                    foreach (var lootBag in LootBags)
                     {
-                        Guid = CharMgr.GenerateMailGuid(),
-                        CharacterId = lootBag.Key,  //CharacterId
-                        SenderName = SenderName,
-                        ReceiverName = characterName,
-                        SendDate = (uint)TCPManager.GetTimeStamp(),
-                        Title = Title,
-                        Content = Content,
-                        Money = 0,
-                        Opened = false
-                    };
+                        var character = CharMgr.GetCharacter(lootBag.Key, false);
+                        var characterName = character?.Name;
 
-                    mail.CharacterIdSender = lootBag.Key;
-                    MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0, (ushort)lootBag.Value.Value.Count);
-                    if (item != null)
-                    {
-                        mail.Items.Add(item);
-                        CharMgr.AddMail(mail);
+                        // Forced to have some value here.
+                        if (Content == null)
+                            Content = "mail";
+                        if (String.IsNullOrEmpty(Content))
+                            Content = "mail";
+
+                        Character_mail mail = new Character_mail
+                        {
+                            Guid = CharMgr.GenerateMailGuid(),
+                            CharacterId = lootBag.Key,  //CharacterId
+                            SenderName = SenderName,
+                            ReceiverName = characterName,
+                            SendDate = (uint)TCPManager.GetTimeStamp(),
+                            Title = Title,
+                            Content = Content,
+                            Money = 0,
+                            Opened = false
+                        };
+
+                        mail.CharacterIdSender = lootBag.Key;
+                        MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0,
+                            (ushort)lootBag.Value.Value.Count);
+                        if (item != null)
+                        {
+                            mail.Items.Add(item);
+                            CharMgr.AddMail(mail);
+                        }
                     }
                 }
             }
@@ -156,14 +160,8 @@ namespace WorldServer.World.Objects
                     break;
             }
 
-            // Unknown if needed TODO
-            //GoldBag bag;
-
-            if (this.LootBags.ContainsKey(player.CharacterId))
+            if (LootBags != null && LootBags.TryGetValue(player.CharacterId, out var lootBag))
             {
-                KeyValuePair<Item_Info, List<Talisman>> lootBag;
-                this.LootBags.TryGetValue(player.CharacterId, out lootBag);
-
                 PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 32);
                 Out.WriteByte(4);
                 Out.WriteByte(1);
