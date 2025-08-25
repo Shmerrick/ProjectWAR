@@ -8,9 +8,9 @@ namespace LauncherServer.Server.Handler
         // language versions. The previous implementation relied on C# 9's
         // target-typed `new()` expressions which are unavailable when the
         // project is compiled with the current language version setting (7.3).
-        private static readonly Regex UsernameRegex = new Regex("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled);
-        private static readonly Regex PasswordRegex = new Regex("^[\x21-\x7E]{6,50}$", RegexOptions.Compiled);
-        private static readonly Regex EmailRegex = new Regex(@"^(([^<>()[\]\\.,;:\s@""']+(\.[^<>()[\]\\.,;:\s@""']+)*)|("".+""))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", RegexOptions.Compiled);
+        private static readonly Regex UsernameRegex = new Regex("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex PasswordRegex = new Regex("^[\x21-\x7E]{6,50}$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex EmailRegex = new Regex(@"^(([^<>()[\]\\.,;:\s@""']+(\.[^<>()[\]\\.,;:\s@""']+)*)|("".+""))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public static bool IsValidUsername(string username)
         {
