@@ -1,3 +1,4 @@
+using System.Globalization;
 using LauncherServer.Server.Handler;
 using Xunit;
 
@@ -14,9 +15,19 @@ namespace LauncherServer.Tests
         }
 
         [Theory]
+        [InlineData("abc")]
+        [InlineData("abcdefghijklmnopqrst")] // 20 characters
+        public void BoundaryUsernames_Pass(string username)
+        {
+            Assert.True(InputValidator.IsValidUsername(username));
+        }
+
+        [Theory]
         [InlineData("tooooooooooooooooooolongusername")]
         [InlineData("bad!user")]
         [InlineData("")]
+        [InlineData("ab")]
+        [InlineData("abcdefghijklmnopqrstu")] // 21 characters
         public void InvalidUsernames_Fail(string username)
         {
             Assert.False(InputValidator.IsValidUsername(username));
@@ -31,9 +42,19 @@ namespace LauncherServer.Tests
         }
 
         [Theory]
+        [InlineData("abcdef")]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")] // 50 characters
+        public void BoundaryPasswords_Pass(string password)
+        {
+            Assert.True(InputValidator.IsValidPassword(password));
+        }
+
+        [Theory]
         [InlineData("short")]
         [InlineData("contains space")]
         [InlineData("bad\npass")]
+        [InlineData("abcde")]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")] // 51 characters
         public void InvalidPasswords_Fail(string password)
         {
             Assert.False(InputValidator.IsValidPassword(password));
@@ -54,6 +75,21 @@ namespace LauncherServer.Tests
         public void InvalidEmails_Fail(string email)
         {
             Assert.False(InputValidator.IsValidEmail(email));
+        }
+
+        [Fact]
+        public void UsernameValidation_IsCultureInvariant()
+        {
+            var original = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = new CultureInfo("tr-TR");
+                Assert.True(InputValidator.IsValidUsername("validUser"));
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = original;
+            }
         }
     }
 }
