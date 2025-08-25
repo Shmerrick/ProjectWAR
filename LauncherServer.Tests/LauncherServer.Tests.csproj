@@ -8,6 +8,10 @@
   <ItemGroup>
     <ProjectReference Include="..\LauncherServer\LauncherServer.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\FrameWork\FrameWork.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
