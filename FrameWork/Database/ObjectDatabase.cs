@@ -789,7 +789,7 @@ namespace FrameWork
                     Relation[] myAttributes = GetRelationAttributes(myMembers[i]);
                     if (myAttributes.Length > 0)
                     {
-                        if (myAttributes[0].AutoDelete == false)
+                        if (!myAttributes[0].AutoDelete)
                             continue;
 
                         bool array = false;
@@ -874,7 +874,7 @@ namespace FrameWork
                     {
                         Relation rel = myAttributes[0];
 
-                        if ((rel.AutoLoad == false) && autoload)
+                        if (!rel.AutoLoad && autoload)
                             continue;
 
                         bool isArray = false;

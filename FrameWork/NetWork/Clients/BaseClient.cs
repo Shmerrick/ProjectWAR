@@ -231,7 +231,7 @@ namespace FrameWork
                 baseClient = (BaseClient)ar.AsyncState;
                 int numBytes = baseClient.Socket.EndReceive(ar);
 
-                if (numBytes > 0 || (numBytes <= 0 && DisconnectOnNullByte == false))
+                if (numBytes > 0 || (numBytes <= 0 && !DisconnectOnNullByte))
                 {
                     Log.Tcp(baseClient.GetIp(), baseClient.ReceiveBuffer, 0, numBytes);
 

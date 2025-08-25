@@ -117,7 +117,7 @@ namespace FrameWork
                 foreach (Type type in assembly.GetTypes())
                 {
                     // Pick up a class
-                    if (type.IsClass != true)
+                    if (!type.IsClass)
                         continue;
 
                     object[] attrib = type.GetCustomAttributes(typeof(ConsoleHandlerAttribute), true);
@@ -203,7 +203,7 @@ namespace FrameWork
 
         static bool GetBool(List<string> args)
         {
-            return GetInt(args) > 0 ? true : false;
+            return GetInt(args) > 0;
         }
 
         static string GetTotalString(List<string> args, int num)

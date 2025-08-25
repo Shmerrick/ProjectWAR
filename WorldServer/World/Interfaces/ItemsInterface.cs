@@ -3130,7 +3130,7 @@ namespace WorldServer.World.Interfaces
                     break;
 
                 case WeaponRequirements.TwoHander:
-                    if (GetItemInSlot((ushort)EquipSlot.MAIN_HAND) == null || GetItemInSlot((ushort)EquipSlot.MAIN_HAND).Info.TwoHanded == false)
+                    if (GetItemInSlot((ushort)EquipSlot.MAIN_HAND) == null || !GetItemInSlot((ushort)EquipSlot.MAIN_HAND).Info.TwoHanded)
                         result = AbilityResult.ABILITYRESULT_WRONG_WEAPON_TYPE;
                     break;
 

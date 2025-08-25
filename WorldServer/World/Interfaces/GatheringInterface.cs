@@ -150,7 +150,7 @@ namespace WorldServer.World.Interfaces
                         Realstat = true;
                 }
 
-                if (Realstat == false)
+                if (!Realstat)
                     return;
 
                 switch (Stat)

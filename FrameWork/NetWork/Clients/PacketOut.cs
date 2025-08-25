@@ -26,7 +26,7 @@ namespace FrameWork
     {
         OpcodeAndSize = 0x01,
         SizeAndOpcode = 0x02
-    };
+    }
 
     public class PacketOut : MemoryStream
     {
@@ -217,7 +217,7 @@ namespace FrameWork
 
         public long GetSize()
         {
-            long size = OpcodeInLen == false ? (Length - OpcodeLen) : Length;
+            long size = !OpcodeInLen ? (Length - OpcodeLen) : Length;
             if (!SizeInLen) size -= SizeLen;
             return size;
         }

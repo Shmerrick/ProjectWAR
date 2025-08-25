@@ -192,7 +192,7 @@ namespace Launcher
         {
             Position = 0;
 
-            long size = OpcodeInLen == false ? (Length - OpcodeLen) : Length;
+            long size = !OpcodeInLen ? (Length - OpcodeLen) : Length;
 
             if (!reversed)
             {

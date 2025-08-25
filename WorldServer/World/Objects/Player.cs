@@ -4690,7 +4690,7 @@ namespace WorldServer.World.Objects
             float pullOffsetFactor;
 
             // Offset the pull by a random factor of between 5 and 15 feet of the caster's position.
-            if (fivefeetoverride == false)
+            if (!fivefeetoverride)
                 pullOffsetFactor = Math.Min(1f, (10f + StaticRandom.Instance.Next(10)) / GetDistanceToObject(caster));
             //if the 5 feet override is true then set it to 5 feet instead.
             else
@@ -5580,7 +5580,7 @@ namespace WorldServer.World.Objects
 
         public void SetPVPFlag(bool state)
         {
-            if (state == false)
+            if (!state)
                 Faction = (byte)(Realm == Realms.REALMS_REALM_DESTRUCTION ? 8 : 6);
             else
                 Faction = (byte)(Realm == Realms.REALMS_REALM_DESTRUCTION ? 72 : 68);

@@ -82,7 +82,7 @@ namespace FrameWork
             {
                 foreach (Type type in assembly.GetTypes())
                 {
-                    if (type.IsClass != true)
+                    if (!type.IsClass)
                         continue;
 
                     try

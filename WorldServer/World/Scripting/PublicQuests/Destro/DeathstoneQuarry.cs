@@ -58,7 +58,7 @@ namespace WorldServer.World.Scripting.PublicQuests.Destro
         {
             int X = Obj.WorldPosition.X;
             int Y = Obj.WorldPosition.Y;
-            int Z = Obj.WorldPosition.Z; ;
+            int Z = Obj.WorldPosition.Z;
             ushort O = Obj.Heading;
 
             Creature_proto Proto = CreatureService.GetCreatureProto(14872);

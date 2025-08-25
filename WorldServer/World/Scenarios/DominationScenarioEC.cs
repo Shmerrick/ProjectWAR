@@ -70,7 +70,7 @@ namespace WorldServer.World.Scenarios
             base.OnStart();
             foreach (var obj in Region.Objects.Where(e => e != null).ToList())
             {
-                Log.Info("Scenario", "Object " + obj.ToString() + " WorldPos " + obj.WorldPosition.ToString()); ;
+                Log.Info("Scenario", "Object " + obj.ToString() + " WorldPos " + obj.WorldPosition.ToString());
             }
             Random r = new Random();
             EvtInterface.AddEvent(WindsOfChange, r.Next(15000, 40000), 1);

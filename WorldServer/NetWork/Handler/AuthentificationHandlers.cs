@@ -150,7 +150,7 @@ namespace WorldServer.NetWork.Handler
                 return;
 
             TCPServer server = (TCPServer)client.Server;
-            server.GetClientByAccount(cclient, cclient._Account.AccountId)?.Disconnect("F_DISCONNECT"); ;
+            server.GetClientByAccount(cclient, cclient._Account.AccountId)?.Disconnect("F_DISCONNECT");
         }
     }
 }

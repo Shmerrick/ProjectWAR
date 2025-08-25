@@ -102,7 +102,7 @@ namespace FrameWork
                 {
                     Log.Dump("ConsoleMgr", "Attempting to load : " + type.FullName);
                     // Pick up a class
-                    if (type.IsClass != true)
+                    if (!type.IsClass)
                         continue;
 
                     object[] attrib = type.GetCustomAttributes(typeof(ConsoleHandlerAttribute), true);

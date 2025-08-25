@@ -74,7 +74,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         public override bool AddResourceOverride(byte amount, bool blockEvent, bool noTimer)
         {
             Now = TCPManager.GetTimeStampMS();
-            if (noTimer == false)
+            if (!noTimer)
             {
                 if (Now < _nextOTimer)
                     return true;

@@ -387,13 +387,13 @@ namespace WorldServer.World.Battlefronts.Keeps
                 h.CurrentWeapon?.Destroy();
 
             // Flip realm on Lord Kill
-            PendingRealm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER; ;
+            PendingRealm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
 
             _logger.Info($"Updating VP for Lord Kill. Pending Realm = {PendingRealm} {Info.Name}");
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
             // Find the lord in the Keep creatures.
-            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
+            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord);
             if (lord == null)
             {
                 _logger.Info($"Lord is NULL {Info.Name}");
@@ -1743,7 +1743,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void CheckKeepPlayersInvolved()
         {
-            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
+            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord);
             if (lord == null)
                 _logger.Error($"Lord is null!!");
             else

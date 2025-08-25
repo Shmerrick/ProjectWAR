@@ -119,7 +119,7 @@ namespace Common
         public int Value
         {
             get { return _value; }
-            set { _value = value; ; }
+            set { _value = value; }
         }
     }
 }

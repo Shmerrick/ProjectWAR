@@ -735,7 +735,7 @@ namespace WorldServer.World.Abilities
                 _playerOwner._Value.MasterySkills = (0 + _bonusMasteryPoints[0]) + ";" +
                                                     (0 + _bonusMasteryPoints[1]) + ";" +
                                                     (0 + _bonusMasteryPoints[2]) + ";" +
-                                                    "0,0,0,0,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,0,0"; ;
+                                                    "0,0,0,0,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,0,0";
                 SaveMastery();
                 return;
             }

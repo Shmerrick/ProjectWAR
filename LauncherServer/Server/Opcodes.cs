@@ -136,14 +136,14 @@
         LAUNCHER_OK = 0x00,   // Le Launcher est ok
         LAUNCHER_VERSION = 0x01,   // Mauvaise version du launcher
         LAUNCHER_FILE = 0x02   // Fichier manquant dans le launcher
-    };
+    }
 
     public enum DownloadResult
     {
         SUCCESS = 0,
         INVALID_HASH = 1,
         FILE_CORRUPT = 2
-    };
+    }
 
     public enum Archive
     {

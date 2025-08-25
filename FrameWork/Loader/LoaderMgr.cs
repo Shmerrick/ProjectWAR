@@ -43,7 +43,7 @@ namespace FrameWork
         private static void Load(List<LoadFunction> WaitEnd, HashSet<Type> loaded, Type type)
         {
             // Pick up a class
-            if (type.IsClass != true)
+            if (!type.IsClass)
                 return;
 
             if (loaded.Contains(type))

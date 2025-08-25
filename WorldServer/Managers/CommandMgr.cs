@@ -1270,7 +1270,7 @@ namespace WorldServer.Managers
                         }
                     }
                 }
-                if (PartyState == true) // is closed, must open
+                if (PartyState) // is closed, must open
                     PartyOpen(plr, text);
                 else
                     PartyClose(plr, text);
@@ -1405,7 +1405,7 @@ namespace WorldServer.Managers
                         unique = false;
                 }
 
-                if (unique == false)
+                if (!unique)
                 {
                     // Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, "Name already taken" );
                     return;
