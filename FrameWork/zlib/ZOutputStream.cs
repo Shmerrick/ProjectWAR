@@ -47,9 +47,13 @@ using System;
 namespace FrameWork
 {
 	
-	public class ZOutputStream:System.IO.Stream
-	{
-		private void  InitBlock()
+        /// <summary>
+        /// Stream that (de)compresses data and writes the result to an underlying stream.
+        /// This stream is write-only; read and seek operations are not supported.
+        /// </summary>
+        public class ZOutputStream:System.IO.Stream
+        {
+                private void  InitBlock()
 		{
 			flush_Renamed_Field = zlibConst.Z_NO_FLUSH;
 			buf = new byte[bufsize];
@@ -116,10 +120,10 @@ namespace FrameWork
 			Write(buf1, 0, 1);
 		}
 		//UPGRADE_TODO: The differences in the Expected value  of parameters for method 'WriteByte'  may cause compilation errors.  'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1092_3"'
-		public override  void  WriteByte(byte b)
-		{
-			WriteByte(b);
-		}
+                public override  void  WriteByte(byte b)
+                {
+                        WriteByte((int)b);
+                }
 		
 		public override void  Write(byte[] b1, int off, int len)
 		{
@@ -215,67 +219,69 @@ namespace FrameWork
 			out_Renamed.Flush();
 		}
 		//UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			return 0;
-		}
+                public override int Read(byte[] buffer, int offset, int count)
+                {
+                        throw new NotSupportedException("ZOutputStream is write-only");
+                }
 		//UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-		public override void  SetLength(long value)
-		{
-		}
+                public override void  SetLength(long value)
+                {
+                        throw new NotSupportedException("ZOutputStream does not support SetLength");
+                }
 		//UPGRADE_TODO: The following method was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
-		public override long Seek(long offset, System.IO.SeekOrigin origin)
-		{
-			return 0;
-		}
+                public override long Seek(long offset, System.IO.SeekOrigin origin)
+                {
+                        throw new NotSupportedException("ZOutputStream does not support seeking");
+                }
 		//UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
 		public override bool CanRead
 		{
 			get
 			{
-				return false;
-			}
-			
-		}
+                                return false;
+                        }
+
+                }
 		//UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
 		public override bool CanSeek
 		{
 			get
 			{
-				return false;
-			}
-			
-		}
+                                return false;
+                        }
+
+                }
 		//UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
 		public override bool CanWrite
 		{
 			get
 			{
-				return false;
-			}
-			
-		}
+                                return true;
+                        }
+
+                }
 		//UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
 		public override long Length
 		{
 			get
 			{
-				return 0;
-			}
-			
-		}
+                                throw new NotSupportedException("ZOutputStream does not support Length");
+                        }
+
+                }
 		//UPGRADE_TODO: The following property was automatically generated and it must be implemented in order to preserve the class logic. 'ms-help://MS.VSCC.2003/commoner/redir/redirect.htm?keyword="jlca1232_3"'
 		public override long Position
 		{
 			get
 			{
-				return 0;
-			}
-			
-			set
-			{
-			}
-			
-		}
-	}
+                                throw new NotSupportedException("ZOutputStream does not support Position");
+                        }
+
+                        set
+                        {
+                                throw new NotSupportedException("ZOutputStream does not support Position");
+                        }
+
+                }
+        }
 }
