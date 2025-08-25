@@ -19,6 +19,18 @@ namespace WorldServer.Services.World
         public static List<Zone_Info> _Zone_Info;
         public static IOcclusionProvider OcclusionProvider = new Occlusion();
 
+        public override void Start()
+        {
+            base.Start();
+            WorldMgr.WorldUpdateStart();
+            WorldMgr.GroupUpdateStart();
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+        }
+
         [LoadingFunction(true)]
         public static void LoadZone_Info()
         {
@@ -40,8 +52,6 @@ namespace WorldServer.Services.World
                 }
             }
             LoadZoneJumps();
-            WorldMgr.WorldUpdateStart();
-            WorldMgr.GroupUpdateStart();
         }
 
         /// <summary>
