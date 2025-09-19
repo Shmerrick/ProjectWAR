@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "BattleFront_objectives", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "battlefront_objectives", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class BattleFront_Objective : DataObject
     {

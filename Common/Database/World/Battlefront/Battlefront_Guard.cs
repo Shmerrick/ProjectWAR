@@ -3,7 +3,7 @@ using System;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "BattleFront_guards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "battlefront_guards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class BattleFront_Guard : DataObject
     {

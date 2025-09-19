@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Protos/">
+    <File Path="AccountMgr.proto" />
+  </Folder>
+  <Project Path="AccountCacher/AccountCacher.csproj" />
+  <Project Path="Common/Common.csproj" />
+  <Project Path="FrameWork/FrameWork.csproj" />
+  <Project Path="Launcher/Launcher.csproj" />
+  <Project Path="LauncherServer/LauncherServer.csproj" />
+  <Project Path="LobbyServer/LobbyServer.csproj" />
+  <Project Path="ServerLauncher/ServerLauncher.csproj" />
+  <Project Path="WarZone/WarZone.vcxproj" />
+  <Project Path="WorldServer/WorldServer.csproj" />
+</Solution>

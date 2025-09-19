@@ -28,62 +28,54 @@ namespace AuthenticationServer.Server.Handler
             string ip = client.GetIp().Split(':')[0];
 
             // Check Ip Ban
-            if (Core.AcctMgr.CheckIp(ip))
-            {
-                Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
-
-                if (Core.AcctMgr.CreateAccount(username, password, email, 1, langID, ip))
-                {
-                    result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
-                    Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
-                }
-                else
-                {
-                    Log.Debug("CL_CREATE", "Create Account Request BUSY");
-                    result = CreteAccountResult.ACCOUNT_NAME_BUSY;
-                }
-                Out.WriteByte((byte)result);
-            }
-            else
-            {
-                Out.WriteByte((byte)result); // Banned
-            }
-            Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
-            cclient.SendPacketNoBlock(Out);
+            // if (Core.AcctMgr.CheckIp(ip))
+            // {
+            //     Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
+            //
+            //     if (Core.AcctMgr.CreateAccount(username, password, email, 1, langID, ip))
+            //     {
+            //         result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
+            //         Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
+            //     }
+            //     else
+            //     {
+            //         Log.Debug("CL_CREATE", "Create Account Request BUSY");
+            //         result = CreteAccountResult.ACCOUNT_NAME_BUSY;
+            //     }
+            //     Out.WriteByte((byte)result);
+            // }
+            // else
+            // {
+            //     Out.WriteByte((byte)result); // Banned
+            // }
+            // Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
+            // cclient.SendPacketNoBlock(Out);
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_START, 0, "OnStart")]
         public static void CL_START(BaseClient client, PacketIn packet)
         {
-            Client cclient = (Client)client;
+            var cclient = (Client)client;
 
-            string username = packet.GetString();
-            string password = packet.GetString();
-
-            LoginResult result = LoginResult.LOGIN_BANNED;
-
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_START);
-
-            string ip = client.GetIp().Split(':')[0];
-
-            // Check Ip Ban
-            if (Core.AcctMgr.CheckIp(ip))
+            var username = packet.GetString();
+            var password = packet.GetString();
+            
+            var Out = new PacketOut((byte)Opcodes.LCR_START);
+            
+            var authResult = Core.AcctMgr.AuthenticateUser(new AuthenticateUserRequest
             {
-                result = Core.AcctMgr.CheckAccount(username, password, ip);
-                Log.Debug("CL_START", "Authentication Request : " + username + " " + result);
+                Username = username,
+                Password = password
+            });
+            
+            Out.WriteByte((byte)authResult.Result);
 
-                Out.WriteByte((byte)result);
-
-                if (result == LoginResult.LOGIN_SUCCESS)
-                {
-                    var token = Core.AcctMgr.GenerateToken(username);
-                    Log.Debug("CL_START", "Sending token to client : " + username + " token : " + token);
-                    Out.WriteString(token);
-                }
+            if (authResult.Result == LoginResult.Success)
+            {
+                Log.Debug("CL_START", "Sending token to client : " + username + " token : " + authResult.Token);
+                Out.WriteString(authResult.Token);
             }
-            else
-                Out.WriteByte((byte)result); // Banned
-
+            
             cclient.SendPacketNoBlock(Out);
 
 #if !DEBUG
@@ -176,13 +168,13 @@ namespace AuthenticationServer.Server.Handler
             {
                 cclient.LastInfoRequest = TCPManager.GetTimeStampMS();
 
-                List<Realm> Rms = Core.AcctMgr.GetRealms();
+                var realmsResponse = Core.AcctMgr.ListRealms(new ListRealmsRequest());
 
                 PacketOut Out = new PacketOut((byte)Opcodes.LCR_INFO);
-                Out.WriteByte((byte)Rms.Count);
-                foreach (Realm Rm in Rms)
+                Out.WriteByte((byte)realmsResponse.Realms.Count);
+                foreach (var Rm in realmsResponse.Realms)
                 {
-                    Out.WriteByte(Convert.ToByte(Rm.Info != null));
+                    Out.WriteByte(Convert.ToByte(true)); // Out.WriteByte(Convert.ToByte(Rm.Info != null));
                     Out.WriteString(Rm.Name);
                     Out.WriteUInt32(Rm.OnlinePlayers);
                     Out.WriteUInt32(Rm.OrderCount);
@@ -315,7 +307,7 @@ namespace AuthenticationServer.Server.Handler
             string username = packet.GetString().ToLower();
             string code = packet.GetString();
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_EMAIL_RESPONCE);
-            Out.WriteInt32(Core.AcctMgr.CheckCode(username, code));
+            // Out.WriteInt32(Core.AcctMgr.CheckCode(username, code));
             Log.Debug("CL_EMAIL_REGISTRATION", $"Writing response to Client {Out} ");
             cclient.SendPacketNoBlock(Out);
         }

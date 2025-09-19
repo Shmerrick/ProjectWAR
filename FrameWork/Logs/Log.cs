@@ -1,9 +1,9 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
+using NLog.Config;
+using NLog.Targets;
 
 namespace FrameWork
 {
@@ -12,6 +12,26 @@ namespace FrameWork
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private static LogConfig _config = new LogConfig();
+
+        static Log()
+        {
+            var config = new LoggingConfiguration();
+            
+            // Create console target
+            var consoleTarget = new ConsoleTarget("console")
+            {
+                Layout = "${longdate} | ${level:uppercase=true} | ${message}"
+            };
+
+            // Add target to config
+            config.AddTarget(consoleTarget);
+
+            // Define rule: all levels to console
+            config.AddRuleForAllLevels(consoleTarget);
+
+            // Apply configuration
+            LogManager.Configuration = config;
+        }
 
         public static bool InitLog(LogInfo Info, string PrefileName)
         {
@@ -43,43 +63,43 @@ namespace FrameWork
         public static void Info(string name, string message, bool sync = false)
         {
             if (_config.Info.Info)
-                _logger.Info(name + " " + message, ConsoleColor.White, sync);
+                _logger.Info(name + " " + message);
         }
 
         public static void Info(string name, string message, ConsoleColor c)
         {
             if (_config.Info.Info)
-                _logger.Info(name + " " + message, c);
+                _logger.Info(name + " " + message);
         }
 
         public static void Success(string name, string message, bool sync = false)
         {
             if (_config.Info.Successs)
-                _logger.Info(name + " " + message, ConsoleColor.Green, sync);
+                _logger.Info(name + " " + message);
         }
 
         public static void Notice(string name, string message, bool sync = false)
         {
             if (_config.Info.Notice)
-                _logger.Warn(name + " " + message, ConsoleColor.Yellow, sync);
+                _logger.Warn(name + " " + message);
         }
 
         public static void Error(string name, string message, bool sync = false)
         {
             if (_config.Info.Error)
-                _logger.Error(name + " " + message, ConsoleColor.Red, sync);
+                _logger.Error(name + " " + message);
         }
 
         public static void Debug(string name, string message, bool sync = false)
         {
             if (_config.Info.Debug)
-                _logger.Debug(name + " " + message, ConsoleColor.Blue, sync);
+                _logger.Debug(name + " " + message);
         }
 
         public static void Dump(string name, string message, bool sync = false)
         {
             if (_config.Info.Dump)
-                _logger.Trace(name + " " + message, ConsoleColor.Gray, sync);
+                _logger.Trace(name + " " + message);
         }
 
         public static void Tcp(string name, MemoryStream Packet, bool Force = false, bool sync = false)
@@ -87,14 +107,14 @@ namespace FrameWork
             if (Force || _config.Info.Tcp)
             {
                 byte[] Buff = Packet.ToArray();
-                _logger.Trace(name + " " + Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
+                _logger.Trace(name + " " + Hex(Buff, 0, Buff.Length));
             }
         }
 
         public static void Tcp(string name, byte[] dump, int start, int len, bool Force = false, bool sync = false)
         {
             if (Force || _config.Info.Tcp)
-                _logger.Trace(name, Hex(dump, start, len), ConsoleColor.Gray, sync);
+                _logger.Trace(name, Hex(dump, start, len));
         }
 
         public static void Dump(string name, MemoryStream Packet, bool Force = false, bool sync = false)
@@ -102,14 +122,14 @@ namespace FrameWork
             if (Force || _config.Info.Dump)
             {
                 byte[] Buff = Packet.ToArray();
-                _logger.Trace(name, Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
+                _logger.Trace(name, Hex(Buff, 0, Buff.Length));
             }
         }
 
         public static void Dump(string name, byte[] dump, int start, int len, bool Force = false, bool sync = false)
         {
             if (_config.Info.Dump)
-                _logger.Trace(name, Hex(dump, start, len), ConsoleColor.Gray, sync);
+                _logger.Trace(name, Hex(dump, start, len));
         }
 
         public static void Compare(string Name, byte[] First, byte[] Second, bool sync = false)

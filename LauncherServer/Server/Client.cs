@@ -1,19 +1,17 @@
-﻿using Common;
-using Common.Database.Account;
-using FrameWork;
+﻿using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
+using Common.Database.Account;
 
 namespace AuthenticationServer.Server
 {
     public class Client : BaseClient
     {
         public long LastInfoRequest = 0;
-        private Account _account;
+        private AccountInfo _account;
         private string _sessionToken;
         private Queue<FileUploadInfo> _uploadQueue = new Queue<FileUploadInfo>();
         private bool _uploading = false;
@@ -68,38 +66,34 @@ namespace AuthenticationServer.Server
             var password = sb.ToString();
 
             string ip = GetIp().Split(':')[0];
-            LoginResult result = LoginResult.LOGIN_BANNED;
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_LOGIN);
 
-            if (Core.AcctMgr.CheckIp(ip))
+            int accountId;
+
+            var authResponse = Core.AcctMgr.AuthenticateUser(new AuthenticateUserRequest
             {
-                int accountId;
+                Username = username,
+                Password = password
+            });
 
-                result = Core.AcctMgr.CheckAccount(username, password, ip, out accountId);
-
-                var account = Core.AcctMgr.GetAccount(accountId);
-                if (account == null)
-                {
-                    result = LoginResult.LOGIN_INVALID_USERNAME_PASSWORD;
-                }
-                else
-                {
-                    if (account.CoreLevel == 0)
-                    {
-                        if (account.GmLevel == 0)
-                            result = LoginResult.LOGIN_PATCHER_NOT_ALLOWED;
-                    }
-                }
-                Out.WriteByte((byte)result);
+            if (authResponse.Result == LoginResult.AccountBanned)
+            {
+                Out.WriteByte((byte)authResponse.Result); // Banned
+                Out.WriteString("");
+                Out.WriteUInt32(0);
+                Socket.Close();
+            }
+            else
+            {
+                Out.WriteByte((byte)authResponse.Result);
                 Out.WriteUInt32((uint)Core.Config.ServerState);
 
-                if (result == LoginResult.LOGIN_SUCCESS)
+                if (authResponse.Result == LoginResult.Success)
                 {
-                    string token = Core.AcctMgr.GenerateToken(username);
-                    Out.WriteString(token);
+                    Out.WriteString(authResponse.Token);
 
-                    OnLogin(account, token, installID);
-                    Out.WriteUInt32((uint)account.GmLevel);
+                    OnLogin(authResponse.Account, authResponse.Token, installID);
+                    Out.WriteUInt32((uint)authResponse.Account.GmLevel);
                 }
                 else
                 {
@@ -107,23 +101,16 @@ namespace AuthenticationServer.Server
                     Out.WriteUInt32((uint)0);
                 }
             }
-            else
-            {
-                Out.WriteByte((byte)result); // Banned
-                Out.WriteString("");
-                Out.WriteUInt32((uint)0);
-                Socket.Close();
-            }
 
             SendTCPRaw(Out);
         }
 
-        public void OnLogin(Account account, string token, string installID)
+        public void OnLogin(AccountInfo account, string token, string installID)
         {
             _account = account;
             _sessionToken = token;
 
-            Core.AcctMgr.UpdateAccountBio(account.AccountId, ((IPEndPoint)_socket.RemoteEndPoint).Address.ToString(), installID);
+            // Core.AcctMgr.UpdateAccountBio(account.AccountId, ((IPEndPoint)_socket.RemoteEndPoint).Address.ToString(), installID);
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_PATCH_NOTES);
             Out.WriteString(Core.Config.PatchNotes);
 
@@ -450,7 +437,7 @@ namespace AuthenticationServer.Server
                 Close();
                 return;
             }
-            Core.AcctMgr.UpdateClientPatcherLog(_account.AccountId, log);
+            // Core.AcctMgr.UpdateClientPatcherLog(_account.AccountId, log);
         }
 
         private bool VerifyLoggedIn()

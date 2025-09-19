@@ -25,7 +25,6 @@ namespace WorldServer
     {
         public static WorldConfigs Config;
         public static AccountConfig AccountConfig;
-        public static RpcClient Client;
         public static AccountMgr AcctMgr => Client?.GetServerObject<AccountMgr>();
         public static TCPServer Server;
         public static Realm Rm;
@@ -178,11 +177,7 @@ namespace WorldServer
                 Log.Error("Directory Check", "Abilities directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
-
-            Client = new RpcClient("WorldServer-" + Config.RealmId, Config.AccountCacherInfo.RpcLocalIp, 1);
-            if (!Client.Start(Config.AccountCacherInfo.RpcServerIp, Config.AccountCacherInfo.RpcServerPort))
-                ConsoleMgr.WaitAndExit(2000);
-
+            
             Rm = AcctMgr.GetRealm(Config.RealmId);
 
             File.WriteAllText("COMMANDS.md", Managers.Commands.CommandDocumentation.GenerateMarkdown());

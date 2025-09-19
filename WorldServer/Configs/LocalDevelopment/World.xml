@@ -20,7 +20,7 @@
     <Port>3306</Port>
     <Database>war_characters</Database>
     <Username>root</Username>
-    <Password>password</Password>
+    <Password>admin</Password>
     <Custom>Treat Tiny As Boolean=False</Custom>
     <Catalog />
     <IPAddress />
@@ -32,7 +32,7 @@
       <Port>3306</Port>
     <Database>war_world</Database>
     <Username>root</Username>
-    <Password>password</Password>
+    <Password>admin</Password>
     <Custom>Treat Tiny As Boolean=False</Custom>
     <Catalog />
     <IPAddress />

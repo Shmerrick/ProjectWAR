@@ -43,8 +43,7 @@ namespace Common
     /// Manages all account-related operations, such as creating, retrieving, and updating accounts.
     /// This class also handles account caching to improve performance.
     /// </summary>
-    [Rpc(true, System.Runtime.Remoting.WellKnownObjectMode.Singleton, 1)]
-    public class AccountMgr : RpcObject
+    public class AccountMgr
     {
         // Account Database
         public static IObjectDatabase Database = null;
@@ -601,16 +600,16 @@ namespace Common
             return Rms;
         }
 
-        /// <summary>
-        /// Gets a realm by its RPC ID.
-        /// </summary>
-        /// <param name="RpcId">The RPC ID of the realm to get.</param>
-        /// <returns>The realm, or null if the realm was not found.</returns>
-        public Realm GetRealmByRpc(int RpcId)
-        {
-            lock (_Realms)
-                return _Realms.Values.ToList().Find(info => info.Info != null && info.Info.RpcID == RpcId);
-        }
+        // /// <summary>
+        // /// Gets a realm by its RPC ID.
+        // /// </summary>
+        // /// <param name="RpcId">The RPC ID of the realm to get.</param>
+        // /// <returns>The realm, or null if the realm was not found.</returns>
+        // public Realm GetRealmByRpc(int RpcId)
+        // {
+        //     lock (_Realms)
+        //         return _Realms.Values.ToList().Find(info => info.Info != null && info.Info.RpcID == RpcId);
+        // }
 
         /// <summary>
         /// Updates the scenario rotation time for a realm.
@@ -634,14 +633,13 @@ namespace Common
         /// <param name="Info">The RPC client info for the realm.</param>
         /// <param name="RealmId">The ID of the realm to update.</param>
         /// <returns>True if the realm was updated successfully, false otherwise.</returns>
-        public bool UpdateRealm(RpcClientInfo Info, byte RealmId)
+        public bool UpdateRealm(byte RealmId)
         {
             Realm Rm = GetRealm(RealmId);
 
             if (Rm != null)
             {
-                Log.Success("Realm", "Realm (" + Rm.Name + ") online at " + Info.Ip + ":" + Info.Port);
-                Rm.Info = Info;
+                // Log.Success("Realm", "Realm (" + Rm.Name + ") online at " + Info.Ip + ":" + Info.Port);
                 Rm.Online = 1;
                 Rm.OrderCount = 0;
                 Rm.DestructionCount = 0;
@@ -770,18 +768,18 @@ namespace Common
         /// Called when a client disconnects from the RPC server.
         /// </summary>
         /// <param name="Info">The RPC client info for the disconnected client.</param>
-        public override void OnClientDisconnected(RpcClientInfo Info)
-        {
-            Realm Rm = GetRealmByRpc(Info.RpcID);
-            if (Rm != null && Rm.Info.RpcID == Info.RpcID)
-            {
-                Log.Error("Realm", "Realm offline : " + Rm.Name);
-                Rm.Info = null;
-                Rm.Online = 0;
-                Rm.Dirty = true;
-                Database.SaveObject(Rm);
-            }
-        }
+        // public override void OnClientDisconnected(RpcClientInfo Info)
+        // {
+        //     Realm Rm = GetRealmByRpc(Info.RpcID);
+        //     if (Rm != null && Rm.Info.RpcID == Info.RpcID)
+        //     {
+        //         Log.Error("Realm", "Realm offline : " + Rm.Name);
+        //         Rm.Info = null;
+        //         Rm.Online = 0;
+        //         Rm.Dirty = true;
+        //         Database.SaveObject(Rm);
+        //     }
+        // }
 
         #endregion Realm
 
@@ -922,11 +920,11 @@ namespace Common
                 return false;
             }
 
-            if (!IsValidEmail(email))
-            {
-                Log.Error("CreateAccount", "Invalid e-mail");
-                return false;
-            }
+            // if (!IsValidEmail(email))
+            // {
+            //     Log.Error("CreateAccount", "Invalid e-mail");
+            //     return false;
+            // }
 
             foreach (string bannedName in _bannedNames)
             {

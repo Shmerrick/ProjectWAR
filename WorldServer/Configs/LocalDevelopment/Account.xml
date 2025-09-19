@@ -11,7 +11,7 @@
     <Port>3306</Port>
     <Database>war_accounts</Database>
     <Username>root</Username>
-    <Password>password</Password>
+    <Password>admin</Password>
     <Custom>Treat Tiny As Boolean=False</Custom>
     <Catalog />
     <IPAddress />

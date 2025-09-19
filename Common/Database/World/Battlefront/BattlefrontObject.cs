@@ -6,7 +6,7 @@ namespace Common.Database.World.BattleFront
     /// <summary>
     /// Generic object located in world whitch role depends on its type.
     /// </summary>
-    [DataTable(PreCache = false, TableName = "BattleFront_objects", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "battlefront_objects", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class BattleFrontObject : DataObject
     {

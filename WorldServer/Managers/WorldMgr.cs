@@ -812,24 +812,24 @@ namespace WorldServer.Managers
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
             // Tier 1
-            //GetRegion(1, true, Constants.RegionName[1]); // dw/gs
-            //GetRegion(3, true, Constants.RegionName[3]); // he/de
-            //GetRegion(8, true, Constants.RegionName[8]); // em/ch
+            GetRegion(1, true, Constants.RegionName[1]); // dw/gs
+            GetRegion(3, true, Constants.RegionName[3]); // he/de
+            GetRegion(8, true, Constants.RegionName[8]); // em/ch
 
             // Tier 2
-            //GetRegion(12, true, Constants.RegionName[12]); // dw/gs
-            //GetRegion(15, true, Constants.RegionName[15]); // he/de
-            //GetRegion(14, true, Constants.RegionName[14]); // em/ch
+            GetRegion(12, true, Constants.RegionName[12]); // dw/gs
+            GetRegion(15, true, Constants.RegionName[15]); // he/de
+            GetRegion(14, true, Constants.RegionName[14]); // em/ch
 
             // Tier 3
-            //GetRegion(10, true, Constants.RegionName[10]); // dw/gs
-            //GetRegion(16, true, Constants.RegionName[16]); // he/de
-            //GetRegion(6, true, Constants.RegionName[6]); // em/ch
+            GetRegion(10, true, Constants.RegionName[10]); // dw/gs
+            GetRegion(16, true, Constants.RegionName[16]); // he/de
+            GetRegion(6, true, Constants.RegionName[6]); // em/ch
 
             // Tier 4
-            //GetRegion(2, true, Constants.RegionName[2]); // dw/gs
-            //GetRegion(4, true, Constants.RegionName[4]);  // he/de
-            //GetRegion(11, true, Constants.RegionName[11]); // em/ch
+            GetRegion(2, true, Constants.RegionName[2]); // dw/gs
+            GetRegion(4, true, Constants.RegionName[4]);  // he/de
+            GetRegion(11, true, Constants.RegionName[11]); // em/ch
 
             // removed for now, as this will also trigger an attempt to load BOs for the region.
             //GetRegion(9, true, Constants.RegionName[9]); // lotd

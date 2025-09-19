@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+service AccountMgr {
+  rpc LoadAccount (LoadAccountRequest) returns (LoadAccountResponse);
+  rpc ListRealms (ListRealmsRequest) returns (ListRealmsResponse);
+  rpc AuthenticateUser (AuthenticateUserRequest) returns (AuthenticateUserResponse);
+  rpc CheckToken (CheckTokenRequest) returns (CheckTokenResponse);
+  rpc GetClusterList (GetClusterListRequest) returns (GetClusterListResponse);
+}
+
+message LoadAccountRequest {
+  string username = 1;
+}
+
+message LoadAccountResponse {
+}
+
+message AuthenticateUserRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthenticateUserResponse {
+  LoginResult result = 1;
+  optional string token = 2;
+  optional AccountInfo account = 3;
+}
+
+message ListRealmsRequest {
+}
+
+message ListRealmsResponse {
+  repeated RealmInfo realms = 1;
+}
+
+message CheckTokenRequest {
+  string username = 1;
+  string token = 2;
+}
+
+message CheckTokenResponse {
+  LoginResult result = 2;
+}
+
+message GetClusterListRequest {
+}
+
+message GetClusterListResponse {
+  bytes clusters = 1;
+}
+
+enum LoginResult {
+  SUCCESS = 0;
+  INVALID_CREDENTIALS = 1;
+  ACCOUNT_BANNED = 2;
+  NOT_ACTIVE = 3;
+  PATCHER_NOT_ALLOWED = 4;
+}
+
+message AccountInfo {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  int32 gmLevel = 4;
+  int32 coreLevel = 5;
+}
+
+message RealmInfo {
+  string name = 1;
+  uint32 onlinePlayers = 2;
+  uint32 orderCount = 3;
+  uint32 destructionCount = 4;
+}
