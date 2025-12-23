@@ -38,7 +38,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "ADD XP TO " + plr.Name + " " + xp;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -64,7 +64,7 @@ namespace WorldServer.Managers.Commands
             {
                 GMCommandLog log = new GMCommandLog();
                 log.PlayerName = plr.Name;
-                log.AccountId = (uint)plr.Client._Account.AccountId;
+                log.AccountId = (uint)plr.Client._Account.Id;
                 log.Command = "ADDED " + count + " OF " + ItemService.GetItem_Info((uint)itemId).Name + " TO " + targetPlr.Name;
                 log.Date = DateTime.Now;
                 CharMgr.Database.AddObject(log);
@@ -89,7 +89,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "ADDED MONEY TO " + plr.Name + " " + money;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -117,7 +117,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = (uint)plr.Client._Account.Id,
                 Command = "ADD TOK TO " + plr.Name + " " + tokEntry,
                 Date = DateTime.Now
             };
@@ -140,7 +140,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "ADD RENOWN TO " + plr.Name + " " + value;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -164,7 +164,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "ADD Infl TO " + plr.Name + " Chapter " + chapter + " Value " + inf;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);

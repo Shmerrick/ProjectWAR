@@ -90,7 +90,13 @@ namespace WorldServer.World.Objects
                         ++DestruCount;
 
                     Core.Rm.OnlinePlayers = (uint)_Players.Count;
-                    Core.AcctMgr.UpdateRealm(Core.Rm.RealmId, Core.Rm.OnlinePlayers, OrderCount, DestruCount);
+                    Core.AcctMgr.UpdateRealmOnlinePlayers(new UpdateRealmOnlinePlayersRequest
+                    {
+                        RealmId = Core.Rm.RealmId,
+                        OnlinePlayers = Core.Rm.OnlinePlayers,
+                        DestructionCount = Core.Rm.DestructionCount,
+                        OrderCount = Core.Rm.OrderCount
+                    });
                 }
             }
 
@@ -159,7 +165,13 @@ namespace WorldServer.World.Objects
                         --DestruCount;
 
                     Core.Rm.OnlinePlayers = (uint)_Players.Count;
-                    Core.AcctMgr.UpdateRealm(Core.Rm.RealmId, Core.Rm.OnlinePlayers, OrderCount, DestruCount);
+                    Core.AcctMgr.UpdateRealmOnlinePlayers(new UpdateRealmOnlinePlayersRequest
+                    {
+                        RealmId = Core.Rm.RealmId,
+                        OnlinePlayers = Core.Rm.OnlinePlayers,
+                        OrderCount = Core.Rm.OrderCount,
+                        DestructionCount = Core.Rm.DestructionCount
+                    });
 
                     if (oldPlayer.BroadcastRank)
                         GmMgr.NotifyGMOffline(oldPlayer);
@@ -489,7 +501,8 @@ namespace WorldServer.World.Objects
         private bool _initialized = false;
         public bool Initialized => _initialized;
 
-        public int noSurname => Client?._Account.noSurname ?? 0;
+        // TODO: REPAIR THIS
+        public int noSurname => 0; // Client?._Account.noSurname ?? 0;
 
         public ushort ImageNum; //overlay npc model with F_PLAYER_IMAGENUM if set
         public List<byte> EffectStates = new List<byte>(); //list of active effects (ie: mutations, city champ mode, etc)
@@ -498,15 +511,12 @@ namespace WorldServer.World.Objects
         {
             get
             {
-                if (Info != null && Info.TempFirstName != null)
+                if (Info is { TempFirstName: not null })
                     return Info.TempFirstName;
                 return base.Name;
             }
 
-            set
-            {
-                base.Name = value;
-            }
+            set => base.Name = value;
         }
 
         public Player(GameClient client, Character info)
@@ -566,11 +576,12 @@ namespace WorldServer.World.Objects
             Client.State = (int)eClientState.WorldEnter;
 
             // Handle temporary Exile (warned while offline)
-            if (Client._Account?.Banned == 2)
-            {
-                Client._Account.Banned = TCPManager.GetTimeStamp() + 60;
-                Core.AcctMgr.UpdateAccount(Client._Account);
-            }
+            // TODO: REPAIR THIS
+            // if (Client._Account?.Banned == 2)
+            // {
+            //     Client._Account.Banned = TCPManager.GetTimeStamp() + 60;
+            //     Core.AcctMgr.UpdateAccount(Client._Account);
+            // }
 
             if (!_initialized && !_initInProgress)
             {
@@ -1007,24 +1018,25 @@ namespace WorldServer.World.Objects
 
         public void HandleStuck()
         {
-            if (IsBanned)
-            {
-                if (_lastExileWarned + 30 < TCPManager.GetTimeStamp())
-                {
-                    TimeSpan exileSpan = TimeSpan.FromSeconds(Client._Account.Banned - TCPManager.GetTimeStamp());
-
-                    string timeString = (exileSpan.Days > 0 ? exileSpan.Days + " days, " : "") + (exileSpan.Hours > 0 ? exileSpan.Hours + " hours, " : "") + (exileSpan.Minutes > 0 ? exileSpan.Minutes + " minutes." : exileSpan.Seconds + " seconds.");
-
-                    SendClientMessage("Your account has been exiled for the following reason:\n" + Client._Account.BanReason + "\nYou may return to the world in " + timeString + "\nThis timer will continue to run even if you are offline.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    _lastExileWarned = TCPManager.GetTimeStamp();
-                }
-                else
-                {
-                    SendClientMessage("You try to will yourself back onto the planet. Unsurprisingly, this isn't working out for you.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
-                }
-
-                return;
-            }
+            // TODO: REPAIR THIS
+            // if (IsBanned)
+            // {
+            //     if (_lastExileWarned + 30 < TCPManager.GetTimeStamp())
+            //     {
+            //         TimeSpan exileSpan = TimeSpan.FromSeconds(Client._Account.Banned - TCPManager.GetTimeStamp());
+            //
+            //         string timeString = (exileSpan.Days > 0 ? exileSpan.Days + " days, " : "") + (exileSpan.Hours > 0 ? exileSpan.Hours + " hours, " : "") + (exileSpan.Minutes > 0 ? exileSpan.Minutes + " minutes." : exileSpan.Seconds + " seconds.");
+            //
+            //         SendClientMessage("Your account has been exiled for the following reason:\n" + Client._Account.BanReason + "\nYou may return to the world in " + timeString + "\nThis timer will continue to run even if you are offline.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            //         _lastExileWarned = TCPManager.GetTimeStamp();
+            //     }
+            //     else
+            //     {
+            //         SendClientMessage("You try to will yourself back onto the planet. Unsurprisingly, this isn't working out for you.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+            //     }
+            //
+            //     return;
+            // }
 
             if (CbtInterface.IsInCombat || (ScnInterface.Scenario != null && !ScnInterface.Scenario.HasEnded))
                 return;
@@ -1181,10 +1193,12 @@ namespace WorldServer.World.Objects
         private bool _channelsLoaded;
 
         /// <summary>Prevents this player from speaking in Advice chat.</summary>
-        public bool AdviceBlocked => Client?._Account.IsAdviceBlocked ?? false;
+        /// TODO: REPAIR THIS
+        public bool AdviceBlocked => false; // Client?._Account.IsAdviceBlocked ?? false;
 
         /// <summary>Causes messages from this player to be sent to them and only to them.</summary>
-        public bool StealthMuted => Client?._Account.IsStealthMuted ?? false;
+        /// TODO: REPAIR THIS
+        public bool StealthMuted => false; // Client?._Account.IsStealthMuted ?? false;
 
         public bool IsBanned => Client?._Account.IsBanned ?? false;
         public bool IsSummoned = false;
@@ -3929,8 +3943,8 @@ namespace WorldServer.World.Objects
         #region Rewards
 
         internal readonly Dictionary<uint, long> _recentLooters = new Dictionary<uint, long>();
-        private int _lastKillerAccountId;
-        private int _lastKillerKillCount;
+        private uint _lastKillerAccountId;
+        private uint _lastKillerKillCount;
 
         private const long SOLO_DROP_INTERVAL = 2 * 60 * 1000;
 
@@ -4181,7 +4195,7 @@ namespace WorldServer.World.Objects
 
         private bool CheckKillFarm(Player killer)
         {
-            int killerAccountId = killer.Client._Account.AccountId;
+            var killerAccountId = killer.Client._Account.Id;
 
             if (killer.Client._Account.GmLevel > 1)
                 return false;

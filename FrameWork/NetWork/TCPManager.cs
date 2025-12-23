@@ -347,7 +347,7 @@ namespace FrameWork
                 LoadCryptHandler();
 
                 Listener.Start();
-                Listener.BeginAcceptTcpClient(ConnectingThread, this);
+                Listener.BeginAcceptSocket(ConnectingThread, this);
 
                 Log.Success("TCPManager", "Server listening to : " + Listener.LocalEndpoint);
             }

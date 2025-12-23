@@ -49,7 +49,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = (uint)plr.Client._Account.Id,
                 Command = "ADD RESPAWN TO " + plr.Zone.ZoneId + " " + (ushort)plr.X + " " + (ushort)plr.Y,
                 Date = DateTime.Now
             };

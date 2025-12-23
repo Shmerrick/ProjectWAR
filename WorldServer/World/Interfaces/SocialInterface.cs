@@ -231,9 +231,9 @@ namespace WorldServer.World.Interfaces
 
             if (charInfo != null && _player.GmLevel == 1)
             {
-                Account acct = Core.AcctMgr.GetAccountById(charInfo.AccountId);
+                var acct = Core.AcctMgr.GetAccountById(new GetAccountByIdRequest { Id = (uint)charInfo.AccountId }).Account;
 
-                if (acct != null && acct.GmLevel > 1)
+                if (acct is { GmLevel: > 1 })
                 {
                     lock (charInfo.Socials)
                     {

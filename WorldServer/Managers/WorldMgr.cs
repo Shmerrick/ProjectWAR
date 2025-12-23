@@ -832,7 +832,7 @@ namespace WorldServer.Managers
             GetRegion(11, true, Constants.RegionName[11]); // em/ch
 
             // removed for now, as this will also trigger an attempt to load BOs for the region.
-            //GetRegion(9, true, Constants.RegionName[9]); // lotd
+            GetRegion(9, true, Constants.RegionName[9]); // lotd
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 

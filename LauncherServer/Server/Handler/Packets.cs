@@ -1,10 +1,8 @@
-﻿using Common;
-using FrameWork;
+﻿using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text.RegularExpressions;
 
 namespace AuthenticationServer.Server.Handler
 {
@@ -21,35 +19,44 @@ namespace AuthenticationServer.Server.Handler
             byte langID = (byte)packet.ReadByte();
             Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} {email} lang: {langID}");
 
-            CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
+            var result = 0x02; // CreteAccountResult.ACCOUNT_BANNED;
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_CREATE);
 
             string ip = client.GetIp().Split(':')[0];
 
             // Check Ip Ban
-            // if (Core.AcctMgr.CheckIp(ip))
-            // {
-            //     Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
-            //
-            //     if (Core.AcctMgr.CreateAccount(username, password, email, 1, langID, ip))
-            //     {
-            //         result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
-            //         Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
-            //     }
-            //     else
-            //     {
-            //         Log.Debug("CL_CREATE", "Create Account Request BUSY");
-            //         result = CreteAccountResult.ACCOUNT_NAME_BUSY;
-            //     }
-            //     Out.WriteByte((byte)result);
-            // }
-            // else
-            // {
-            //     Out.WriteByte((byte)result); // Banned
-            // }
-            // Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
-            // cclient.SendPacketNoBlock(Out);
+            if (!Core.AcctMgr.IsIpBanned(new IsIpBannedRequest { IpAddress = ip }).IsBanned)
+            {
+                Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
+                
+                var createAccountRequest = new CreateAccountRequest
+                {
+                    Username = username,
+                    Password = password,
+                    Email = email,
+                    LanguageId = Convert.ToUInt32(langID),
+                    IpAddress = ip
+                };
+            
+                if (Core.AcctMgr.CreateAccount(createAccountRequest).Created)
+                {
+                    result = 0x01; // CreteAccountResult.ACCOUNT_NAME_SUCCESS;
+                    Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
+                }
+                else
+                {
+                    Log.Debug("CL_CREATE", "Create Account Request BUSY");
+                    result = 0x00; // CreteAccountResult.ACCOUNT_NAME_BUSY;
+                }
+                Out.WriteByte((byte)result);
+            }
+            else
+            {
+                Out.WriteByte((byte)result); // Banned
+            }
+            Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
+            cclient.SendPacketNoBlock(Out);
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_START, 0, "OnStart")]

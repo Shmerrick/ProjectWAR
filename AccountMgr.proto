@@ -1,18 +1,66 @@
 syntax = "proto3";
 
 service AccountMgr {
-  rpc LoadAccount (LoadAccountRequest) returns (LoadAccountResponse);
+  rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
+  rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
+  rpc GetAccountById (GetAccountByIdRequest) returns (GetAccountByIdResponse);
+  rpc GetPendingAccounts (GetPendingAccountsRequest) returns (GetPendingAccountsResponse);
+  rpc IsIpBanned (IsIpBannedRequest) returns (IsIpBannedResponse);
   rpc ListRealms (ListRealmsRequest) returns (ListRealmsResponse);
+  rpc GetRealm (GetRealmRequest) returns (GetRealmResponse);
+  rpc UpdateRealm (UpdateRealmRequest) returns (UpdateRealmResponse);
+  rpc UpdateRealmCharactersTotal (UpdateRealmCharactersTotalRequest) returns (UpdateRealmCharactersTotalResponse);
+  rpc UpdateRealmOnlinePlayers (UpdateRealmOnlinePlayersRequest) returns (UpdateRealmOnlinePlayersResponse);
   rpc AuthenticateUser (AuthenticateUserRequest) returns (AuthenticateUserResponse);
   rpc CheckToken (CheckTokenRequest) returns (CheckTokenResponse);
   rpc GetClusterList (GetClusterListRequest) returns (GetClusterListResponse);
+  rpc BanPlayer(BanPlayerRequest) returns (BanPlayerResponse);
+  rpc ModifyAccess(ModifyAccessRequest) returns (ModifyAccessResponse);
+  rpc SanctionPlayer(SanctionPlayerRequest) returns (SanctionPlayerResponse);
 }
 
-message LoadAccountRequest {
+message CreateAccountRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+  uint32 gmLevel = 4;
+  uint32 languageId = 5;
+  string ipAddress = 6;
+}
+
+message CreateAccountResponse {
+  bool created = 1;
+}
+
+message GetAccountRequest {
   string username = 1;
 }
 
-message LoadAccountResponse {
+message GetAccountResponse {
+  optional AccountInfo account = 1;
+}
+
+message GetAccountByIdRequest {
+  uint32 id = 1;
+}
+
+message GetAccountByIdResponse {
+  optional AccountInfo account = 1;
+}
+
+message GetPendingAccountsRequest {
+}
+
+message GetPendingAccountsResponse {
+  repeated uint32 accountIds = 1;
+}
+
+message IsIpBannedRequest {
+  string ipAddress = 1;
+}
+
+message IsIpBannedResponse {
+  bool isBanned = 1;
 }
 
 message AuthenticateUserRequest {
@@ -29,8 +77,46 @@ message AuthenticateUserResponse {
 message ListRealmsRequest {
 }
 
+message GetRealmRequest {
+  uint32 realmId = 1;
+}
+
+message GetRealmResponse {
+  optional RealmInfo realm = 1;
+}
+
 message ListRealmsResponse {
   repeated RealmInfo realms = 1;
+}
+
+message UpdateRealmRequest {
+  uint32 realmId = 1;
+  uint32 onlinePlayers = 2;
+  uint32 orderCount = 3;
+  uint32 destructionCount = 4;
+}
+
+message UpdateRealmResponse {
+  
+}
+
+message UpdateRealmCharactersTotalRequest {
+  uint32 realmId = 1;
+  uint32 orderCount = 2;
+  uint32 destructionCount = 3;
+}
+
+message UpdateRealmCharactersTotalResponse {
+}
+
+message UpdateRealmOnlinePlayersRequest {
+  uint32 realmId = 1;
+  uint32 onlinePlayers = 2;
+  uint32 orderCount = 3;
+  uint32 destructionCount = 4;
+}
+
+message UpdateRealmOnlinePlayersResponse {
 }
 
 message CheckTokenRequest {
@@ -39,7 +125,7 @@ message CheckTokenRequest {
 }
 
 message CheckTokenResponse {
-  LoginResult result = 2;
+  AuthResult result = 2;
 }
 
 message GetClusterListRequest {
@@ -47,6 +133,40 @@ message GetClusterListRequest {
 
 message GetClusterListResponse {
   bytes clusters = 1;
+}
+
+message BanPlayerRequest {
+  string username = 1;
+  string reason = 2;
+  int64 ban_expiry = 3;
+}
+
+message BanPlayerResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message ModifyAccessRequest {
+  string username = 1;
+  int32 gm_level = 2;
+  int32 core_level = 3;
+}
+
+message ModifyAccessResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message SanctionPlayerRequest {
+  string username = 1;
+  string sanction_type = 2;
+  string details = 3;
+  int64 expiry = 4;
+}
+
+message SanctionPlayerResponse {
+  bool success = 1;
+  string error_message = 2;
 }
 
 enum LoginResult {
@@ -57,12 +177,22 @@ enum LoginResult {
   PATCHER_NOT_ALLOWED = 4;
 }
 
+enum AuthResult {
+  AUTH_SUCCESS = 0;
+  AUTH_EXPIRED = 1;
+  AUTH_INVALID_CREDENTIALS = 2;
+  AUTH_TERMINATED = 3;
+  AUTH_SUSPENDED = 4;
+}
+
 message AccountInfo {
-  string id = 1;
+  uint32 id = 1;
   string username = 2;
   string email = 3;
   int32 gmLevel = 4;
   int32 coreLevel = 5;
+  bool isBanned = 6;
+  bool packetLoggerEnabled = 7;
 }
 
 message RealmInfo {
@@ -70,4 +200,6 @@ message RealmInfo {
   uint32 onlinePlayers = 2;
   uint32 orderCount = 3;
   uint32 destructionCount = 4;
+  uint32 realmId = 5;
+  uint32 port = 6;
 }

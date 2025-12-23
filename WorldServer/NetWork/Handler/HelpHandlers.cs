@@ -47,7 +47,7 @@ namespace WorldServer.NetWork.Handler
 
                         Bug_report report = new Bug_report();
                         report.Time = (uint)TCPManager.GetTimeStamp();
-                        report.AccountId = (uint)Plr.Client._Account.AccountId;
+                        report.AccountId = (uint)Plr.Client._Account.Id;
                         report.CharacterId = Plr.CharacterId;
 
                         //fix for when someone right clicks chat to report or report spam on mails, because mythic thought it was good to classify these as goldsellers...
@@ -111,7 +111,7 @@ namespace WorldServer.NetWork.Handler
 
                         Bug_report report = new Bug_report();
                         report.Time = (uint)TCPManager.GetTimeStamp();
-                        report.AccountId = (uint)Plr.Client._Account.AccountId;
+                        report.AccountId = (uint)Plr.Client._Account.Id;
                         report.CharacterId = Plr.CharacterId;
                         report.Type = (byte)Type;
                         report.Category = (byte)Category;
@@ -163,7 +163,7 @@ namespace WorldServer.NetWork.Handler
 
                         Bug_report report = new Bug_report();
                         report.Time = (uint)TCPManager.GetTimeStamp();
-                        report.AccountId = (uint)Plr.Client._Account.AccountId;
+                        report.AccountId = (uint)Plr.Client._Account.Id;
                         report.CharacterId = Plr.CharacterId;
                         report.Type = (byte)Type;
                         report.Category = Category;

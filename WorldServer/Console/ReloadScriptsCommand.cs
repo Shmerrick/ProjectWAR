@@ -17,14 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
-
-using Common;
 using FrameWork;
+using WorldServer.Managers;
 
 namespace AccountCacher
 {
@@ -33,7 +28,7 @@ namespace AccountCacher
     {
         public bool HandleCommand(string command, List<string> args)
         {
-            WorldServer.WorldMgr.LoadScripts(true);
+            WorldMgr.LoadScripts(true);
             return true;
         }
     }

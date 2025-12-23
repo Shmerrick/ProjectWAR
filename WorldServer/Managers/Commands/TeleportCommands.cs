@@ -33,7 +33,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "TELEPORT TO " + zoneID + " " + worldX + " " + worldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -109,7 +109,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = (uint)plr.Client._Account.Id,
                 Command = $"TELEPORTED TO PLAYER {target.Name} AT ZONE {target.Zone.ZoneId} LOCATION {target._Value.WorldX} {target._Value.WorldY}",
                 Date = DateTime.Now
             };
@@ -157,7 +157,7 @@ namespace WorldServer.Managers.Commands
 
                 GMCommandLog log = new GMCommandLog();
                 log.PlayerName = plr.Name;
-                log.AccountId = (uint)plr.Client._Account.AccountId;
+                log.AccountId = (uint)plr.Client._Account.Id;
                 log.Command = "SUMMON PLAYER " + target.Name + " TO " + plr.Zone.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
                 log.Date = DateTime.UtcNow;
                 CharMgr.Database.AddObject(log);
@@ -200,7 +200,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = (uint)plr.Client._Account.Id,
                 Command = "TELEPORT offline player '" + existingChar.Name + "' TO " + zoneID + " " + worldX + " " + worldY,
                 Date = DateTime.Now
             };

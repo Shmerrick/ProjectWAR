@@ -189,26 +189,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Loop through players in the campaign and if any have the same IP - inform a GM.
         /// </summary>
+        /// TODO: REPAIR THIS METHOD
         private void IPCheck()
         {
-            var hash = new HashSet<string>();
-            if (PlayersInLakeSet == null)
-                return;
-            foreach (var item in PlayersInLakeSet)
-            {
-                var ipAddress = item?.Client?._Account?.Ip;
-                if (ipAddress != "")
-                {
-                    if (item.Client._Account.GmLevel == 1)
-                    {
-                        if (!hash.Add(ipAddress))
-                        {
-                            PlayerUtil.SendGMBroadcastMessage(Player._Players,
-                                $"{item.Name} has a duplicate IP address in game.");
-                        }
-                    }
-                }
-            }
+            // var hash = new HashSet<string>();
+            // if (PlayersInLakeSet == null)
+            //     return;
+            // foreach (var item in PlayersInLakeSet)
+            // {
+            //     var ipAddress = item?.Client?._Account?.Ip;
+            //     if (ipAddress != "")
+            //     {
+            //         if (item.Client._Account.GmLevel == 1)
+            //         {
+            //             if (!hash.Add(ipAddress))
+            //             {
+            //                 PlayerUtil.SendGMBroadcastMessage(Player._Players,
+            //                     $"{item.Name} has a duplicate IP address in game.");
+            //             }
+            //         }
+            //     }
+            // }
         }
 
         private void DetermineCaptains()

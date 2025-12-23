@@ -32,24 +32,198 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
     
     private readonly List<int> _pendingAccountIDs = new();
 
+    public override async Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request, ServerCallContext context)
+    {
+        Account Acct = GetAccount(request.Username);
+        if (Acct != null || _Codes.ContainsKey(request.Username))
+        {
+            Log.Error("CreateAccount", "This username is already used");
+            return new CreateAccountResponse { Created = false };
+        }
+
+        if (request.Username == "System")
+        {
+            Log.Error("CreateAccount", "User attempted to impersonate the system message handler");
+            return new CreateAccountResponse { Created = false };;
+        }
+
+        // if (!IsValidEmail(email))
+        // {
+        //     Log.Error("CreateAccount", "Invalid e-mail");
+        //     return false;
+        // }
+
+        Acct = new Account
+        {
+            Username = request.Username.ToLower(),
+            Email = request.Email.ToLower()
+        };
+
+        Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + request.Password);
+        //  Database.ExecuteNonQuery($"INSERT INTO war_accounts.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
+        //    $"VALUES({username}, {password}, {Acct.CryptPassword}, {ip}, {gmLevel})");
+
+        Acct.Ip = request.IpAddress;
+        Acct.Token = "";
+        Acct.GmLevel = (sbyte)request.GmLevel;
+        Acct.Banned = 0;
+        _database.AddObject(Acct);
+        _database.ForceSave();
+
+        if (_cacheEnabled)
+        {
+            while (_accountAccessQueue.Count >= _maxCacheSize)
+            {
+                if (_accountAccessQueue.TryDequeue(out string lruUsername))
+                {
+                    if (_accounts.TryRemove(lruUsername, out var lruAcct))
+                    {
+                        _accountUsernames.TryRemove(lruAcct.AccountId, out _);
+                    }
+                }
+            }
+
+            _accounts[Acct.Username] = Acct;
+            _accountUsernames[Acct.AccountId] = Acct.Username;
+            _accountAccessQueue.Enqueue(Acct.Username);
+        }
+
+        if (!request.IpAddress.Equals("127.0.0.1")) //Command created accounts do not need to be verified
+        {
+            string code = "1234"; // ReturnCode();
+            string msg = "";
+            if (request.LanguageId == 1)
+                msg =
+                    "Спасибо за регистрацию на нашем сервере, для подтверждения получения письма вам нужно ввести 16-значный код, указанный ниже: \n \n" +
+                    code;
+            else
+                msg =
+                    "Thank you for registration! To finish verification process, you need to confirm that you recieved this message. Open confirm page in launcher and enter username and the code: \n \n" +
+                    code;
+
+            // EmailEventArgs eea = new EmailEventArgs(true, null, email,
+            //     langID == 1 ? "Регистрация аккаунта" : "Account registration", msg, EmailClient);
+
+            AccountPending ap = new AccountPending()
+            {
+                Code = code,
+                Expires = DateTime.Now + TimeSpan.FromHours(1.0),
+                Username = Acct.Username
+            };
+            AddPending(ap);
+            // if (EmailClient != null)
+            //     EmailClient.SendMail(eea);
+
+            _database.AddObject(ap);
+            _database.ForceSave();
+        }
+
+        Log.Success("CreateAccount", $"Created {Acct.Username}");
+        return new CreateAccountResponse { Created = true };
+    }
+
+    // --- New: Discrete Account Update Methods ---
+    // TODO: REPAIR THIS
+    public override Task<BanPlayerResponse> BanPlayer(BanPlayerRequest request, ServerCallContext context)
+    {
+        // var account = GetAccount(request.Username);
+        // if (account == null)
+        //     return Task.FromResult(new BanPlayerResponse { Success = false, ErrorMessage = "Account not found" });
+        //
+        // // Assuming IsBanned is a bool, ban_expiry is a timestamp
+        // account.IsBanned = true;
+        // account.BanReason = request.Reason;
+        // account.BanExpiry = request.BanExpiry;
+        // _database.SaveObject(account, nameof(account.IsBanned), nameof(account.BanReason), nameof(account.BanExpiry));
+        return Task.FromResult(new BanPlayerResponse { Success = true });
+    }
+
+    public override Task<ModifyAccessResponse> ModifyAccess(ModifyAccessRequest request, ServerCallContext context)
+    {
+        var account = GetAccount(request.Username);
+        if (account == null)
+            return Task.FromResult(new ModifyAccessResponse { Success = false, ErrorMessage = "Account not found" });
+
+        account.GmLevel = Convert.ToSByte(request.GmLevel);
+        account.CoreLevel = request.CoreLevel;
+        _database.SaveObject(account);
+        return Task.FromResult(new ModifyAccessResponse { Success = true });
+    }
+
+    // TODO: REPAIR THIS
+    public override Task<SanctionPlayerResponse> SanctionPlayer(SanctionPlayerRequest request, ServerCallContext context)
+    {
+        // var account = GetAccount(request.username);
+        // if (account == null)
+        //     return Task.FromResult(new SanctionPlayerResponse { success = false, error_message = "Account not found" });
+        //
+        // account.SanctionType = request.sanction_type;
+        // account.SanctionDetails = request.details;
+        // account.SanctionExpiry = request.expiry;
+        // _database.SaveObject(account, nameof(account.SanctionType), nameof(account.SanctionDetails), nameof(account.SanctionExpiry));
+        return Task.FromResult(new SanctionPlayerResponse { Success = true });
+    }
+
     public AccountMgrService(IObjectDatabase database)
     {
         _database = database;
     }
     
-    public override Task<LoadAccountResponse> LoadAccount(LoadAccountRequest request, ServerCallContext context)
+    public override Task<GetAccountResponse> GetAccount(GetAccountRequest request, ServerCallContext context)
     {
-        LoadAccountInternal(request.Username);
-        return Task.FromResult(new LoadAccountResponse());
+        var account = LoadAccountInternal(request.Username);
+        return Task.FromResult(new GetAccountResponse
+        {
+            Account = account != null ? new AccountInfo
+            {
+                Id = (uint)account.AccountId,
+                Username = account.Username,
+                Email = account.Email,
+                CoreLevel = account.CoreLevel,
+                GmLevel = account.GmLevel,
+                IsBanned = account.IsBanned,
+                PacketLoggerEnabled = account.PacketLog
+            } : null
+        });
     }
-    
+
+    public override Task<IsIpBannedResponse> IsIpBanned(IsIpBannedRequest request, ServerCallContext context)
+    {
+        var ban = _database.SelectObject<Ip_ban>("Ip=LEFT('" + _database.Escape(request.IpAddress) + "', " +
+                                                   _database.SqlCommand_CharLength() + "(Ip))");
+
+        Log.Info("Checking IP", request.IpAddress);
+
+        if (ban != null)
+        {
+            if (ban.Expire == 1 || TCPManager.GetTimeStamp() < ban.Expire)
+            {
+                Log.Info("CheckIp", "Banned " + request.IpAddress);
+                return Task.FromResult(new IsIpBannedResponse { IsBanned = true });
+            }
+
+            Log.Info("CheckIp", "Unbanning " + request.IpAddress);
+            _database.DeleteObject(ban);
+            _database.ForceSave();
+        }
+
+        return Task.FromResult(new IsIpBannedResponse { IsBanned = false });
+    }
+
     private Account LoadAccountInternal(string username)
     {
         username = username.ToLower();
+        
+        Log.Debug("GetAccount", username);
+
+        if (_cacheEnabled && _accounts.TryGetValue(username, out var acct))
+        {
+            return acct;
+        }
 
         try
         {
-            Account acct = _database.SelectObject<Account>("Username='" + _database.Escape(username) + "'");
+            acct = _database.SelectObject<Account>("Username='" + _database.Escape(username) + "'");
 
             if (acct == null)
             {
@@ -92,12 +266,67 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
         {
             Realms = { _Realms.Values.Select(x => new RealmInfo
             {
+                RealmId = x.RealmId,
                 Name = x.Name,
                 OnlinePlayers = x.OnlinePlayers,
                 DestructionCount = x.DestructionCount,
-                OrderCount = x.OrderCount
+                OrderCount = x.OrderCount,
+                Port = Convert.ToUInt32(x.Port)
             }) }
         });
+    }
+
+    public override Task<CheckTokenResponse> CheckToken(CheckTokenRequest request, ServerCallContext context)
+    {
+        var account = GetAccount(request.Username);
+        if (account == null)
+            return Task.FromResult(new CheckTokenResponse { Result = AuthResult.AuthInvalidCredentials });
+
+        if (account.Token != request.Token)
+            return Task.FromResult(new CheckTokenResponse { Result = AuthResult.AuthInvalidCredentials });
+
+        return Task.FromResult(new CheckTokenResponse { Result = AuthResult.AuthSuccess });;
+    }
+
+    public override Task<GetRealmResponse> GetRealm(GetRealmRequest request, ServerCallContext context)
+    {
+        var realm = _Realms.FirstOrDefault(x => x.Key == request.RealmId).Value;
+        return Task.FromResult(new GetRealmResponse
+        {
+            Realm = realm is not null ? new RealmInfo
+            {
+                RealmId = realm.RealmId,
+                Name = realm.Name,
+                OnlinePlayers = realm.OnlinePlayers,
+                DestructionCount = realm.DestructionCount,
+                OrderCount = realm.OrderCount,
+                Port = Convert.ToUInt32(realm.Port)
+            } : null
+        });
+    }
+
+    public override Task<UpdateRealmResponse> UpdateRealm(UpdateRealmRequest request, ServerCallContext context)
+    {
+        Realm Rm = GetRealm(Convert.ToByte(request.RealmId));
+
+        if (Rm != null)
+        {
+            // Log.Success("Realm", "Realm (" + Rm.Name + ") online at " + Info.Ip + ":" + Info.Port);
+            Rm.Online = 1;
+            Rm.OrderCount = 0;
+            Rm.DestructionCount = 0;
+            Rm.OnlineDate = DateTime.Now;
+            Rm.Dirty = true;
+            Rm.BootTime = TCPManager.GetTimeStamp();
+            _database.SaveObject(Rm);
+        }
+        else
+        {
+            Log.Error("UpdateRealm", "Realm (" + request.RealmId + ") missing : Please complete the table 'realm'");
+            return Task.FromResult(new UpdateRealmResponse());
+        }
+
+        return Task.FromResult(new UpdateRealmResponse {});
     }
 
     public override Task<AuthenticateUserResponse> AuthenticateUser(AuthenticateUserRequest request,
@@ -195,7 +424,7 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
                 CoreLevel = baseAcct.CoreLevel,
                 Email = baseAcct.Email,
                 GmLevel = baseAcct.GmLevel,
-                Id = baseAcct.AccountId.ToString()
+                Id = (uint)baseAcct.AccountId
             },
             Token = baseAcct.Token
         });
@@ -257,12 +486,98 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
                 Clusters = ByteString.CopyFrom(ClusterListReplay.Build().ToByteArray())
             });
     }
-    
+
+    public override Task<UpdateRealmCharactersTotalResponse> UpdateRealmCharactersTotal(
+        UpdateRealmCharactersTotalRequest request, ServerCallContext context)
+    {
+        var realm = GetRealm((byte)request.RealmId);
+
+        if (realm == null)
+            return Task.FromResult(new UpdateRealmCharactersTotalResponse());
+
+        realm.OrderCharacters = realm.OrderCharacters;
+        realm.DestruCharacters = realm.DestruCharacters;
+        realm.Dirty = true;
+        _database.ExecuteNonQuery("UPDATE war_accounts.realms SET OrderCharacters =" + request.OrderCount +
+                                 ", DestruCharacters=" + request.DestructionCount + " WHERE RealmId = " + realm.RealmId);
+
+        return Task.FromResult(new UpdateRealmCharactersTotalResponse());
+    }
+
     private ClusterProp setProp(string name, string value)
     {
         return ClusterProp.CreateBuilder().SetPropName(name)
             .SetPropValue(value)
             .Build();
+    }
+
+    public override Task<GetAccountByIdResponse> GetAccountById(GetAccountByIdRequest request,
+        ServerCallContext context)
+    {
+        if (_cacheEnabled && _accountUsernames.TryGetValue((int)request.Id, out var username))
+        {
+            if (_accounts.TryGetValue(username, out var acct))
+            {
+                return Task.FromResult(new GetAccountByIdResponse
+                {
+                    Account = new AccountInfo
+                    {
+                        Id = (uint)acct.AccountId,
+                        Username = acct.Username,
+                        Email = acct.Email,
+                        CoreLevel = acct.CoreLevel,
+                        GmLevel = acct.GmLevel,
+                        IsBanned = acct.IsBanned,
+                        PacketLoggerEnabled = acct.PacketLog
+                    }
+                });
+            }
+        }
+
+        var acctFromDb = _database.SelectObject<Account>("AccountId=" + request.Id);
+
+        if (acctFromDb == null)
+        {
+            Log.Error("LoadAccount", "AccountId " + request.Id + "not found.");
+            return Task.FromResult(new GetAccountByIdResponse { Account = null });
+        }
+
+        if (_cacheEnabled)
+        {
+            _accounts[acctFromDb.Username] = acctFromDb;
+            _accountUsernames[acctFromDb.AccountId] = acctFromDb.Username;
+            _accountAccessQueue.Enqueue(acctFromDb.Username);
+        }
+
+        return Task.FromResult(new GetAccountByIdResponse
+        {
+            Account = new AccountInfo
+            {
+                Id = (uint)acctFromDb.AccountId,
+                Username = acctFromDb.Username,
+                Email = acctFromDb.Email,
+                CoreLevel = acctFromDb.CoreLevel,
+                GmLevel = acctFromDb.GmLevel,
+                IsBanned = acctFromDb.IsBanned,
+                PacketLoggerEnabled = acctFromDb.PacketLog
+            }
+        });
+    }
+
+    public override Task<GetPendingAccountsResponse> GetPendingAccounts(GetPendingAccountsRequest request,
+        ServerCallContext context)
+    {
+        if (_pendingAccountIDs.Count == 0)
+            return Task.FromResult(new GetPendingAccountsResponse());
+        
+        lock (_pendingAccountIDs)
+        {
+            List<int> toLoad = new List<int>(_pendingAccountIDs);
+            _pendingAccountIDs.Clear();
+            var response = new GetPendingAccountsResponse();
+            response.AccountIds.AddRange(toLoad.Cast<uint>());
+            return Task.FromResult(response);
+        }
     }
 
     public Account GetAccount(string username)
