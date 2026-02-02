@@ -186,10 +186,11 @@ namespace Launcher
             packet.WritePacketLength();
 
             //Get the packet buffer
-            byte[] buf = packet.GetBuffer(); //packet.WritePacketLength sets the Capacity
-
+            // byte[] buf = packet.GetBuffer(); //packet.WritePacketLength sets the Capacity
+            var b = packet.GetBuffer()[..(int)packet.Length];
+            
             //Send the buffer
-            SendTCP(buf);
+            SendTCP(b);
         }
 
         public static void SendTCP(byte[] buf)

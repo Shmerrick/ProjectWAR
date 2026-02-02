@@ -1,12 +1,12 @@
-﻿using FrameWork;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Common.Database.Account;
+using FrameWork;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class Client : BaseClient
     {
@@ -66,7 +66,7 @@ namespace AuthenticationServer.Server
             var password = sb.ToString();
 
             string ip = GetIp().Split(':')[0];
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_LOGIN);
+            PacketOut Out = new PacketOut(Opcodes.LCR_LOGIN);
 
             int accountId;
 
@@ -98,7 +98,7 @@ namespace AuthenticationServer.Server
                 else
                 {
                     Out.WriteString("");
-                    Out.WriteUInt32((uint)0);
+                    Out.WriteUInt32(0);
                 }
             }
 
@@ -111,7 +111,7 @@ namespace AuthenticationServer.Server
             _sessionToken = token;
 
             // Core.AcctMgr.UpdateAccountBio(account.AccountId, ((IPEndPoint)_socket.RemoteEndPoint).Address.ToString(), installID);
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_PATCH_NOTES);
+            PacketOut Out = new PacketOut(Opcodes.LCR_PATCH_NOTES);
             Out.WriteString(Core.Config.PatchNotes);
 
             SendTCPRaw(Out);
@@ -129,7 +129,7 @@ namespace AuthenticationServer.Server
 
             var files = PatchMgr._Patch_Files.ToList();
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_REQUEST_MANIFEST_LIST);
+            PacketOut Out = new PacketOut(Opcodes.LCR_REQUEST_MANIFEST_LIST);
             Out.WriteInt32(list.Count);
 
             foreach (var myp in list)
@@ -178,7 +178,7 @@ namespace AuthenticationServer.Server
                     foreach (var asset in pAssets)
                     {
                         csv.NewRow();
-                        csv.WriteCol(0, ((int)asset.ArchiveId).ToString());
+                        csv.WriteCol(0, asset.ArchiveId.ToString());
                         csv.WriteCol(1, asset.Hash.ToString());
                         csv.WriteCol(2, "");
                         csv.WriteCol(3, asset.CRC32.ToString());
@@ -286,12 +286,12 @@ namespace AuthenticationServer.Server
             _uploadFile = file;
 
             // Send out notification of file transfer
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_START);
+            PacketOut Out = new PacketOut(Opcodes.LCR_DATA_START);
             Out.WriteUInt32((uint)_uploadFile.ArchiveID);
             Out.WriteUInt64(_uploadFile.FilenameHash);
-            Out.WriteUInt32((uint)_uploadFile.FileHash);
-            Out.WriteUInt64((ulong)_uploadFile.CompressedSize);
-            Out.WriteUInt64((ulong)_uploadFile.FileSize);
+            Out.WriteUInt32(_uploadFile.FileHash);
+            Out.WriteUInt64(_uploadFile.CompressedSize);
+            Out.WriteUInt64(_uploadFile.FileSize);
             Out.WriteInt32((int)_uploadFile.Compress);
             Out.WriteInt32((int)_uploadFile.Type);
             Out.WriteInt32((int)_uploadFile.OldCrc);
@@ -311,13 +311,13 @@ namespace AuthenticationServer.Server
             if (_uploadFile != null)
             {
                 byte[] data = new byte[UPLOAD_SIZE];
-                long read_size = _uploadFile.Read(data, (long)offset, size);
+                long read_size = _uploadFile.Read(data, offset, size);
                 if (read_size > 0)
                 {
-                    PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_PART);
+                    PacketOut Out = new PacketOut(Opcodes.LCR_DATA_PART);
                     Out.WriteInt64(offset);
                     Out.WriteInt32((int)read_size);
-                    Out.WriteInt32((int)sequence);
+                    Out.WriteInt32(sequence);
                     Out.Write(data, 0, data.Length);
                     SendTCPRaw(Out);
                 }
@@ -339,7 +339,7 @@ namespace AuthenticationServer.Server
             // If asset is not found in database, of server does not have local file
             if (foundAsset == null || string.IsNullOrEmpty(foundAsset.File) || !File.Exists(Path.Combine(Core.Config.PatcherFilesPath, foundAsset.File)))
             {
-                PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_NOT_FOUND);
+                PacketOut Out = new PacketOut(Opcodes.LCR_DATA_NOT_FOUND);
                 Out.WriteUInt32((uint)archive);
                 Out.WriteUInt64(hash);
                 SendTCPRaw(Out);
@@ -358,7 +358,7 @@ namespace AuthenticationServer.Server
             //if asset is not found in database, of server does not have local file
             if (foundAsset == null || string.IsNullOrEmpty(foundAsset.Name) || !File.Exists(Path.Combine(Core.Config.PatcherFilesPath, foundAsset.Name)))
             {
-                PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_NOT_FOUND);
+                PacketOut Out = new PacketOut(Opcodes.LCR_DATA_NOT_FOUND);
                 Out.WriteUInt32((uint)Archive.NONE);
                 Out.WriteUInt64(hash);
                 SendTCPRaw(Out);
@@ -382,7 +382,7 @@ namespace AuthenticationServer.Server
             Core.Config.PatchNotes = notes;
             ConfigMgr.SaveConfig(Core.Config);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_PATCH_NOTES);
+            PacketOut Out = new PacketOut(Opcodes.LCR_PATCH_NOTES);
             Out.WriteString(notes);
 
             ((TCPServer)Server).DispatchPatcket(Out);
@@ -408,7 +408,7 @@ namespace AuthenticationServer.Server
         public void SendError(LauncherErrorCode errorCode, string msg)
         {
             //send out notification of file transfer
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_ERROR);
+            PacketOut Out = new PacketOut(Opcodes.LCR_ERROR);
             Out.WriteInt32((int)errorCode);
             Out.WriteString(msg);
             SendTCPRaw(Out);
@@ -423,8 +423,8 @@ namespace AuthenticationServer.Server
         {
             Guid g = Guid.NewGuid(); //create installID
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_VERSION);
-            Out.WriteUInt32R((uint)PatchMgr.VersionHash);
+            PacketOut Out = new PacketOut(Opcodes.LCR_VERSION);
+            Out.WriteUInt32R(PatchMgr.VersionHash);
             Out.WriteUInt32((uint)Core.Config.ServerState);
             Out.WriteString(g.ToString());
             SendTCPRaw(Out);

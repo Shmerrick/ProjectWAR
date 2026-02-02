@@ -1,14 +1,14 @@
-﻿using FrameWork;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using FrameWork;
 
-namespace AuthenticationServer.Server.Handler
+namespace LauncherServer.Server.Handler
 {
     public class LauncherPackets : IPacketHandler
     {
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_CREATE, 0, "OnCreate")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_CREATE, 0, "OnCreate")]
         public static void CL_CREATE(BaseClient client, PacketIn packet)
         {
             Client cclient = (Client)client;
@@ -21,7 +21,7 @@ namespace AuthenticationServer.Server.Handler
 
             var result = 0x02; // CreteAccountResult.ACCOUNT_BANNED;
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_CREATE);
+            PacketOut Out = new PacketOut(Opcodes.LCR_CREATE);
 
             string ip = client.GetIp().Split(':')[0];
 
@@ -59,7 +59,7 @@ namespace AuthenticationServer.Server.Handler
             cclient.SendPacketNoBlock(Out);
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_START, 0, "OnStart")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_START, 0, "OnStart")]
         public static void CL_START(BaseClient client, PacketIn packet)
         {
             var cclient = (Client)client;
@@ -67,7 +67,7 @@ namespace AuthenticationServer.Server.Handler
             var username = packet.GetString();
             var password = packet.GetString();
             
-            var Out = new PacketOut((byte)Opcodes.LCR_START);
+            var Out = new PacketOut(Opcodes.LCR_START);
             
             var authResult = Core.AcctMgr.AuthenticateUser(new AuthenticateUserRequest
             {
@@ -91,7 +91,7 @@ namespace AuthenticationServer.Server.Handler
 #endif
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_CHECK, 0, "OnCheck")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_CHECK, 0, "OnCheck")]
         public static void CL_CHECK(BaseClient client, PacketIn packet)
         {
             Client cclient = (Client)client;
@@ -99,7 +99,7 @@ namespace AuthenticationServer.Server.Handler
 
             Log.Debug("CL_CHECK", "Launcher Version : " + version);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_CHECK);
+            PacketOut Out = new PacketOut(Opcodes.LCR_CHECK);
 
             if (version != Core.Version)
             {
@@ -166,7 +166,7 @@ namespace AuthenticationServer.Server.Handler
             return computerProfile;
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_INFO, 0, "OnInfo")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_INFO, 0, "OnInfo")]
         public static void CL_INFO(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -177,7 +177,7 @@ namespace AuthenticationServer.Server.Handler
 
                 var realmsResponse = Core.AcctMgr.ListRealms(new ListRealmsRequest());
 
-                PacketOut Out = new PacketOut((byte)Opcodes.LCR_INFO);
+                PacketOut Out = new PacketOut(Opcodes.LCR_INFO);
                 Out.WriteByte((byte)realmsResponse.Realms.Count);
                 foreach (var Rm in realmsResponse.Realms)
                 {
@@ -194,7 +194,7 @@ namespace AuthenticationServer.Server.Handler
 
         //Client is sending their patcher version. Server will compare to patcher version currently in database.
         //if invalid client will request latest patcher and restart
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_VERSION, 0, "OnVersion")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_VERSION, 0, "OnVersion")]
         public static void CL_VERSION(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -202,7 +202,7 @@ namespace AuthenticationServer.Server.Handler
             cclient.OnValidateVersion(p);
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_LOGIN, 0, "OnLogin")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_LOGIN, 0, "OnLogin")]
         public static void CL_LOGIN(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -217,7 +217,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client requesting list of required files/myps
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_REQUEST_MANIFEST_LIST, 0, "CL_REQUEST_MANIFEST_LIST")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_REQUEST_MANIFEST_LIST, 0, "CL_REQUEST_MANIFEST_LIST")]
         public static void CL_REQUEST_MANIFEST_LIST(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -225,7 +225,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client is requesting asset hashes in specified myps
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_REQUEST_MANIFEST, 0, "CL_REQUEST_MANIFEST")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_REQUEST_MANIFEST, 0, "CL_REQUEST_MANIFEST")]
         public static void CL_REQUEST_MANIFEST(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -239,7 +239,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client is requesting file part
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_DATA_REQUEST_PARTS, 0, "CL_DATA_REQUEST_PARTS")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_DATA_REQUEST_PARTS, 0, "CL_DATA_REQUEST_PARTS")]
         public static void CL_DATA_REQUEST_PARTS(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -250,7 +250,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client requesting asset or file
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_REQUEST_ASSET, 0, "CL_REQUEST_ASSET")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_REQUEST_ASSET, 0, "CL_REQUEST_ASSET")]
         public static void CL_REQUEST_ASSET(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -267,7 +267,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client is ready for more data
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_DATA_READY, 0, "CL_DATA_READY")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_DATA_READY, 0, "CL_DATA_READY")]
         public static void CL_DATA_READY(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -275,7 +275,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client setting patcher notes, will be rebroadcast to all conencted clients
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_SET_PATCH_NOTES, 0, "CL_SET_PATCH_NOTES")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_SET_PATCH_NOTES, 0, "CL_SET_PATCH_NOTES")]
         public static void CL_SET_PATCH_NOTES(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -284,7 +284,7 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client sending their patch log
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_PATCHER_LOG, 0, "CL_PATCHER_LOG")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_PATCHER_LOG, 0, "CL_PATCHER_LOG")]
         public static void CL_PATCHER_LOG(BaseClient client, PacketIn packet)
         {
             Client cclient = client as Client;
@@ -306,14 +306,14 @@ namespace AuthenticationServer.Server.Handler
         }
 
         //client sending email code
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_EMAIL_REGISTRATION, 0, "CL_EMAIL_REGISTRATION")]
+        [PacketHandler(PacketHandlerType.TCP, Opcodes.CL_EMAIL_REGISTRATION, 0, "CL_EMAIL_REGISTRATION")]
         public static void CL_EMAIL_REGISTRATION(BaseClient client, PacketIn packet)
         {
             Client cclient = (Client)client;
 
             string username = packet.GetString().ToLower();
             string code = packet.GetString();
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_EMAIL_RESPONCE);
+            PacketOut Out = new PacketOut(Opcodes.LCR_EMAIL_RESPONCE);
             // Out.WriteInt32(Core.AcctMgr.CheckCode(username, code));
             Log.Debug("CL_EMAIL_REGISTRATION", $"Writing response to Client {Out} ");
             cclient.SendPacketNoBlock(Out);

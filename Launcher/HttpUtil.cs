@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace Launcher
 {
@@ -27,11 +27,9 @@ namespace Launcher
                     request.ContentLength = 0;
                     var response = await request.GetResponseAsync();
 
-                    using (var stream = response.GetResponseStream())
-                    {
-                        var reader = new StreamReader(stream);
-                        return (T)new JavaScriptSerializer().Deserialize(reader.ReadToEnd(), typeof(T));
-                    }
+                    await using var stream = response.GetResponseStream();
+                    var reader = new StreamReader(stream);
+                    return JsonSerializer.Deserialize<T>(await reader.ReadToEndAsync());
                 }
                 catch (Exception e)
                 {

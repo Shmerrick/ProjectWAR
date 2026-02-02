@@ -1,9 +1,9 @@
-﻿using AuthenticationServer.Server;
-using FrameWork;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FrameWork;
+using LauncherServer.Server;
 
-namespace AuthenticationServer.Console
+namespace LauncherServer.Console
 {
     [ConsoleHandler("state", 1, "Server State")]
     public class State : IConsoleHandler

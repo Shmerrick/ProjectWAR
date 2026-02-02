@@ -8,6 +8,7 @@
   <Project Path="Launcher/Launcher.csproj" />
   <Project Path="LauncherServer/LauncherServer.csproj" />
   <Project Path="LobbyServer/LobbyServer.csproj" />
+  <Project Path="RpcSourceGenerator/RpcSourceGenerator.csproj" />
   <Project Path="ServerLauncher/ServerLauncher.csproj" />
   <Project Path="WarZone/WarZone.vcxproj" />
   <Project Path="WorldServer/WorldServer.csproj" />

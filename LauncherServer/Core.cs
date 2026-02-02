@@ -1,20 +1,21 @@
-﻿using AuthenticationServer.Config;
-using AuthenticationServer.Server;
-using Common;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using FrameWork;
 using FrameWork.Misc;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Reflection;
+using FrameWork.NetWork.V4;
 using Grpc.Net.Client;
+using LauncherServer.Config;
+using LauncherServer.Server;
 
-namespace AuthenticationServer
+namespace LauncherServer
 {
     internal class Core
     {
         public static LauncherConfig Config;
-        public static TCPServer Server;
+        // public static TCPServer Server;
+        public static NetworkManager NetworkManager;
 
         public static int Version => 1;
 
@@ -62,11 +63,12 @@ namespace AuthenticationServer
 
             StrInfo = Info.OpenText().ReadToEnd();
             Log.Info("mythloginserviceconfig.xml", StrInfo);
-
-            if (!TCPManager.Listen<TCPServer>(8000, "LauncherServer"))
-                ConsoleMgr.WaitAndExit(2000);
-
-            Server = TCPManager.GetTcp<TCPServer>("LauncherServer");
+            
+            NetworkManager = new NetworkManager();
+            var serializerContext = new LauncherSerializerContext();
+            NetworkManager.Start(IPEndPoint.Parse("127.0.0.1:8000"), s => new LauncherClient(s, new BinaryPacketSerializerFactory(serializerContext)));
+            
+            
             AcctMgr = new AccountMgr.AccountMgrClient(GrpcChannel.ForAddress($"https://127.0.0.1:6800",
                 new GrpcChannelOptions
                 {

@@ -1,7 +1,7 @@
-﻿using AuthenticationServer.Server;
-using FrameWork;
+﻿using FrameWork;
+using LauncherServer.Server;
 
-namespace AuthenticationServer.Config
+namespace LauncherServer.Config
 {
     [aConfigAttributes("Configs/Launcher.xml")]
     public class LauncherConfig : aConfig

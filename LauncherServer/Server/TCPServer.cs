@@ -1,7 +1,7 @@
-﻿using FrameWork;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using FrameWork;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class TCPServer : TCPManager
     {

@@ -1,34 +1,34 @@
-﻿namespace AuthenticationServer.Server
+﻿namespace LauncherServer.Server
 {
-    public enum Opcodes : byte
+    public class Opcodes
     {
-        CL_CHECK = 0x01,   // The client sends his version for verification (version of the launcher, check file start)
-        LCR_CHECK = 0x02,   // The server returns the answer and disconnects if necessary.
+        public const byte CL_CHECK = 0x01;   // The client sends his version for verification (version of the launcher, check file start)
+        public const byte LCR_CHECK = 0x02;   // The server returns the answer and disconnects if necessary.
 
-        CL_START = 0x03,   // The client requests permission to start. (Username + pass sha256)
-        LCR_START = 0x04,   // The server returns the authorization or not to start the client, the client will launch with the server info
+        public const byte CL_START = 0x03;   // The client requests permission to start. (Username + pass sha256)
+        public const byte LCR_START = 0x04;  // The server returns the authorization or not to start the client, the client will launch with the server info
 
-        CL_CREATE = 0x05,   // The client requests to create an account (Username + Pass + IP);
-        LCR_CREATE = 0x06,  // Server response to client request (response in message string + error bool)
+        public const byte CL_CREATE = 0x05;   // The client requests to create an account (Username + Pass + IP);
+        public const byte LCR_CREATE = 0x06;  // Server response to client request (response in message string + error bool)
 
-        CL_INFO = 0x07,   // The client requests information about the realms
-        LCR_INFO = 0x08,   // server response on realms
+        public const byte CL_INFO = 0x07;   // The client requests information about the realms
+        public const byte LCR_INFO = 0x08;   // server response on realms
 
         //NEW CLIENT LAUNCHER PROTOCOL
 
-        CL_VERSION = 100,                   //client tells server current launcher exe version
-        LCR_VERSION = 101,                  //server responds with current ror launcher version
+        public const byte CL_VERSION = 100;                   //client tells server current launcher exe version
+        public const byte LCR_VERSION = 101;                  //server responds with current ror launcher version
 
         //CL_REQUEST_PATCHER_DOWNLOAD = 102,  //client asks for new launcher exe
         //LCR_PATCHER_DOWNLOAD = 103,         //server responds with launcher exe (gzip compressed).
-        CL_REQUEST_MANIFEST = 104,          //client asks for list of hashes for specified myp
+        public const byte CL_REQUEST_MANIFEST = 104;          //client asks for list of hashes for specified myp
 
         //LCR_MANIFEST = 105,                 //server responds with gzip compressed list of hashes for specified myp
         //CLR_REQUEST_ASSETS = 106,           //client requests list of assets.
         //LCR_ASSET = 107,                    //server sends mypID, hash, assetData for requested asset
-        CL_LOGIN = 108,                     //client sends username/password/patcher version/computer info
+        public const byte CL_LOGIN = 108;                     //client sends username/password/patcher version/computer info
 
-        LCR_LOGIN = 109,                    //server responds with session token, accountID. Client writes accountID into data.myp
+        public const byte LCR_LOGIN = 109;                    //server responds with session token, accountID. Client writes accountID into data.myp
         //CL_REQUEST_NEWS = 110,              //client request current news from ror site (patch notes, etc)
         //LCR_REQUEST_NEWS = 111,             //server responds with news from site in xml document
         //CL_REQUEST_ADDON_LIST = 112,        //client requests list of approved addons
@@ -44,21 +44,21 @@
         //CL_SET_NEW_LAUNCHER_FILE = 154,
         //CL_SET_MANIFEST = 155,
         //CL_SET_ASSET_INFO = 156,
-        LCR_DATA_START = 157,
+        public const byte LCR_DATA_START = 157;
 
-        LCR_DATA_PART = 158,
+        public const byte LCR_DATA_PART = 158;
 
         //LCR_DATA_COMPLETE = 159,
         //CL_DATA_START = 160,
         //CL_DATA_PART = 161,
         //CL_DATA_COMPLETE = 162,
-        CL_DATA_REQUEST_PARTS = 163,
+        public const byte CL_DATA_REQUEST_PARTS = 163;
 
         //LCR_DATA_ABORT = 164,      //server tells clients patching has been aborted (happens if devs have changed server files). Further patch requests are halted
-        LCR_ERROR = 165,
+        public const byte LCR_ERROR = 165;
 
         //CL_REQUEST_SERVER_STATUS = 166, //returns info on patcher server, lobby server, game servers
-        LCR_SERVER_STATUS = 167,
+        public const byte LCR_SERVER_STATUS = 167;
 
         //CL_SET_SERVER_STATUS = 168,
         //LCR_SERVER_STATUS_UPDATE = 169,
@@ -66,25 +66,25 @@
         //CL_SET_SERVER_STATE = 171,
         //LCR_SERVER_STATE_UPDATE = 172,
         //LCR_DATA_READY = 173, //tell client server is able to receive more files
-        CL_REQUEST_MANIFEST_LIST = 174,
+        public const byte CL_REQUEST_MANIFEST_LIST = 174;
 
-        LCR_REQUEST_MANIFEST_LIST = 175,
+        public const byte LCR_REQUEST_MANIFEST_LIST = 175;
 
-        LCR_DATA_NOT_FOUND = 176, //server does not have requested asset
+        public const byte LCR_DATA_NOT_FOUND = 176; //server does not have requested asset
 
         //CL_SERVER_CMD = 178,
         //LCR_ASSET_CHANGES_DETECTED = 179,
-        CL_DATA_READY = 180,
+        public const byte CL_DATA_READY = 180;
 
-        CL_REQUEST_ASSET = 181,
-        LCR_PATCH_NOTES = 182,
-        CL_SET_PATCH_NOTES = 183,
+        public const byte CL_REQUEST_ASSET = 181;
+        public const byte LCR_PATCH_NOTES = 182;
+        public const byte CL_SET_PATCH_NOTES = 183;
 
-        //CL_DELETE_ASSETS = 184,
-        CL_PATCHER_LOG = 185,
+        //CL_DELETE_ASSETS = 184;
+        public const byte CL_PATCHER_LOG = 185;
 
-        CL_EMAIL_REGISTRATION = 186,
-        LCR_EMAIL_RESPONCE = 187,
+        public const byte CL_EMAIL_REGISTRATION = 186;
+        public const byte LCR_EMAIL_RESPONCE = 187;
     }
 
     public enum AbortReason : byte

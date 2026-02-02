@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace AuthenticationServer.Addon
+namespace LauncherServer.Addon
 {
     [XmlRoot(ElementName = "VersionSettings")]
     public class aVersionSettings
