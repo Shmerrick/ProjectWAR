@@ -204,9 +204,29 @@ namespace FrameWork.NetWork.SourceGenerators
                 var isNullable = propType.NullableAnnotation == NullableAnnotation.Annotated;
                 var isLast = i == properties.Count - 1;
 
-                if (isNullable)
+                // Get underlying type for nullables
+                var underlyingType = propType;
+                if (isNullable && propType is INamedTypeSymbol namedNullable && namedNullable.IsGenericType)
                 {
-                    sb.AppendLine($"                {prop.Name} = reader.IsAtEnd() ? null : reader.");
+                    underlyingType = namedNullable.TypeArguments[0];
+                }
+
+                // Check if it's an enum - handle specially because cast needs to wrap reader.ReadByte()
+                if (underlyingType.TypeKind == TypeKind.Enum)
+                {
+                    var enumTypeName = underlyingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                    if (isNullable)
+                    {
+                        sb.Append($"                {prop.Name} = reader.IsAtEnd() ? null : ({enumTypeName})reader.ReadByte()");
+                    }
+                    else
+                    {
+                        sb.Append($"                {prop.Name} = ({enumTypeName})reader.ReadByte()");
+                    }
+                }
+                else if (isNullable)
+                {
+                    sb.Append($"                {prop.Name} = reader.IsAtEnd() ? null : reader.");
                     GenerateReadExpressionInline(sb, propType);
                 }
                 else
@@ -243,7 +263,6 @@ namespace FrameWork.NetWork.SourceGenerators
                 SpecialType.System_Single => "ReadFloat()",
                 SpecialType.System_Double => "ReadDouble()",
                 SpecialType.System_Boolean => "(ReadByte() != 0)",
-                SpecialType.System_Enum => "ReadEnum()",
                 SpecialType.System_String => "ReadString()",
                 _ => "null /* unsupported type */"
             };
@@ -300,6 +319,13 @@ namespace FrameWork.NetWork.SourceGenerators
 
             var value = needsCast ? $"{valueExpression}.Value" : valueExpression;
 
+            // Check if it's an enum first
+            if (underlyingType.TypeKind == TypeKind.Enum)
+            {
+                sb.Append($"WriteByte((byte){value})");
+                return;
+            }
+
             var methodName = underlyingType.SpecialType switch
             {
                 SpecialType.System_Byte => $"WriteByte({value})",
@@ -313,7 +339,6 @@ namespace FrameWork.NetWork.SourceGenerators
                 SpecialType.System_Single => $"WriteFloat({value})",
                 SpecialType.System_Double => $"WriteDouble({value})",
                 SpecialType.System_Boolean => $"WriteByte((byte)({value} ? 1 : 0))",
-                SpecialType.System_Enum => $"WriteByte(Convert.ToByte({value}))",
                 SpecialType.System_String => $"WriteString({value})",
                 _ => "/* unsupported type */"
             };

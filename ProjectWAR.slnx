@@ -6,6 +6,7 @@
   <Project Path="Common/Common.csproj" />
   <Project Path="FrameWork/FrameWork.csproj" />
   <Project Path="Launcher/Launcher.csproj" />
+  <Project Path="LauncherServer.Dtos/LauncherServer.Dtos.csproj" />
   <Project Path="LauncherServer/LauncherServer.csproj" />
   <Project Path="LobbyServer/LobbyServer.csproj" />
   <Project Path="RpcSourceGenerator/RpcSourceGenerator.csproj" />

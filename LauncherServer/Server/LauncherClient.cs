@@ -4,6 +4,7 @@ using System.Buffers.Binary;
 using System.Net.Sockets;
 using FrameWork;
 using FrameWork.NetWork.V4;
+using LauncherServer.Dtos;
 using ClientV4 = FrameWork.NetWork.V4.Client;
 
 namespace LauncherServer.Server;
@@ -113,7 +114,7 @@ public partial class LauncherClient : ClientV4
     }
 
     [Rpc(Opcodes.CL_CREATE, Opcodes.LCR_CREATE)]
-    public CreateAccountResponse CL_CREATE(CreateAccountRequest request)
+    public Dtos.CreateAccountResponse CL_CREATE(Dtos.CreateAccountRequest request)
     {
         var result = CreateAccountResult.ACCOUNT_BANNED;
         
@@ -122,7 +123,7 @@ public partial class LauncherClient : ClientV4
         // Check Ip Ban
         if (!Core.AcctMgr.IsIpBanned(new IsIpBannedRequest { IpAddress = ip }).IsBanned)
         {
-            var createAccountRequest = new global::CreateAccountRequest()
+            var createAccountRequest = new CreateAccountRequest()
             {
                 Username = request.Username,
                 Password = request.Password,
@@ -141,7 +142,7 @@ public partial class LauncherClient : ClientV4
             }
         }
 
-        return new CreateAccountResponse { Status = result };
+        return new Dtos.CreateAccountResponse { Status = result };
     }
     
     [Rpc(Opcodes.CL_START, Opcodes.LCR_START)]
@@ -155,7 +156,15 @@ public partial class LauncherClient : ClientV4
 
         var response = new StartResponse
         {
-            Result = authResult.Result
+            Result = authResult.Result switch
+            {
+                LoginResult.Success => Dtos.LoginResult.Success,
+                LoginResult.InvalidCredentials => Dtos.LoginResult.InvalidCredentials,
+                LoginResult.AccountBanned => Dtos.LoginResult.AccountBanned,
+                LoginResult.NotActive => Dtos.LoginResult.NotActive,
+                LoginResult.PatcherNotAllowed => Dtos.LoginResult.PatcherNotAllowed,
+                _ => throw new InvalidOperationException()
+            }
         };
 
         if (authResult.Result == LoginResult.Success)
@@ -166,59 +175,4 @@ public partial class LauncherClient : ClientV4
 
         return response;
     }
-
-    public class CheckVersionRequest
-    {
-        public uint Version { get; set; }
-        public byte Options { get; set; }
-        public ulong MythLoginServiceConfigLength { get; set; }
-    }
-    
-    public class CheckVersionResponse
-    {
-        public byte Result { get; set; }
-        public string? MessageOrMythLoginServiceConfig { get; set; }
-    }
-    
-    public class CreateAccountRequest
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
-        public string? Email { get; set; }
-        public byte? LangID { get; set; }
-    }
-
-    public enum CreateAccountResult
-    {
-        ACCOUNT_NAME_BUSY = 0x00,
-        ACCOUNT_NAME_SUCCESS = 0x01,
-        ACCOUNT_BANNED = 0x02
-    }
-
-    public class CreateAccountResponse
-    {
-        public CreateAccountResult Status { get; set; }
-    }
-    
-    public class StartRequest
-    {
-        public required string Username { get; set; }
-        public required string PasswordHash { get; set; }
-    }
-    
-    public class StartResponse
-    {
-        public LoginResult Result { get; set; }
-        public string? AuthToken { get; set; }
-    }
-}
-
-[PacketSerializerContext(
-    typeof(LauncherClient.CheckVersionRequest),
-    typeof(LauncherClient.CheckVersionResponse),
-    typeof(LauncherClient.CreateAccountRequest),
-    typeof(LauncherClient.CreateAccountResponse),
-    typeof(LauncherClient.StartRequest))]
-public partial class LauncherSerializerContext
-{
 }

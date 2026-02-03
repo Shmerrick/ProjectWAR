@@ -47,6 +47,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\FrameWork\FrameWork.csproj" />
+    <ProjectReference Include="..\LauncherServer.Dtos\LauncherServer.Dtos.csproj" />
+    <ProjectReference Include="..\RpcSourceGenerator\RpcSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

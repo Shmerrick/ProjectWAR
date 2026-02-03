@@ -122,12 +122,12 @@ public abstract class Client : IDisposable
     {
         try
         {
-            int bufferOffset = 0; // Tracks valid data in _receiveBuffer
+            var bufferOffset = 0; // Tracks valid data in _receiveBuffer
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 // Read from network stream into buffer after existing data
-                int bytesRead = await _stream.ReadAsync(_receiveBuffer, bufferOffset, _receiveBuffer.Length - bufferOffset, cancellationToken)
+                var bytesRead = await _stream.ReadAsync(_receiveBuffer.AsMemory(bufferOffset, _receiveBuffer.Length - bufferOffset), cancellationToken)
                     .ConfigureAwait(false);
 
                 if (bytesRead == 0)
@@ -141,13 +141,13 @@ public abstract class Client : IDisposable
                 bufferOffset += bytesRead;
 
                 // Apply byte transformation if configured
-                ReadOnlySpan<byte> dataSpan = new ReadOnlySpan<byte>(_receiveBuffer, 0, bufferOffset);
+                var dataSpan = new ReadOnlySpan<byte>(_receiveBuffer, 0, bufferOffset);
                 if (_byteTransformer != null)
                 {
-                    byte[] transformBuffer = ArrayPool<byte>.Shared.Rent(bufferOffset * 2);
+                    var transformBuffer = ArrayPool<byte>.Shared.Rent(bufferOffset * 2);
                     try
                     {
-                        int transformedLength = _byteTransformer.Transform(dataSpan, transformBuffer);
+                        var transformedLength = _byteTransformer.Transform(dataSpan, transformBuffer);
                         // Copy transformed data back to receive buffer
                         Buffer.BlockCopy(transformBuffer, 0, _receiveBuffer, 0, transformedLength);
                         bufferOffset = transformedLength;
@@ -189,12 +189,9 @@ public abstract class Client : IDisposable
 
         while (TryExtractPacket(ref buffer, out var packetData))
         {
-            // int bytesConsumed = packetData.Length;
-            // totalBytesConsumed += bytesConsumed;
-
             // Extract opcode and payload
-            byte opcode = ExtractOpcode(packetData.Span, out var payloadOffset);
-            ReadOnlyMemory<byte> payload = packetData.Slice(payloadOffset);
+            var opcode = ExtractOpcode(packetData.Span, out var payloadOffset);
+            var payload = packetData[payloadOffset..];
 
             // Queue packet for processing
             await _receiveQueue.Writer.WriteAsync(new PacketEnvelope(opcode, payload), cancellationToken)
@@ -202,7 +199,7 @@ public abstract class Client : IDisposable
         }
 
         // Compact buffer: move remaining data to start
-        var remaining = (int)buffer.Length;
+        var remaining = buffer.Length;
         var totalBytesConsumed = bufferLength - remaining;
         if (remaining > 0 && totalBytesConsumed > 0)
         {
@@ -216,10 +213,13 @@ public abstract class Client : IDisposable
     {
         try
         {
-            await foreach (PacketEnvelope envelope in _receiveQueue.Reader.ReadAllAsync(cancellationToken))
+            await foreach (var envelope in _receiveQueue.Reader.ReadAllAsync(cancellationToken))
             {
                 try
                 {
+                    // Raise event for RPC responses before processing
+                    ResponseReceived?.Invoke(this, envelope);
+                    
                     ProcessPacket(envelope.Opcode, envelope.Payload.Span);
                 }
                 catch (InvalidOperationException ex)
@@ -234,7 +234,7 @@ public abstract class Client : IDisposable
                     // Handler error
                     OnHandlerError(envelope.Opcode, ex);
 
-                    int errors = Interlocked.Increment(ref _errorCount);
+                    var errors = Interlocked.Increment(ref _errorCount);
                     if (errors >= _errorThreshold)
                     {
                         Disconnect(DisconnectReason.TooManyErrors);
@@ -253,7 +253,7 @@ public abstract class Client : IDisposable
     {
         try
         {
-            await foreach (ReadOnlyMemory<byte> data in _sendQueue.Reader.ReadAllAsync(cancellationToken))
+            await foreach (var data in _sendQueue.Reader.ReadAllAsync(cancellationToken))
             {
                 try
                 {
@@ -310,6 +310,97 @@ public abstract class Client : IDisposable
             // Send queue closed, ignore
         }
     }
+
+    /// <summary>
+    /// Sends an RPC request without waiting for a response (fire-and-forget).
+    /// </summary>
+    /// <param name="opcode">The request opcode.</param>
+    /// <param name="request">The request object.</param>
+    protected void SendRequest(byte opcode, object request)
+    {
+        var packet = CreatePacket(opcode, request);
+            
+        if (!_sendQueue.Writer.TryWrite(packet))
+        {
+            // Send queue closed, ignore
+        }
+    }
+
+    /// <summary>
+    /// Sends an RPC request and waits synchronously for a response.
+    /// </summary>
+    /// <typeparam name="TReq">The request type.</typeparam>
+    /// <typeparam name="TResp">The response type.</typeparam>
+    /// <param name="requestOpcode">The request opcode.</param>
+    /// <param name="responseOpcode">The expected response opcode.</param>
+    /// <param name="request">The request object.</param>
+    /// <returns>The deserialized response.</returns>
+    protected TResp SendRequest<TReq, TResp>(byte requestOpcode, byte responseOpcode, TReq request)
+    {
+        return SendRequestAsync<TReq, TResp>(requestOpcode, responseOpcode, request).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Sends an RPC request and waits asynchronously for a response.
+    /// </summary>
+    /// <typeparam name="TReq">The request type.</typeparam>
+    /// <typeparam name="TResp">The response type.</typeparam>
+    /// <param name="requestOpcode">The request opcode.</param>
+    /// <param name="responseOpcode">The expected response opcode.</param>
+    /// <param name="request">The request object.</param>
+    /// <returns>A task that resolves to the deserialized response.</returns>
+    protected async Task<TResp> SendRequestAsync<TReq, TResp>(byte requestOpcode, byte responseOpcode, TReq request)
+    {
+        var tcs = new TaskCompletionSource<TResp>();
+        var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+        // Set up a one-time handler for the response
+        EventHandler<PacketEnvelope> responseHandler = null;
+        responseHandler = (sender, envelope) =>
+        {
+            if (envelope.Opcode == responseOpcode)
+            {
+                try
+                {
+                    var response = Serializer.Deserialize<TResp>(envelope.Payload.Span);
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                }
+                finally
+                {
+                    ResponseReceived -= responseHandler;
+                    cancellation.Dispose();
+                }
+            }
+        };
+
+        ResponseReceived += responseHandler;
+
+        cancellation.Token.Register(() =>
+        {
+            ResponseReceived -= responseHandler;
+            tcs.TrySetException(new TimeoutException($"RPC request 0x{requestOpcode:X2} timed out waiting for response 0x{responseOpcode:X2}"));
+        });
+
+        // Send the request
+        var packet = CreatePacket(requestOpcode, request);
+        if (!_sendQueue.Writer.TryWrite(packet))
+        {
+            ResponseReceived -= responseHandler;
+            cancellation.Dispose();
+            throw new InvalidOperationException("Send queue is closed");
+        }
+
+        return await tcs.Task.ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Event raised when a response packet is received (for RPC pattern).
+    /// </summary>
+    protected event EventHandler<PacketEnvelope> ResponseReceived;
 
     /// <summary>
     /// Called when a deserialization error occurs.

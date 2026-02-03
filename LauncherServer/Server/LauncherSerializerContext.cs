@@ -1,0 +1,14 @@
+using FrameWork.NetWork.V4;
+using LauncherServer.Dtos;
+
+namespace LauncherServer.Server;
+
+[PacketSerializerContext(
+    typeof(CheckVersionRequest),
+    typeof(CheckVersionResponse),
+    typeof(Dtos.CreateAccountRequest),
+    typeof(Dtos.CreateAccountResponse),
+    typeof(StartRequest))]
+public partial class LauncherSerializerContext
+{
+}

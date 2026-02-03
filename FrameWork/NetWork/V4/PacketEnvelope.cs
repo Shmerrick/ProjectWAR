@@ -5,7 +5,7 @@ namespace FrameWork.NetWork.V4
     /// <summary>
     /// Internal struct containing a packet's opcode and payload for queuing.
     /// </summary>
-    internal readonly struct PacketEnvelope
+    public readonly struct PacketEnvelope
     {
         /// <summary>
         /// Gets the packet opcode.
