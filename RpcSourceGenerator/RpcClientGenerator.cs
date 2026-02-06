@@ -127,6 +127,7 @@ namespace FrameWork.NetWork.SourceGenerators
 
                     rpcMethods.Add(new RpcClientMethodInfo
                     {
+                        MethodAccessibility = GetAccessibilityModifier(member.DeclaredAccessibility),
                         MethodName = methodName,
                         RequestOpcode = requestOpcode,
                         ResponseOpcode = responseOpcode,
@@ -189,7 +190,7 @@ namespace FrameWork.NetWork.SourceGenerators
                 returnTypeStr = method.HasReturnValue ? method.ReturnType : "void";
             }
 
-            sb.AppendLine($"        partial {returnTypeStr} {method.MethodName}({parameters})");
+            sb.AppendLine($"        {method.MethodAccessibility} partial {returnTypeStr} {method.MethodName}({parameters})");
             sb.AppendLine("        {");
 
             // Generate method body based on pattern
@@ -228,9 +229,24 @@ namespace FrameWork.NetWork.SourceGenerators
 
             sb.AppendLine("        }");
         }
+        
+        private static string GetAccessibilityModifier(Accessibility accessibility)
+        {
+            return accessibility switch
+            {
+                Accessibility.Public => "public",
+                Accessibility.Internal => "internal",
+                Accessibility.Protected => "protected",
+                Accessibility.ProtectedOrInternal => "protected internal",
+                Accessibility.ProtectedAndInternal => "private protected",
+                Accessibility.Private => "private",
+                _ => ""
+            };
+        }
 
         private class RpcClientMethodInfo
         {
+            public string MethodAccessibility { get; set; }
             public string MethodName { get; set; }
             public byte RequestOpcode { get; set; }
             public byte? ResponseOpcode { get; set; }

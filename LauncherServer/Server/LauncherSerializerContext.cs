@@ -8,6 +8,8 @@ namespace LauncherServer.Server;
     typeof(CheckVersionResponse),
     typeof(Dtos.CreateAccountRequest),
     typeof(Dtos.CreateAccountResponse),
+    typeof(Dtos.GetInfoRequest),
+    typeof(Dtos.GetInfoResponse),
     typeof(StartRequest))]
 public partial class LauncherSerializerContext
 {

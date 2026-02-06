@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FrameWork;
+using LauncherServer.Dtos;
 using LauncherServer.Server;
 
 namespace LauncherServer.Console

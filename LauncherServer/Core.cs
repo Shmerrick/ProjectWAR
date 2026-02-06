@@ -7,6 +7,7 @@ using FrameWork.Misc;
 using FrameWork.NetWork.V4;
 using Grpc.Net.Client;
 using LauncherServer.Config;
+using LauncherServer.Dtos;
 using LauncherServer.Server;
 
 namespace LauncherServer

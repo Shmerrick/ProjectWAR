@@ -71,7 +71,17 @@ namespace Launcher
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.bnMinimise = new System.Windows.Forms.Button();
+            this.bnServerBrowser = new System.Windows.Forms.Button();
+            this.panelServerBrowser = new System.Windows.Forms.Panel();
+            this.listViewServers = new System.Windows.Forms.ListView();
+            this.columnOnline = new System.Windows.Forms.ColumnHeader();
+            this.columnServerName = new System.Windows.Forms.ColumnHeader();
+            this.columnPlayers = new System.Windows.Forms.ColumnHeader();
+            this.columnFaction = new System.Windows.Forms.ColumnHeader();
+            this.buttonServerBrowserClose = new System.Windows.Forms.Button();
+            this.timerServerRefresh = new System.Windows.Forms.Timer(this.components);
             this.panelCreateAccount.SuspendLayout();
+            this.panelServerBrowser.SuspendLayout();
             this.SuspendLayout();
             // 
             // T_username
@@ -452,6 +462,100 @@ namespace Launcher
             this.label8.TabIndex = 30;
             this.label8.Text = "Password";
             // 
+            // bnServerBrowser
+            // 
+            this.bnServerBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bnServerBrowser.BackColor = System.Drawing.Color.Transparent;
+            this.bnServerBrowser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bnServerBrowser.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.bnServerBrowser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bnServerBrowser.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bnServerBrowser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnServerBrowser.Location = new System.Drawing.Point(12, 607);
+            this.bnServerBrowser.Margin = new System.Windows.Forms.Padding(0);
+            this.bnServerBrowser.Name = "bnServerBrowser";
+            this.bnServerBrowser.Size = new System.Drawing.Size(220, 91);
+            this.bnServerBrowser.TabIndex = 32;
+            this.bnServerBrowser.Text = "Server Browser";
+            this.bnServerBrowser.UseVisualStyleBackColor = false;
+            this.bnServerBrowser.Click += new System.EventHandler(this.bnServerBrowser_Click);
+            // 
+            // panelServerBrowser
+            // 
+            this.panelServerBrowser.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelServerBrowser.BackColor = System.Drawing.Color.Transparent;
+            this.panelServerBrowser.BackgroundImage = global::Launcher.Properties.Resources.background;
+            this.panelServerBrowser.Controls.Add(this.buttonServerBrowserClose);
+            this.panelServerBrowser.Controls.Add(this.listViewServers);
+            this.panelServerBrowser.Location = new System.Drawing.Point(240, 120);
+            this.panelServerBrowser.Name = "panelServerBrowser";
+            this.panelServerBrowser.Size = new System.Drawing.Size(800, 480);
+            this.panelServerBrowser.TabIndex = 33;
+            this.panelServerBrowser.Visible = false;
+            // 
+            // listViewServers
+            // 
+            this.listViewServers.BackColor = System.Drawing.Color.Black;
+            this.listViewServers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listViewServers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnOnline,
+            this.columnServerName,
+            this.columnPlayers,
+            this.columnFaction});
+            this.listViewServers.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listViewServers.ForeColor = System.Drawing.Color.DarkOrange;
+            this.listViewServers.FullRowSelect = true;
+            this.listViewServers.GridLines = true;
+            this.listViewServers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listViewServers.Location = new System.Drawing.Point(20, 60);
+            this.listViewServers.Name = "listViewServers";
+            this.listViewServers.Size = new System.Drawing.Size(760, 390);
+            this.listViewServers.TabIndex = 0;
+            this.listViewServers.UseCompatibleStateImageBehavior = false;
+            this.listViewServers.View = System.Windows.Forms.View.Details;
+            // 
+            // columnOnline
+            // 
+            this.columnOnline.Text = "Status";
+            this.columnOnline.Width = 100;
+            // 
+            // columnServerName
+            // 
+            this.columnServerName.Text = "Server Name";
+            this.columnServerName.Width = 300;
+            // 
+            // columnPlayers
+            // 
+            this.columnPlayers.Text = "Players";
+            this.columnPlayers.Width = 120;
+            // 
+            // columnFaction
+            // 
+            this.columnFaction.Text = "Order / Destruction";
+            this.columnFaction.Width = 220;
+            // 
+            // buttonServerBrowserClose
+            // 
+            this.buttonServerBrowserClose.BackColor = System.Drawing.Color.Transparent;
+            this.buttonServerBrowserClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.buttonServerBrowserClose.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.buttonServerBrowserClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonServerBrowserClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonServerBrowserClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.buttonServerBrowserClose.Location = new System.Drawing.Point(740, 10);
+            this.buttonServerBrowserClose.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonServerBrowserClose.Name = "buttonServerBrowserClose";
+            this.buttonServerBrowserClose.Size = new System.Drawing.Size(50, 40);
+            this.buttonServerBrowserClose.TabIndex = 1;
+            this.buttonServerBrowserClose.Text = "X";
+            this.buttonServerBrowserClose.UseVisualStyleBackColor = false;
+            this.buttonServerBrowserClose.Click += new System.EventHandler(this.buttonServerBrowserClose_Click);
+            // 
+            // timerServerRefresh
+            // 
+            this.timerServerRefresh.Interval = 20000;
+            this.timerServerRefresh.Tick += new System.EventHandler(this.timerServerRefresh_Tick);
+            // 
             // bnMinimise
             // 
             this.bnMinimise.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -486,6 +590,8 @@ namespace Launcher
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
             this.Controls.Add(this.panelCreateAccount);
+            this.Controls.Add(this.panelServerBrowser);
+            this.Controls.Add(this.bnServerBrowser);
             this.Controls.Add(this.bnClose);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnConnectToServer);
@@ -504,6 +610,7 @@ namespace Launcher
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelCreateAccount.ResumeLayout(false);
             this.panelCreateAccount.PerformLayout();
+            this.panelServerBrowser.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -546,6 +653,15 @@ namespace Launcher
         private Label label4;
         private Label label8;
         private Button bnMinimise;
+        private Button bnServerBrowser;
+        private Panel panelServerBrowser;
+        private ListView listViewServers;
+        private ColumnHeader columnOnline;
+        private ColumnHeader columnServerName;
+        private ColumnHeader columnPlayers;
+        private ColumnHeader columnFaction;
+        private Button buttonServerBrowserClose;
+        private Timer timerServerRefresh;
     }
 }
 

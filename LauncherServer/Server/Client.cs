@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Common.Database.Account;
 using FrameWork;
+using LauncherServer.Dtos;
 
 namespace LauncherServer.Server
 {
@@ -385,7 +386,7 @@ namespace LauncherServer.Server
             PacketOut Out = new PacketOut(Opcodes.LCR_PATCH_NOTES);
             Out.WriteString(notes);
 
-            ((TCPServer)Server).DispatchPatcket(Out);
+            // ((TCPServer)Server).DispatchPatcket(Out);
         }
 
         public bool VerifyGMLevel(params EGmLevel[] flags)

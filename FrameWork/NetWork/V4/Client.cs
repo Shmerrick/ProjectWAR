@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -29,6 +30,9 @@ public abstract class Client : IDisposable
     private int _errorCount;
     private bool _disposed;
 
+    // Track pending RPC requests per response opcode for proper correlation
+    private readonly ConcurrentDictionary<byte, Channel<TaskCompletionSource<ReadOnlyMemory<byte>>>> _pendingRequests = new();
+
     /// <summary>
     /// Gets the packet serializer for this client.
     /// </summary>
@@ -42,7 +46,7 @@ public abstract class Client : IDisposable
     /// <summary>
     /// Raised when the client disconnects.
     /// </summary>
-    internal event Action<DisconnectReason> Disconnected;
+    public event Action<DisconnectReason> Disconnected;
 
     /// <summary>
     /// Creates a new client instance.
@@ -76,7 +80,7 @@ public abstract class Client : IDisposable
     /// Starts the client's receive, process, and send loops.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token for graceful shutdown.</param>
-    internal void Start(CancellationToken cancellationToken)
+    public void Start(CancellationToken cancellationToken)
     {
         _clientCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         _receiveTask = ReceiveLoopAsync(_clientCancellation.Token);
@@ -217,8 +221,20 @@ public abstract class Client : IDisposable
             {
                 try
                 {
-                    // Raise event for RPC responses before processing
-                    ResponseReceived?.Invoke(this, envelope);
+                    // Check if this is a response to a pending RPC request
+                    if (_pendingRequests.TryGetValue(envelope.Opcode, out var requestQueue))
+                    {
+                        // Try to complete the first pending request for this opcode
+                        if (await requestQueue.Reader.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
+                        {
+                            if (requestQueue.Reader.TryRead(out var tcs))
+                            {
+                                tcs.TrySetResult(envelope.Payload);
+                                // Don't call ProcessPacket - this was an RPC response
+                                continue;
+                            }
+                        }
+                    }
                     
                     ProcessPacket(envelope.Opcode, envelope.Payload.Span);
                 }
@@ -351,56 +367,51 @@ public abstract class Client : IDisposable
     /// <returns>A task that resolves to the deserialized response.</returns>
     protected async Task<TResp> SendRequestAsync<TReq, TResp>(byte requestOpcode, byte responseOpcode, TReq request)
     {
-        var tcs = new TaskCompletionSource<TResp>();
+        // Get or create the request queue for this response opcode
+        var requestQueue = _pendingRequests.GetOrAdd(responseOpcode, 
+            _ => Channel.CreateUnbounded<TaskCompletionSource<ReadOnlyMemory<byte>>>(new UnboundedChannelOptions
+            {
+                SingleReader = false,
+                SingleWriter = false
+            }));
+
+        var tcs = new TaskCompletionSource<ReadOnlyMemory<byte>>();
         var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-        // Set up a one-time handler for the response
-        EventHandler<PacketEnvelope> responseHandler = null;
-        responseHandler = (sender, envelope) =>
-        {
-            if (envelope.Opcode == responseOpcode)
-            {
-                try
-                {
-                    var response = Serializer.Deserialize<TResp>(envelope.Payload.Span);
-                    tcs.TrySetResult(response);
-                }
-                catch (Exception ex)
-                {
-                    tcs.TrySetException(ex);
-                }
-                finally
-                {
-                    ResponseReceived -= responseHandler;
-                    cancellation.Dispose();
-                }
-            }
-        };
-
-        ResponseReceived += responseHandler;
-
+        // Register timeout handler
         cancellation.Token.Register(() =>
         {
-            ResponseReceived -= responseHandler;
             tcs.TrySetException(new TimeoutException($"RPC request 0x{requestOpcode:X2} timed out waiting for response 0x{responseOpcode:X2}"));
         });
+
+        // Enqueue this request
+        if (!requestQueue.Writer.TryWrite(tcs))
+        {
+            // cancellation.Dispose();
+            throw new InvalidOperationException("Request queue is closed");
+        }
 
         // Send the request
         var packet = CreatePacket(requestOpcode, request);
         if (!_sendQueue.Writer.TryWrite(packet))
         {
-            ResponseReceived -= responseHandler;
             cancellation.Dispose();
             throw new InvalidOperationException("Send queue is closed");
         }
 
-        return await tcs.Task.ConfigureAwait(false);
+        try
+        {
+            // Wait for the response payload
+            var responsePayload = await tcs.Task.ConfigureAwait(false);
+            
+            // Deserialize the response
+            return Serializer.Deserialize<TResp>(responsePayload.Span);
+        }
+        finally
+        {
+            cancellation.Dispose();
+        }
     }
-
-    /// <summary>
-    /// Event raised when a response packet is received (for RPC pattern).
-    /// </summary>
-    protected event EventHandler<PacketEnvelope> ResponseReceived;
 
     /// <summary>
     /// Called when a deserialization error occurs.

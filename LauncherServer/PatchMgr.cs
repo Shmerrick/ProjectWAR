@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Common.Database.Account;
 using FrameWork;
+using LauncherServer.Dtos;
 using LauncherServer.Server;
 using Opcodes = LauncherServer.Server.Opcodes;
 

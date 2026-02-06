@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Buffers.Binary;
+using System.Linq;
 using System.Net.Sockets;
 using FrameWork;
 using FrameWork.NetWork.V4;
@@ -175,4 +176,39 @@ public partial class LauncherClient : ClientV4
 
         return response;
     }
+    
+    [Rpc(Opcodes.CL_INFO, Opcodes.LCR_INFO)]
+    public GetInfoResponse CL_INFO(GetInfoRequest request)
+    {
+        var realmsResponse = Core.AcctMgr.ListRealms(new ListRealmsRequest());
+
+        return new GetInfoResponse
+        {
+            RealmInfo = realmsResponse.Realms.Select(x =>
+                new Dtos.RealmInfo
+                {
+                    // Online = true,
+                    Name = x.Name,
+                    OnlinePlayers = x.OnlinePlayers,
+                    OrderCount = x.OrderCount,
+                    DestructionCount = x.DestructionCount
+                }
+            ).ToList()
+        };
+    }
+    
+    [Rpc(Opcodes.CL_VERSION, Opcodes.LCR_VERSION)]
+    public GetVersionResponse CL_VERSION(GetVersionRequest request)
+    {
+        var g = Guid.NewGuid(); //create installID
+
+        return new GetVersionResponse
+        {
+            VersionHash = PatchMgr.VersionHash,
+            ServerState = Core.Config.ServerState,
+            InstalId = g.ToString()
+        };
+    }
+    
+    // [Rpc(Opcodes.CL_REQUEST_MANIFEST)]
 }

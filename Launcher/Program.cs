@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Launcher
+namespace Launcher;
+
+internal static class Program
 {
-    internal static class Program
+    /// <summary>
+    /// Main entry point of the application.
+    /// </summary>
+    [STAThread]
+    private static void Main(string[] args)
     {
-        /// <summary>
-        /// Main entry point of the application.
-        /// </ summary>
-        [STAThread]
-        private static void Main(string[] args)
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ApocLauncher());
-        }
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new ApocLauncher());
     }
 }

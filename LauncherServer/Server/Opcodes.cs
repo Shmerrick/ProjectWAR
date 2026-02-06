@@ -94,16 +94,6 @@
         ERROR = 3,
     }
 
-    public enum ServerState : int
-    {
-        CLOSED = 0,
-        OPEN = 1, //0 = closed, specify reason in byte 32-64
-        CORE = 2, //allow only core testers and up to access server
-        STAFF = 3, //allow staff and up to access server
-        DEV = 4, //allow only highest GM level to access server
-        PATCH = 5, //closed status reason
-    }
-
     public enum FileType : int
     {
         MYP_ASSET = 0, //full myp is stored ons erver
