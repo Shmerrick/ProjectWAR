@@ -1,8 +1,8 @@
 ﻿using FrameWork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using Microsoft.CSharp;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -152,12 +152,13 @@ namespace WorldServer.API
                             }";
 
             string result = template.Replace("[@@CODE@@]", script);
-            System.CodeDom.Compiler.ICodeCompiler compiler = new Microsoft.CSharp.CSharpCodeProvider().CreateCompiler();
-            System.CodeDom.Compiler.CompilerParameters param = new System.CodeDom.Compiler.CompilerParameters();
-            param.GenerateExecutable = false;
-            param.GenerateInMemory = true;
-
-            param.IncludeDebugInformation = false;
+            var compiler = new CSharpCodeProvider();
+            System.CodeDom.Compiler.CompilerParameters param = new System.CodeDom.Compiler.CompilerParameters
+            {
+                GenerateExecutable = false,
+                GenerateInMemory = true,
+                IncludeDebugInformation = false
+            };
 
             param.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             param.ReferencedAssemblies.Add("System.dll");

@@ -6,6 +6,8 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
+using MYPHandler;
+using nsHashDictionary;
 using WarZoneLib;
 
 namespace Launcher
@@ -184,10 +186,11 @@ namespace Launcher
             packet.WritePacketLength();
 
             //Get the packet buffer
-            byte[] buf = packet.GetBuffer(); //packet.WritePacketLength sets the Capacity
-
+            // byte[] buf = packet.GetBuffer(); //packet.WritePacketLength sets the Capacity
+            var b = packet.GetBuffer()[..(int)packet.Length];
+            
             //Send the buffer
-            SendTCP(buf);
+            SendTCP(b);
         }
 
         public static void SendTCP(byte[] buf)
@@ -618,7 +621,7 @@ namespace Launcher
                 _logger.Info("Updating data.myp");
                 FileStream fileStream = File.Open("..\\data.myp", FileMode.Open, FileAccess.ReadWrite);
                 MYP myp = new MYP(MythicPackage.ART, (Stream)fileStream);
-
+            
                 if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
                 {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
@@ -628,16 +631,54 @@ namespace Launcher
                 {
                     byte[] data = new byte[reader.Length];
                     reader.Read(data, 0, data.Length);
-                    myp.UpdateFile(0x0B3E7AC0C6762BF7, data);
+                    _logger.Info(Encoding.UTF8.GetString(data));
+                    myp.UpdateFile(0x3FE03665349E2A8C, data);
+                    // myp.UpdateFile(0x0B3E7AC0C6762BF7, data);
                 }
                 myp.Save();
-                fileStream.Close();
+                fileStream.Flush();
+                fileStream.Dispose();
             }
             catch (Exception e)
             {
                 Print(e.ToString());
                 _logger.Info(e.ToString());
             }
+            //
+            // try
+            // {
+            //     _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
+            //     FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
+            //
+            //     Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\..\\");
+            //
+            //     HashDictionary hashDictionary = new HashDictionary();
+            //     hashDictionary.AddHash(0x3FE03665, 0x349E2A8C, "mythloginserviceconfig.xml", 0);
+            //     MYPHandler.MYPHandler mypHandler = new MYPHandler.MYPHandler("data.myp", null, null, hashDictionary);
+            //     mypHandler.GetFileTable();
+            //
+            //     FileInArchive theFile = mypHandler.SearchForFile("mythloginserviceconfig.xml");
+            //
+            //     if (theFile == null)
+            //     {
+            //         _logger.Error("Can not find config file in data.myp");
+            //         return;
+            //     }
+            //
+            //     if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+            //     {
+            //         _logger.Error("Missing file : mythloginserviceconfig.xml");
+            //         return;
+            //     }
+            //
+            //     mypHandler.ReplaceFile(theFile, fs);
+            //
+            //     fs.Close();
+            // }
+            // catch (Exception e)
+            // {
+            //     Print(e.ToString());
+            // }
         }
 
         #endregion Packet

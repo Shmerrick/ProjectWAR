@@ -11,7 +11,6 @@ namespace Common
         private string _Language;
         private string _Adresse;
         private int _Port;
-        public RpcClientInfo Info;
 
         private string _Allow_trials = "0";
         private string _Charfxeravailable;

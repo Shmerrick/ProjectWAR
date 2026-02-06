@@ -1,7 +1,5 @@
 ﻿using FrameWork;
 using Google.ProtocolBuffers;
-using System;
-using System.Text;
 
 namespace LobbyServer.NetWork.Handler
 {
@@ -40,45 +38,9 @@ namespace LobbyServer.NetWork.Handler
             PacketOut Out = new PacketOut((byte)Opcodes.SMSG_AuthSessionTokenReply);
             AuthSessionTokenReply.Builder authReply = AuthSessionTokenReply.CreateBuilder();
 
-            AuthSessionTokenReply.Types.ResultCode resultCode = AuthSessionTokenReply.Types.ResultCode.RES_SUCCESS;
-
-            try
-            {
-                AuthSessionTokenReq.Builder authReq = AuthSessionTokenReq.CreateBuilder();
-                authReq.MergeFrom(packet.ToArray());
-
-                string session = Encoding.ASCII.GetString(authReq.SessionToken.ToByteArray());
-                Log.Debug("AuthSession", "session " + session);
-
-                // Validate the session token using the authentication backend
-                FrameWork.ResultCode res = Core.AcctMgr.CheckToken(session);
-                resultCode = (AuthSessionTokenReply.Types.ResultCode)res;
-
-                if (resultCode == AuthSessionTokenReply.Types.ResultCode.RES_SUCCESS)
-                {
-                    // username is not important anymore in 1.4.8
-                    cclient.Username = string.Empty;
-                    cclient.Token = session;
-                    Log.Info("AuthSession", "Session token validated");
-                }
-                else
-                {
-                    Log.Notice("AuthSession", $"Session token validation failed: {res}");
-                }
-            }
-            catch (Exception e)
-            {
-                resultCode = AuthSessionTokenReply.Types.ResultCode.RES_SYSTEM_ERROR;
-                Log.Error("AuthSession", "Exception during token validation: " + e);
-            }
-
-            authReply.SetResultCode(resultCode);
+            authReply.SetResultCode(AuthSessionTokenReply.Types.ResultCode.RES_SUCCESS);
             Out.Write(authReply.Build().ToByteArray());
             cclient.SendTCPCuted(Out);
-
-            // Disconnect the client on failure
-            if (resultCode != AuthSessionTokenReply.Types.ResultCode.RES_SUCCESS)
-                cclient.Disconnect("Invalid session token");
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CMSG_GetAcctPropListReq, 0, "onAcctPropListReq")]
@@ -106,11 +68,11 @@ namespace LobbyServer.NetWork.Handler
             Log.Debug("LServ", "GetClusterListReq");
             Client cclient = (Client)client;
             PacketOut Out = new PacketOut((byte)Opcodes.SMSG_GetClusterListReply);
-            byte[] ClustersList = Core.AcctMgr.BuildClusterList();
+            var clustersListResponse = Core.AcctMgr.GetClusterList(new GetClusterListRequest());
 
-            Log.Debug("LServ", "Received " + ClustersList.Length + " clusters");
+            Log.Debug("LServ", "Received " + clustersListResponse.Clusters.Length + " clusters");
 
-            Out.Write(ClustersList);
+            Out.Write(clustersListResponse.Clusters.ToByteArray());
             cclient.SendTCPCuted(Out);
         }
 

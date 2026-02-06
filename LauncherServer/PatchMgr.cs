@@ -1,12 +1,13 @@
-﻿using AuthenticationServer.Server;
-using Common.Database.Account;
-using FrameWork;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Opcodes = AuthenticationServer.Server.Opcodes;
+using Common.Database.Account;
+using FrameWork;
+using LauncherServer.Dtos;
+using LauncherServer.Server;
+using Opcodes = LauncherServer.Server.Opcodes;
 
-namespace AuthenticationServer
+namespace LauncherServer
 {
     public class PatchFile
     {
@@ -155,10 +156,11 @@ namespace AuthenticationServer
             Core.Config.ServerState = state;
             ConfigMgr.SaveConfig(Core.Config);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.LCR_SERVER_STATUS);
+            PacketOut Out = new PacketOut(Opcodes.LCR_SERVER_STATUS);
             Out.WriteUInt32((uint)state);
 
-            Core.Server.DispatchPatcket(Out);
+            // TODO: REPAIR AFTER NETWORK MANAGER REWRITE
+            // Core.Server.DispatchPatcket(Out);
         }
 
         #region Utils
@@ -278,7 +280,7 @@ namespace AuthenticationServer
                         esi += (uint)s[i + 9] << 8;
                         goto case 9;
                     case 9:
-                        esi += (uint)s[i + 8];
+                        esi += s[i + 8];
                         goto case 8;
                     case 8:
                         edi += (uint)s[i + 7] << 24;
@@ -290,7 +292,7 @@ namespace AuthenticationServer
                         edi += (uint)s[i + 5] << 8;
                         goto case 5;
                     case 5:
-                        edi += (uint)s[i + 4];
+                        edi += s[i + 4];
                         goto case 4;
                     case 4:
                         ebx += (uint)s[i + 3] << 24;
@@ -302,7 +304,7 @@ namespace AuthenticationServer
                         ebx += (uint)s[i + 1] << 8;
                         goto case 1;
                     case 1:
-                        ebx += (uint)s[i];
+                        ebx += s[i];
                         break;
                 }
 

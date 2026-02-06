@@ -614,9 +614,9 @@ namespace WorldServer.Managers
 
         public static void RemoveCharacter(byte slot, GameClient client)
         {
-            int accountId = client._Account.AccountId;
+            var accountId = client._Account.Id;
 
-            uint characterId = GetAccountChar(accountId).RemoveCharacter(slot);
+            uint characterId = GetAccountChar((int)accountId).RemoveCharacter(slot);
 
             lock (Chars)
                 if (characterId > 0 && Chars.ContainsKey(characterId))
@@ -624,7 +624,7 @@ namespace WorldServer.Managers
                     CharacterDeletionRecord record = new CharacterDeletionRecord
                     {
                         DeletionIP = client.GetIp(),
-                        AccountID = client._Account.AccountId,
+                        AccountID = (int)client._Account.Id,
                         AccountName = client._Account.Username,
                         CharacterID = characterId,
                         CharacterName = Chars[characterId].Name,
@@ -638,7 +638,12 @@ namespace WorldServer.Managers
                     RemoveItemsFromCharacterId(characterId);
                     DeleteChar(Char);
 
-                    Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
+                    Core.AcctMgr.UpdateRealmCharactersTotal(new UpdateRealmCharactersTotalRequest
+                    {
+                        RealmId = Core.Rm.RealmId,
+                        OrderCount = (uint)Database.GetObjectCount<Character>(" Realm=1"),
+                        DestructionCount = (uint)Database.GetObjectCount<Character>(" Realm=2")
+                    });
                 }
         }
 
@@ -666,7 +671,12 @@ namespace WorldServer.Managers
                     RemoveItemsFromCharacterId(characterId);
                     DeleteChar(Char);
 
-                    Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
+                    Core.AcctMgr.UpdateRealmCharactersTotal(new UpdateRealmCharactersTotalRequest
+                    {
+                        RealmId = Core.Rm.RealmId,
+                        OrderCount = (uint)Database.GetObjectCount<Character>(" Realm=1"),
+                        DestructionCount = (uint)Database.GetObjectCount<Character>(" Realm=2")
+                    });
                 }
         }
 
@@ -731,10 +741,12 @@ namespace WorldServer.Managers
         /// <summary>
         /// To check if the characters name is deleted and a boot has not happened yet
         /// </summary>
+        /// TODO: REPAIR THIS
         public static bool NameIsDeleted(string name)
         {
-            Realm Rm = Core.Rm;
-            return Database.SelectObject<CharacterDeletionRecord>("CharacterName='" + Database.Escape(name) + "' AND DeletionTimeSeconds > " + Rm.BootTime) != null;
+            // Realm Rm = Core.Rm;
+            // return Database.SelectObject<CharacterDeletionRecord>("CharacterName='" + Database.Escape(name) + "' AND DeletionTimeSeconds > " + Rm.BootTime) != null;
+            return false;
         }
 
         /// <summary>
@@ -742,7 +754,7 @@ namespace WorldServer.Managers
         /// </summary>
         public static void LoadPendingCharacters()
         {
-            AccountMgr mgr = Core.AcctMgr;
+            var mgr = Core.AcctMgr;
 
             if (mgr == null)
             {
@@ -750,17 +762,17 @@ namespace WorldServer.Managers
                 return;
             }
 
-            List<int> accountIds = mgr.GetPendingAccounts();
+            var accountIds = mgr.GetPendingAccounts(new GetPendingAccountsRequest()).AccountIds.ToList();
 
-            if (accountIds == null)
+            if (accountIds is not { Count: > 0})
                 return;
 
-            StringBuilder sb = new StringBuilder($"CharacterId IN (SELECT CharacterId FROM {Database.GetSchemaName()}.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM {Core.AcctMgr.GetAccountSchemaName()}.accounts t2 WHERE t2.AccountId IN (");
+            var sb = new StringBuilder($"CharacterId IN (SELECT CharacterId FROM {Database.GetSchemaName()}.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM {Core.AcctMgr.GetAccountSchemaName()}.accounts t2 WHERE t2.AccountId IN (");
 
             for (int i = 0; i < accountIds.Count; ++i)
             {
-                AccountChars chars = GetAccountChar(accountIds[i]);
-                if (chars != null && chars.Loaded)
+                AccountChars chars = GetAccountChar((int)accountIds[i]);
+                if (chars is { Loaded: true })
                 {
                     accountIds.RemoveAt(i);
                     --i;
@@ -1236,16 +1248,19 @@ namespace WorldServer.Managers
                     }
 
                     //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
-                    Account accountEntity = null;
+                    AccountInfo accountEntity = null;
                     var characterEntity = CharMgr.GetCharacter(guild.LeaderId, true);
                     if (characterEntity != null)
-                        accountEntity = Core.AcctMgr.GetAccountById(characterEntity.AccountId);
+                        accountEntity = Core.AcctMgr.GetAccountById(new GetAccountByIdRequest
+                        {
+                            Id = (uint)characterEntity.AccountId
+                        }).Account;
 
                     if ((characterEntity != null) && (accountEntity != null))
                     {
                         if (!guild.Members.ContainsKey(guild.LeaderId)
                             || guild.Members[guild.LeaderId].RankId != 9
-                            || accountEntity.Banned == 1
+                            || accountEntity.IsBanned
                             || accountEntity.GmLevel == -1
                             || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 <
                             TCPManager.GetTimeStamp())

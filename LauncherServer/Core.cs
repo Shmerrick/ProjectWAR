@@ -1,46 +1,30 @@
-﻿using AuthenticationServer.Config;
-using AuthenticationServer.Server;
-using Common;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using FrameWork;
 using FrameWork.Misc;
-using System;
-using System.IO;
-using System.Reflection;
+using FrameWork.NetWork.V4;
+using Grpc.Net.Client;
+using LauncherServer.Config;
+using LauncherServer.Dtos;
+using LauncherServer.Server;
 
-namespace AuthenticationServer
+namespace LauncherServer
 {
     internal class Core
     {
-        public static RpcClient Client;
         public static LauncherConfig Config;
-        public static TCPServer Server;
+        // public static TCPServer Server;
+        public static NetworkManager NetworkManager;
 
-        public static int Version
-        {
-            get
-            {
-                return Config.Version;
-            }
-        }
+        public static int Version => 1;
 
-        public static string Message
-        {
-            get
-            {
-                return Config.Message;
-            }
-        }
-
+        public static string Message => "hello";
         public static FileInfo Info;
         public static string StrInfo;
 
-        public static AccountMgr AcctMgr
-        {
-            get
-            {
-                return Client.GetServerObject<AccountMgr>();
-            }
-        }
+        public static AccountMgr.AccountMgrClient AcctMgr;
 
         [STAThread]
         private static void Main(string[] args)
@@ -50,23 +34,26 @@ namespace AuthenticationServer
             Log.Info("", "------------------- Launcher Server -------------------", ConsoleColor.DarkRed);
 
             // Loading all configs files
-            ConfigMgr.LoadConfigs();
-            Config = ConfigMgr.GetConfig<LauncherConfig>();
+            // ConfigMgr.LoadConfigs();
+            // Config = ConfigMgr.GetConfig<LauncherConfig>();
 
             // Loading log level from file
-            if (!Log.InitLog(Config.LogLevel, "LauncherServer"))
+            if (!Log.InitLog(new LogInfo { Info = true, Error = true }, "LauncherServer"))
                 ConsoleMgr.WaitAndExit(2000);
 
-            ServerState previousState = Config.ServerState;
-            Config.ServerState = ServerState.PATCH;
+            // ServerState previousState = Config.ServerState;
+            // Config.ServerState = ServerState.PATCH;
+            Config = new LauncherConfig()
+            {
+                IConfiguredTheFile = true,
+                LauncherServerPort = 8000,
+                ServerState = ServerState.CLOSED,
+                TempFilesPath = "TempFilesDirectory"
+            };
 
             LoaderMgr.Start();
-            Client = new RpcClient("LauncherServer", Config.RpcInfo.RpcLocalIp, 1);
 
-            Config.ServerState = previousState;
-
-            if (!Client.Start(Config.RpcInfo.RpcServerIp, Config.RpcInfo.RpcServerPort))
-                ConsoleMgr.WaitAndExit(2000);
+            // Config.ServerState = previousState;
 
             Info = new FileInfo("Configs/mythloginserviceconfig.xml");
             if (!Info.Exists)
@@ -76,11 +63,21 @@ namespace AuthenticationServer
             }
 
             StrInfo = Info.OpenText().ReadToEnd();
-
-            if (!TCPManager.Listen<TCPServer>(Config.LauncherServerPort, "LauncherServer"))
-                ConsoleMgr.WaitAndExit(2000);
-
-            Server = TCPManager.GetTcp<TCPServer>("LauncherServer");
+            Log.Info("mythloginserviceconfig.xml", StrInfo);
+            
+            NetworkManager = new NetworkManager();
+            var serializerContext = new LauncherSerializerContext();
+            NetworkManager.Start(IPEndPoint.Parse("127.0.0.1:8000"), s => new LauncherClient(s, new BinaryPacketSerializerFactory(serializerContext)));
+            
+            
+            AcctMgr = new AccountMgr.AccountMgrClient(GrpcChannel.ForAddress($"https://127.0.0.1:6800",
+                new GrpcChannelOptions
+                {
+                    HttpHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
+                    }
+                }));
 
             ConsoleMgr.Start();
         }

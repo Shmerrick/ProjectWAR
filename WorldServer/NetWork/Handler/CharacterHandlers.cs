@@ -67,7 +67,7 @@ namespace WorldServer.NetWork.Handler
 
                     Character Char = new Character
                     {
-                        AccountId = cclient._Account.AccountId,
+                        AccountId = (int)cclient._Account.Id,
                         bTraits = traits,
                         Career = Info.career,
                         CareerLine = CharInfo.CareerLine,
@@ -75,7 +75,7 @@ namespace WorldServer.NetWork.Handler
                         Name = name,
                         Race = Info.race,
                         Realm = CharInfo.Realm,
-                        RealmId = Core.Rm.RealmId,
+                        RealmId = Convert.ToByte(Core.Rm.RealmId),
                         Sex = Info.sex,
                         FirstConnect = true
                     };
@@ -129,7 +129,12 @@ namespace WorldServer.NetWork.Handler
                         };
 
                         CharMgr.Database.AddObject(CInfo);
-                        Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=2"));
+                        Core.AcctMgr.UpdateRealmCharactersTotal(new UpdateRealmCharactersTotalRequest
+                        {
+                            RealmId = Core.Rm.RealmId,
+                            OrderCount = (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=1"),
+                            DestructionCount = (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=2")
+                        });
 
                         CharacterClientData clientData = new CharacterClientData { CharacterId = Char.CharacterId };
                         CharMgr.Database.AddObject(clientData);
@@ -257,15 +262,16 @@ namespace WorldServer.NetWork.Handler
                 return;
             }
 
-            if (Core.Rm.OnlinePlayers >= Core.Rm.MaxPlayers && cclient._Account.GmLevel == 1)
-            {
-                PacketOut Out = new PacketOut((byte)Opcodes.F_LOGINQUEUE);
-                client.SendPacket(Out);
-                return;
-            }
+            // TODO: REPAIR THIS
+            // if (Core.Rm.OnlinePlayers >= Core.Rm.MaxPlayers && cclient._Account.GmLevel == 1)
+            // {
+            //     PacketOut Out = new PacketOut((byte)Opcodes.F_LOGINQUEUE);
+            //     client.SendPacket(Out);
+            //     return;
+            // }
 
             byte CharacterSlot = packet.GetUint8();
-            Character Char = CharMgr.GetAccountChar(cclient._Account.AccountId).GetCharacterBySlot(CharacterSlot);
+            Character Char = CharMgr.GetAccountChar((int)cclient._Account.Id).GetCharacterBySlot(CharacterSlot);
 
             if (Char == null)
             {
@@ -361,7 +367,7 @@ namespace WorldServer.NetWork.Handler
             if (Operation == 0x2D58)
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.F_REQUEST_CHAR_ERROR, 1);
-                Out.WriteByte((byte)CharMgr.GetAccountRealm(cclient._Account.AccountId));
+                Out.WriteByte((byte)CharMgr.GetAccountRealm((int)cclient._Account.Id));
                 cclient.SendPacket(Out);
             }
             else
@@ -372,7 +378,7 @@ namespace WorldServer.NetWork.Handler
                 Out.WriteByte(0);
 
                 if (cclient._Account.GmLevel == 1 && !Core.Config.CreateBothRealms)
-                    Out.WriteByte((byte)CharMgr.GetAccountRealm(cclient._Account.AccountId));
+                    Out.WriteByte((byte)CharMgr.GetAccountRealm((int)cclient._Account.Id));
                 else
                     Out.WriteByte(0);
 
@@ -382,7 +388,7 @@ namespace WorldServer.NetWork.Handler
                 Out.WriteByte(0); //NumPaidNameChangesAvailable
                 Out.WriteByte(0); // unk
 
-                byte[] Chars = CharMgr.BuildCharacters(cclient._Account.AccountId);
+                byte[] Chars = CharMgr.BuildCharacters((int)cclient._Account.Id);
                 Out.Write(Chars, 0, Chars.Length);
 
                 cclient.SendPacket(Out);
@@ -415,7 +421,7 @@ namespace WorldServer.NetWork.Handler
             {
                 Character Char = CharMgr.GetCharacter(Player.AsCharacterName(OldName), false);
 
-                if (Char == null || Char.AccountId != cclient._Account.AccountId)
+                if (Char == null || Char.AccountId != cclient._Account.Id)
                 {
                     Log.Error("CharacterRename", "Hack: Tried to rename character which account doesn't own");
                     cclient.Disconnect("Null or unowned character in F_RENAME_CHARACTER");

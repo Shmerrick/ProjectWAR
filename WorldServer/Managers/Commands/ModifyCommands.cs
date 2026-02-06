@@ -88,7 +88,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = plr.Client._Account.Id,
                 Command = "Changed player name FROM " + values[0] + " TO " + charToRename.Name,
                 Date = DateTime.Now
             };
@@ -224,7 +224,7 @@ namespace WorldServer.Managers.Commands
                 GMCommandLog log = new GMCommandLog
                 {
                     PlayerName = plr.Name,
-                    AccountId = (uint)plr.Client._Account.AccountId,
+                    AccountId = plr.Client._Account.Id,
                     Command = "CHANGED GUILDNAME OF: " + guild.Info.Name + " TO: " + guildName,
                     Date = DateTime.UtcNow
                 };
@@ -251,7 +251,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = plr.Client._Account.Id;
             log.Command = "SET LEVEL TO " + plr.Name + " " + level;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -298,7 +298,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
+                AccountId = (uint)plr.Client._Account.Id,
                 Command = renownLevel > 0 ? $"SET {playerName}'S RENOWN TO {renownLevel}" : $"REDUCED {playerName}'S RENOWN BY {-renownLevel}",
                 Date = DateTime.Now
             };
@@ -323,7 +323,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account acct = Core.AcctMgr.GetAccount(username);
+            var acct = Core.AcctMgr.GetAccount(new GetAccountRequest { Username = username }).Account;
 
             if (acct == null)
             {
@@ -333,7 +333,8 @@ namespace WorldServer.Managers.Commands
 
             sbyte newAccess = (sbyte)GetInt(ref values);
             acct.GmLevel = newAccess;
-            Core.AcctMgr.UpdateAccount(acct);
+            // TODO: REPAIR THIS
+            // Core.AcctMgr.UpdateAccount(acct);
 
             plr.SendClientMessage($"MODIFY ACCESS: The access level of {username} has been changed to {newAccess}.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -401,7 +402,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "SET Influence TO " + plr.Name + " Chapter " + chapter + " Value " + value;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);

@@ -223,17 +223,18 @@ namespace WorldServer.Managers.Commands
 
         public static void LogSanction(int accountId, Player issuedBy, string actionType, string actionDuration, string actionReason)
         {
-            Core.AcctMgr.AddSanction(
-                new AccountSanctionInfo
-                {
-                    AccountId = accountId,
-                    IssuedBy = issuedBy.Client._Account.Username,
-                    ActionType = actionType,
-                    IssuerGmLevel = issuedBy.Client._Account.GmLevel,
-                    ActionDuration = actionDuration,
-                    ActionLog = actionReason,
-                    ActionTime = TCPManager.GetTimeStamp()
-                });
+            // TODO: REPAIR THIS
+            // Core.AcctMgr.AddSanction(
+            //     new AccountSanctionInfo
+            //     {
+            //         AccountId = accountId,
+            //         IssuedBy = issuedBy.Client._Account.Username,
+            //         ActionType = actionType,
+            //         IssuerGmLevel = issuedBy.Client._Account.GmLevel,
+            //         ActionDuration = actionDuration,
+            //         ActionLog = actionReason,
+            //         ActionTime = TCPManager.GetTimeStamp()
+            //     });
         }
 
         public static Unit GetObjectTarget(Player obj)

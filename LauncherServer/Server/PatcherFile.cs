@@ -1,9 +1,9 @@
-﻿using FrameWork;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
+using FrameWork;
 
-namespace AuthenticationServer.Server
+namespace LauncherServer.Server
 {
     public class PatcherFile : IDisposable
     {
@@ -285,7 +285,7 @@ namespace AuthenticationServer.Server
             if (_compressedTempFile != null)
             {
                 _compressedTempFile.Position = (long)offset;
-                _compressedTempFile.Write(data, (int)0, (int)size);
+                _compressedTempFile.Write(data, 0, (int)size);
             }
             else if (_data != null)
             {
@@ -311,7 +311,7 @@ namespace AuthenticationServer.Server
                 sendFile = _compressedTempFile;
 
             if (sendFile != null)
-                sendFile.Position = (long)offset;
+                sendFile.Position = offset;
 
             if (offset + size > (long)_compressedSize)
             {
@@ -322,13 +322,13 @@ namespace AuthenticationServer.Server
 
             if (sendFile != null)
             {
-                int r = sendFile.Read(dest, (int)0, (int)size);
+                int r = sendFile.Read(dest, 0, (int)size);
                 if (r < 0)
                     return 0;
             }
             else
             {
-                Buffer.BlockCopy(_data, (int)offset, dest, (int)0, (int)size);
+                Buffer.BlockCopy(_data, (int)offset, dest, 0, (int)size);
             }
             return size;
         }

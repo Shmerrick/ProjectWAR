@@ -61,7 +61,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "SPAWN CREATURE " + spawn.Entry + " " + spawn.Guid + " AT " + spawn.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -129,7 +129,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "MOVE KEEP CREATURE " + selectedEntry + " " + " AT " + keepNpcCreature.Info.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -223,7 +223,7 @@ namespace WorldServer.Managers.Commands
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.AccountId = (uint)plr.Client._Account.Id;
             log.Command = "SPAWN KEEP CREATURE " + kc.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
@@ -254,7 +254,7 @@ namespace WorldServer.Managers.Commands
 
                 GMCommandLog log = new GMCommandLog();
                 log.PlayerName = plr.Name;
-                log.AccountId = (uint)plr.Client._Account.AccountId;
+                log.AccountId = (uint)plr.Client._Account.Id;
                 log.Command = "REMOVE CREATURE " + spawn.Entry + " " + spawn.Guid + " AT " + spawn.ZoneId + " " + spawn.WorldX + " " + spawn.WorldY;
                 log.Date = DateTime.Now;
                 CharMgr.Database.AddObject(log);

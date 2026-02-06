@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime;
 using System.Text;
 using System.Threading;
+using Grpc.Net.Client;
 using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.NetWork;
@@ -25,10 +27,9 @@ namespace WorldServer
     {
         public static WorldConfigs Config;
         public static AccountConfig AccountConfig;
-        public static RpcClient Client;
-        public static AccountMgr AcctMgr => Client?.GetServerObject<AccountMgr>();
+        public static AccountMgr.AccountMgrClient AcctMgr;
         public static TCPServer Server;
-        public static Realm Rm;
+        public static RealmInfo Rm;
         private static Timer _timer;
         private static Process m_Process;
 
@@ -178,12 +179,17 @@ namespace WorldServer
                 Log.Error("Directory Check", "Abilities directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
-
-            Client = new RpcClient("WorldServer-" + Config.RealmId, Config.AccountCacherInfo.RpcLocalIp, 1);
-            if (!Client.Start(Config.AccountCacherInfo.RpcServerIp, Config.AccountCacherInfo.RpcServerPort))
-                ConsoleMgr.WaitAndExit(2000);
-
-            Rm = AcctMgr.GetRealm(Config.RealmId);
+            
+            AcctMgr = new AccountMgr.AccountMgrClient(GrpcChannel.ForAddress($"https://127.0.0.1:6800",
+                new GrpcChannelOptions
+                {
+                    HttpHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                    }
+                }));
+            
+            Rm = AcctMgr.GetRealm(new GetRealmRequest { RealmId = Config.RealmId }).Realm;
 
             File.WriteAllText("COMMANDS.md", Managers.Commands.CommandDocumentation.GenerateMarkdown());
 
@@ -207,6 +213,9 @@ namespace WorldServer
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
             Log.Debug("Battlefront Manager", "Creating Lower Tier Campaign Manager");
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
+
+            Thread.Sleep(2000); // Wait for objects to register
+
             Log.Debug("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone");
             WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression();
             WorldMgr.LowerTierCampaignManager.GetActiveBattleFrontFromProgression();
@@ -224,13 +233,18 @@ namespace WorldServer
 
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
 
-            if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
+            if (!TCPManager.Listen<TCPServer>(Convert.ToInt32(Rm.Port), "World"))
                 ConsoleMgr.WaitAndExit(2000);
 
             Server = TCPManager.GetTcp<TCPServer>("World");
 
-            AcctMgr.UpdateRealm(Client.Info, Rm.RealmId);
-            AcctMgr.UpdateRealmCharacters(Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>("Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>("Realm=2"));
+            AcctMgr.UpdateRealm(new UpdateRealmRequest { RealmId = Rm.RealmId });
+            AcctMgr.UpdateRealmCharactersTotal(new UpdateRealmCharactersTotalRequest
+            {
+                RealmId = Rm.RealmId,
+                DestructionCount = (uint)CharMgr.Database.GetObjectCount<Character>("Realm=2"),
+                OrderCount = (uint)CharMgr.Database.GetObjectCount<Character>("Realm=1")
+            });
 
             // PrintCommands();
 
@@ -295,7 +309,7 @@ namespace WorldServer
 
                             op.Write("+ {0}:", state);
 
-                            Account a = state.Client._Account;
+                            var a = state.Client._Account;
 
                             if (a != null)
                                 op.Write(" (account = {0})", a.Username);

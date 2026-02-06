@@ -5,7 +5,6 @@ namespace WorldServer.Configs
     [aConfigAttributes("Configs/World.xml")]
     public class WorldConfigs : aConfig
     {
-        public RpcClientConfig AccountCacherInfo = new RpcClientConfig("127.0.0.1", "127.0.0.1", 6800);
         public LogInfo LogLevel = new LogInfo();
         public DatabaseInfo CharacterDatabase = new DatabaseInfo();
         public DatabaseInfo WorldDatabase = new DatabaseInfo();

@@ -28,7 +28,7 @@ namespace WorldServer.NetWork
                     if (Clients[i] != null && Clients[i] != Me)
                     {
                         GameClient client = Clients[i] as GameClient;
-                        if (client.HasAccount() && client._Account.AccountId == AccountId)
+                        if (client.HasAccount() && client._Account.Id == AccountId)
                             return client;
                     }
 

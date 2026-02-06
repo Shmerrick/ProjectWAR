@@ -23,7 +23,7 @@ namespace WorldServer.NetWork
 
     public class GameClient : BaseClient
     {
-        public Account _Account = null;
+        public AccountInfo _Account = null;
         public Player Plr = null;
         private Thread _logThread = null;
         private List<string> _packetLog = new List<string>();

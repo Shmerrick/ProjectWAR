@@ -1,7 +1,8 @@
-﻿using AuthenticationServer.Server;
-using FrameWork;
+﻿using FrameWork;
+using LauncherServer.Dtos;
+using LauncherServer.Server;
 
-namespace AuthenticationServer.Config
+namespace LauncherServer.Config
 {
     [aConfigAttributes("Configs/Launcher.xml")]
     public class LauncherConfig : aConfig
@@ -10,7 +11,6 @@ namespace AuthenticationServer.Config
         public int Version = 1;
         public string Message = "Invalid launcher version.";
         public bool SeverOnConnect = true;
-        public RpcClientConfig RpcInfo = new RpcClientConfig("127.0.0.1", "127.0.0.1", 6800);
         public LogInfo LogLevel = new LogInfo();
 
         public string PatcherFilesPath = "PatcherFilesDirectory";

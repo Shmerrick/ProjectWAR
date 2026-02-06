@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System;
+using Common;
 using FrameWork;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
@@ -20,17 +21,17 @@ namespace WorldServer.NetWork.Handler
             string Username = packet.GetString(23);
 
             // TODO
-            AuthResult Result = Core.AcctMgr.CheckToken(Username, Token);
+            var Result = Core.AcctMgr.CheckToken(new CheckTokenRequest { Username = Username, Token = Token }).Result;
 #if DEBUG
-            Result = AuthResult.AUTH_SUCCESS;
+            Result = AuthResult.AuthSuccess;
 #endif
 
-            if (Result == AuthResult.AUTH_ACCT_SUSPENDED)
+            if (Result == AuthResult.AuthSuspended)
             {
                 Log.Error("F_CONNECT", "Banned Account =" + Username);
                 cclient.Disconnect("Banned account");
             }
-            else if (Result != AuthResult.AUTH_SUCCESS)
+            else if (Result != AuthResult.AuthSuccess)
             {
                 Log.Error("F_CONNECT", "Invalid Token =" + Username + " " + Result);
 
@@ -43,7 +44,7 @@ namespace WorldServer.NetWork.Handler
             }
             else
             {
-                cclient._Account = Core.AcctMgr.GetAccount(Username);
+                cclient._Account = Core.AcctMgr.GetAccount(new GetAccountRequest { Username = Username }).Account;
                 if (cclient._Account == null)
                 {
                     Log.Error("F_CONNECT", "Invalid Account =" + Username);
@@ -54,27 +55,27 @@ namespace WorldServer.NetWork.Handler
                     Log.Success("F_CONNECT", "MeId=" + cclient.Id);
                     Log.Success("F_CONNECT", "User connection : " + Username);
 
-                    GameClient Other = ((TCPServer)cclient.Server).GetClientByAccount(cclient, cclient._Account.AccountId);
+                    GameClient Other = ((TCPServer)cclient.Server).GetClientByAccount(cclient, (int)cclient._Account.Id);
                     if (Other != null)
                         Other.Disconnect("Failed to get GameClient for account");
 
                     // Check if ip is banned. (they may have been just banned so launcher server wouldnt have picked it up)
-                    if (!Core.AcctMgr.CheckIp(cclient.GetIp().Split(':')[0]))
+                    if (Core.AcctMgr.IsIpBanned(new IsIpBannedRequest { IpAddress = cclient.GetIp().Split(':')[0] }).IsBanned)
                     {
                         Log.Error("F_CONNECT", "Banned IP =" + Username);
                         cclient.Disconnect("Banned by IP");
                     }
 
                     // Load characters before connection instead of later on
-                    CharMgr.LoadCharacters(cclient._Account.AccountId);
+                    CharMgr.LoadCharacters((int)cclient._Account.Id);
 
                     {
-                        cclient.PacketLog = cclient._Account.PacketLog;
+                        cclient.PacketLog = cclient._Account.PacketLoggerEnabled;
 
                         PacketOut Out = new PacketOut((byte)Opcodes.S_CONNECTED, 48);
                         Out.WriteUInt32(0);
                         Out.WriteUInt32(Tag);
-                        Out.WriteByte(Core.Rm.RealmId);
+                        Out.WriteByte(Convert.ToByte(Core.Rm.RealmId));
                         Out.WriteByte(0);
                         Out.WriteByte(0);
                         Out.WriteByte(0);
@@ -150,7 +151,7 @@ namespace WorldServer.NetWork.Handler
                 return;
 
             TCPServer server = (TCPServer)client.Server;
-            server.GetClientByAccount(cclient, cclient._Account.AccountId)?.Disconnect("F_DISCONNECT"); ;
+            server.GetClientByAccount(cclient, (int)cclient._Account.Id)?.Disconnect("F_DISCONNECT"); ;
         }
     }
 }

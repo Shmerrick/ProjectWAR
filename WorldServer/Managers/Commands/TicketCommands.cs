@@ -103,14 +103,14 @@ namespace WorldServer.Managers.Commands
                         if (CharMgr.GetCharacter(report.CharacterId, false).AccountId == report.AccountId)
                         {
                             name = CharMgr.GetCharacter(report.CharacterId, false).Name;
-                            account = Core.AcctMgr.GetAccountById((int)report.AccountId).Username;
+                            account = Core.AcctMgr.GetAccountById(new GetAccountByIdRequest { Id = report.AccountId }).Account?.Username;
                         }
                     }
                 }
 
                 if (CharMgr.GetCharacter(report.CharacterId, false) == null && report.AccountId != 0)
                 {
-                    account = Core.AcctMgr.GetAccountById((int)report.AccountId).Username;
+                    account = Core.AcctMgr.GetAccountById(new GetAccountByIdRequest { Id = report.AccountId }).Account?.Username;
                 }
 
                 //for whatever reason ^ cannot be sent to the client, it will break the rest of the string.
@@ -273,7 +273,7 @@ namespace WorldServer.Managers.Commands
                 GMCommandLog log = new GMCommandLog
                 {
                     PlayerName = plr.Client._Account.Username,
-                    AccountId = (uint)plr.Client._Account.AccountId,
+                    AccountId = (uint)plr.Client._Account.Id,
                     Command = $"Removed Ticket: {reportID} from characterID: {report.CharacterId}. containing the following message: {report.Message} {report.FieldSting}",
                     Date = DateTime.Now
                 };
@@ -345,7 +345,7 @@ namespace WorldServer.Managers.Commands
                 GMCommandLog log = new GMCommandLog
                 {
                     PlayerName = plr.Client._Account.Username,
-                    AccountId = (uint)plr.Client._Account.AccountId,
+                    AccountId = (uint)plr.Client._Account.Id,
                     Command = $"Answered Ticket: {reportID} from characterID: {report.CharacterId}. Containing message: {report.Message} {report.FieldSting} with the following reply: {message}",
                     Date = DateTime.Now
                 };
