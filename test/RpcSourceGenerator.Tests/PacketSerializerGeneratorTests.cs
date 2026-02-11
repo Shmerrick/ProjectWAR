@@ -385,3 +385,5 @@ namespace TestNamespace
         public ImmutableArray<Diagnostic> Diagnostics { get; init; }
         public SyntaxTree[] GeneratedTrees { get; init; } = Array.Empty<SyntaxTree>();
     }
+}
+

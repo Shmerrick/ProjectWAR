@@ -53,7 +53,7 @@ namespace TestNamespace
         Assert.Single(result.GeneratedTrees);
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task<LoginResponse> Login(LoginRequest request)", code);
+        Assert.Contains("public partial Task<TestNamespace.LoginResponse> Login(TestNamespace.LoginRequest request)", code);
         Assert.Contains("return SendRequestAsync<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);", code);
     }
 
@@ -71,7 +71,7 @@ namespace TestNamespace
     public partial class TestClient : Client
     {
         [Rpc(0x01)]
-        public partial Task Ping(PingRequest request);
+        public partial Task Ping(TestNamespace.PingRequest request);
     }
 }";
 
@@ -80,7 +80,7 @@ namespace TestNamespace
         Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task Ping(PingRequest request)", code);
+        Assert.Contains("public partial Task Ping(TestNamespace.PingRequest request)", code);
         Assert.Contains("SendRequest(0x01, request);", code);
         Assert.Contains("return Task.CompletedTask;", code);
     }
@@ -125,7 +125,7 @@ namespace TestNamespace
     public partial class TestClient : Client
     {
         [Rpc(0x10, 0x11)]
-        public partial LoginResponse Login(LoginRequest request);
+        public partial TestNamespace.LoginResponse Login(TestNamespace.LoginRequest request);
     }
 }";
 
@@ -134,7 +134,7 @@ namespace TestNamespace
         Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial LoginResponse Login(LoginRequest request)", code);
+        Assert.Contains("public partial TestNamespace.LoginResponse Login(TestNamespace.LoginRequest request)", code);
         Assert.Contains("return SendRequest<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);", code);
     }
 
@@ -151,7 +151,7 @@ namespace TestNamespace
     public partial class TestClient : Client
     {
         [Rpc(0x20)]
-        public partial void Notify(NotifyRequest request);
+        public partial void Notify(TestNamespace.NotifyRequest request);
     }
 }";
 
@@ -160,7 +160,7 @@ namespace TestNamespace
         Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial void Notify(NotifyRequest request)", code);
+        Assert.Contains("public partial void Notify(TestNamespace.NotifyRequest request)", code);
         Assert.Contains("SendRequest(0x20, request);", code);
         Assert.DoesNotContain("return", code);
     }
@@ -180,16 +180,16 @@ namespace TestNamespace
     public partial class TestClient : Client
     {
         [Rpc(0x10, 0x11)]
-        public partial Task<Response> PublicMethod(Request request);
+        public partial Task<TestNamespace.Response> PublicMethod(Request request);
         
         [Rpc(0x20, 0x21)]
-        internal partial Task<Response> InternalMethod(Request request);
+        internal partial Task<TestNamespace.Response> InternalMethod(Request request);
         
         [Rpc(0x30, 0x31)]
-        protected partial Task<Response> ProtectedMethod(Request request);
+        protected partial Task<TestNamespace.Response> ProtectedMethod(Request request);
         
         [Rpc(0x40, 0x41)]
-        private partial Task<Response> PrivateMethod(Request request);
+        private partial Task<TestNamespace.Response> PrivateMethod(Request request);
     }
 }";
 
@@ -198,10 +198,10 @@ namespace TestNamespace
         Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task<Response> PublicMethod", code);
-        Assert.Contains("internal partial Task<Response> InternalMethod", code);
-        Assert.Contains("protected partial Task<Response> ProtectedMethod", code);
-        Assert.Contains("private partial Task<Response> PrivateMethod", code);
+        Assert.Contains("public partial Task<TestNamespace.Response> PublicMethod", code);
+        Assert.Contains("internal partial Task<TestNamespace.Response> InternalMethod", code);
+        Assert.Contains("protected partial Task<TestNamespace.Response> ProtectedMethod", code);
+        Assert.Contains("private partial Task<TestNamespace.Response> PrivateMethod", code);
     }
 
     [Fact]
