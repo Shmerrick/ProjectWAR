@@ -34,8 +34,11 @@ jobs:
         dotnet build WorldServer/WorldServer.csproj --no-restore
         dotnet build ServerLauncher/ServerLauncher.csproj --no-restore
     
-    - name: Build Tests
-      run: dotnet build test/LobbyServer.Tests/LobbyServer.Tests.csproj --no-restore
-    
-    - name: Test
-      run: dotnet test test/**/*.csproj --no-build --verbosity normal
+    - name: Build and Test
+      run: |
+        for project in test/**/*.csproj; do
+          dotnet build "$project" --no-restore
+        done
+        for project in test/**/*.csproj; do
+          dotnet test "$project" --no-build --verbosity normal
+        done
