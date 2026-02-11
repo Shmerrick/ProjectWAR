@@ -1,0 +1,70 @@
+﻿
+using System;
+using System.Threading.Tasks;
+
+namespace TestNamespace
+{
+    partial class GameClient
+    {
+        protected override void ProcessPacket(byte opcode, ReadOnlySpan<byte> payload)
+        {
+            switch (opcode)
+            {
+                case 0x01:
+                {
+                    HandlePing();
+                    break;
+                }
+                case 0x10:
+                {
+                    var request = Serializer.Deserialize<TestNamespace.LoginRequest>(payload);
+                    var response = HandleLogin(request);
+                    if (response != null)
+                        SendResponse(0x11, response);
+                    break;
+                }
+                case 0x20:
+                {
+                    var request = Serializer.Deserialize<TestNamespace.PingRequest>(payload);
+                    _ = HandleAsync_HandlePingAsync(request);
+                    break;
+                }
+                case 0x30:
+                {
+                    var request = Serializer.Deserialize<TestNamespace.NotifyRequest>(payload);
+                    _ = HandleAsync_HandleNotifyAsync(request);
+                    break;
+                }
+                default:
+                    OnUnknownOpcode(opcode);
+                    break;
+            }
+        }
+
+        private async Task HandleAsync_HandlePingAsync(TestNamespace.PingRequest request)
+        {
+            try
+            {
+                var response = await HandlePingAsync(request);
+                if (response != null)
+                    SendResponse(0x21, response);
+            }
+            catch (Exception ex)
+            {
+                OnHandlerError(0x20, ex);
+            }
+        }
+
+        private async Task HandleAsync_HandleNotifyAsync(TestNamespace.NotifyRequest request)
+        {
+            try
+            {
+                await HandleNotifyAsync(request);
+            }
+            catch (Exception ex)
+            {
+                OnHandlerError(0x30, ex);
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+﻿using System;
+using System.Threading.Tasks;
+
+namespace TestNamespace
+{
+    partial class GameClient
+    {
+        public partial Task<TestNamespace.PingResponse> Ping(TestNamespace.PingRequest request)
+        {
+            return SendRequestAsync<TestNamespace.PingRequest, TestNamespace.PingResponse>(0x01, 0x02, request);
+        }
+
+        public partial Task<TestNamespace.LoginResponse> Login(TestNamespace.LoginRequest request)
+        {
+            return SendRequestAsync<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);
+        }
+
+        public partial Task Notify(TestNamespace.NotifyRequest request)
+        {
+            SendRequest(0x20, request);
+            return Task.CompletedTask;
+        }
+
+        public partial Task NotifyNoParam()
+        {
+            SendRequest(0x30, new object());
+            return Task.CompletedTask;
+        }
+
+        internal partial Task<TestNamespace.LoginResponse> InternalLogin(TestNamespace.LoginRequest request)
+        {
+            return SendRequestAsync<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x40, 0x41, request);
+        }
+
+    }
+}
