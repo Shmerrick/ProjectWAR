@@ -16,7 +16,6 @@
     <Project Path="src/LauncherServer/LauncherServer.csproj" />
     <Project Path="src/LobbyServer/LobbyServer.csproj" />
     <Project Path="src/RpcSourceGenerator/RpcSourceGenerator.csproj" />
-    <Project Path="src/ServerLauncher/ServerLauncher.csproj" />
     <Project Path="src/WarZone/WarZone.vcxproj" />
     <Project Path="src/WorldServer/WorldServer.csproj" />
   </Folder>
