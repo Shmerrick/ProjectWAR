@@ -190,15 +190,21 @@ public abstract class Client : IDisposable
     private async Task<int> ExtractAndQueuePacketsAsync(int bufferLength, CancellationToken cancellationToken)
     {
         var buffer = new ReadOnlyMemory<byte>(_receiveBuffer, 0, bufferLength);
+        Log.Debug("Client", $"Buffer hex: {Convert.ToHexString(buffer.Span)}");
 
         while (TryExtractPacket(ref buffer, out var packetData))
         {
             // Extract opcode and payload
             var opcode = ExtractOpcode(packetData.Span, out var payloadOffset);
-            var payload = packetData[payloadOffset..];
+            var payloadSlice = packetData[payloadOffset..];
+            Log.Info("Client", $"Received packet with opcode 0x{opcode:X2} and payload size {payloadSlice.Length} bytes");
+
+            // Copy payload to a new array — the ReadOnlyMemory slice points into _receiveBuffer
+            // which may be overwritten by a subsequent read before ProcessLoopAsync consumes it.
+            var payloadCopy = payloadSlice.ToArray();
 
             // Queue packet for processing
-            await _receiveQueue.Writer.WriteAsync(new PacketEnvelope(opcode, payload), cancellationToken)
+            await _receiveQueue.Writer.WriteAsync(new PacketEnvelope(opcode, payloadCopy), cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -271,6 +277,7 @@ public abstract class Client : IDisposable
         {
             await foreach (var data in _sendQueue.Reader.ReadAllAsync(cancellationToken))
             {
+                Log.Debug("Client", $"Buffer response hex: {Convert.ToHexString(data.Span)}");
                 try
                 {
                     await _stream.WriteAsync(data, cancellationToken).ConfigureAwait(false);

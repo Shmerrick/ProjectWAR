@@ -14,7 +14,8 @@
         <StartupObject>WorldServer.Core</StartupObject>
     </PropertyGroup>
     <ItemGroup>
-        <Protobuf Include="..\..\AccountMgr.proto" GrpcServices="Client"/>
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\..\protos" />
     </ItemGroup>
     <ItemGroup>
         <None Include="app.config"/>
@@ -25,7 +26,7 @@
         <None Include="NLog.xsd">
             <SubType>Designer</SubType>
         </None>
-        <None Include="packages.config"/>
+        <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\AccountCacher\AccountCacher.csproj">
@@ -60,30 +61,33 @@
         <Content Include="Abilities\Orcs login-logout all classes.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="Configs\LocalDevelopment\Account.xml"/>
-        <Content Include="Configs\LocalDevelopment\Launcher.xml"/>
-        <Content Include="Configs\LocalDevelopment\Lobby.xml"/>
-        <Content Include="Configs\LocalDevelopment\World.xml"/>
+        <Content Include="bin\Debug\net10.0\Configs\Launcher.xml" />
+        <Content Include="bin\Debug\net10.0\Configs\Lobby.xml" />
+        <Content Include="bin\Debug\net10.0\Configs\World.xml" />
+        <Content Include="Configs\LocalDevelopment\Account.xml" />
+        <Content Include="Configs\LocalDevelopment\Launcher.xml" />
+        <Content Include="Configs\LocalDevelopment\Lobby.xml" />
+        <Content Include="Configs\LocalDevelopment\World.xml" />
         <Content Include="WarZone.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="world.ico"/>
+        <Content Include="world.ico" />
     </ItemGroup>
     <ItemGroup>
-        <WCFMetadata Include="Connected Services\"/>
+        <WCFMetadata Include="Connected Services\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Appccelerate.StateMachine" Version="6.0.0"/>
-        <PackageReference Include="BehaviourTree" Version="1.0.73"/>
-        <PackageReference Include="BulletSharp" Version="0.11.1"/>
-        <PackageReference Include="Grpc.Net.Client" Version="2.71.0"/>
+        <PackageReference Include="Appccelerate.StateMachine" Version="6.0.0" />
+        <PackageReference Include="BehaviourTree" Version="1.0.73" />
+        <PackageReference Include="BulletSharp" Version="0.11.1" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
         <PackageReference Include="Grpc.Tools" Version="2.72.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-        <PackageReference Include="NLog" Version="6.0.4"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="NLog" Version="6.0.4" />
         <PackageReference Include="System.CodeDom" Version="8.0.0" />
-        <PackageReference Include="System.Drawing.Common" Version="8.0.20"/>
+        <PackageReference Include="System.Drawing.Common" Version="8.0.20" />
     </ItemGroup>
 </Project>

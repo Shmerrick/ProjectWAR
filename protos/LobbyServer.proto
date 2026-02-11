@@ -1,0 +1,74 @@
+syntax = "proto2";
+
+import "common/ResultCode.proto";
+import "common/ClusterInfo.proto";
+
+// ─────────────────────────────────────────────
+//  Protocol verification (handshake)
+// ─────────────────────────────────────────────
+
+// Client request to initiate protocol verification / handshake.
+message VerifyProtocolReq {
+  required uint32 protocol_version = 1;
+  required uint32 product_id = 2;
+  required bytes client_public_key = 3;
+}
+
+// Server reply to a protocol verification / handshake request.
+message VerifyProtocolReply {
+  required ResultCode result_code = 1;
+  optional bytes iv1 = 2;
+  optional bytes iv2 = 3;
+}
+
+// ─────────────────────────────────────────────
+//  Session token authentication
+// ─────────────────────────────────────────────
+
+// Client request to authenticate with a session token.
+message AuthSessionTokenReq {
+  required bytes session_token = 1;
+}
+
+// Server reply to a session token authentication request.
+message AuthSessionTokenReply {
+  required ResultCode result_code = 1;
+}
+
+// ─────────────────────────────────────────────
+//  Account properties
+// ─────────────────────────────────────────────
+
+// Server reply containing account property list.
+message GetAcctPropListReply {
+  message AcctProp {
+    required uint32 property_id = 1;
+    required int32 property_value = 2;
+  }
+
+  required ResultCode result_code = 1;
+  repeated AcctProp prop_list = 2;
+}
+
+// ─────────────────────────────────────────────
+//  Character summaries
+// ─────────────────────────────────────────────
+
+// Server reply containing a list of character summaries.
+message GetCharSummaryListReply {
+  message CharSummary {
+    required uint32 server_id = 1;
+    required uint32 character_id = 2;
+    required int64 last_played_time = 3;
+    optional string xml_data = 4;
+  }
+
+  required ResultCode result_code = 1;
+  repeated CharSummary summary_list = 2;
+}
+
+// Server reply containing the list of available clusters.
+message GetClusterListReply {
+  required ResultCode result_code = 1;
+  repeated ClusterInfo cluster_list = 2;
+}

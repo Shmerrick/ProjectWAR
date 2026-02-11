@@ -1,6 +1,11 @@
 <Solution>
-  <Folder Name="/Protos/">
-    <File Path="AccountMgr.proto" />
+  <Folder Name="/protos/">
+    <File Path="protos/AccountMgr.proto" />
+    <File Path="protos/LobbyServer.proto" />
+  </Folder>     
+  <Folder Name="/protos/common/">
+    <File Path="protos/common/ClusterInfo.proto" />
+    <File Path="protos/common/ResultCode.proto" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AccountCacher/AccountCacher.csproj" />

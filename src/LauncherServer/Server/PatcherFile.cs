@@ -252,7 +252,8 @@ namespace LauncherServer.Server
 
             if (Compress == FileCompressionMode.WHOLE)
             {
-                _compressedTempFileName = Path.Combine(Core.Config.TempFilesPath, "tempu_" + DateTime.Now.ToFileTimeUtc().ToString() + ".part");
+                // TODO: FIX after config changes
+                // _compressedTempFileName = Path.Combine(Core.Config.TempFilesPath, "tempu_" + DateTime.Now.ToFileTimeUtc().ToString() + ".part");
                 if (File.Exists(_compressedTempFileName))
                     File.Delete(_compressedTempFileName);
 

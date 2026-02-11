@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WorldConfigs xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <IConfiguredTheFile>false</IConfiguredTheFile>
+  <IConfiguredTheFile>true</IConfiguredTheFile>
   <AccountCacherInfo>
     <RpcLocalIp>127.0.0.1</RpcLocalIp>
     <RpcServerIp>127.0.0.1</RpcServerIp>

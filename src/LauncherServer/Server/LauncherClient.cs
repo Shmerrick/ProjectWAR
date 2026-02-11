@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using FrameWork;
 using FrameWork.NetWork.V4;
+using LauncherServer.Config;
 using LauncherServer.Dtos;
 using ClientV4 = FrameWork.NetWork.V4.Client;
 
@@ -15,12 +16,22 @@ public partial class LauncherClient : ClientV4
     private const int PROTOCOL_LENGTH_SIZE = sizeof(int);
     private const int PROTOCOL_OPCODE_SIZE = sizeof(byte);
     
+    private readonly AccountMgr.AccountMgrClient _accountMgrClient;
+    private readonly MythLoginServiceConfigManager _loginServiceConfigManager;
+    private readonly LauncherConfig _config;
+    
     public LauncherClient(
         TcpClient tcpClient,
         IPacketSerializerFactory serializerFactory,
+        AccountMgr.AccountMgrClient accountMgrClient,
+        MythLoginServiceConfigManager loginServiceConfigManager,
+        LauncherConfig config,
         IByteTransformer? byteTransformer = null)
         : base(tcpClient, serializerFactory, byteTransformer, receiveBufferSize: 65536, errorThreshold: 3)
     {
+        _accountMgrClient = accountMgrClient;
+        _loginServiceConfigManager = loginServiceConfigManager;
+        _config = config;
     }
 
     protected override bool TryExtractPacket(ref ReadOnlyMemory<byte> buffer, out ReadOnlyMemory<byte> packet)
@@ -78,12 +89,12 @@ public partial class LauncherClient : ClientV4
     {
         Log.Debug("CL_CHECK", "Launcher Version : " + packet.Version);
         
-        if (packet.Version != Core.Version)
+        if (packet.Version != _config.Version)
         {
             return new CheckVersionResponse
             {
                 Result = (byte)CheckResult.LAUNCHER_VERSION,
-                MessageOrMythLoginServiceConfig = Core.Message
+                MessageOrMythLoginServiceConfig = _config.Message
             };
         }
         
@@ -91,12 +102,12 @@ public partial class LauncherClient : ClientV4
         {
             Log.Debug("CHECK", "Has mythic file info");
 
-            if (packet.MythLoginServiceConfigLength != (ulong)Core.Info.Length)
+            if (packet.MythLoginServiceConfigLength != (ulong)_loginServiceConfigManager.Content.Length)
             {
                 return new CheckVersionResponse
                 {
                     Result = (byte)CheckResult.LAUNCHER_FILE,
-                    MessageOrMythLoginServiceConfig = Core.StrInfo
+                    MessageOrMythLoginServiceConfig = _config.Message
                 };
             }
         }
@@ -122,7 +133,7 @@ public partial class LauncherClient : ClientV4
         var ip = GetRemoteAddress()?.Split(":")[0];
 
         // Check Ip Ban
-        if (!Core.AcctMgr.IsIpBanned(new IsIpBannedRequest { IpAddress = ip }).IsBanned)
+        if (!_accountMgrClient.IsIpBanned(new IsIpBannedRequest { IpAddress = ip }).IsBanned)
         {
             var createAccountRequest = new CreateAccountRequest()
             {
@@ -133,7 +144,7 @@ public partial class LauncherClient : ClientV4
                 IpAddress = ip
             };
 
-            if (Core.AcctMgr.CreateAccount(createAccountRequest).Created)
+            if (_accountMgrClient.CreateAccount(createAccountRequest).Created)
             {
                 result = CreateAccountResult.ACCOUNT_NAME_SUCCESS;
             }
@@ -149,7 +160,7 @@ public partial class LauncherClient : ClientV4
     [Rpc(Opcodes.CL_START, Opcodes.LCR_START)]
     public StartResponse CL_START(StartRequest startRequest)
     {
-        var authResult = Core.AcctMgr.AuthenticateUser(new AuthenticateUserRequest
+        var authResult = _accountMgrClient.AuthenticateUser(new AuthenticateUserRequest
         {
             Username = startRequest.Username,
             Password = startRequest.PasswordHash
@@ -180,7 +191,7 @@ public partial class LauncherClient : ClientV4
     [Rpc(Opcodes.CL_INFO, Opcodes.LCR_INFO)]
     public GetInfoResponse CL_INFO(GetInfoRequest request)
     {
-        var realmsResponse = Core.AcctMgr.ListRealms(new ListRealmsRequest());
+        var realmsResponse = _accountMgrClient.ListRealms(new ListRealmsRequest());
 
         return new GetInfoResponse
         {
@@ -205,7 +216,7 @@ public partial class LauncherClient : ClientV4
         return new GetVersionResponse
         {
             VersionHash = PatchMgr.VersionHash,
-            ServerState = Core.Config.ServerState,
+            ServerState = _config.ServerState,
             InstalId = g.ToString()
         };
     }

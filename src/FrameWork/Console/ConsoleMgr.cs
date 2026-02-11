@@ -179,35 +179,5 @@ namespace FrameWork
 
             return true;
         }
-
-        private static int GetInt(List<string> args)
-        {
-            if (args.Count <= 0)
-                return -999;
-
-            int result = int.Parse(args[0]);
-            args.RemoveAt(0);
-
-            return result;
-        }
-
-        private static bool GetBool(List<string> args)
-        {
-            return GetInt(args) > 0;
-        }
-
-        private static string GetTotalString(List<string> args, int num)
-        {
-            string Total = "";
-
-            foreach (string str in args)
-                Total = Total + " " + str;
-
-            Total = Total.Remove(1);
-
-            args.Clear();
-
-            return Total;
-        }
     }
 }

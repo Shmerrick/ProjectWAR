@@ -2,7 +2,6 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Exe</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>LobbyServer</RootNamespace>
         <AssemblyName>LobbyServer</AssemblyName>
     </PropertyGroup>
@@ -10,26 +9,25 @@
         <ApplicationIcon>lobby.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <Protobuf Include="..\..\AccountMgr.proto" GrpcServices="Client"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="app.config"/>
-        <None Include="packages.config"/>
-    </ItemGroup>
-    <ItemGroup>
         <Content Include="lobby.ico"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\LobbyServer.proto" GrpcServices="Server" ProtoRoot="..\..\protos" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />
       <ProjectReference Include="..\FrameWork\FrameWork.csproj" />
+      <ProjectReference Include="..\RpcSourceGenerator\RpcSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Google.ProtocolBuffers" Version="2.4.1.555" />
       <PackageReference Include="Grpc.Net.Client" Version="2.71.0">
       </PackageReference>
       <PackageReference Include="Grpc.Tools" Version="2.72.0">
           <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
     </ItemGroup>
 </Project>
