@@ -14,8 +14,8 @@
         <StartupObject>WorldServer.Core</StartupObject>
     </PropertyGroup>
     <ItemGroup>
-        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
-        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\protos" />
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\..\protos" />
     </ItemGroup>
     <ItemGroup>
         <None Include="app.config"/>

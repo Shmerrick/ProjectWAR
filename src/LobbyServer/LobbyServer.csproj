@@ -12,9 +12,9 @@
         <Content Include="lobby.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
-        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\protos" />
-        <Protobuf Include="..\protos\LobbyServer.proto" GrpcServices="Server" ProtoRoot="..\protos" />
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\LobbyServer.proto" GrpcServices="Server" ProtoRoot="..\..\protos" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />

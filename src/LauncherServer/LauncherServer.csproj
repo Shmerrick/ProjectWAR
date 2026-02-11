@@ -20,8 +20,8 @@
         <Content Include="launcher.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
-        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\protos" />
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\..\protos" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />

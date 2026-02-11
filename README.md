@@ -113,7 +113,7 @@ Now that you have the tools, it's time to set up the database. This is where all
 
 **What are `.xml` files?** XML (eXtensible Markup Language) is a format for storing data in a way that is readable by both humans and machines. In this project, they are used as configuration files.
 
-1.  Navigate to the `WorldServer/Configs/LocalDevelopment/` folder in the project directory.
+1.  Navigate to the `src/WorldServer/Configs/LocalDevelopment/` folder in the project directory.
 2.  You will see three important files: `Account.xml`, `Lobby.xml`, and `World.xml`. You need to edit all three.
 3.  Open each of these files with a text editor. You can use a basic one like Notepad, or open them right inside Visual Studio by double-clicking on them in the Solution Explorer.
 4.  Inside each file, you need to find the database connection settings and change the password.

@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
-        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Server" ProtoRoot="..\protos" />
+        <Protobuf Include="..\..\protos\common\**\*.proto" ProtoRoot="..\..\protos" />
+        <Protobuf Include="..\..\protos\AccountMgr.proto" GrpcServices="Server" ProtoRoot="..\..\protos" />
     </ItemGroup>
 
     <ItemGroup>

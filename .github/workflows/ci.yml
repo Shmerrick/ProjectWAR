@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build Core Projects
+      run: |
+        for project in src/**/*.csproj; do
+          dotnet build "$project" --no-restore
+        done
+    
+    - name: Build and Test
+      run: |
+        for project in test/**/*.csproj; do
+          dotnet build "$project" --no-restore
+        done
+        for project in test/**/*.csproj; do
+          dotnet test "$project" --no-build --verbosity normal
+        done
