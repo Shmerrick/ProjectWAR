@@ -14,12 +14,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\AccountMgr.proto" GrpcServices="Server" />
+        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
+        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Server" ProtoRoot="..\protos" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="app.config"/>
-        <None Include="packages.config"/>
         <Content Include="account.ico"/>
     </ItemGroup>
     
@@ -29,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Google.ProtocolBuffers" Version="2.4.1.555" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
     </ItemGroup>
 

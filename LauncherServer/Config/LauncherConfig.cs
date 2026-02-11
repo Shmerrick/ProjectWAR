@@ -7,15 +7,15 @@ namespace LauncherServer.Config
     [aConfigAttributes("Configs/Launcher.xml")]
     public class LauncherConfig : aConfig
     {
-        public int LauncherServerPort = 8000;
-        public int Version = 1;
-        public string Message = "Invalid launcher version.";
-        public bool SeverOnConnect = true;
-        public LogInfo LogLevel = new LogInfo();
+        public int LauncherServerPort { get; init; } = 8000;
+        public int Version { get; init; } = 1;
+        public string Message { get; init; } = "Invalid launcher version.";
+        public bool SeverOnConnect { get; init; } = true;
+        public LogInfo LogLevel { get; init; } = new LogInfo();
 
-        public string PatcherFilesPath = "PatcherFilesDirectory";
-        public string TempFilesPath = "TempFilesDirectory";
-        public ServerState ServerState = ServerState.CLOSED;
-        public string PatchNotes = "Welcome to Warhammer Online: Age of Reckoning!";
+        public string PatcherFilesPath { get; init; } = "PatcherFilesDirectory";
+        public string TempFilesPath { get; init; } = "TempFilesDirectory";
+        public ServerState ServerState { get; init; } = ServerState.CLOSED;
+        public string PatchNotes { get; init; } = "Welcome to Warhammer Online: Age of Reckoning!";
     }
 }

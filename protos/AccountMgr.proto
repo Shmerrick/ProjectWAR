@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "common/ClusterInfo.proto";
+
 service AccountMgr {
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
   rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
@@ -132,7 +134,7 @@ message GetClusterListRequest {
 }
 
 message GetClusterListResponse {
-  bytes clusters = 1;
+  repeated ClusterInfo clusters = 1;
 }
 
 message BanPlayerRequest {

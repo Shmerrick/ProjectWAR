@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace FrameWork
 {
@@ -78,7 +79,7 @@ namespace FrameWork
         public static void LoadTables(IObjectDatabase Database, string DatabaseName)
         {
             List<string> typeNames = new List<string>();
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly assembly in AssemblyLoadContext.Default.Assemblies)
             {
                 foreach (Type type in assembly.GetTypes())
                 {

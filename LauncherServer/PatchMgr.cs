@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Common.Database.Account;
 using FrameWork;
+using LauncherServer.Config;
 using LauncherServer.Dtos;
 using LauncherServer.Server;
 using Opcodes = LauncherServer.Server.Opcodes;
@@ -44,6 +45,13 @@ namespace LauncherServer
     internal class PatchMgr
     {
         public static uint VersionHash;
+        
+        private readonly LauncherConfig _config;
+        
+        public PatchMgr(LauncherConfig config)
+        {
+            _config = config;
+        }
 
         #region MYP Files
 
@@ -52,7 +60,7 @@ namespace LauncherServer
         public static readonly bool use_cache = false;
 
         [LoadingFunction(true)]
-        public static void LoadPatch_Files()
+        public void LoadPatch_Files()
         {
             Log.Debug("PatchMgr", "Loading Patch_Files...");
 
@@ -61,11 +69,11 @@ namespace LauncherServer
             Log.Success("LoadPatch_Files", "Loaded " + _Patch_Files.Count + " Launcher_File");
         }
 
-        public static List<PatchFile> LoadFilesFromDisk()
+        public List<PatchFile> LoadFilesFromDisk()
         {
-            List<PatchFile> patch_files = new List<PatchFile>();
+            List<PatchFile> patch_files = [];
 
-            DirectoryInfo d = new DirectoryInfo(Core.Config.PatcherFilesPath);
+            var d = new DirectoryInfo(_config.PatcherFilesPath);
 #if DEBUG
             if (!d.Exists)
                 return patch_files;
@@ -94,7 +102,7 @@ namespace LauncherServer
         }
 
         [LoadingFunction(true)]
-        public static void LoadPatch_Assets()
+        public void LoadPatch_Assets()
         {
             Log.Debug("PatchMgr", "Loading Patch_Assets...");
 
@@ -103,11 +111,11 @@ namespace LauncherServer
             Log.Success("LoadPatch_Assets", "Loaded " + _Patch_Assets.Count + " MYPs");
         }
 
-        public static Dictionary<Patch_MYP, List<PatchAsset>> LoadAssetsFromDisk()
+        public Dictionary<Patch_MYP, List<PatchAsset>> LoadAssetsFromDisk()
         {
             Dictionary<Patch_MYP, List<PatchAsset>> patch_assets = new Dictionary<Patch_MYP, List<PatchAsset>>();
 
-            DirectoryInfo d = new DirectoryInfo(Core.Config.PatcherFilesPath);
+            DirectoryInfo d = new DirectoryInfo(_config.PatcherFilesPath);
 #if DEBUG
             if (!d.Exists)
                 return patch_assets;
@@ -151,17 +159,18 @@ namespace LauncherServer
 
         #endregion MYP Files
 
-        public static void SetServerState(ServerState state)
-        {
-            Core.Config.ServerState = state;
-            ConfigMgr.SaveConfig(Core.Config);
-
-            PacketOut Out = new PacketOut(Opcodes.LCR_SERVER_STATUS);
-            Out.WriteUInt32((uint)state);
-
-            // TODO: REPAIR AFTER NETWORK MANAGER REWRITE
-            // Core.Server.DispatchPatcket(Out);
-        }
+        // TODO: REPAIR AFTER NETWORK MANAGER REWRITE
+        // public void SetServerState(ServerState state)
+        // {
+        //     _config.ServerState = state;
+        //     ConfigMgr.SaveConfig(_config);
+        //
+        //     PacketOut Out = new PacketOut(Opcodes.LCR_SERVER_STATUS);
+        //     Out.WriteUInt32((uint)state);
+        //
+        //     
+        //     // Core.Server.DispatchPatcket(Out);
+        // }
 
         #region Utils
 

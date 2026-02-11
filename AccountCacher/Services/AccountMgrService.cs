@@ -6,12 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common;
 using FrameWork;
-using Google.Protobuf;
 using Grpc.Core;
+using Microsoft.Extensions.Hosting;
 
 namespace AccountCacher.Services;
 
-public class AccountMgrService : AccountMgr.AccountMgrBase
+public class AccountMgrService : AccountMgr.AccountMgrBase, IHostedService
 {
     // Account Database
     private IObjectDatabase _database = null;
@@ -31,6 +31,13 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
     public Dictionary<string, AccountPending> _Codes = new();
     
     private readonly List<int> _pendingAccountIDs = new();
+
+    public AccountMgrService(IObjectDatabase database, bool cacheEnabled = true, int maxCacheSize = 10000)
+    {
+        _database = database;
+        _cacheEnabled = cacheEnabled;
+        _maxCacheSize = maxCacheSize;
+    }
 
     public override async Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request, ServerCallContext context)
     {
@@ -162,11 +169,6 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
         // account.SanctionExpiry = request.expiry;
         // _database.SaveObject(account, nameof(account.SanctionType), nameof(account.SanctionDetails), nameof(account.SanctionExpiry));
         return Task.FromResult(new SanctionPlayerResponse { Success = true });
-    }
-
-    public AccountMgrService(IObjectDatabase database)
-    {
-        _database = database;
     }
     
     public override Task<GetAccountResponse> GetAccount(GetAccountRequest request, ServerCallContext context)
@@ -430,61 +432,70 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
         });
     }
 
-    public override Task<GetClusterListResponse> GetClusterList(GetClusterListRequest request, ServerCallContext context)
+    public override Task<GetClusterListResponse> GetClusterList(GetClusterListRequest request,
+        ServerCallContext context)
     {
-        GetClusterListReply.Builder ClusterListReplay = GetClusterListReply.CreateBuilder();
+        var clusters = new List<ClusterInfo>();
+        lock (_Realms)
+        {
+            Log.Info("BuildRealm", "Sending " + _Realms.Count + " realm(s)");
 
-            lock (_Realms)
+            foreach (var realm in _Realms.Values)
             {
-                Log.Info("BuildRealm", "Sending " + _Realms.Count + " realm(s)");
-
-                ClusterInfo.Builder cluster = ClusterInfo.CreateBuilder();
-                foreach (Realm Rm in _Realms.Values)
+                Log.Info("BuildRealm",
+                    "Realm : " + realm.RealmId + " IP : " + realm.Adresse + ":" + realm.Port + " (" + realm.Name + ")");
+                var cluster = new ClusterInfo
                 {
-                    Log.Info("BuildRealm", "Realm : " + Rm.RealmId + " IP : " + Rm.Adresse + ":" + Rm.Port + " (" + Rm.Name + ")");
-                    cluster.SetClusterId(Rm.RealmId)
-                           .SetClusterName(Rm.Name)
-                           .SetLobbyHost(Rm.Adresse)
-                           .SetLobbyPort((uint)Rm.Port)
-                           .SetLanguageId(0)
-                           .SetMaxClusterPop(500)
-                           .SetClusterPopStatus(ClusterPopStatus.POP_UNKNOWN)
-                           .SetClusterStatus(ClusterStatus.STATUS_ONLINE);
+                    ClusterId = realm.RealmId,
+                    ClusterName = realm.Name,
+                    LobbyHost = realm.Adresse,
+                    LobbyPort = (uint)realm.Port,
+                    LanguageId = 0,
+                    MaxClusterPop = 500,
+                    ClusterPopStatus = ClusterPopStatus.PopUnknown,
+                    ClusterStatus = ClusterStatus.StatusOnline,
+                };
 
-                    cluster.AddServerList(
-                        ServerInfo.CreateBuilder().SetServerId(Rm.RealmId)
-                                                  .SetServerName(Rm.Name)
-                                                  .Build());
+                cluster.ServerList.Add(new ServerInfo
+                {
+                    ServerId = realm.RealmId,
+                    ServerName = realm.Name
+                });
 
-                    cluster.AddPropertyList(setProp("setting.allow_trials", Rm.AllowTrials));
-                    cluster.AddPropertyList(setProp("setting.charxferavailable", Rm.CharfxerAvailable));
-                    cluster.AddPropertyList(setProp("setting.language", Rm.Language));
-                    cluster.AddPropertyList(setProp("setting.legacy", Rm.Legacy));
-                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.destruction", Rm.BonusDestruction));
-                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.order", Rm.BonusOrder));
-                    cluster.AddPropertyList(setProp("setting.min_cross_realm_account_level", "0"));
-                    cluster.AddPropertyList(setProp("setting.name", Rm.Name));
-                    cluster.AddPropertyList(setProp("setting.net.address", Rm.Adresse));
-                    cluster.AddPropertyList(setProp("setting.net.port", Rm.Port.ToString()));
-                    cluster.AddPropertyList(setProp("setting.redirect", Rm.Redirect));
-                    cluster.AddPropertyList(setProp("setting.region", Rm.Region));
-                    cluster.AddPropertyList(setProp("setting.retired", Rm.Retired));
-                    cluster.AddPropertyList(setProp("status.queue.Destruction.waiting", Rm.WaitingDestruction));
-                    cluster.AddPropertyList(setProp("status.queue.Order.waiting", Rm.WaitingOrder));
-                    cluster.AddPropertyList(setProp("status.realm.destruction.density", Rm.DensityDestruction));
-                    cluster.AddPropertyList(setProp("status.realm.order.density", Rm.DensityOrder));
-                    cluster.AddPropertyList(setProp("status.servertype.openrvr", Rm.OpenRvr));
-                    cluster.AddPropertyList(setProp("status.servertype.rp", Rm.Rp));
-                    cluster.AddPropertyList(setProp("status.status", Rm.Status));
-                    cluster.Build();
-                    ClusterListReplay.AddClusterList(cluster);
-                }
+                cluster.PropertyList.AddRange([
+                    new ClusterProp { PropName = "setting.allow_trials", PropValue = realm.AllowTrials },
+                    new ClusterProp { PropName = "setting.charxferavailable", PropValue = realm.CharfxerAvailable },
+                    new ClusterProp { PropName = "setting.language", PropValue = realm.Language },
+                    new ClusterProp { PropName = "setting.legacy", PropValue = realm.Legacy },
+                    new ClusterProp
+                        { PropName = "setting.manualbonus.realm.destruction", PropValue = realm.BonusDestruction },
+                    new ClusterProp { PropName = "setting.manualbonus.realm.order", PropValue = realm.BonusOrder },
+                    new ClusterProp { PropName = "setting.min_cross_realm_account_level", PropValue = "0" },
+                    new ClusterProp { PropName = "setting.name", PropValue = realm.Name },
+                    new ClusterProp { PropName = "setting.net.address", PropValue = realm.Adresse },
+                    new ClusterProp { PropName = "setting.net.port", PropValue = realm.Port.ToString() },
+                    new ClusterProp { PropName = "setting.redirect", PropValue = realm.Redirect },
+                    new ClusterProp { PropName = "setting.region", PropValue = realm.Region },
+                    new ClusterProp { PropName = "setting.retired", PropValue = realm.Retired },
+                    new ClusterProp
+                        { PropName = "status.queue.Destruction.waiting", PropValue = realm.WaitingDestruction },
+                    new ClusterProp { PropName = "status.queue.Order.waiting", PropValue = realm.WaitingOrder },
+                    new ClusterProp
+                        { PropName = "status.realm.destruction.density", PropValue = realm.DensityDestruction },
+                    new ClusterProp { PropName = "status.realm.order.density", PropValue = realm.DensityOrder },
+                    new ClusterProp { PropName = "status.servertype.openrvr", PropValue = realm.OpenRvr },
+                    new ClusterProp { PropName = "status.servertype.rp", PropValue = realm.Rp },
+                    new ClusterProp { PropName = "status.status", PropValue = realm.Status }
+                ]);
+                
+                clusters.Add(cluster);
             }
-            ClusterListReplay.ResultCode = ResultCode.RES_SUCCESS;
-            return Task.FromResult(new GetClusterListResponse
-            {
-                Clusters = ByteString.CopyFrom(ClusterListReplay.Build().ToByteArray())
-            });
+        }
+
+        return Task.FromResult(new GetClusterListResponse
+        {
+            Clusters = { clusters }
+        });
     }
 
     public override Task<UpdateRealmCharactersTotalResponse> UpdateRealmCharactersTotal(
@@ -503,14 +514,7 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
 
         return Task.FromResult(new UpdateRealmCharactersTotalResponse());
     }
-
-    private ClusterProp setProp(string name, string value)
-    {
-        return ClusterProp.CreateBuilder().SetPropName(name)
-            .SetPropValue(value)
-            .Build();
-    }
-
+    
     public override Task<GetAccountByIdResponse> GetAccountById(GetAccountByIdRequest request,
         ServerCallContext context)
     {
@@ -743,5 +747,19 @@ public class AccountMgrService : AccountMgr.AccountMgrBase
         }
 
         return false;
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        InitializeCache(_cacheEnabled, _maxCacheSize);
+        LoadRealms();
+        LoadPending();
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 }

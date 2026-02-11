@@ -110,14 +110,14 @@ namespace FrameWork.NetWork.SourceGenerators
                         continue;
                     }
 
-                    // Validate method signature
-                    if (member.Parameters.Length != 1)
+                    // Validate method signature (0 or 1 parameters allowed)
+                    if (member.Parameters.Length > 1)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(
                             new DiagnosticDescriptor(
                                 "RPC002",
                                 "Invalid RPC handler signature",
-                                $"RPC handler '{member.Name}' must have exactly one parameter",
+                                $"RPC handler '{member.Name}' must have zero or one parameter",
                                 "RpcGenerator",
                                 DiagnosticSeverity.Error,
                                 isEnabledByDefault: true),
@@ -125,7 +125,7 @@ namespace FrameWork.NetWork.SourceGenerators
                         continue;
                     }
 
-                    var requestType = member.Parameters[0].Type;
+                    ITypeSymbol requestType = member.Parameters.Length == 1 ? member.Parameters[0].Type : null;
                     var returnType = member.ReturnType;
                     bool isAsync = returnType.Name == "Task" || returnType.Name == "ValueTask";
                     bool hasResponse = false;
@@ -147,7 +147,7 @@ namespace FrameWork.NetWork.SourceGenerators
                         MethodName = member.Name,
                         Opcode = opcode,
                         ResponseOpcode = responseOpcode,
-                        RequestType = requestType.ToDisplayString(),
+                        RequestType = requestType?.ToDisplayString(),
                         ResponseType = responseType?.ToDisplayString(),
                         HasResponse = hasResponse,
                         IsAsync = isAsync
@@ -192,23 +192,30 @@ namespace FrameWork.NetWork.SourceGenerators
             {
                 sb.AppendLine($"                case 0x{method.Opcode:X2}:");
                 sb.AppendLine("                {");
-                sb.AppendLine($"                    var request = Serializer.Deserialize<{method.RequestType}>(payload);");
+                
+                if (method.RequestType != null)
+                {
+                    sb.AppendLine($"                    var request = Serializer.Deserialize<{method.RequestType}>(payload);");
+                }
 
                 if (method.IsAsync)
                 {
-                    sb.AppendLine($"                    _ = HandleAsync_{method.MethodName}(request);");
+                    string args = method.RequestType != null ? "request" : "";
+                    sb.AppendLine($"                    _ = HandleAsync_{method.MethodName}({args});");
                 }
                 else
                 {
                     if (method.HasResponse)
                     {
-                        sb.AppendLine($"                    var response = {method.MethodName}(request);");
+                        string args = method.RequestType != null ? "request" : "";
+                        sb.AppendLine($"                    var response = {method.MethodName}({args});");
                         sb.AppendLine($"                    if (response != null)");
                         sb.AppendLine($"                        SendResponse(0x{method.ResponseOpcode:X2}, response);");
                     }
                     else
                     {
-                        sb.AppendLine($"                    {method.MethodName}(request);");
+                        string args = method.RequestType != null ? "request" : "";
+                        sb.AppendLine($"                    {method.MethodName}({args});");
                     }
                 }
 
@@ -226,20 +233,22 @@ namespace FrameWork.NetWork.SourceGenerators
             foreach (var method in methods.Where(m => m.IsAsync))
             {
                 sb.AppendLine();
-                sb.AppendLine($"        private async Task HandleAsync_{method.MethodName}({method.RequestType} request)");
+                string parameters = method.RequestType != null ? $"{method.RequestType} request" : "";
+                string args = method.RequestType != null ? "request" : "";
+                sb.AppendLine($"        private async Task HandleAsync_{method.MethodName}({parameters})");
                 sb.AppendLine("        {");
                 sb.AppendLine("            try");
                 sb.AppendLine("            {");
 
                 if (method.HasResponse)
                 {
-                    sb.AppendLine($"                var response = await {method.MethodName}(request);");
+                    sb.AppendLine($"                var response = await {method.MethodName}({args});");
                     sb.AppendLine($"                if (response != null)");
                     sb.AppendLine($"                    SendResponse(0x{method.ResponseOpcode:X2}, response);");
                 }
                 else
                 {
-                    sb.AppendLine($"                await {method.MethodName}(request);");
+                    sb.AppendLine($"                await {method.MethodName}({args});");
                 }
 
                 sb.AppendLine("            }");
