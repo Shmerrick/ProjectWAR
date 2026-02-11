@@ -267,7 +267,7 @@ public partial class ApocLauncher : Form
     {
         try
         {
-            var warDirectory = Directory.GetParent(Application.StartupPath);
+            var warDirectory = Directory.GetParent(Application.StartupPath.TrimEnd('\\'));
             lblConnection.Text = "Patching..";
                 
             // Patching operations would go here
@@ -292,13 +292,14 @@ public partial class ApocLauncher : Form
 
             if (AllowWarClientLaunch)
             {
-                var process = new Process
+                var process = new Process()
                 {
                     StartInfo =
                     {
                         WorkingDirectory = warDirectory.FullName,
                         FileName = "WAR.exe",
-                        Arguments = $" --acctname={Convert.ToBase64String(Encoding.ASCII.GetBytes(username))} --sesstoken={Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken))}"
+                        Arguments = $" --acctname={Convert.ToBase64String(Encoding.ASCII.GetBytes(username))} --sesstoken={Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken))}",
+                        UseShellExecute = true
                     }
                 };
                 _logger.Info($"Starting WAR.exe in {warDirectory}");

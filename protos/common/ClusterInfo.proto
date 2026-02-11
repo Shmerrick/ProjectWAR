@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+// Population status of a cluster.
+enum ClusterPopStatus {
+  POP_UNKNOWN = 0;
+  POP_LOW = 1;
+  POP_MED = 2;
+  POP_HIGH = 3;
+  POP_FULL = 4;
+}
+
+// Availability status of a cluster.
+enum ClusterStatus {
+  CLUSTER_STATUS_UNSPECIFIED = 0;
+  STATUS_ONLINE = 1;
+  STATUS_OFFLINE = 2;
+  STATUS_INVITE_REQUIRED = 3;
+  STATUS_INSUFFICIENT_PRIVILEGES = 4;
+  STATUS_BANNED = 5;
+}
+
+// A server within a cluster.
+message ServerInfo {
+  required uint32 server_id = 1;
+  required string server_name = 2;
+}
+
+// A key-value property associated with a cluster.
+message ClusterProp {
+  required string prop_name = 1;
+  required string prop_value = 2;
+}
+
+// Full information about a game cluster.
+message ClusterInfo {
+  required uint32 cluster_id = 1;
+  required string cluster_name = 2;
+  optional string lobby_host = 3;
+  optional uint32 lobby_port = 4;
+  optional uint32 cluster_pop = 5;
+  optional uint32 max_cluster_pop = 6;
+  optional ClusterPopStatus cluster_pop_status = 7;
+  required uint32 language_id = 8;
+  required ClusterStatus cluster_status = 9;
+  repeated ServerInfo server_list = 10;
+  repeated ClusterProp property_list = 11;
+}

@@ -11,10 +11,6 @@
         <ApplicationIcon>launcher.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="app.config"/>
-        <None Include="packages.config"/>
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj"/>
         <ProjectReference Include="..\FrameWork\FrameWork.csproj"/>
         <ProjectReference Include="..\LauncherServer.Dtos\LauncherServer.Dtos.csproj" />
@@ -24,7 +20,8 @@
         <Content Include="launcher.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <Protobuf Include="..\AccountMgr.proto" GrpcServices="Client"/>
+        <Protobuf Include="..\protos\common\**\*.proto" ProtoRoot="..\protos" />
+        <Protobuf Include="..\protos\AccountMgr.proto" GrpcServices="Client" ProtoRoot="..\protos" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
@@ -32,5 +29,6 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
     </ItemGroup>
 </Project>

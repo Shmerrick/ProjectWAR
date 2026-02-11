@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FrameWork
 {
@@ -20,7 +21,7 @@ namespace FrameWork
         DOO_Delete
     }
 
-    public abstract class ObjectDatabase : IObjectDatabase
+    public abstract class ObjectDatabase : IObjectDatabase, IDisposable
     {
         protected static readonly NumberFormatInfo Nfi = new CultureInfo("en-US", false).NumberFormat;
 
@@ -42,7 +43,7 @@ namespace FrameWork
             return "CHAR_LENGTH";
         }
 
-        private readonly Thread _updater;
+        private readonly Task _updater;
 
         private const int PROCESS_INTERVAL = 5000; // 5 second processing of ops queue.
         private const int SAVE_INTERVAL = 60000; // 1 minute saving of objects. 600000; // 10 minute saving of objects. was 200ms before...
@@ -50,6 +51,7 @@ namespace FrameWork
         private long _nextSaveTime;
 
         private readonly List<Action> _onProcessActions = new List<Action>();
+        private readonly CancellationTokenSource _updateCancelTokenSource = new();
 
         protected ObjectDatabase(DataConnection connection)
         {
@@ -58,9 +60,7 @@ namespace FrameWork
 
             _nextSaveTime = TCPManager.GetTimeStampMS() + SAVE_INTERVAL;
 
-            ThreadStart start = Update;
-            _updater = new Thread(start);
-            _updater.Start();
+            _updater = Update(_updateCancelTokenSource.Token);
         }
 
         #region Data tables
@@ -290,7 +290,7 @@ namespace FrameWork
             }
         }
 
-        public void Update()
+        private async Task Update(CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -388,7 +388,7 @@ namespace FrameWork
 
                 long elapsed = TCPManager.GetTimeStampMS() - Start;
                 if (elapsed < PROCESS_INTERVAL)
-                    Thread.Sleep((int)(PROCESS_INTERVAL - elapsed));
+                    await Task.Delay((int)(PROCESS_INTERVAL - elapsed), cancellationToken);
             }
         }
 
@@ -1247,5 +1247,19 @@ namespace FrameWork
         }
 
         #endregion Nested type: BindingInfo
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _updateCancelTokenSource?.Dispose();
+            }
+        }
     }
 }

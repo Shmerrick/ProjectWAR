@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace FrameWork.NetWork.V4
 {
@@ -11,10 +12,12 @@ namespace FrameWork.NetWork.V4
     /// Manages TCP server endpoints and client connections.
     /// Handles connection acceptance and client lifecycle management.
     /// </summary>
-    public sealed class NetworkManager : IDisposable
+    public sealed class NetworkManager<TClient> : IHostedService, IDisposable where TClient : Client
     {
+        private readonly IClientFactory<TClient> _clientFactory;
         private readonly ConcurrentDictionary<int, Client> _clients = new();
-        private TcpListener _listenerClient;
+        private readonly TcpListener _listenerClient;
+        private bool _isStarted = false;
         private CancellationTokenSource _cancellationTokenSource;
         private Task _acceptTask;
         private int _nextClientId;
@@ -45,25 +48,13 @@ namespace FrameWork.NetWork.V4
         /// </summary>
         public event Action<Client, DisconnectReason> ClientDisconnected;
 
-        /// <summary>
-        /// Starts the TCP server and begins accepting client connections.
-        /// </summary>
-        /// <typeparam name="TClient">The type of client to instantiate for each connection.</typeparam>
-        /// <param name="endpoint">The local endpoint to bind to.</param>
-        /// <param name="clientFactory">Factory function to create client instances from accepted TCP clients.</param>
-        public void Start<TClient>(IPEndPoint endpoint, Func<TcpClient, TClient> clientFactory) where TClient : Client
+        public NetworkManager(IPEndPoint endpoint, IClientFactory<TClient> clientFactory)
         {
-            if (_listenerClient != null)
-                throw new InvalidOperationException("NetworkManager is already started.");
-
-            _cancellationTokenSource = new CancellationTokenSource();
             _listenerClient = new TcpListener(endpoint);
-            _listenerClient.Start(100);
-
-            _acceptTask = AcceptLoopAsync(clientFactory, _cancellationTokenSource.Token);
+            _clientFactory = clientFactory;
         }
 
-        private async Task AcceptLoopAsync<TClient>(Func<TcpClient, TClient> clientFactory, CancellationToken cancellationToken) where TClient : Client
+        private async Task AcceptLoopAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -84,7 +75,7 @@ namespace FrameWork.NetWork.V4
                     }
 
                     // Wrap socket in TcpClient and create client instance
-                    var client = clientFactory(tcpClient);
+                    var client = _clientFactory.Create(tcpClient);
                     var clientId = Interlocked.Increment(ref _nextClientId);
                     
                     if (_clients.TryAdd(clientId, client))
@@ -187,6 +178,25 @@ namespace FrameWork.NetWork.V4
             _disposed = true;
             Stop();
             _cancellationTokenSource?.Dispose();
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            if (_isStarted)
+                throw new InvalidOperationException("NetworkManager is already started.");
+
+            _cancellationTokenSource = new CancellationTokenSource();
+            _listenerClient.Start(100);
+
+            _acceptTask = AcceptLoopAsync(_cancellationTokenSource.Token);
+            _isStarted = true;
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _cancellationTokenSource.Cancel();
+            return Task.CompletedTask;
         }
     }
 }

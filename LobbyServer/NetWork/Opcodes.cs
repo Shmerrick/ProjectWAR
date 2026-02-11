@@ -10,8 +10,8 @@
     SMSG_GetCharSummaryListReply = 0x08,
     CMSG_GetClusterListReq = 0x09,
     SMSG_GetClusterListReply = 0x0a,
-    CMSG_GetAcctPropListReq = 0x0d,
-    SMSG_GetAcctPropListReply = 0x0c,
     CMSG_MetricEventNotify = 0x0b,
+    SMSG_GetAcctPropListReply = 0x0c,
+    CMSG_GetAcctPropListReq = 0x0d,
     MAX_OPCODE = 0x0b
 };
