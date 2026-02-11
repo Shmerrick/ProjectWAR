@@ -24,15 +24,15 @@ jobs:
     
     - name: Build Core Projects
       run: |
-        dotnet build Common/Common.csproj --no-restore
-        dotnet build FrameWork/FrameWork.csproj --no-restore
-        dotnet build RpcSourceGenerator/RpcSourceGenerator.csproj --no-restore
-        dotnet build LauncherServer.Dtos/LauncherServer.Dtos.csproj --no-restore
-        dotnet build AccountCacher/AccountCacher.csproj --no-restore
-        dotnet build LauncherServer/LauncherServer.csproj --no-restore
-        dotnet build LobbyServer/LobbyServer.csproj --no-restore
-        dotnet build WorldServer/WorldServer.csproj --no-restore
-        dotnet build ServerLauncher/ServerLauncher.csproj --no-restore
+        dotnet build src/Common/Common.csproj --no-restore
+        dotnet build src/FrameWork/FrameWork.csproj --no-restore
+        dotnet build src/RpcSourceGenerator/RpcSourceGenerator.csproj --no-restore
+        dotnet build src/LauncherServer.Dtos/LauncherServer.Dtos.csproj --no-restore
+        dotnet build src/AccountCacher/AccountCacher.csproj --no-restore
+        dotnet build src/LauncherServer/LauncherServer.csproj --no-restore
+        dotnet build src/LobbyServer/LobbyServer.csproj --no-restore
+        dotnet build src/WorldServer/WorldServer.csproj --no-restore
+        dotnet build src/ServerLauncher/ServerLauncher.csproj --no-restore
     
     - name: Build and Test
       run: |

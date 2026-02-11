@@ -2,17 +2,19 @@
   <Folder Name="/Protos/">
     <File Path="AccountMgr.proto" />
   </Folder>
-  <Project Path="AccountCacher/AccountCacher.csproj" />
-  <Project Path="Common/Common.csproj" />
-  <Project Path="FrameWork/FrameWork.csproj" />
-  <Project Path="Launcher/Launcher.csproj" />
-  <Project Path="LauncherServer.Dtos/LauncherServer.Dtos.csproj" />
-  <Project Path="LauncherServer/LauncherServer.csproj" />
-  <Project Path="LobbyServer/LobbyServer.csproj" />
-  <Project Path="RpcSourceGenerator/RpcSourceGenerator.csproj" />
-  <Project Path="ServerLauncher/ServerLauncher.csproj" />
-  <Project Path="WarZone/WarZone.vcxproj" />
-  <Project Path="WorldServer/WorldServer.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/AccountCacher/AccountCacher.csproj" />
+    <Project Path="src/Common/Common.csproj" />
+    <Project Path="src/FrameWork/FrameWork.csproj" />
+    <Project Path="src/Launcher/Launcher.csproj" />
+    <Project Path="src/LauncherServer.Dtos/LauncherServer.Dtos.csproj" />
+    <Project Path="src/LauncherServer/LauncherServer.csproj" />
+    <Project Path="src/LobbyServer/LobbyServer.csproj" />
+    <Project Path="src/RpcSourceGenerator/RpcSourceGenerator.csproj" />
+    <Project Path="src/ServerLauncher/ServerLauncher.csproj" />
+    <Project Path="src/WarZone/WarZone.vcxproj" />
+    <Project Path="src/WorldServer/WorldServer.csproj" />
+  </Folder>
   <Folder Name="/test/">
     <Project Path="test/LobbyServer.Tests/LobbyServer.Tests.csproj" />
   </Folder>

@@ -24,7 +24,7 @@
         <Content Include="launcher.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <Protobuf Include="..\AccountMgr.proto" GrpcServices="Client"/>
+        <Protobuf Include="..\..\AccountMgr.proto" GrpcServices="Client"/>
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />

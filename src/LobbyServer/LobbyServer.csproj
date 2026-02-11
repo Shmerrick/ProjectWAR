@@ -10,7 +10,7 @@
         <ApplicationIcon>lobby.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <Protobuf Include="..\AccountMgr.proto" GrpcServices="Client"/>
+        <Protobuf Include="..\..\AccountMgr.proto" GrpcServices="Client"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="app.config"/>

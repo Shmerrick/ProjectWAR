@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\AccountMgr.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\AccountMgr.proto" GrpcServices="Server" />
     </ItemGroup>
 
     <ItemGroup>
