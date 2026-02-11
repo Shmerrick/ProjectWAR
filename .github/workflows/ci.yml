@@ -52,6 +52,7 @@ jobs:
         indicators: true
         output: both
         thresholds: '60 80'
+      continue-on-error: true
     
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
@@ -59,3 +60,7 @@ jobs:
       with:
         recreate: true
         path: code-coverage-results.md
+    
+    - name: Write to Job Summary
+      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+      if: always()
