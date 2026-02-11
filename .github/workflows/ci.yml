@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -24,15 +24,9 @@ jobs:
     
     - name: Build Core Projects
       run: |
-        dotnet build src/Common/Common.csproj --no-restore
-        dotnet build src/FrameWork/FrameWork.csproj --no-restore
-        dotnet build src/RpcSourceGenerator/RpcSourceGenerator.csproj --no-restore
-        dotnet build src/LauncherServer.Dtos/LauncherServer.Dtos.csproj --no-restore
-        dotnet build src/AccountCacher/AccountCacher.csproj --no-restore
-        dotnet build src/LauncherServer/LauncherServer.csproj --no-restore
-        dotnet build src/LobbyServer/LobbyServer.csproj --no-restore
-        dotnet build src/WorldServer/WorldServer.csproj --no-restore
-        dotnet build src/ServerLauncher/ServerLauncher.csproj --no-restore
+        for project in src/**/*.csproj; do
+          dotnet build "$project" --no-restore
+        done
     
     - name: Build and Test
       run: |
