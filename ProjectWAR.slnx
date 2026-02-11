@@ -13,4 +13,7 @@
   <Project Path="ServerLauncher/ServerLauncher.csproj" />
   <Project Path="WarZone/WarZone.vcxproj" />
   <Project Path="WorldServer/WorldServer.csproj" />
+  <Folder Name="/test/">
+    <Project Path="test/LobbyServer.Tests/LobbyServer.Tests.csproj" />
+  </Folder>
 </Solution>
