@@ -20,10 +20,22 @@ jobs:
         dotnet-version: '10.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore test/LobbyServer.Tests/LobbyServer.Tests.csproj
+      run: dotnet restore
     
-    - name: Build
+    - name: Build Core Projects
+      run: |
+        dotnet build Common/Common.csproj --no-restore
+        dotnet build FrameWork/FrameWork.csproj --no-restore
+        dotnet build RpcSourceGenerator/RpcSourceGenerator.csproj --no-restore
+        dotnet build LauncherServer.Dtos/LauncherServer.Dtos.csproj --no-restore
+        dotnet build AccountCacher/AccountCacher.csproj --no-restore
+        dotnet build LauncherServer/LauncherServer.csproj --no-restore
+        dotnet build LobbyServer/LobbyServer.csproj --no-restore
+        dotnet build WorldServer/WorldServer.csproj --no-restore
+        dotnet build ServerLauncher/ServerLauncher.csproj --no-restore
+    
+    - name: Build Tests
       run: dotnet build test/LobbyServer.Tests/LobbyServer.Tests.csproj --no-restore
     
     - name: Test
-      run: dotnet test test/LobbyServer.Tests/LobbyServer.Tests.csproj --no-build --verbosity normal
+      run: dotnet test test/**/*.csproj --no-build --verbosity normal
