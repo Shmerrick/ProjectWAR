@@ -19,3 +19,9 @@ obj/
 packages/
 deps/
 .idea/
+# Test results and coverage
+TestResults/
+**/TestResults/
+*.trx
+coverage*.xml
+coverage*.json
