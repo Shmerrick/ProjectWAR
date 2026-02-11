@@ -62,5 +62,8 @@ jobs:
         path: code-coverage-results.md
     
     - name: Write to Job Summary
-      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+      run: |
+        if [ -f code-coverage-results.md ]; then
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+        fi
       if: always()
