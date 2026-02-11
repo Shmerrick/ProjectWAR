@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using FrameWork.NetWork.SourceGenerators;
+using Shouldly;
 
 namespace Tests.RpcSourceGenerator;
 
@@ -48,10 +49,10 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
-        Assert.Contains("case 0x01:", result.GeneratedTrees[0].ToString());
-        Assert.Contains("HandlePing()", result.GeneratedTrees[0].ToString());
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
+        result.GeneratedTrees[0].ToString().ShouldContain("case 0x01:");
+        result.GeneratedTrees[0].ToString().ShouldContain("HandlePing()");
     }
 
     [Fact]
@@ -76,12 +77,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
-        Assert.Contains("case 0x10:", code);
-        Assert.Contains("var request = Serializer.Deserialize<TestNamespace.LoginRequest>(payload);", code);
-        Assert.Contains("HandleLogin(request);", code);
+        code.ShouldContain("case 0x10:");
+        code.ShouldContain("var request = Serializer.Deserialize<TestNamespace.LoginRequest>(payload);");
+        code.ShouldContain("HandleLogin(request);");
     }
 
     [Fact]
@@ -108,12 +109,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
-        Assert.Contains("case 0x10:", code);
-        Assert.Contains("var response = HandleLogin(request);", code);
-        Assert.Contains("SendResponse(0x11, response);", code);
+        code.ShouldContain("case 0x10:");
+        code.ShouldContain("var response = HandleLogin(request);");
+        code.ShouldContain("SendResponse(0x11, response);");
     }
 
     [Fact]
@@ -140,12 +141,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
-        Assert.Contains("case 0x01:", code);
-        Assert.Contains("_ = HandleAsync_HandlePing(request);", code);
-        Assert.Contains("private async Task HandleAsync_HandlePing(TestNamespace.PingRequest request)", code);
+        code.ShouldContain("case 0x01:");
+        code.ShouldContain("_ = HandleAsync_HandlePing(request);");
+        code.ShouldContain("private async Task HandleAsync_HandlePing(TestNamespace.PingRequest request)");
     }
 
     [Fact]
@@ -173,13 +174,13 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
-        Assert.Contains("case 0x10:", code);
-        Assert.Contains("_ = HandleAsync_HandleLogin(request);", code);
-        Assert.Contains("var response = await HandleLogin(request);", code);
-        Assert.Contains("SendResponse(0x11, response);", code);
+        code.ShouldContain("case 0x10:");
+        code.ShouldContain("_ = HandleAsync_HandleLogin(request);");
+        code.ShouldContain("var response = await HandleLogin(request);");
+        code.ShouldContain("SendResponse(0x11, response);");
     }
 
     [Fact]
@@ -208,8 +209,8 @@ namespace TestNamespace
         var result = RunGenerator(source);
         
         var error = result.Diagnostics.FirstOrDefault(d => d.Id == "RPC001");
-        Assert.NotNull(error);
-        Assert.Equal(DiagnosticSeverity.Error, error.Severity);
+        error.ShouldNotBeNull();
+        error.Severity.ShouldBe(DiagnosticSeverity.Error);
         Assert.Contains("0x01", error.GetMessage());
     }
 
@@ -237,8 +238,8 @@ namespace TestNamespace
         var result = RunGenerator(source);
         
         var error = result.Diagnostics.FirstOrDefault(d => d.Id == "RPC002");
-        Assert.NotNull(error);
-        Assert.Equal(DiagnosticSeverity.Error, error.Severity);
+        error.ShouldNotBeNull();
+        error.Severity.ShouldBe(DiagnosticSeverity.Error);
         Assert.Contains("zero or one parameter", error.GetMessage());
     }
 
@@ -262,7 +263,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -285,7 +286,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -307,7 +308,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -346,19 +347,19 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
         // Check all three methods are handled
-        Assert.Contains("case 0x01:", code);
-        Assert.Contains("case 0x02:", code);
-        Assert.Contains("case 0x03:", code);
+        code.ShouldContain("case 0x01:");
+        code.ShouldContain("case 0x02:");
+        code.ShouldContain("case 0x03:");
         
         // Check proper handling
-        Assert.Contains("HandleMethod1(request);", code);
-        Assert.Contains("_ = HandleAsync_HandleMethod2(request);", code);
-        Assert.Contains("HandleMethod3()", code);
+        code.ShouldContain("HandleMethod1(request);");
+        code.ShouldContain("_ = HandleAsync_HandleMethod2(request);");
+        code.ShouldContain("HandleMethod3()");
     }
 
     [Fact]
@@ -385,10 +386,10 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         // When only one opcode is provided, it's used for both request and response
-        Assert.Contains("SendResponse(0x10, response);", code);
+        code.ShouldContain("SendResponse(0x10, response);");
     }
 
     private GeneratorTestResult RunGenerator(string source)

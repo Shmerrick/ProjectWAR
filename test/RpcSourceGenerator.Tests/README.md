@@ -87,9 +87,10 @@ Snapshot tests use Verify.NET to:
 
 ## Dependencies
 
-- **xUnit**: Test framework
+- **xUnit v3 (3.2.2)**: Test framework
+- **Shouldly 4.2.1**: Fluent assertion library
 - **Microsoft.CodeAnalysis.CSharp**: Roslyn APIs for compilation
-- **Verify.Xunit**: Snapshot testing
+- **Verify.XunitV3**: Snapshot testing for xUnit v3
 - **Verify.SourceGenerators**: Source generator snapshot support
 - **coverlet.collector**: Code coverage
 

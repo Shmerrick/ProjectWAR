@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using FrameWork.NetWork.SourceGenerators;
+using Shouldly;
 
 namespace Tests.RpcSourceGenerator;
 
@@ -49,12 +50,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task<TestNamespace.LoginResponse> Login(TestNamespace.LoginRequest request)", code);
-        Assert.Contains("return SendRequestAsync<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);", code);
+        code.ShouldContain("public partial Task<TestNamespace.LoginResponse> Login(TestNamespace.LoginRequest request)");
+        code.ShouldContain("return SendRequestAsync<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);");
     }
 
     [Fact]
@@ -77,12 +78,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task Ping(TestNamespace.PingRequest request)", code);
-        Assert.Contains("SendRequest(0x01, request);", code);
-        Assert.Contains("return Task.CompletedTask;", code);
+        code.ShouldContain("public partial Task Ping(TestNamespace.PingRequest request)");
+        code.ShouldContain("SendRequest(0x01, request);");
+        code.ShouldContain("return Task.CompletedTask;");
     }
 
     [Fact]
@@ -103,12 +104,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task Ping()", code);
-        Assert.Contains("SendRequest(0x01, new object());", code);
-        Assert.Contains("return Task.CompletedTask;", code);
+        code.ShouldContain("public partial Task Ping()");
+        code.ShouldContain("SendRequest(0x01, new object());");
+        code.ShouldContain("return Task.CompletedTask;");
     }
 
     [Fact]
@@ -131,11 +132,11 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial TestNamespace.LoginResponse Login(TestNamespace.LoginRequest request)", code);
-        Assert.Contains("return SendRequest<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);", code);
+        code.ShouldContain("public partial TestNamespace.LoginResponse Login(TestNamespace.LoginRequest request)");
+        code.ShouldContain("return SendRequest<TestNamespace.LoginRequest, TestNamespace.LoginResponse>(0x10, 0x11, request);");
     }
 
     [Fact]
@@ -157,11 +158,11 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial void Notify(TestNamespace.NotifyRequest request)", code);
-        Assert.Contains("SendRequest(0x20, request);", code);
+        code.ShouldContain("public partial void Notify(TestNamespace.NotifyRequest request)");
+        code.ShouldContain("SendRequest(0x20, request);");
         Assert.DoesNotContain("return", code);
     }
 
@@ -195,13 +196,13 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("public partial Task<TestNamespace.Response> PublicMethod", code);
-        Assert.Contains("internal partial Task<TestNamespace.Response> InternalMethod", code);
-        Assert.Contains("protected partial Task<TestNamespace.Response> ProtectedMethod", code);
-        Assert.Contains("private partial Task<TestNamespace.Response> PrivateMethod", code);
+        code.ShouldContain("public partial Task<TestNamespace.Response> PublicMethod");
+        code.ShouldContain("internal partial Task<TestNamespace.Response> InternalMethod");
+        code.ShouldContain("protected partial Task<TestNamespace.Response> ProtectedMethod");
+        code.ShouldContain("private partial Task<TestNamespace.Response> PrivateMethod");
     }
 
     [Fact]
@@ -228,7 +229,7 @@ namespace TestNamespace
         var result = RunGenerator(source);
         
         // Should generate nothing since method is not partial
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -251,7 +252,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -282,16 +283,16 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("Method1", code);
-        Assert.Contains("Method2", code);
-        Assert.Contains("Method3", code);
-        Assert.Contains("0x10", code);
-        Assert.Contains("0x20", code);
-        Assert.Contains("0x30", code);
+        code.ShouldContain("Method1");
+        code.ShouldContain("Method2");
+        code.ShouldContain("Method3");
+        code.ShouldContain("0x10");
+        code.ShouldContain("0x20");
+        code.ShouldContain("0x30");
     }
 
     [Fact]
@@ -315,12 +316,12 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         // When response opcode is not specified but method has return value,
         // the request opcode should be used for both
-        Assert.Contains("SendRequestAsync<TestNamespace.Request, TestNamespace.Response>(0x10, 0x10, request)", code);
+        code.ShouldContain("SendRequestAsync<TestNamespace.Request, TestNamespace.Response>(0x10, 0x10, request)");
     }
 
     private GeneratorTestResult RunGenerator(string source)

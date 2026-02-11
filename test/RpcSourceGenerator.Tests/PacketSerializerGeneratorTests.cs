@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using FrameWork.NetWork.SourceGenerators;
+using Shouldly;
 
 namespace Tests.RpcSourceGenerator;
 
@@ -46,14 +47,14 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
-        Assert.Contains("partial class TestContext", code);
-        Assert.Contains("IPacketSerializerContext", code);
-        Assert.Contains("TrySerialize", code);
-        Assert.Contains("TryDeserialize", code);
+        code.ShouldContain("partial class TestContext");
+        code.ShouldContain("IPacketSerializerContext");
+        code.ShouldContain("TrySerialize");
+        code.ShouldContain("TryDeserialize");
     }
 
     [Fact]
@@ -84,14 +85,14 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
         // Should generate serializers for both Person and Address
-        Assert.Contains("TrySerialize", code);
-        Assert.Contains("TryDeserialize", code);
-        Assert.Contains("partial class TestContext", code);
+        code.ShouldContain("TrySerialize");
+        code.ShouldContain("TryDeserialize");
+        code.ShouldContain("partial class TestContext");
     }
 
     [Fact]
@@ -121,8 +122,8 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
-        Assert.Single(result.GeneratedTrees);
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        result.GeneratedTrees.ShouldHaveSingleItem();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -153,7 +154,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -188,7 +189,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -223,7 +224,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -252,7 +253,7 @@ namespace TestNamespace
         var result = RunGenerator(source);
         
         // Should not generate anything for non-partial classes
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.ShouldBeEmpty();
     }
 
     [Fact]
@@ -281,7 +282,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -312,7 +313,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         
@@ -347,7 +348,7 @@ namespace TestNamespace
 
         var result = RunGenerator(source);
         
-        Assert.Empty(result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         var code = result.GeneratedTrees[0].ToString();
         
         

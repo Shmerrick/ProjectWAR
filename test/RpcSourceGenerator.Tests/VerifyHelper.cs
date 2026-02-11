@@ -1,10 +1,7 @@
-using System.Runtime.CompilerServices;
-
 namespace Tests.RpcSourceGenerator;
 
 public static class VerifyHelper
 {
-    [ModuleInitializer]
     public static void Initialize()
     {
         // Configure Verify to scrub dynamic data
