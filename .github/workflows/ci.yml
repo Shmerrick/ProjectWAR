@@ -10,6 +10,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     
     steps:
     - uses: actions/checkout@v4
@@ -34,5 +37,33 @@ jobs:
           dotnet build "$project" --no-restore
         done
         for project in test/**/*.csproj; do
-          dotnet test "$project" --no-build --verbosity normal
+          dotnet test "$project" --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
         done
+    
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/**/coverage.cobertura.xml
+        badge: true
+        fail_below_min: false
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+      continue-on-error: true
+    
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
+    
+    - name: Write to Job Summary
+      run: |
+        if [ -f code-coverage-results.md ]; then
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+        fi
+      if: always()
