@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FrameWork.NetWork.V4;
+using Core.Infrastructure.Network;
 using Launcher.NetWork;
 using Launcher.Resources;
 using Launcher.Services;

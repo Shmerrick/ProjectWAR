@@ -2,7 +2,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using FrameWork.NetWork.V4;
+using Core.Infrastructure.Network;
 using Launcher.NetWork;
 using NLog;
 

@@ -1,4 +1,4 @@
-using FrameWork.NetWork.V4;
+using Core.Infrastructure.Network;
 
 namespace LauncherServer.Dtos;
 

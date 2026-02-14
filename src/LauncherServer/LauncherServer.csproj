@@ -11,10 +11,10 @@
         <ApplicationIcon>launcher.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\test\Core.Infrastructure.Network.Tests\Core.Infrastructure.Network.Tests.csproj" />
         <ProjectReference Include="..\Common\Common.csproj"/>
-        <ProjectReference Include="..\FrameWork\FrameWork.csproj"/>
         <ProjectReference Include="..\LauncherServer.Dtos\LauncherServer.Dtos.csproj" />
-        <ProjectReference Include="..\RpcSourceGenerator\RpcSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Core.Infrastructure.Network.RpcSourceGenerators\Core.Infrastructure.Network.RpcSourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="launcher.ico"/>

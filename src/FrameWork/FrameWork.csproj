@@ -27,8 +27,4 @@
       </PackageReference>
       <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\RpcSourceGenerator\RpcSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
 </Project>

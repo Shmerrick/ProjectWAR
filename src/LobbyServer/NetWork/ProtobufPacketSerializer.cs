@@ -1,6 +1,6 @@
 using System;
 using System.Buffers;
-using FrameWork.NetWork.V4;
+using Core.Infrastructure.Network;
 using Google.Protobuf;
 
 namespace LobbyServer.NetWork;

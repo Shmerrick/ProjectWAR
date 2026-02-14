@@ -18,8 +18,8 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />
-      <ProjectReference Include="..\FrameWork\FrameWork.csproj" />
-      <ProjectReference Include="..\RpcSourceGenerator\RpcSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\Core.Infrastructure.Network\Core.Infrastructure.Network.csproj" />
+      <ProjectReference Include="..\Core.Infrastructure.Network.RpcSourceGenerators\Core.Infrastructure.Network.RpcSourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Grpc.Net.Client" Version="2.71.0">

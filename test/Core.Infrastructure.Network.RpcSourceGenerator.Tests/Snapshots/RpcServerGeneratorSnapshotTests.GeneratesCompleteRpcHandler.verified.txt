@@ -1,0 +1,119 @@
+﻿
+using System;
+using System.Threading.Tasks;
+using Core.Infrastructure.Network;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace TestNamespace
+{
+    public sealed class DefaultPacketDispatcher : IPacketDispatcher
+    {
+        public void Dispatch(
+            byte opcode,
+            ReadOnlyMemory<byte> payload,
+            IServiceProvider services,
+            IPacketSerializer serializer,
+            IConnectionContext connection)
+        {
+            switch (opcode)
+            {
+                case 0x01:
+                {
+                    var handler = services.GetRequiredService<TestNamespace.GameHandler>();
+                    handler.HandlePing();
+                    break;
+                }
+                case 0x10:
+                {
+                    var handler = services.GetRequiredService<TestNamespace.GameHandler>();
+                    var request = serializer.Deserialize<TestNamespace.LoginRequest>(payload.Span);
+                    var response = handler.HandleLogin(request);
+                    if (response != null)
+                        connection.SendResponse(0x11, response);
+                    break;
+                }
+                case 0x20:
+                {
+                    var handler = services.GetRequiredService<TestNamespace.GameHandler>();
+                    var request = serializer.Deserialize<TestNamespace.PingRequest>(payload.Span);
+                    _ = DispatchAsync_HandlePingAsync(handler, request, connection);
+                    break;
+                }
+                case 0x30:
+                {
+                    var handler = services.GetRequiredService<TestNamespace.GameHandler>();
+                    var request = serializer.Deserialize<TestNamespace.NotifyRequest>(payload.Span);
+                    _ = DispatchAsync_HandleNotifyAsync(handler, request, connection);
+                    break;
+                }
+                case 0x40:
+                {
+                    var handler = services.GetRequiredService<TestNamespace.GameHandler>();
+                    var __scope = services.CreateScope();
+                    var __svc_svc = __scope.ServiceProvider.GetRequiredService<TestNamespace.MyService>();
+                    _ = DispatchAsync_HandleWithServices(handler, __svc_svc, connection, __scope);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        private static async Task DispatchAsync_HandlePingAsync(TestNamespace.GameHandler handler, TestNamespace.PingRequest request, IConnectionContext connection)
+        {
+            try
+            {
+                var response = await handler.HandlePingAsync(request);
+                if (response != null)
+                    connection.SendResponse(0x21, response);
+            }
+            catch (Exception ex)
+            {
+                connection.OnDispatchError(0x20, ex);
+            }
+        }
+
+        private static async Task DispatchAsync_HandleNotifyAsync(TestNamespace.GameHandler handler, TestNamespace.NotifyRequest request, IConnectionContext connection)
+        {
+            try
+            {
+                await handler.HandleNotifyAsync(request);
+            }
+            catch (Exception ex)
+            {
+                connection.OnDispatchError(0x30, ex);
+            }
+        }
+
+        private static async Task DispatchAsync_HandleWithServices(TestNamespace.GameHandler handler, TestNamespace.MyService __svc_svc, IConnectionContext connection, IServiceScope __scope)
+        {
+            try
+            {
+                var response = await handler.HandleWithServices(__svc_svc, connection);
+                if (response != null)
+                    connection.SendResponse(0x41, response);
+            }
+            catch (Exception ex)
+            {
+                connection.OnDispatchError(0x40, ex);
+            }
+            finally
+            {
+                __scope.Dispose();
+            }
+        }
+    }
+}
+
+namespace Microsoft.Extensions.DependencyInjection
+{
+    public static class DefaultPacketHandlersServiceCollectionExtensions
+    {
+        public static IServerNetworkingBuilder AddDefaultPacketHandlers(this IServerNetworkingBuilder services)
+        {
+            services.WithPacketDispatcher<TestNamespace.DefaultPacketDispatcher>();
+            services.AddHandler<TestNamespace.GameHandler>();
+            return services;
+        }
+    }
+}

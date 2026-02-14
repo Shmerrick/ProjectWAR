@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+using System;
 using System.Net;
 using System.Net.Http;
+using Core.Infrastructure.Network;
 using FrameWork;
-using FrameWork.NetWork.V4;
 using Grpc.Net.Client;
 using LauncherServer;
 using LauncherServer.Config;
@@ -15,48 +14,30 @@ using Microsoft.Extensions.Hosting;
 try
 {
     Log.Info("", "------------------- Launcher Server -------------------", ConsoleColor.DarkRed);
-
-    // Loading log level from file
-    if (!Log.InitLog(new LogInfo { Info = true, Error = true }, "LauncherServer"))
-        ConsoleMgr.WaitAndExit(2000);
-
-    // TODO: Rewrite loader mgr
-    // LoaderMgr.Start();
-    
+    if (!Log.InitLog(new LogInfo { Info = true, Error = true }, "LauncherServer")) ConsoleMgr.WaitAndExit(2000);
     var mythLoginServiceConfigManager = new MythLoginServiceConfigManager("Configs/mythloginserviceconfig.xml");
-    
     Log.Info("mythloginserviceconfig.xml", mythLoginServiceConfigManager.Content);
-    
+
     var builder = Host.CreateDefaultBuilder()
         .ConfigureServices((ctx, s) =>
         {
             s.AddSingleton(new AccountMgr.AccountMgrClient(GrpcChannel.ForAddress("https://127.0.0.1:6800",
-                new GrpcChannelOptions
-                {
-                    HttpHandler = new HttpClientHandler
-                    {
-                        ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
-                    }
-                })));
+                new GrpcChannelOptions { HttpHandler = new HttpClientHandler {
+                    ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true } })));
 
             var config = new LauncherConfig
             {
-                IConfiguredTheFile = true,
-                LauncherServerPort = 8000,
-                ServerState = ServerState.CLOSED,
-                TempFilesPath = "TempFilesDirectory"
+                IConfiguredTheFile = true, LauncherServerPort = 8000,
+                ServerState = ServerState.CLOSED, TempFilesPath = "TempFilesDirectory"
             };
-
             s.AddSingleton(config);
             s.AddSingleton(mythLoginServiceConfigManager);
-
-            s.AddSingleton<LauncherSerializerContext>();
             s.AddSingleton<IPacketSerializerContext, LauncherSerializerContext>();
-            s.AddSingleton<IPacketSerializerFactory, BinaryPacketSerializerFactory>();
-            s.AddSingleton<IClientFactory<LauncherClient>, LauncherClientFactory>();
-            s.AddSingleton(p => new NetworkManager<LauncherClient>(IPEndPoint.Parse($"127.0.0.1:{config.LauncherServerPort}"),
-                p.GetRequiredService<IClientFactory<LauncherClient>>()));
-            s.AddHostedService(p => p.GetRequiredService<NetworkManager<LauncherClient>>());
+
+            s.AddServerNetworking(IPEndPoint.Parse($"127.0.0.1:{config.LauncherServerPort}"))
+                .WithPacketFramer<BigEndianLengthFramer>()
+                .WithPacketSerializerFactory<BinaryPacketSerializerFactory>()
+                .AddDefaultPacketHandlers();
         });
 
     var host = builder.Build();

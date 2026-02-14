@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Buffers.Binary;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using FrameWork.NetWork.V4;
+using Core.Infrastructure.Network;
 using LauncherServer.Dtos;
 
 namespace Launcher.NetWork;
@@ -12,8 +12,14 @@ public partial class LauncherProxy : Client
 {
     private const int PROTOCOL_LENGTH_SIZE = sizeof(int);
     private const int PROTOCOL_OPCODE_SIZE = sizeof(byte);
-    
-    public LauncherProxy(TcpClient tcpClient, IPacketSerializerFactory serializerFactory, IByteTransformer byteTransformer = null, int receiveBufferSize = 65536, int errorThreshold = 3) : base(tcpClient, serializerFactory, byteTransformer, receiveBufferSize, errorThreshold)
+
+    public LauncherProxy(
+        TcpClient tcpClient,
+        IPacketSerializerFactory serializerFactory,
+        IByteTransformer byteTransformer = null,
+        int receiveBufferSize = 65536,
+        int errorThreshold = 3) : base(
+        tcpClient, serializerFactory, byteTransformer, receiveBufferSize, errorThreshold)
     {
     }
 
