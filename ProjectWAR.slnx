@@ -24,5 +24,6 @@
     <Project Path="test/Core.Infrastructure.Network.RpcSourceGenerator.Tests/Core.Infrastructure.Network.RpcSourceGenerator.Tests.csproj" />
     <Project Path="test/Core.Infrastructure.Network.Tests/Core.Infrastructure.Network.Tests.csproj" />
     <Project Path="test/LobbyServer.Tests/LobbyServer.Tests.csproj" />
+    <Project Path="test/WorldServer.Tests/WorldServer.Tests.csproj" />
   </Folder>
 </Solution>

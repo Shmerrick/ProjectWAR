@@ -41,6 +41,8 @@
             <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
             <Name>FrameWork</Name>
         </ProjectReference>
+        <ProjectReference Include="..\Core.Infrastructure.Network\Core.Infrastructure.Network.csproj" />
+        <ProjectReference Include="..\Core.Infrastructure.Network.RpcSourceGenerators\Core.Infrastructure.Network.RpcSourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Abilities\Chaos humans login-logout all classes.txt">
