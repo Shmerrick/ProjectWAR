@@ -652,7 +652,7 @@
     <Compile Include="World\Objects\Instances\Gunbad ROR\ElderKizzig.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\FoulMoufdaUngry.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\GarrolaththePoxbearer.cs" />
-    <Compile Include="World\Objects\Instances\Gunbad ROR\GlompdaSquigMasta.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\GlompDaSquigMasta.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\GriblikdaStinka.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\HeraldofSolithex.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\Logazor.cs" />
