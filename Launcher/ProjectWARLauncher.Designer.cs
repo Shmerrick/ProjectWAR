@@ -6,7 +6,7 @@ using Launcher.Properties;
 
 namespace Launcher
 {
-    partial class ApocLauncher
+    partial class ProjectWARLauncher
     {
         /// <summary>
         /// Variable needed by the designer.
@@ -35,7 +35,7 @@ namespace Launcher
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApocLauncher));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectWARLauncher));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
             this.RealmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -483,7 +483,7 @@ namespace Launcher
             this.bnMinimise.UseVisualStyleBackColor = false;
             this.bnMinimise.Click += new System.EventHandler(this.bnMinimise_Click);
             // 
-            // ApocLauncher
+            // ProjectWARLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -507,13 +507,12 @@ namespace Launcher
             this.Controls.Add(this.T_password);
             this.Controls.Add(this.T_username);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ApocLauncher";
+            this.Name = "ProjectWARLauncher";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "WAR: APOCALYPSE";
+            this.Text = "ProjectWAR Launcher";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelCreateAccount.ResumeLayout(false);

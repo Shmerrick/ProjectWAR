@@ -13,13 +13,13 @@ using System.Windows.Forms;
 
 namespace Launcher
 {
-    public partial class ApocLauncher : Form
+    public partial class ProjectWARLauncher : Form
     {
         public bool LaunchLocalServer { get; }
         public bool AllowMYPPatch { get; }
         public bool AllowServerPatch { get; }
         public bool AllowWarClientLaunch { get; }
-        public static ApocLauncher Acc;
+        public static ProjectWARLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
         public static string TestServerIP = "127.0.0.1";
@@ -30,7 +30,7 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher()
+        public ProjectWARLauncher()
         {
             // Read optional app settings (they may not exist in the app.config file)
             AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
@@ -187,7 +187,7 @@ namespace Launcher
 
             Configuration configuration = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-            if (configuration.AppSettings.Settings["LastUSerCode"] == null)
+            if (configuration.AppSettings.Settings["LastUserCode"] == null)
             {
                 configuration.AppSettings.Settings.Add("LastUserCode", T_username.Text);
             }

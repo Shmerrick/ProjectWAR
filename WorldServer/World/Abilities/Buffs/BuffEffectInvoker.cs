@@ -1509,9 +1509,10 @@ namespace WorldServer.World.Abilities.Buffs
                             if (hostBuff.Caster is Player plrCaster)
                                 plrCaster.ModifyActionPoints(-deltaAp);
                         }
-                        else
-                            if (hostBuff.Caster is Player plrCaster)
-                            plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
+                        else if (hostBuff.Caster is Player casterPlayer)
+                        {
+                            casterPlayer.ModifyActionPoints((short)cmd.PrimaryValue);
+                        }
                         break;
                 }
             }

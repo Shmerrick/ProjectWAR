@@ -652,7 +652,7 @@
     <Compile Include="World\Objects\Instances\Gunbad ROR\ElderKizzig.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\FoulMoufdaUngry.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\GarrolaththePoxbearer.cs" />
-    <Compile Include="World\Objects\Instances\Gunbad ROR\GlompDaSquigMasta.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\GlompdaSquigMasta.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\GriblikdaStinka.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\HeraldofSolithex.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\Logazor.cs" />
@@ -826,12 +826,15 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
     <PostBuildEvent>if not exist $(TargetDir)\PatcherFilesDirectory mkdir $(TargetDir)\PatcherFilesDirectory
 if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirectory
 if not exist $(TargetDir)\Abilities mkdir $(TargetDir)\Abilities
 </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureWorldServerDirectories" AfterTargets="Build">
+    <MakeDir Directories="$(TargetDir)PatcherFilesDirectory;$(TargetDir)TempFilesDirectory;$(TargetDir)Abilities" />
+  </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
       <DepsLosFiles Include="$(ProjectDir)..\deps\los\**\*.*" />
@@ -848,7 +851,5 @@ if not exist $(TargetDir)\Abilities mkdir $(TargetDir)\Abilities
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
-    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
   </Target>
-  <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>

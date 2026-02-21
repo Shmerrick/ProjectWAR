@@ -3,6 +3,7 @@ using NLog;
 using nsHashDictionary;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
@@ -19,6 +20,10 @@ namespace Launcher
         public static string LocalServerIP = "127.0.0.1";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
+        public static string LobbyServerIP = "127.0.0.1";
+        public static int LobbyServerPort = 8049;
+        public static string WorldServerIP = "127.0.0.1";
+        public static int WorldServerPort = 51933;
         public static bool Started;
 
         public static string User;
@@ -35,7 +40,7 @@ namespace Launcher
 
         public static void Print(string Message)
         {
-            ApocLauncher.Acc.Print(Message);
+            ProjectWARLauncher.Acc.Print(Message);
         }
 
         public static bool Connect(string ip, int port)
@@ -54,6 +59,11 @@ namespace Launcher
                 _sslStream = new SslStream(new NetworkStream(_Socket, true), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
                 _sslStream.AuthenticateAsClient("ProjectWAR");
 
+                LobbyServerIP = ConfigurationManager.AppSettings["LobbyServerIPAddress"] ?? ip;
+                WorldServerIP = ConfigurationManager.AppSettings["WorldServerIPAddress"] ?? ip;
+                LobbyServerPort = ReadPortSetting("LobbyServerPort", 8049);
+                WorldServerPort = ReadPortSetting("WorldServerPort", 51933);
+
                 int size = sizeof(UInt32);
                 UInt32 on = 1;
                 UInt32 keepAliveInterval = 10000; //Send a packet once every 10 seconds.
@@ -70,9 +80,9 @@ namespace Launcher
             }
             catch (Exception e)
             {
-                if (ApocLauncher.Acc != null && ApocLauncher.Acc.InvokeRequired)
+                if (ProjectWARLauncher.Acc != null && ProjectWARLauncher.Acc.InvokeRequired)
                 {
-                    ApocLauncher.Acc.Invoke(new Action(() => MessageBox.Show("Can not connect to : " + ip + ":" + port + "\n" + e.Message)));
+                    ProjectWARLauncher.Acc.Invoke(new Action(() => MessageBox.Show("Can not connect to : " + ip + ":" + port + "\n" + e.Message)));
                 }
                 else
                 {
@@ -102,6 +112,15 @@ namespace Launcher
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             return true; // We use a self-signed cert, so unconditionally accept
+        }
+
+        private static int ReadPortSetting(string key, int fallback)
+        {
+            int parsed;
+            if (int.TryParse(ConfigurationManager.AppSettings[key], out parsed) && parsed > 0)
+                return parsed;
+
+            return fallback;
         }
 
         public static void UpdateLanguage()
@@ -458,7 +477,7 @@ namespace Launcher
 
                 case Opcodes.LCR_START:
 
-                    ApocLauncher.Acc.ReceiveStart();
+                    ProjectWARLauncher.Acc.ReceiveStart();
 
                     byte response = packet.GetUint8();
                     _logger.Debug($"HandlePacket. Response Code : {response}");
@@ -466,28 +485,35 @@ namespace Launcher
                     if (response == 1) //invalud user/pass
                     {
                         _logger.Warn($"Invalid User / Pass");
-                        ApocLauncher.Acc.sendUI("Invalid User / Pass");
+                        ProjectWARLauncher.Acc.sendUI("Invalid User / Pass");
 
                         return;
                     }
                     else if (response == 2) //banned
                     {
                         _logger.Warn($"Account is banned");
-                        ApocLauncher.Acc.sendUI("Account is banned");
+                        ProjectWARLauncher.Acc.sendUI("Account is banned");
 
                         return;
                     }
                     else if (response == 3) //account not active
                     {
                         _logger.Warn($"Account is not active");
-                        ApocLauncher.Acc.sendUI("Account is not active");
+                        ProjectWARLauncher.Acc.sendUI("Account is not active");
 
                         return;
                     }
-                    else if (response > 3)
+                    else if (response == 4) //not permitted by server rules
+                    {
+                        _logger.Warn("Patcher access is not allowed for this account");
+                        ProjectWARLauncher.Acc.sendUI("Patcher access is not allowed for this account");
+
+                        return;
+                    }
+                    else if (response > 4)
                     {
                         _logger.Error($"Unknown Response");
-                        ApocLauncher.Acc.sendUI("Unknown Response");
+                        ProjectWARLauncher.Acc.sendUI("Unknown Response");
 
                         return;
                     }
@@ -499,34 +525,34 @@ namespace Launcher
                         {
 
                             var warDirectory = Directory.GetParent(Application.StartupPath);
-                            ApocLauncher.Acc.sendUI("Patching..");
+                            ProjectWARLauncher.Acc.sendUI("Patching..");
                             patchExe();
                             UpdateWarData();
-                            ApocLauncher.Acc.sendUI("Patched. Starting WAR.exe");
+                            ProjectWARLauncher.Acc.sendUI("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
                             if (!File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml"))
                             {
                                 _logger.Warn($"{Application.StartupPath + "\\mythloginserviceconfig.xml"} does not exist.");
-                                ApocLauncher.Acc.sendUI("Cannot locate mythloginserviceconfig.xml");
+                                ProjectWARLauncher.Acc.sendUI("Cannot locate mythloginserviceconfig.xml");
                                 return;
                             }
                             // Use world.myp to determine whether we are in the correct directory.
                             if (!File.Exists(warDirectory.FullName + "\\world.myp"))
                             {
                                 _logger.Warn($"{warDirectory.FullName + "\\world.myp"} does not exist.");
-                                ApocLauncher.Acc.sendUI("Is your launcher in the Launcher folder?");
+                                ProjectWARLauncher.Acc.sendUI("Is your launcher in the Launcher folder?");
                                 return;
                             }
 
                             _logger.Info($"Starting Client {warDirectory.FullName}\\WAR.exe");
 
-                            _lobbyProxy = new TlsProxy(8048, "127.0.0.1", 8049);
+                            _lobbyProxy = new TlsProxy(8048, LobbyServerIP, LobbyServerPort);
                             _lobbyProxy.Start();
-                            _worldProxy = new TlsProxy(51932, "127.0.0.1", 51933);
+                            _worldProxy = new TlsProxy(51932, WorldServerIP, WorldServerPort);
                             _worldProxy.Start();
 
-                            if (ApocLauncher.Acc.AllowWarClientLaunch)
+                            if (ProjectWARLauncher.Acc.AllowWarClientLaunch)
                             {
 
                                 Process process = new Process
@@ -552,7 +578,7 @@ namespace Launcher
                         catch (Exception e)
                         {
                             _logger.Info($"Failed to start Client {e.ToString()}");
-                            ApocLauncher.Acc.sendUI("Failed to start client.");
+                            ProjectWARLauncher.Acc.sendUI("Failed to start client.");
                         }
                     }
 
@@ -573,20 +599,20 @@ namespace Launcher
                     if (respons == 0) //invalud user/pass
                     {
                         _logger.Warn($"Account Name busy!");
-                        ApocLauncher.Acc.sendUI("Account Name busy!");
+                        ProjectWARLauncher.Acc.sendUI("Account Name busy!");
 
                         return;
                     }
                     else if (respons == 1) //success
                     {
                         _logger.Warn($"Account created!");
-                        ApocLauncher.Acc.sendUI("Account created!");
+                        ProjectWARLauncher.Acc.sendUI("Account created!");
                         return;
                     }
                     else if (respons == 2) //banned
                     {
                         _logger.Warn($"Account is banned!");
-                        ApocLauncher.Acc.sendUI("Account is banned!");
+                        ProjectWARLauncher.Acc.sendUI("Account is banned!");
 
                         return;
                     }
@@ -625,7 +651,7 @@ namespace Launcher
         }
         public static void patchExe()
         {
-            if (ApocLauncher.Acc.AllowServerPatch)
+            if (ProjectWARLauncher.Acc.AllowServerPatch)
             {
 
                 _logger.Info("Patching WAR.exe");
@@ -667,7 +693,7 @@ namespace Launcher
         }
         public static void UpdateWarData()
         {
-            if (ApocLauncher.Acc.AllowServerPatch)
+            if (ProjectWARLauncher.Acc.AllowServerPatch)
             {
                 try
                 {

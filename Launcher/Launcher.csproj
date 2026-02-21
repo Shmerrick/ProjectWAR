@@ -122,11 +122,11 @@
     <Compile Include="HttpUtil.cs" />
     <Compile Include="NetWork\Client.cs" />
     <Compile Include="NetWork\TlsProxy.cs" />
-    <Compile Include="ApocLauncher.cs">
+    <Compile Include="ProjectWARLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ApocLauncher.Designer.cs">
-      <DependentUpon>ApocLauncher.cs</DependentUpon>
+    <Compile Include="ProjectWARLauncher.Designer.cs">
+      <DependentUpon>ProjectWARLauncher.cs</DependentUpon>
     </Compile>
     <Compile Include="NetWork\Marshal.cs" />
     <Compile Include="NetWork\Opcodes.cs" />
@@ -135,8 +135,8 @@
     <Compile Include="Patcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ApocLauncher.resx">
-      <DependentUpon>ApocLauncher.cs</DependentUpon>
+    <EmbeddedResource Include="ProjectWARLauncher.resx">
+      <DependentUpon>ProjectWARLauncher.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
