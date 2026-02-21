@@ -21,10 +21,10 @@ namespace Launcher
         public bool AllowWarClientLaunch { get; }
         public static ProjectWARLauncher Acc;
 
-        public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "127.0.0.1";
-        public static int LocalServerPort = 8000;
-        public static int TestServerPort = 8000;
+        public static string LocalServerIP = ReadServerAddress("LocalLauncherServerIPAddress", "LauncherServerIPAddress", "127.0.0.1");
+        public static string TestServerIP = ReadServerAddress("LauncherServerIPAddress", "127.0.0.1");
+        public static int LocalServerPort = ReadServerPort(8000, "LocalLauncherServerPort", "LauncherServerPort");
+        public static int TestServerPort = ReadServerPort(8000, "LauncherServerPort");
         static HttpClient client = new HttpClient();
         private Patcher patcher;
 
@@ -70,6 +70,34 @@ namespace Launcher
                 return defaultValue;
             }
             return defaultValue;
+        }
+
+        private static string ReadServerAddress(params string[] keysAndFallback)
+        {
+            if (keysAndFallback == null || keysAndFallback.Length == 0)
+                return "127.0.0.1";
+
+            string fallback = keysAndFallback[keysAndFallback.Length - 1];
+
+            for (int i = 0; i < keysAndFallback.Length - 1; ++i)
+            {
+                string value = ConfigurationManager.AppSettings[keysAndFallback[i]];
+                if (!string.IsNullOrWhiteSpace(value))
+                    return value;
+            }
+
+            return fallback;
+        }
+
+        private static int ReadServerPort(int fallback, params string[] keys)
+        {
+            foreach (string key in keys)
+            {
+                if (int.TryParse(ConfigurationManager.AppSettings[key], out int parsed) && parsed > 0)
+                    return parsed;
+            }
+
+            return fallback;
         }
 
         protected override void WndProc(ref Message m)
