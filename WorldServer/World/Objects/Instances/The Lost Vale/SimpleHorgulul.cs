@@ -68,19 +68,11 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
                 EvtInterface.RemoveEvent(SpawnAdds);
 
-                switch((double)threshold)
-                {
-                    case 0.75:
-                        EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.5);
-                        break;
-
-                    case 0.5:
-                        EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.25);
-                        break;
-
-                    default:
-                        break;
-                }
+                var thresholdValue = (double)threshold;
+                if (thresholdValue == 0.75d)
+                    EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.5d);
+                else if (thresholdValue == 0.5d)
+                    EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.25d);
             }
             catch (Exception ex)
             {

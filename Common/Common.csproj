@@ -137,7 +137,7 @@
     <Compile Include="Database\Character\Characters_mails.cs" />
     <Compile Include="Database\Character\Characters_quests.cs" />
     <Compile Include="Database\Character\Characters_socials.cs" />
-    <Compile Include="Database\Character\Characters_tok_kills.cs" />
+    <Compile Include="Database\Character\Characters_tok_Kills.cs" />
     <Compile Include="Database\Character\Characters_tok.cs" />
     <Compile Include="Database\Character\Characters_ability.cs" />
     <Compile Include="Database\Character\Characters_influence.cs" />
@@ -241,7 +241,7 @@
     <Compile Include="Database\World\Chapters\Tok_Info.cs" />
     <Compile Include="Database\World\Levels\Xp_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEventReward_Info.cs" />
-    <Compile Include="Database\World\LiveEvents\LiveEventSubTask_Info.cs" />
+    <Compile Include="Database\World\LiveEvents\LiveEventSubTask_info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEventTask_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEvent_Info.cs" />
     <Compile Include="Database\World\LootGroups\Loot_Group.cs" />

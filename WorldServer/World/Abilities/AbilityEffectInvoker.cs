@@ -1238,9 +1238,10 @@ namespace WorldServer.World.Abilities
                         (_plrCaster).ModifyActionPoints(-deltaAp);
                 }
 
-                else
-                    if (_caster is Player _plrCaster)
-                    (_plrCaster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
+                else if (_caster is Player plrCaster)
+                {
+                    plrCaster.ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
+                }
             }
 
             return true;

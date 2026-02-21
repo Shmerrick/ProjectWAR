@@ -28,7 +28,7 @@ namespace WorldServer.Managers.Commands
                 var campaign = regionMgr.Campaign;
                 if (campaign == null)
                     continue;
-                foreach (var battleFrontKeep in campaign?.Keeps)
+                foreach (var battleFrontKeep in campaign.Keeps)
                 {
                     var result = $"Checking {battleFrontKeep.Info.Name} ({battleFrontKeep.Realm}/{battleFrontKeep.KeepStatus})";
                     var numberCreatures = battleFrontKeep.Creatures.Count;
