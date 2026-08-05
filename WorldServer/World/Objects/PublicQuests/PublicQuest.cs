@@ -21,6 +21,12 @@ namespace WorldServer.World.Objects.PublicQuests
         public List<PQuestStage> Stages;
 
         private const ushort TIME_PQ_RESET = 180;
+
+        /// <summary>
+        /// Extra seconds added to a PROTECT_UNIT stage's failure timer. The protect credit
+        /// fires at exactly Stage.Time, so the failure backstop must land strictly after it.
+        /// </summary>
+        private const ushort PROTECT_FAIL_GRACE = 30;
         private const ushort TIME_DUNGEON_RESET = 28800;
         private const ushort TIME_EACH_STAGE = 540;
 
@@ -657,9 +663,22 @@ namespace WorldServer.World.Objects.PublicQuests
                 {
                     Stage = sStage;
                     Stage.Reset();
-                    _stageTimeEnd = TCPManager.GetTimeStamp() + ((Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
-                    if (sStage.Objectives.First().Objective.Type != (byte)Objective_Type.QUEST_PROTECT_UNIT)
-                        EvtInterface.AddEvent(Failed, (Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE) * 1000, 1);
+                    // PROTECT_UNIT stages originally got no Failed event at all, so a dead
+                    // protected unit hung the stage forever - it could neither complete
+                    // (credit comes from PQuestCreature.Protected(), which never fires once
+                    // the unit is dead) nor time out.
+                    //
+                    // The timer cannot simply be armed at Stage.Time: PQuestStage.Time is
+                    // copied from PQuest_Objective.Time (see the constructor above), which is
+                    // the SAME value the protect credit fires on - arming it there makes
+                    // failure race completion at the identical instant. The grace period
+                    // makes it a backstop instead, so a surviving unit always wins.
+                    int failSeconds = (Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE);
+                    if (sStage.Objectives.First().Objective.Type == (byte)Objective_Type.QUEST_PROTECT_UNIT)
+                        failSeconds += PROTECT_FAIL_GRACE;
+
+                    _stageTimeEnd = TCPManager.GetTimeStamp() + failSeconds;
+                    EvtInterface.AddEvent(Failed, failSeconds * 1000, 1);
 
                     foreach (uint Plr in ActivePlayers)
                     {
@@ -792,6 +811,14 @@ namespace WorldServer.World.Objects.PublicQuests
         {
             EvtInterface.RemoveEvent(Failed);
             EvtInterface.AddEvent(Reset, TIME_PQ_RESET * 1000, 1);
+
+            // The client's countdown is rendered from (_stageTimeEnd - now) in
+            // SendCurrentStage. End() refreshes it when scheduling Reset; Failed()
+            // did not, so after a failure the field still held the already-elapsed
+            // stage deadline and the UI showed "resetting in 0.00" for the whole
+            // 180s wait. The Reset event itself was always scheduled correctly -
+            // this only corrects what the player is shown.
+            _stageTimeEnd = TCPManager.GetTimeStamp() + TIME_PQ_RESET;
             _started = false;
             _ended = true;
             Stage.Cleanup();

@@ -99,8 +99,14 @@ namespace WorldServer.World.Objects.PublicQuests
                     GameObject_proto Proto = GameObjectService.GetGameObjectProto(spawn.Entry);
                     if (Proto == null)
                     {
-                        Log.Error("PQGO", "No Proto");
-                        return;
+                        // Skip only this spawn. Previously this returned, which abandoned the
+                        // entire remaining spawn list for the objective: because spawns are
+                        // processed in list order, a single unknown gameobject proto silently
+                        // prevented every creature listed after it from spawning. The Type 1
+                        // branch above already uses continue for the equivalent case.
+                        Log.Error("PQGO", "No Proto for gameobject entry " + spawn.Entry
+                                  + " (objective " + spawn.Objective + ") - skipping this spawn");
+                        continue;
                     }
 
                     GameObject_spawn S = new GameObject_spawn();

@@ -32,7 +32,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 Out.WriteByte((byte)doors.Count);
                 Out.WriteByte(keep.Rank); // Rank
                 if (doors.Count > 0)
-                    if (innerDoor != null)
+                    // GameObject is only created when the door is spawned into the region, which
+                    // has not happened during startup keep locking - hence the extra null check.
+                    if (innerDoor?.GameObject != null)
                         Out.WriteByte((byte)((innerDoor.GameObject.PctHealth))); // Door health
                     else
                     {
