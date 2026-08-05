@@ -6267,9 +6267,17 @@ namespace WorldServer.World.Objects
 
             if (CurrentPQArea != pqarea)
             {
+                // Drop public quest membership on ANY area change, not only when moving
+                // into the "no PQ" sentinel area (31). Previously, walking from one PQ
+                // area straight into another - or into any area with no matching PQ -
+                // left the player registered with the old quest, so its stage timer kept
+                // being sent to them long after they had left. RemovePlayer also emits
+                // F_OBJECTIVE_UPDATE with 0, which clears the tracker on the client.
+                // Re-adding happens below when the new area actually maps to a PQ.
+                QtsInterface.PublicQuest?.RemovePlayer(this, false);
+
                 if (pqarea == 31)
                 {
-                    QtsInterface.PublicQuest?.RemovePlayer(this, false);
                     CurrentKeep?.RemovePlayer(this);
                 }
                 else if (pqarea > 28)  // keeps

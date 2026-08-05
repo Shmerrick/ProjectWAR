@@ -203,10 +203,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             var currentTime = TCPManager.GetTimeStamp();
 
+            // Both timers are one-shot: clear before firing. Neither SetObjectiveCaptured
+            // nor SetObjectiveGuarded reset them, so once a timer elapsed it stayed
+            // elapsed and this re-fired its command every second forever. The follow-up
+            // fires land in a state that has no transition for them (e.g.
+            // OnCaptureTimerEnd while already Captured), and because the state machine
+            // has no exception listener registered that raises out of CheckTimers once
+            // per second - leaving the objective stuck showing HOLD at 0:00 and never
+            // progressing to Guarded.
             if (CaptureTimer > 0 && CaptureTimer <= currentTime)
+            {
+                CaptureTimer = 0;
                 OnCapturedTimerEnd();
+            }
             if (GuardedTimer > 0 && GuardedTimer <= currentTime)
+            {
+                GuardedTimer = 0;
                 OnGuardedTimerEnd();
+            }
 
             DisplayedTimer--;
             if (DisplayedTimer <= 0)
