@@ -44,6 +44,25 @@ namespace WorldServer.Managers.Commands
                 DisplayKeepStatus(orderKeep, plr);
         }
 
+        [CommandAttribute(EGmLevel.AnyGM, "Diagnostic for the battlefield objective you are standing at. Usage: .campaign objdiag")]
+        public static void ObjDiag(Player plr, string targetString = null)
+        {
+            // BattlefieldObjective.SendDiagnostic() already existed but nothing called it -
+            // ".campaign diag" reports campaign/keep status only, so there was no way to see
+            // an objective's actual state, owner or capture/secure progress in game.
+            // CurrentObjectiveFlag is assigned in BattlefieldObjective.AddInRange.
+            var flag = plr.CurrentObjectiveFlag;
+            if (flag == null)
+            {
+                SendCsr(plr, "Not in range of a battlefield objective.");
+                return;
+            }
+
+            flag.SendDiagnostic(plr);
+            plr.SendClientMessage($"DisplayedTimer: {flag.DisplayedTimer}");
+            plr.SendClientMessage($"CaptureTimer: {flag.CaptureTimer}  GuardedTimer: {flag.GuardedTimer}  now: {TCPManager.GetTimeStamp()}");
+        }
+
         private static void DisplayKeepStatus(BattleFrontKeep keep, Player plr)
         {
             plr.SendClientMessage($"Keep Status : {keep.KeepStatus}");
