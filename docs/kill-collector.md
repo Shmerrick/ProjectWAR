@@ -38,9 +38,19 @@ creatures spanning more than one `CreatureSubType`, and even inside one subtype
 only some variants qualify. `TokInterface.AddKill` and its Bestiary counter are
 untouched and remain a separate concern.
 
-**Caps are per-collector data.** The seeded values are current RoR's 20–60 by
-chapter. Retail is documented as 60 for every collector (RoR patch notes, March
-2024). Changing that is a data edit, not a code change.
+**Caps are retail's 60, applied by `07_kill_collector_retail_caps.sql`.** The
+initial seed took RoR's live 20–60 by chapter; those are RoR balancing values.
+RoR's own patch notes (11 March 2024) state all live retail collectors required
+60, and their July 2025 notes record moving Tier 4 away from "all 60", which only
+makes sense if 60 was the original. Conflicting evidence exists — the current RoR
+wiki says 50 — so this stays per-collector data and is a row edit if 50 proves
+right.
+
+**XP per kill is still RoR's**, and is the least retail-faithful part of the data.
+The retail formula was never recovered: period reports give roughly 70 XP per kill
+in one early Dwarf area and a ceiling near 15k in another context, which is not
+enough to rebuild a formula. Seeded values are 50 × chapter through chapter 18,
+then 925/950/975/1000.
 
 **No influence message.** Retail printed a spurious "you have received an
 influence reward" line once a collector was maxed. No influence was granted; it
@@ -150,9 +160,13 @@ The window then appends the outcome — reward granted, nothing owed, or maxed o
 
 ## Why this is not a quest
 
+**Decided 2026-08-06: Kill Collectors stay as they were in retail.** The ambient
+mechanic below is the intended behaviour, not a stepping stone toward a quest
+implementation.
+
 Return of Reckoning implements Kill Collectors as **repeatable quests**. This
-implementation deliberately does not, because the handover specified retail
-behaviour and the two differ in substance, not just presentation:
+implementation deliberately does not, because retail behaviour was the goal and
+the two differ in substance, not just presentation:
 
 | | Repeatable quest (RoR) | Ambient (retail, here) |
 |---|---|---|
