@@ -129,13 +129,46 @@ Clearing cannot use that sweep: after a claim there is nothing unclaimed, so the
 collector no longer passes `HasQuestsFor` and the sweep skips it. The claim path
 pushes the state directly instead.
 
-## Not implemented
+## Interaction dialogue
 
-**Interaction dialogue.** Talking to a collector prints a chat line; no window
-opens. The dialogue is `F_INTERACT_RESPONSE` assembled by `SendQuestDoneInfo` /
-`BuildQuestInteract` / `BuildQuestComplete`, all of which need real `Quest` and
-`Character_quest` rows. See `docs/known-issues/open-items.md` K1 for the two ways
-to get it.
+Talking to a collector opens a real NPC window. It does **not** need a `Quest`
+row: the generic interact packet has a plain-text entry — bit 32 of the
+menu-items mask followed by the string — which is the same shape the dye merchant
+uses to refuse service.
+
+Text priority is the NPC's own `creature_texts` line, falling back to a generated
+hint. Coverage is thin: only 21 of 132 collectors have a text row at all, and
+those rows are truncated mid-sentence in the source data (see open-items D6), so
+most collectors show the generated line.
+
+The window then appends the outcome — reward granted, nothing owed, or maxed out.
+
+## Not implemented
 
 **Map pips.** `MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29) and
 `..._COMPLETE_NPC` (30) are still unreferenced.
+
+## Why this is not a quest
+
+Return of Reckoning implements Kill Collectors as **repeatable quests**. This
+implementation deliberately does not, because the handover specified retail
+behaviour and the two differ in substance, not just presentation:
+
+| | Repeatable quest (RoR) | Ambient (retail, here) |
+|---|---|---|
+| Start | Accept from the NPC | Nothing to accept |
+| Credit | Only after accepting | Retroactive |
+| Turn-in | At N kills | Any time, partial |
+| Limit | Repeats indefinitely | Lifetime cap per collector |
+| UI | Journal and tracker entries | Head icon and this window |
+
+The client's own tip string supports the retail reading: *"Kill Collectors will
+retroactively reward you for killing monsters of a particular type."*
+
+Switching to repeatable quests would give the journal entry, quest tracker and
+standard dialogue for free, and RoR's API supplies every quest's name,
+description, objective text, count and XP. But quest objectives only count kills
+made after acceptance, so retroactive credit would have to be reinstated by
+seeding the objective counter at accept time from a separate lifetime counter —
+i.e. keeping something like `characters_kill_collector` anyway, with the quest
+layer on top.

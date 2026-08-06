@@ -147,19 +147,21 @@ single player, and `QuestStateOpcode.QuestCompleted` is the orange turn-in marke
 Now implemented: collectors with unclaimed progress report `QuestCompleted`, and
 the icon is refreshed on the 0 -> 1 kill transition and cleared on claim.
 
+**Interaction dialogue: also done, and it did not need a quest row.** This entry
+previously claimed the window required `SendQuestDoneInfo` and therefore real
+`Quest`/`Character_quest` rows. Wrong again: the generic interact packet carries a
+plain-text entry (bit 32 of the menu-items mask plus the string), which is all a
+collector needs. Verified in game 2026-08-06.
+
 Still missing:
 
-- **Interaction dialogue.** Talking to a collector prints a chat line only; no
-  window opens. The dialogue is `F_INTERACT_RESPONSE` built by
-  `SendQuestDoneInfo` / `BuildQuestInteract` / `BuildQuestComplete`, all of which
-  need a real `Quest` and `Character_quest` row. Two ways to get it: seed genuine
-  quest rows for all 132 collectors (which is how RoR does it, and would give
-  dialogue and icon from the existing quest machinery), or hand-build an
-  `F_INTERACT_RESPONSE` payload that imitates the quest window without a quest
-  row. Neither is small.
 - **Map pips.** `MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29),
   `MAPPIPS_KILL_COLLECTOR_QUEST_COMPLETE_NPC` (30) and
   `CHAPTERHUBSERVICE_KILL_COLLECTOR` (9) are still referenced nowhere.
+- **Icon refresh while standing at the collector** is unverified. The spawn path
+  is confirmed working; whether the live `UpdateQuestState` push clears the icon
+  on claim and restores it on a kill without leaving and returning has not been
+  tested.
 
 ### K2. Kill caps are current RoR values, not retail — LOW
 
