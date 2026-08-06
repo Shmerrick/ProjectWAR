@@ -136,17 +136,30 @@ collector quest (`Reikland Bandits`, 60486).
 
 ## Kill Collector feature
 
-### K1. Map pips are not wired — MEDIUM
+### K1. Head icon done; map pips and interaction dialogue still missing — MEDIUM
 
-`MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29),
-`MAPPIPS_KILL_COLLECTOR_QUEST_COMPLETE_NPC` (30) and
-`CHAPTERHUBSERVICE_KILL_COLLECTOR` (9) in `Common/Database/SystemData.cs` are
-still referenced nowhere.
+**Correction.** This entry previously claimed the orange indicator was blocked
+because `CreatureService` builds `States`/`FigLeafData` per creature *prototype*.
+That was wrong: a per-player channel already exists —
+`QuestsInterface.GetQuestStatusFor` feeds `Packets.UpdateQuestState`, pushed to a
+single player, and `QuestStateOpcode.QuestCompleted` is the orange turn-in marker.
 
-The blocker is structural: pending vs complete is **per-player**, but
-`CreatureService` builds `States` and `FigLeafData` once per creature
-*prototype* at load and shares that across every player. Driving the orange
-indicator needs a per-player state dispatch, not a proto edit.
+Now implemented: collectors with unclaimed progress report `QuestCompleted`, and
+the icon is refreshed on the 0 -> 1 kill transition and cleared on claim.
+
+Still missing:
+
+- **Interaction dialogue.** Talking to a collector prints a chat line only; no
+  window opens. The dialogue is `F_INTERACT_RESPONSE` built by
+  `SendQuestDoneInfo` / `BuildQuestInteract` / `BuildQuestComplete`, all of which
+  need a real `Quest` and `Character_quest` row. Two ways to get it: seed genuine
+  quest rows for all 132 collectors (which is how RoR does it, and would give
+  dialogue and icon from the existing quest machinery), or hand-build an
+  `F_INTERACT_RESPONSE` payload that imitates the quest window without a quest
+  row. Neither is small.
+- **Map pips.** `MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29),
+  `MAPPIPS_KILL_COLLECTOR_QUEST_COMPLETE_NPC` (30) and
+  `CHAPTERHUBSERVICE_KILL_COLLECTOR` (9) are still referenced nowhere.
 
 ### K2. Kill caps are current RoR values, not retail — LOW
 

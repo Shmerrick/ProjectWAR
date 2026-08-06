@@ -1116,6 +1116,12 @@ namespace WorldServer.World.Objects
                 player.SendClientMessage(
                     "You have been rewarded for slaying " + claimed + " " + def.TargetLabel + ".",
                     ChatLogFilters.CHATLOGFILTERS_SAY);
+
+                // Clear the turn-in icon. UpdateQuestGiverAround cannot do this:
+                // with nothing left unclaimed the collector no longer passes its
+                // gate, so the state has to be pushed directly.
+                player.SendPacket(Packets.UpdateQuestState(
+                    Oid, player.QtsInterface.GetQuestStatusFor(player, this)));
                 return;
             }
 

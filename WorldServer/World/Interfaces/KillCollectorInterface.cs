@@ -86,9 +86,17 @@ namespace WorldServer.World.Interfaces
                 if (row.ClaimedKills >= def.KillCap && row.AccumulatedKills >= def.KillCap)
                     return;
 
+                uint before = GetUnclaimed(collectorEntry);
+
                 ++row.AccumulatedKills;
                 row.Dirty = true;
                 CharMgr.Database.SaveObject(row);
+
+                // Only on the 0 -> 1 transition, so the surrounding-object scan in
+                // UpdateQuestGiverAround runs once per collector rather than once
+                // per kill.
+                if (before == 0 && GetUnclaimed(collectorEntry) > 0)
+                    player.QtsInterface.UpdateQuestGiverAround();
             }
             else
             {
@@ -102,6 +110,9 @@ namespace WorldServer.World.Interfaces
                 };
                 _progress.Add(collectorEntry, row);
                 CharMgr.Database.AddObject(row);
+
+                // First ever kill for this collector: 0 -> 1, same one-shot refresh.
+                player.QtsInterface.UpdateQuestGiverAround();
             }
         }
 
