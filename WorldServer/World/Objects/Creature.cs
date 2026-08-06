@@ -506,6 +506,12 @@ namespace WorldServer.World.Objects
                     player.TokInterface.AddToks(Spawn.Proto.TokUnlock);
                 }
 
+                // Kill Collectors are ambient rather than a menu flow: any
+                // interaction claims whatever has accrued, so this sits ahead of
+                // the menu switch instead of inside a menu case.
+                if (Spawn.Proto.TitleId == CreatureTitle.KillCollector)
+                    HandleKillCollectorInteract(player);
+
                 // perhaps do some checks?
                 switch (menu.Menu)
                 {
@@ -1052,6 +1058,8 @@ namespace WorldServer.World.Objects
 
         protected void CreditQuestKill(Player killer)
         {
+            CreditKillCollectors(killer);
+
             byte subtype = Spawn.Proto.CreatureSubType;
 
             if (subtype == 0)
@@ -1082,6 +1090,75 @@ namespace WorldServer.World.Objects
             }
 
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
+        }
+
+        /// <summary>
+        /// Talking to a Kill Collector: pay out accrued kills, or hint at what it
+        /// wants if there is nothing owed.
+        /// </summary>
+        /// <remarks>
+        /// Retail also sent a spurious "influence reward" message once a collector
+        /// was maxed. That message was cosmetic - no influence was ever granted -
+        /// so it is deliberately not reproduced here.
+        /// </remarks>
+        private void HandleKillCollectorInteract(Player player)
+        {
+            uint collectorEntry = Spawn.Entry;
+
+            Kill_Collector_Definition def = KillCollectorService.GetDefinition(collectorEntry);
+            if (def == null)
+                return;
+
+            uint claimed = player.KillCollectorInterface.Claim(collectorEntry);
+
+            if (claimed > 0)
+            {
+                player.SendClientMessage(
+                    "You have been rewarded for slaying " + claimed + " " + def.TargetLabel + ".",
+                    ChatLogFilters.CHATLOGFILTERS_SAY);
+                return;
+            }
+
+            if (player.KillCollectorInterface.IsMaxed(collectorEntry))
+            {
+                player.SendClientMessage(
+                    "You have already been rewarded all you can for slaying " + def.TargetLabel + ".",
+                    ChatLogFilters.CHATLOGFILTERS_SAY);
+                return;
+            }
+
+            player.SendClientMessage(
+                "Bring me proof of your kills. I am interested in " + def.TargetLabel + ".",
+                ChatLogFilters.CHATLOGFILTERS_SAY);
+        }
+
+        /// <summary>
+        /// Credit this kill toward any Kill Collector that wants this creature.
+        /// </summary>
+        /// <remarks>
+        /// Kept separate from the Bestiary credit above because the two use
+        /// different keys: the Bestiary aggregates by CreatureSubType, while
+        /// collectors match exact creature entries.
+        ///
+        /// Group credit mirrors the Bestiary rule (same 150 unit radius) so that
+        /// grouped players do not silently lose collector progress.
+        /// </remarks>
+        private void CreditKillCollectors(Player killer)
+        {
+            uint entry = Spawn.Entry;
+
+            if (KillCollectorService.GetCollectorsForCreature(entry).Count == 0)
+                return;
+
+            if (killer.PriorityGroup != null)
+            {
+                List<Player> curMembers = killer.PriorityGroup.GetPlayersCloseTo(killer, 150);
+
+                foreach (Player subPlayer in curMembers)
+                    subPlayer.KillCollectorInterface.CreditKill(entry);
+            }
+            else
+                killer.KillCollectorInterface.CreditKill(entry);
         }
 
         public new void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)

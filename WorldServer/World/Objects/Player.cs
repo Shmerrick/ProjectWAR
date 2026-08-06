@@ -468,6 +468,7 @@ namespace WorldServer.World.Objects
 
         public SocialInterface SocInterface;
         public TokInterface TokInterface;
+        public KillCollectorInterface KillCollectorInterface;
         public MailInterface MlInterface;
         public ScenarioInterface ScnInterface;
         public GuildInterface GldInterface;
@@ -526,6 +527,7 @@ namespace WorldServer.World.Objects
             EvtInterface = AddInterface<EventInterface>();
             SocInterface = AddInterface<SocialInterface>();
             TokInterface = AddInterface<TokInterface>();
+            KillCollectorInterface = AddInterface<KillCollectorInterface>();
             MlInterface = AddInterface<MailInterface>();
             ScnInterface = AddInterface<ScenarioInterface>();
             GldInterface = AddInterface<GuildInterface>();
@@ -582,6 +584,7 @@ namespace WorldServer.World.Objects
                 StsInterface.Load(CharMgr.GetCharacterInfoStats(Info.CareerLine, _Value.Level));
                 QtsInterface.Load(Info.Quests);
                 TokInterface.Load(Info.Toks, Info.TokKills);
+                KillCollectorInterface.Load();
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
                 GldInterface.Load(Guild.Guild.GetGuildFromLeader(Info.CharacterId));
