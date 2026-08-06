@@ -170,6 +170,56 @@ checklist. Adding a test project is a larger decision than this feature.
 
 ---
 
+## Observed in game
+
+### G1. BO capture renown appears in the Combat tab, not RvR — PROBABLY BY DESIGN
+
+Observed 2026-08-06: "You gain 200 renown from capturing Kurlov's Armory."
+printed to Combat.
+
+The server does not choose the tab. `RVRRewardManager.cs:150` calls
+`AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName)`, which sends
+`F_PLAYER_RENOWN` with the reward type as a byte (`ObjectiveCapture = 28`); the
+client composes the sentence and routes it.
+
+The client's routing looks intentional: `CHATLOGFILTERS_RENOWN = 1008` sits in the
+same 1000-block as `CHATLOGFILTERS_COMBAT_DEFAULT = 1000`, so *all* renown gain
+goes to Combat, while the RvR tab carries realm-war events
+(`CHATLOGFILTERS_RVR = 17`, `CHATLOGFILTERS_C_BATTLEFIELD_OBJECTIVE = 281`).
+
+To change it: either send an additional chat message on filter 281 alongside the
+renown packet (server-side, duplicates the line), or change the routing in the
+client UI Lua (client-side). Decide whether it is worth either.
+
+### G2. Possible duplicate capture rewards — UNVERIFIED
+
+Same screenshot shows "You gain 200 renown from capturing Kurlov's Armory."
+**twice**, and Martyr's Square awarding 200 then 100. May be legitimate separate
+reward ticks, or the objective reward path running more than once per capture.
+Needs a controlled capture with `RewardLogger` trace before drawing a conclusion.
+
+### G3. 223 quests are uncompletable: objectives reference missing gameobjects — HIGH
+
+Spotted from the client quest tracker showing
+`Invalid GameObject - QuestID 30001, ObjId=131402`, then measured:
+
+```
+quests_objectives with ObjType=3 (gameobject) : 1352
+  ... whose ObjID is absent from gameobject_protos : 294   (22%)
+distinct quests affected                            : 223
+```
+
+The example is quest 30001 *Grimmenhagen Burning*, objective "House searched"
+(ObjType 3, ObjID 131402, count 3). Entry 131402 does not exist in
+`gameobject_protos`, so the objective can never be credited and the quest cannot
+be completed.
+
+This is the same missing-`gameobject_protos` gap that aborts PQ spawn loops, so
+every row added to that table fixes quests and public quests together.
+
+Not yet determined: whether these gameobjects are absent from the published dump
+generally, or were dropped from this particular curated database.
+
 ## Upstream data source
 
 ### U1. RoR's GraphQL API returns target labels, not creature ids — INFO
