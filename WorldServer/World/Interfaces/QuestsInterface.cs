@@ -392,6 +392,15 @@ namespace WorldServer.World.Interfaces
 
         public bool HasQuestsFor(Player plr, Creature creature)
         {
+            // A Kill Collector with unclaimed progress needs its head icon
+            // refreshed even though it has no quests, so it must pass this gate
+            // for UpdateQuestGiverAround to reach it.
+            if (creature.Spawn?.Proto != null
+                && creature.Spawn.Proto.TitleId == CreatureTitle.KillCollector
+                && plr.KillCollectorInterface != null
+                && plr.KillCollectorInterface.GetUnclaimed(creature.Spawn.Entry) > 0)
+                return true;
+
             QuestsInterface qtsInterface = creature.QtsInterface;
 
             if (qtsInterface.CreatureHasQuestToComplete(plr))
@@ -407,6 +416,15 @@ namespace WorldServer.World.Interfaces
 
         public QuestStateOpcode GetQuestStatusFor(Player plr, Creature creature)
         {
+            // Kill Collectors are not quests, but they use the same per-player
+            // head icon: unclaimed progress shows the orange turn-in marker.
+            // Checked first so it wins over any ordinary quest state on the NPC.
+            if (creature.Spawn?.Proto != null
+                && creature.Spawn.Proto.TitleId == CreatureTitle.KillCollector
+                && plr.KillCollectorInterface != null
+                && plr.KillCollectorInterface.GetUnclaimed(creature.Spawn.Entry) > 0)
+                return QuestStateOpcode.QuestCompleted;
+
             QuestsInterface qtsInterface = creature.QtsInterface;
             if (qtsInterface.CreatureHasQuestToComplete(plr))
                 return QuestStateOpcode.QuestCompleted;

@@ -109,6 +109,7 @@
     <Compile Include="Database\Character\Characters_quests.cs" />
     <Compile Include="Database\Character\Characters_socials.cs" />
     <Compile Include="Database\Character\Characters_tok_kills.cs" />
+    <Compile Include="Database\Character\Characters_Kill_Collector.cs" />
     <Compile Include="Database\Character\Characters_tok.cs" />
     <Compile Include="Database\Character\Characters_ability.cs" />
     <Compile Include="Database\Character\Characters_influence.cs" />
@@ -184,6 +185,8 @@
     <Compile Include="Database\World\Creatures\Creature_abilities.cs" />
     <Compile Include="Database\World\Creatures\Creature_item.cs" />
     <Compile Include="Database\World\Creatures\Creature_proto.cs" />
+    <Compile Include="Database\World\Creatures\Kill_Collector_Definition.cs" />
+    <Compile Include="Database\World\Creatures\Kill_Collector_Target.cs" />
     <Compile Include="Database\World\Creatures\Creature_spawn.cs" />
     <Compile Include="Database\World\Creatures\Creature_stats.cs" />
     <Compile Include="Database\World\Creatures\Creature_text.cs" />

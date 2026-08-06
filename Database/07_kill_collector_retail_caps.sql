@@ -1,0 +1,26 @@
+-- Kill Collector kill caps: retail values. Apply to the WORLD database.
+--
+-- The caps seeded by 04_kill_collector_world.sql came from Return of Reckoning's
+-- live API, which uses 20-60 scaled by chapter. Those are RoR balancing values,
+-- not original retail ones.
+--
+-- Return of Reckoning's own patch notes of 11 March 2024 state that all live
+-- retail collectors required 60 kills, and their notes of 14 July 2025 record
+-- changing Tier 4 away from "all 60" to a 30-60 spread - which only makes sense
+-- if 60 was the original. This sets every collector back to 60.
+--
+-- Conflicting evidence, recorded rather than hidden: the current RoR wiki Quests
+-- page says 50, and some retail-era tactic guides give 50 for specific
+-- collectors. That may be patch variation or imperfect community data. If 50
+-- turns out to be right for some or all collectors, this is a data edit and no
+-- code changes.
+--
+-- Distribution before this script: 20x6, 30x30, 40x48, 50x36, 60x12.
+--
+-- XP per kill is NOT changed. The retail XP formula was never recovered - period
+-- reports mention roughly 70 XP per kill in one early Dwarf area and a ceiling
+-- around 15k in another context, which is not enough to rebuild a formula. The
+-- seeded values remain RoR's (50 x chapter through chapter 18, then
+-- 925/950/975/1000), and are the least retail-faithful part of this data.
+
+UPDATE `kill_collector_definitions` SET `KillCap` = 60;

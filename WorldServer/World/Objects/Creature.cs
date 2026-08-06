@@ -435,7 +435,15 @@ namespace WorldServer.World.Objects
             byte statesLength = (byte)(States.Count + Spawn.Proto.States.Length);
             CreatureState questState = CreatureState.Merchant;
 
-            if (QtsInterface.CreatureHasQuestToComplete(plr))
+            // A Kill Collector holding unclaimed progress shows the same orange
+            // turn-in marker as a completable quest. This is the state the client
+            // gets when the creature spawns for the player; the live updates in
+            // QuestsInterface use QuestStateOpcode instead, so both paths need it.
+            if (Spawn.Proto.TitleId == CreatureTitle.KillCollector
+                && plr.KillCollectorInterface != null
+                && plr.KillCollectorInterface.GetUnclaimed(Spawn.Entry) > 0)
+                questState = CreatureState.QuestFinishable;
+            else if (QtsInterface.CreatureHasQuestToComplete(plr))
                 questState = CreatureState.QuestFinishable;
             else if (QtsInterface.CreatureHasStartRepeatingQuest(plr))
                 questState = CreatureState.RepeatableQuestAvailable;
@@ -504,6 +512,15 @@ namespace WorldServer.World.Objects
                 if (!string.IsNullOrEmpty(Spawn.Proto.TokUnlock))
                 {
                     player.TokInterface.AddToks(Spawn.Proto.TokUnlock);
+                }
+
+                // Kill Collectors are ambient rather than a menu flow: any
+                // interaction claims whatever has accrued, so this sits ahead of
+                // the menu switch instead of inside a menu case.
+                if (Spawn.Proto.TitleId == CreatureTitle.KillCollector)
+                {
+                    HandleKillCollectorInteract(player, menu);
+                    return;
                 }
 
                 // perhaps do some checks?
@@ -1052,6 +1069,8 @@ namespace WorldServer.World.Objects
 
         protected void CreditQuestKill(Player killer)
         {
+            CreditKillCollectors(killer);
+
             byte subtype = Spawn.Proto.CreatureSubType;
 
             if (subtype == 0)
@@ -1082,6 +1101,110 @@ namespace WorldServer.World.Objects
             }
 
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
+        }
+
+        /// <summary>
+        /// Talking to a Kill Collector: pay out accrued kills, or hint at what it
+        /// wants if there is nothing owed.
+        /// </summary>
+        /// <remarks>
+        /// Retail also sent a spurious "influence reward" message once a collector
+        /// was maxed. That message was cosmetic - no influence was ever granted -
+        /// so it is deliberately not reproduced here.
+        /// </remarks>
+        private void HandleKillCollectorInteract(Player player, InteractMenu menu)
+        {
+            uint collectorEntry = Spawn.Entry;
+
+            Kill_Collector_Definition def = KillCollectorService.GetDefinition(collectorEntry);
+            if (def == null)
+                return;
+
+            // The NPC's own creature_texts line is its flavour; fall back to a
+            // generated hint for the ~90 collectors that have no text row.
+            string flavour = CreatureService.GetCreatureText(Spawn.Entry);
+            if (string.IsNullOrEmpty(flavour))
+                flavour = "Bring me proof of your kills. I have an interest in "
+                          + def.TargetLabel + ".";
+
+            uint claimed = player.KillCollectorInterface.Claim(collectorEntry);
+            string dialogue;
+
+            if (claimed > 0)
+            {
+                dialogue = flavour + "\n\nYou have been rewarded for slaying "
+                           + claimed + " " + def.TargetLabel + ".";
+
+                player.SendClientMessage(
+                    "You have been rewarded for slaying " + claimed + " " + def.TargetLabel + ".",
+                    ChatLogFilters.CHATLOGFILTERS_SAY);
+
+                // Clear the turn-in icon. UpdateQuestGiverAround cannot do this:
+                // with nothing left unclaimed the collector no longer passes its
+                // gate, so the state has to be pushed directly.
+                player.SendPacket(Packets.UpdateQuestState(
+                    Oid, player.QtsInterface.GetQuestStatusFor(player, this)));
+            }
+            else if (player.KillCollectorInterface.IsMaxed(collectorEntry))
+            {
+                dialogue = flavour + "\n\nYou have brought me all the "
+                           + def.TargetLabel + " I need. I have nothing further for you.";
+            }
+            else
+            {
+                dialogue = flavour;
+            }
+
+            SendKillCollectorDialogue(player, menu, dialogue);
+        }
+
+        /// <summary>
+        /// Open the NPC interaction window carrying only text.
+        /// </summary>
+        /// <remarks>
+        /// The generic interact packet supports a plain text entry: bit 32 of the
+        /// menu-items mask, followed by the string. That is all a Kill Collector
+        /// needs, so it does not require a Quest row and the quest dialogue
+        /// builders. Same shape the dye merchant uses to refuse service.
+        /// </remarks>
+        private void SendKillCollectorDialogue(Player player, InteractMenu menu, string text)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+            Out.WriteByte(0);
+            Out.WriteUInt16(menu.Oid);
+            Out.WriteUInt16(0);
+            Out.WriteUInt16(32); // hasText
+            Out.WriteShortString(text);
+            player.SendPacket(Out);
+        }
+
+        /// <summary>
+        /// Credit this kill toward any Kill Collector that wants this creature.
+        /// </summary>
+        /// <remarks>
+        /// Kept separate from the Bestiary credit above because the two use
+        /// different keys: the Bestiary aggregates by CreatureSubType, while
+        /// collectors match exact creature entries.
+        ///
+        /// Group credit mirrors the Bestiary rule (same 150 unit radius) so that
+        /// grouped players do not silently lose collector progress.
+        /// </remarks>
+        private void CreditKillCollectors(Player killer)
+        {
+            uint entry = Spawn.Entry;
+
+            if (KillCollectorService.GetCollectorsForCreature(entry).Count == 0)
+                return;
+
+            if (killer.PriorityGroup != null)
+            {
+                List<Player> curMembers = killer.PriorityGroup.GetPlayersCloseTo(killer, 150);
+
+                foreach (Player subPlayer in curMembers)
+                    subPlayer.KillCollectorInterface.CreditKill(entry);
+            }
+            else
+                killer.KillCollectorInterface.CreditKill(entry);
         }
 
         public new void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)

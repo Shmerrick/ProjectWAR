@@ -339,6 +339,7 @@
     <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
+    <Compile Include="Services\World\KillCollectorService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
     <Compile Include="Services\World\WaypointService.cs" />
     <Compile Include="Services\World\XpRenownService.cs" />
@@ -716,6 +717,7 @@
     <Compile Include="World\Interfaces\SocialInterface.cs" />
     <Compile Include="World\Interfaces\StatsInterface.cs" />
     <Compile Include="World\Interfaces\TokInterface.cs" />
+    <Compile Include="World\Interfaces\KillCollectorInterface.cs" />
     <Compile Include="World\Map\CellMgr.cs" />
     <Compile Include="World\Map\RegionMgr.cs" />
     <Compile Include="Managers\WorldMgr.cs" />
