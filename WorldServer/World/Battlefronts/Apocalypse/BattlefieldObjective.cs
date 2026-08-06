@@ -1051,6 +1051,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void RemoveGlow()
         {
+            // Region is => Zone?.Region, so it is null for objectives that were
+            // constructed by LoadObjectives but never added to a zone. Startup
+            // locking walks exactly those, and the NRE propagated out of
+            // LockBattleFrontsAllRegions into Core.Main's catch - which then
+            // skipped OpenActiveBattlefront, leaving every battlefront locked.
+            // Objectives then threw "Sequence contains no matching element" from
+            // GetActiveBattleFrontStatus and never progressed past capture.
+            if (Region == null)
+                return;
+
             var goList = Region.GetObjects<GameObject>().Where(x => x.Entry == 99858);
             foreach (var gameObject in goList)
             {
