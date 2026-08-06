@@ -435,7 +435,15 @@ namespace WorldServer.World.Objects
             byte statesLength = (byte)(States.Count + Spawn.Proto.States.Length);
             CreatureState questState = CreatureState.Merchant;
 
-            if (QtsInterface.CreatureHasQuestToComplete(plr))
+            // A Kill Collector holding unclaimed progress shows the same orange
+            // turn-in marker as a completable quest. This is the state the client
+            // gets when the creature spawns for the player; the live updates in
+            // QuestsInterface use QuestStateOpcode instead, so both paths need it.
+            if (Spawn.Proto.TitleId == CreatureTitle.KillCollector
+                && plr.KillCollectorInterface != null
+                && plr.KillCollectorInterface.GetUnclaimed(Spawn.Entry) > 0)
+                questState = CreatureState.QuestFinishable;
+            else if (QtsInterface.CreatureHasQuestToComplete(plr))
                 questState = CreatureState.QuestFinishable;
             else if (QtsInterface.CreatureHasStartRepeatingQuest(plr))
                 questState = CreatureState.RepeatableQuestAvailable;
