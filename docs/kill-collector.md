@@ -87,12 +87,55 @@ automated tests. Manual checklist:
    errors — the definition loads with no targets.
 8. **Restart persistence.** Claim partially, restart the server, confirm
    `characters_kill_collector` retains `AccumulatedKills`/`ClaimedKills`.
+9. **Icon on spawn.** With unclaimed progress, approach a collector so it spawns
+   into view. Orange marker should already be showing. *Verified 2026-08-06.*
+10. **Icon clears on claim.** Talk to it; the marker should disappear without
+    moving away.
+11. **Icon returns on kill.** Kill one target while still standing at the
+    collector; the marker should reappear without moving away.
+
+Note when testing icons: with `AccumulatedKills == ClaimedKills` there is nothing
+unclaimed and **no icon is the correct result**. Check the table before
+concluding the icon is broken.
+
+```sql
+SELECT CollectorEntry, AccumulatedKills, ClaimedKills,
+       AccumulatedKills - ClaimedKills AS unclaimed
+  FROM war_characters.characters_kill_collector;
+```
+
+## The turn-in icon
+
+A collector holding unclaimed progress shows the orange turn-in marker, the same
+one a completable quest uses. Collectors are not quests, but the icon is
+per-player and the quest system already has that channel, so they borrow it.
+
+**It has to be set in two places, in two different enums.** This is the trap:
+
+| Path | Where | Enum |
+|---|---|---|
+| Creature spawns for a player | `Creature.SendMeTo` (~line 438) | `CreatureState.QuestFinishable` |
+| State changes while in view | `QuestsInterface.GetQuestStatusFor` → `UpdateQuestState` | `QuestStateOpcode.QuestCompleted` |
+
+`SendMeTo` holds an **inline copy** of `GetQuestStatusFor`'s if/else chain and
+never calls the method, so patching only the method compiles, reads correctly,
+and does nothing. Verified in game 2026-08-06: the icon appears on spawn only
+once the `SendMeTo` branch is present.
+
+Refresh is deliberately asymmetric. Appearing goes through
+`UpdateQuestGiverAround`, fired only on the 0 -> 1 unclaimed transition so the
+surrounding-object scan runs once per collector rather than once per kill.
+Clearing cannot use that sweep: after a claim there is nothing unclaimed, so the
+collector no longer passes `HasQuestsFor` and the sweep skips it. The claim path
+pushes the state directly instead.
 
 ## Not implemented
 
-Map pips. `MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29) and
-`..._COMPLETE_NPC` (30) are still unreferenced. The pending/complete state is
-per-player, while `CreatureService` builds `States`/`FigLeafData` once per
-creature *prototype* at load time and shares it across all players — so driving
-the orange indicator needs a per-player state dispatch, not a proto edit. Left
-out rather than done wrongly at the proto level.
+**Interaction dialogue.** Talking to a collector prints a chat line; no window
+opens. The dialogue is `F_INTERACT_RESPONSE` assembled by `SendQuestDoneInfo` /
+`BuildQuestInteract` / `BuildQuestComplete`, all of which need real `Quest` and
+`Character_quest` rows. See `docs/known-issues/open-items.md` K1 for the two ways
+to get it.
+
+**Map pips.** `MAPPIPS_KILL_COLLECTOR_QUEST_PENDING_NPC` (29) and
+`..._COMPLETE_NPC` (30) are still unreferenced.
