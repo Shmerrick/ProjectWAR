@@ -1629,7 +1629,7 @@ namespace WorldServer.Managers
             var level = new Dictionary<int, int>();
             foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
-                foreach (var zone in region.ZonesMgr.ToList())
+                foreach (var zone in region.GetZones())
                 {
                     var hotspots = zone.GetHotSpots();
                     if (hotspots.Count > 0)
@@ -1689,7 +1689,7 @@ namespace WorldServer.Managers
 
             foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
-                foreach (var zone in region.ZonesMgr.ToList())
+                foreach (var zone in region.GetZones())
                 {
                     zone.SendHotSpots(player);
                 }
@@ -1701,19 +1701,31 @@ namespace WorldServer.Managers
         {
             while (_running)
             {
-                if (ZoneService._Zone_Info != null)
+                // This loop owns a bare thread with no caller to catch for it, so anything escaping here
+                // terminates the server. It walks every region's zone list, which other threads grow as
+                // players enter new zones, and that is precisely how a zone transition used to take the
+                // process down. Losing one 15s pass is survivable; losing the server is not.
+                try
                 {
-                    LotdService.Update();
-                    SendZoneFightLevel();
-
-                    foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
+                    if (ZoneService._Zone_Info != null)
                     {
-                        foreach (var zone in region.ZonesMgr.ToList())
+                        LotdService.Update();
+                        SendZoneFightLevel();
+
+                        foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
                         {
-                            zone.DecayHotspots();
+                            foreach (var zone in region.GetZones())
+                            {
+                                zone.DecayHotspots();
+                            }
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    Log.Error("WorldMgr", "World update pass failed: " + e);
+                }
+
                 Thread.Sleep(15000);
             }
 

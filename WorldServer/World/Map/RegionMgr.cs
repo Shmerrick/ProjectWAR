@@ -107,7 +107,7 @@ namespace WorldServer.World.Map
                 Log.Debug("RegionMgr", "[" + RegionId + "] Stop");
                 _running = false;
 
-                foreach (var zone in ZonesMgr)
+                foreach (var zone in GetZones())
                     zone.Stop();
             }
             catch (Exception e)
@@ -147,7 +147,29 @@ namespace WorldServer.World.Map
 
         #region ZoneMgr
 
-        public List<ZoneMgr> ZonesMgr = new List<ZoneMgr>();
+        private readonly List<ZoneMgr> _zonesMgr = new List<ZoneMgr>();
+        private readonly object _zonesLock = new object();
+
+        /// <summary>
+        ///     Snapshot of the zones currently live in this region, safe to enumerate from any thread.
+        ///     Zones are created on demand by <see cref="GetZoneMgr"/>, which runs on player zone-change
+        ///     and object-add paths while other threads walk this list.
+        /// </summary>
+        public List<ZoneMgr> GetZones()
+        {
+            lock (_zonesLock)
+                return new List<ZoneMgr>(_zonesMgr);
+        }
+
+        /// <summary>Caller must hold <see cref="_zonesLock"/>.</summary>
+        private ZoneMgr FindZoneMgrUnsafe(ushort zoneId)
+        {
+            foreach (var z in _zonesMgr)
+                if (z != null && z.Info.ZoneId == zoneId)
+                    return z;
+
+            return null;
+        }
 
         /// <summary>
         ///     Gets the zone of given id, lazy loading it if necessary.
@@ -160,27 +182,40 @@ namespace WorldServer.World.Map
             if (info == null)
                 return null;
 
-            ZoneMgr mgr = null;
-            foreach (var z in ZonesMgr)
-                if (z != null && z.Info.ZoneId == zoneId)
-                {
-                    mgr = z;
-                    break;
-                }
-
-            if (mgr == null)
+            lock (_zonesLock)
             {
-                mgr = new ZoneMgr(this, info);
-                ZonesMgr.Add(mgr);
+                ZoneMgr existing = FindZoneMgrUnsafe(zoneId);
+                if (existing != null)
+                    return existing;
             }
 
-            return mgr;
+            // Built outside the lock: the ZoneMgr constructor faults in the zone's collision data, which can
+            // take hundreds of milliseconds and must not stall every other thread touching this region.
+            var created = new ZoneMgr(this, info);
+
+            lock (_zonesLock)
+            {
+                // Another thread may have created the same zone while we were building ours. Theirs wins, so
+                // a zone is never represented by two managers and objects cannot be split across them.
+                ZoneMgr existing = FindZoneMgrUnsafe(zoneId);
+                if (existing != null)
+                    return existing;
+
+                _zonesMgr.Add(created);
+                return created;
+            }
         }
 
         public ushort CheckZone(Object obj)
         {
             var info = GetZone(obj.XOffset, obj.YOffset);
-            if (info != null && info != obj.Zone.Info) AddObject(obj, info.ZoneId);
+
+            // Object.Zone is documented as nullable and is genuinely null while an object is between zones.
+            // Dereferencing it here threw on the offset-boundary crossing that a zone transition performs,
+            // and because SetOffset runs on the movement path rather than the region thread, that exception
+            // was not contained by the region tick's handler. A null zone simply means "not placed yet",
+            // which is already the condition for adding the object to the resolved zone.
+            if (info != null && info != obj.Zone?.Info) AddObject(obj, info.ZoneId);
 
             var curCell = obj._Cell;
             var newCell = GetCell(obj.XOffset, obj.YOffset);
