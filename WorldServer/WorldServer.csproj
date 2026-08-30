@@ -756,6 +756,7 @@
     <Compile Include="Managers\DynamicBotManager.cs" />
     <Compile Include="Managers\Commands\BotCommands.cs" />
     <Compile Include="Managers\BotGearOverrideService.cs" />
+    <Compile Include="Managers\BotTemplateProfileService.cs" />
     <Compile Include="Managers\BotManager.cs" />
     <Compile Include="Managers\BotLoadoutManager.cs" />
     <Compile Include="Managers\BotPathfinder.cs" />
@@ -881,3 +882,4 @@ if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirecto
   </Target>
   <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>
+

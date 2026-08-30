@@ -184,7 +184,7 @@ namespace WorldServer.Managers
             return name;
         }
 
-        public Player CreateOrLoadBot(string name, byte career, byte level, byte renownRank, Realms realm, BotRole role)
+        public Player CreateOrLoadBot(string name, byte career, byte level, byte renownRank, Realms realm, BotRole role, byte? profileVariantIndex = null)
         {
             if (_botAccount == null)
             {
@@ -269,6 +269,10 @@ namespace WorldServer.Managers
 
             if (saveValue)
                 CharMgr.Database.SaveObject(character.Value);
+
+
+            if (profileVariantIndex.HasValue)
+                BotTemplateProfileService.SetVariantIndex(character.CharacterId, profileVariantIndex.Value);
 
             Player existingPlayer = Player.GetPlayersSnapshot()
                 .FirstOrDefault(player => player.IsBot && player.Info != null && player.Info.CharacterId == character.CharacterId);
@@ -403,17 +407,17 @@ namespace WorldServer.Managers
             byte meleeCareer = careers[3];
 
             // 1. Healer
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_H", healerCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.Healer));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_H", healerCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.Healer, 0));
             // 2. Ranged DPS
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_R", rangedCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.RangedDPS));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_R", rangedCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.RangedDPS, 0));
             // 3. Main Tank (Shield)
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_MT", tankCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MainTank_Shield));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_MT", tankCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MainTank_Shield, 0));
             // 4. Off Tank (2H)
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_OT", tankCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.OffTank_2H));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_OT", tankCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.OffTank_2H, 1));
             // 5. Melee 1
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_M1", meleeCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MeleeDPS));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_M1", meleeCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MeleeDPS, 0));
             // 6. Melee 2
-            bots.Add(CreateOrLoadBot($"{groupPrefix}_M2", meleeCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MeleeDPS));
+            bots.Add(CreateOrLoadBot($"{groupPrefix}_M2", meleeCareer, GetMaxLevel(tier), (byte)rr, realm, BotRole.MeleeDPS, 1));
 
             if (bots.Any(bot => bot == null))
             {
@@ -1272,3 +1276,5 @@ namespace WorldServer.Managers
         }
     }
 }
+
+

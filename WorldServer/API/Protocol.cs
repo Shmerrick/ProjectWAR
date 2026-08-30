@@ -1,4 +1,4 @@
-﻿using FrameWork;
+using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -145,10 +145,10 @@ namespace WorldServer.API
                                         _client = client;
                                         _name = name;
                                     }
-                                }
-                                public void Print(object data)
-                                {
-                                    WorldServer.API.Protocol.ScriptLog(_client, _name, data);
+                                    public void Print(object data)
+                                    {
+                                        WorldServer.API.Protocol.ScriptLog(_client, _name, data);
+                                    }
                                 }
                             }";
 

@@ -56,13 +56,18 @@ namespace WorldServer.Managers
         };
 
         // Templates keyed by (careerLine, tier, variantIndex).
-        // Each career × tier has 2 variants: 0 = A, 1 = B.
+        // Variant indices are open-ended; 0 and 1 are the common defaults used by current bot groups.
         private static readonly Dictionary<TemplateKey, Loadout> _templates = new Dictionary<TemplateKey, Loadout>();
 
         public static IReadOnlyList<ushort> ManagedEquipmentSlots => _managedEquipmentSlots;
 
-        // OffTank_2H bots use variant 1; everything else uses variant 0.
-        private static byte RoleToVariant(BotRole role) => role == BotRole.OffTank_2H ? (byte)1 : (byte)0;
+        // Legacy default when no explicit bot-profile row has been assigned yet.
+        public static byte GetDefaultVariantIndex(BotRole role) => role == BotRole.OffTank_2H ? (byte)1 : (byte)0;
+
+        public static byte GetResolvedVariantIndex(uint characterId, BotRole role)
+        {
+            return BotTemplateProfileService.ResolveVariantIndex(characterId, role);
+        }
 
         public static void Initialize()
         {
@@ -79,14 +84,14 @@ namespace WorldServer.Managers
 
             Character_value value = bot.Info.Value ?? bot._Value;
             if (value == null)
-                return GetBaseLoadout(bot.Info.CareerLine, tier, role);
+                return GetBaseLoadout(bot.CharacterId, bot.Info.CareerLine, tier, role);
 
             return GetLoadout(bot.CharacterId, bot.Info.CareerLine, bot.Info.Race, value.Skills, value.Level, value.RenownRank, tier, role);
         }
 
         public static Loadout GetLoadout(uint characterId, byte careerLine, byte race, long playerSkills, byte level, byte renownRank, BotTier tier, BotRole role)
         {
-            Loadout baseLoadout = GetBaseLoadout(careerLine, tier, role);
+            Loadout baseLoadout = GetBaseLoadout(characterId, careerLine, tier, role);
             if (baseLoadout == null)
             {
                 Log.Error("BotLoadoutManager", $"No explicit template or starter fallback found for CharacterId {characterId} ({careerLine}/{role}).");
@@ -98,10 +103,15 @@ namespace WorldServer.Managers
             return effectiveLoadout;
         }
 
-        // Bridge for BotManager: maps (tier, role) → (tier, variantIndex).
+        public static Loadout GetBaseLoadout(uint characterId, byte careerLine, BotTier tier, BotRole role)
+        {
+            return GetBaseLoadout(careerLine, tier, GetResolvedVariantIndex(characterId, role));
+        }
+
+        // Legacy bridge: maps (tier, role) to the default (tier, variantIndex) when no explicit bot assignment is available.
         public static Loadout GetBaseLoadout(byte careerLine, BotTier tier, BotRole role)
         {
-            return GetBaseLoadout(careerLine, tier, RoleToVariant(role));
+            return GetBaseLoadout(careerLine, tier, GetDefaultVariantIndex(role));
         }
 
         public static Loadout GetBaseLoadout(byte careerLine, BotTier tier, byte variantIndex)
@@ -145,10 +155,10 @@ namespace WorldServer.Managers
 
         // ---- Patch API ----
 
-        // Bridge for the bot-centric patch route: maps role → variantIndex.
+        // Bridge for the bot-centric patch route: maps role to the legacy default variant index.
         public static void PatchTemplate(byte careerLine, BotTier tier, BotRole role, Dictionary<ushort, uint> updates)
         {
-            PatchTemplate(careerLine, tier, RoleToVariant(role), updates);
+            PatchTemplate(careerLine, tier, GetDefaultVariantIndex(role), updates);
         }
 
         public static void PatchTemplate(byte careerLine, BotTier tier, byte variantIndex, Dictionary<ushort, uint> updates)
@@ -593,3 +603,9 @@ namespace WorldServer.Managers
         }
     }
 }
+
+
+
+
+
+

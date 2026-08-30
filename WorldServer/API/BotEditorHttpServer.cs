@@ -307,6 +307,18 @@ namespace WorldServer.API
                     return;
                 }
 
+                if (segments.Length == 5 && segments[4].Equals("profile", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!string.Equals(context.Request.HttpMethod, "PUT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        WriteError(response, HttpStatusCode.MethodNotAllowed, "Only PUT is supported for this route.");
+                        return;
+                    }
+
+                    HandlePutProfile(context.Request, response, bot);
+                    return;
+                }
+
                 if (segments.Length == 5 && segments[4].Equals("template", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!string.Equals(context.Request.HttpMethod, "PATCH", StringComparison.OrdinalIgnoreCase))
@@ -402,6 +414,26 @@ namespace WorldServer.API
             WriteJson(response, HttpStatusCode.OK, BuildBotSheet(RefreshResolvedBot(bot)));
         }
 
+        private static void HandlePutProfile(HttpListenerRequest request, HttpListenerResponse response, ResolvedBot bot)
+        {
+            UpdateBotProfileRequest updateRequest = ReadRequestBody<UpdateBotProfileRequest>(request);
+            if (updateRequest == null)
+            {
+                WriteError(response, HttpStatusCode.BadRequest, "Request body is required.");
+                return;
+            }
+
+            if (updateRequest.UseDefault || !updateRequest.VariantIndex.HasValue)
+                BotTemplateProfileService.RemoveVariantIndex(bot.Character.CharacterId);
+            else
+                BotTemplateProfileService.SetVariantIndex(bot.Character.CharacterId, updateRequest.VariantIndex.Value);
+
+            if (updateRequest.Reapply && bot.LoadedPlayer != null)
+                BotManager.Instance.TryReapplyBotLoadout(bot.Character.CharacterId);
+
+            WriteJson(response, HttpStatusCode.OK, BuildBotSheet(RefreshResolvedBot(bot)));
+        }
+
         private static void HandleItemSearch(HttpListenerRequest request, HttpListenerResponse response, ResolvedBot bot)
         {
             string query = request.QueryString["q"]?.Trim();
@@ -450,6 +482,25 @@ namespace WorldServer.API
             return refreshedBot ?? bot;
         }
 
+        private static bool TryResolveBotRole(Character character, Player loadedPlayer, out BotRole role)
+        {
+            if (loadedPlayer != null)
+            {
+                role = loadedPlayer.Role;
+                return true;
+            }
+
+            return BotManager.TryGetRoleFromBotName(character?.Name, out role);
+        }
+
+        private static string GetTemplateVariantLabel(byte variantIndex)
+        {
+            if (variantIndex < 26)
+                return $"Template {(char)('A' + variantIndex)}";
+
+            return $"Template {variantIndex + 1}";
+        }
+
         private static bool TryResolveBot(uint characterId, out ResolvedBot bot, out string error)
         {
             bot = null;
@@ -474,16 +525,12 @@ namespace WorldServer.API
                 return false;
             }
 
-            BotRole role = BotRole.MeleeDPS;
-            if (!BotManager.TryGetRoleFromBotName(character.Name, out role))
+            Player loadedPlayer = BotManager.Instance.GetLoadedBot(characterId);
+            if (!TryResolveBotRole(character, loadedPlayer, out BotRole role))
             {
                 error = "Unable to determine bot role from character name.";
                 return false;
             }
-
-            Player loadedPlayer = BotManager.Instance.GetLoadedBot(characterId);
-            if (loadedPlayer != null)
-                role = loadedPlayer.Role;
 
             bot = new ResolvedBot
             {
@@ -504,11 +551,13 @@ namespace WorldServer.API
                 value = CharMgr.Database.SelectObject<Character_value>($"CharacterId={character.CharacterId}");
 
             Player loadedPlayer = BotManager.Instance.GetLoadedBot(character.CharacterId);
-            BotRole role = BotRole.MeleeDPS;
-            if (loadedPlayer != null)
-                role = loadedPlayer.Role;
-            else
-                BotManager.TryGetRoleFromBotName(character.Name, out role);
+            if (!TryResolveBotRole(character, loadedPlayer, out BotRole role))
+                role = BotRole.MeleeDPS;
+
+            bool hasExplicitProfileAssignment = BotTemplateProfileService.TryGetVariantIndex(character.CharacterId, out byte explicitProfileVariantIndex);
+            byte profileVariantIndex = hasExplicitProfileAssignment
+                ? explicitProfileVariantIndex
+                : BotTemplateProfileService.ResolveVariantIndex(character.CharacterId, role);
 
             return new BotSummaryResponse
             {
@@ -524,13 +573,21 @@ namespace WorldServer.API
                 Level = value?.Level ?? 0,
                 RenownRank = value?.RenownRank ?? 0,
                 ZoneId = loadedPlayer?.Zone?.ZoneId ?? value?.ZoneId ?? 0,
-                HasGearOverrides = BotGearOverrideService.HasOverrides(character.CharacterId)
+                HasGearOverrides = BotGearOverrideService.HasOverrides(character.CharacterId),
+                ProfileVariantIndex = profileVariantIndex,
+                ProfileLabel = GetTemplateVariantLabel(profileVariantIndex),
+                HasExplicitProfileAssignment = hasExplicitProfileAssignment
             };
         }
 
         private static BotSheetResponse BuildBotSheet(ResolvedBot bot)
         {
-            Dictionary<ushort, uint> templateLoadout = BotLoadoutManager.GetBaseLoadout(bot.Character.CareerLine, bot.Tier, bot.Role)?.SlotItems
+            bool hasExplicitProfileAssignment = BotTemplateProfileService.TryGetVariantIndex(bot.Character.CharacterId, out byte explicitProfileVariantIndex);
+            byte profileVariantIndex = hasExplicitProfileAssignment
+                ? explicitProfileVariantIndex
+                : BotTemplateProfileService.ResolveVariantIndex(bot.Character.CharacterId, bot.Role);
+
+            Dictionary<ushort, uint> templateLoadout = BotLoadoutManager.GetBaseLoadout(bot.Character.CharacterId, bot.Character.CareerLine, bot.Tier, bot.Role)?.SlotItems
                 .ToDictionary(entry => entry.Key, entry => entry.Value)
                 ?? new Dictionary<ushort, uint>();
 
@@ -560,6 +617,9 @@ namespace WorldServer.API
                 Level = bot.Value.Level,
                 RenownRank = bot.Value.RenownRank,
                 ZoneId = bot.LoadedPlayer?.Zone?.ZoneId ?? bot.Value.ZoneId,
+                ProfileVariantIndex = profileVariantIndex,
+                ProfileLabel = GetTemplateVariantLabel(profileVariantIndex),
+                HasExplicitProfileAssignment = hasExplicitProfileAssignment,
                 TemplateGear = BuildGearSlots(templateLoadout),
                 CustomGearOverrides = BuildGearSlots(overrideEntries),
                 EffectiveLoadout = BuildGearSlots(effectiveLoadout),
@@ -665,7 +725,7 @@ namespace WorldServer.API
                 bot.Value.Skills,
                 bot.Value.Level,
                 bot.Value.RenownRank,
-                BotLoadoutManager.GetBaseLoadout(bot.Character.CareerLine, bot.Tier, bot.Role));
+                BotLoadoutManager.GetBaseLoadout(bot.Character.CharacterId, bot.Character.CareerLine, bot.Tier, bot.Role));
 
             foreach (KeyValuePair<ushort, uint> overrideEntry in overrideEntries.OrderBy(entry => entry.Key))
             {
@@ -908,7 +968,7 @@ namespace WorldServer.API
                 tierEntry.Variants.Add(new CareerTemplateVariantResponse
                 {
                     VariantIndex = variantIndex,
-                    Label = variantIndex == 0 ? "Template A" : "Template B",
+                    Label = GetTemplateVariantLabel(variantIndex),
                     Gear = BuildGearSlots(loadout.SlotItems)
                 });
             }
@@ -1001,6 +1061,13 @@ namespace WorldServer.API
                 foreach (Character botChar in BotManager.Instance.GetAllBotCharacters()
                     .Where(c => c.CareerLine == careerLine))
                 {
+                    Player loadedBot = BotManager.Instance.GetLoadedBot(botChar.CharacterId);
+                    if (loadedBot == null || !TryResolveBotRole(botChar, loadedBot, out BotRole botRole))
+                        continue;
+
+                    if (BotLoadoutManager.GetResolvedVariantIndex(botChar.CharacterId, botRole) != variantIndex)
+                        continue;
+
                     BotManager.Instance.TryReapplyBotLoadout(botChar.CharacterId);
                 }
             }
@@ -1009,7 +1076,7 @@ namespace WorldServer.API
             CareerTemplateVariantResponse result = new CareerTemplateVariantResponse
             {
                 VariantIndex = variantIndex,
-                Label = variantIndex == 0 ? "Template A" : "Template B",
+                Label = GetTemplateVariantLabel(variantIndex),
                 Gear = BuildGearSlots(updated?.SlotItems ?? new Dictionary<ushort, uint>())
             };
 
@@ -1220,6 +1287,9 @@ namespace WorldServer.API
             public byte Level { get; set; }
             public byte RenownRank { get; set; }
             public ushort ZoneId { get; set; }
+            public byte ProfileVariantIndex { get; set; }
+            public string ProfileLabel { get; set; }
+            public bool HasExplicitProfileAssignment { get; set; }
             public bool HasGearOverrides { get; set; }
         }
 
@@ -1237,6 +1307,9 @@ namespace WorldServer.API
             public byte Level { get; set; }
             public byte RenownRank { get; set; }
             public ushort ZoneId { get; set; }
+            public byte ProfileVariantIndex { get; set; }
+            public string ProfileLabel { get; set; }
+            public bool HasExplicitProfileAssignment { get; set; }
             public List<GearSlotResponse> TemplateGear { get; set; }
             public List<GearSlotResponse> CustomGearOverrides { get; set; }
             public List<GearSlotResponse> EffectiveLoadout { get; set; }
@@ -1264,6 +1337,13 @@ namespace WorldServer.API
             public bool ReplaceOverrides { get; set; } = true;
             public bool Reapply { get; set; } = true;
             public List<GearSlotUpdate> Slots { get; set; }
+        }
+
+        private sealed class UpdateBotProfileRequest
+        {
+            public byte? VariantIndex { get; set; }
+            public bool UseDefault { get; set; }
+            public bool Reapply { get; set; } = true;
         }
 
         private sealed class GearUpdateRequest
@@ -1343,3 +1423,4 @@ namespace WorldServer.API
         }
     }
 }
+
