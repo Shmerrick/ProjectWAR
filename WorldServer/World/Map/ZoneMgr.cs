@@ -39,6 +39,10 @@ namespace WorldServer.World.Map
             this.Info = Info;
             Running = true;
             ClientInfo = ClientFileMgr.GetZoneInfo(Info.ZoneId);
+
+            // Fault the zone's collision data in while the zone is being brought up, so the first
+            // line-of-sight check in combat does not pay for it on the region thread.
+            Occlusion.EnsureZoneLoaded(Info.ZoneId);
         }
         public void Stop()
         {
