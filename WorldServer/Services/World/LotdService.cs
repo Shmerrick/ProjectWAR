@@ -122,6 +122,84 @@ namespace WorldServer.Services.World
             return _tracker.OwningRealm == (byte)realm;
         }
 
+        /// <summary>
+        /// Human-readable tracker state, for GM diagnostics. The expedition flight is hidden whenever the
+        /// tracker is not Paused with an owning realm, and that is indistinguishable in-game from a broken
+        /// flight master — so being able to read the state directly matters.
+        /// </summary>
+        public static string GetStatusSummary()
+        {
+            if (_tracker == null)
+                return "Land of the Dead tracker is not loaded; the expedition flight stays hidden. Apply Database/update_005_lotd_resource_tracker.sql.";
+
+            string window = (LotdTrackerState)_tracker.State == LotdTrackerState.Paused
+                ? GetRemainingOpenMinutes() + " min remaining"
+                : "closed";
+
+            return "LOTD " + (LotdTrackerState)_tracker.State
+                 + " | owner " + (Realms)_tracker.OwningRealm
+                 + " | Order " + _tracker.OrderResourcePoints + "/" + _tracker.Threshold
+                 + " | Destruction " + _tracker.DestructionResourcePoints + "/" + _tracker.Threshold
+                 + " | +" + _tracker.PointsPerBattlefrontLock + " per T4 battlefront lock"
+                 + " | access window " + _tracker.UnlockDurationMinutes + " min (" + window + ")";
+        }
+
+        /// <summary>
+        /// Opens the expedition for a realm immediately, as winning the race would. Testing aid: reaching this
+        /// state legitimately needs enough T4 battlefront locks to cross the threshold, which is impractical to
+        /// stage by hand. Returns false if the realm is not Order or Destruction.
+        /// </summary>
+        public static bool ForceUnlock(Realms realm)
+        {
+            if (_tracker == null)
+                return false;
+
+            if (realm != Realms.REALMS_REALM_ORDER && realm != Realms.REALMS_REALM_DESTRUCTION)
+                return false;
+
+            SetPausedState(realm, true);
+            return true;
+        }
+
+        /// <summary>Returns the tracker to the accumulating race and clears ownership. Testing aid.</summary>
+        public static bool ForceReset()
+        {
+            if (_tracker == null)
+                return false;
+
+            ResumeRace(true);
+            return true;
+        }
+
+        /// <summary>
+        /// Awards resource points to a realm exactly as a battlefront lock does, threshold check included, so
+        /// the real unlock path can be exercised rather than bypassed. Testing aid.
+        /// </summary>
+        public static bool ForceAwardPoints(Realms realm, int points)
+        {
+            if (_tracker == null || points <= 0)
+                return false;
+
+            if (realm == Realms.REALMS_REALM_ORDER)
+                _tracker.OrderResourcePoints = Math.Min(_tracker.Threshold, _tracker.OrderResourcePoints + points);
+            else if (realm == Realms.REALMS_REALM_DESTRUCTION)
+                _tracker.DestructionResourcePoints = Math.Min(_tracker.Threshold, _tracker.DestructionResourcePoints + points);
+            else
+                return false;
+
+            _tracker.LastScoringRealm = (byte)realm;
+
+            if (GetRealmScore(realm) >= _tracker.Threshold)
+            {
+                SetPausedState(realm, true);
+                return true;
+            }
+
+            SaveTracker();
+            BroadcastTrackerUpdate();
+            return true;
+        }
+
         public static void TryAwardBattlefrontLock(RVRProgression battlefront, Realms lockingRealm)
         {
             if (_tracker == null || battlefront == null)

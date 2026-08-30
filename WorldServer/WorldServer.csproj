@@ -323,6 +323,7 @@
     <Compile Include="Managers\Commands\AbilityCommands.cs" />
     <Compile Include="Managers\Commands\AddCommands.cs" />
     <Compile Include="Managers\Commands\CampaignCommands.cs" />
+    <Compile Include="Managers\Commands\LotdCommands.cs" />
     <Compile Include="Managers\Commands\ChapterCommands.cs" />
     <Compile Include="Managers\Commands\CheckCommands.cs" />
     <Compile Include="Managers\Commands\TicketCommands.cs" />

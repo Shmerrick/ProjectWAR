@@ -87,6 +87,9 @@ namespace WorldServer.Managers.Commands
         /// <summary>RvR campaign commmands under .campaign</summary>
         public static List<GmCommandHandler> CampaignCommands = CommandsBuilder.BuildCommands(typeof(CampaignCommands));
 
+        /// <summary>Land of the Dead expedition commands under .lotd</summary>
+        public static List<GmCommandHandler> LotdCommands = CommandsBuilder.BuildCommands(typeof(LotdCommands));
+
         /// <summary>World settings command under .setting</summary>
         public static List<GmCommandHandler> SettingCommands = CommandsBuilder.BuildCommands(typeof(SettingCommands));
 
@@ -327,6 +330,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("equip", null, EquipCommands, EGmLevel.GM, 0, "Creature equipment modification modification commands."),
             new GmCommandHandler("go", null, GoCommands, EGmLevel.Developer, 0, "Game object commands."),
             new GmCommandHandler("instance", null, InstanceCommands, EGmLevel.Developer, 0, "PVE Instance commands."),
+            new GmCommandHandler("lotd", null, LotdCommands, EGmLevel.GM, 0, "Land of the Dead expedition commands."),
             new GmCommandHandler("modify", null, ModifyCommands, EGmLevel.Developer, 0, "Unit modification commands."),
             new GmCommandHandler("mount", null, MountCommands, EGmLevel.GM, 0, "Mount commands."),
             new GmCommandHandler("npc", null, NpcCommands, EGmLevel.Developer, 0, "NPC commands."),

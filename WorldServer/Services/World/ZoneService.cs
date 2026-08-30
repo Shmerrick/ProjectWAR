@@ -335,8 +335,16 @@ namespace WorldServer.Services.World
 
             if (taxi.WorldX > UInt16.MaxValue || taxi.WorldY > UInt16.MaxValue)
             {
+                // Too large to be a local pin and outside the zone as world coordinates, so there is no
+                // reading of this row that lands inside the zone it names. The flight handler teleports to
+                // (ZoneID, WorldX, WorldY) as a unit, so offering it would drop the player outside the world
+                // geometry. Hide the flight instead — the same choice already made for LOTD taxis when their
+                // unlock state cannot be established. In-memory only; Zone_Taxi does not write back.
+                taxi.Enable = false;
+
                 Log.Notice("Zone_Taxi", "Taxi zone " + taxi.ZoneID + " realm " + taxi.RealmID +
-                    " uses out-of-zone world coordinates " + taxi.WorldX + "," + taxi.WorldY + ".");
+                    " uses out-of-zone world coordinates " + taxi.WorldX + "," + taxi.WorldY +
+                    "; flight disabled to avoid teleporting players out of bounds.");
                 return;
             }
 
@@ -345,8 +353,13 @@ namespace WorldServer.Services.World
             Point3D world = GetWorldPosition(zone, (ushort)taxi.WorldX, (ushort)taxi.WorldY, taxi.WorldZ);
             if (!IsWorldPositionInsideZone(zone, world.X, world.Y))
             {
+                // Neither reading of the row lands inside the zone; see the note above on why the flight is
+                // hidden rather than left in the list.
+                taxi.Enable = false;
+
                 Log.Notice("Zone_Taxi", "Taxi zone " + taxi.ZoneID + " realm " + taxi.RealmID +
-                    " has invalid coordinates " + taxi.WorldX + "," + taxi.WorldY + " that could not be normalized.");
+                    " has invalid coordinates " + taxi.WorldX + "," + taxi.WorldY +
+                    " that could not be normalized; flight disabled.");
                 return;
             }
 
