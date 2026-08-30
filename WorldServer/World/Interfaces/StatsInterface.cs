@@ -548,29 +548,30 @@ namespace WorldServer.World.Interfaces
 
         public int GetStatLinearModifier(Stats statType)
         {
+            // Reached from GetTotalStat on the swing path; same gating rule applies, see the note there.
+            bool trace = _logger.IsTraceEnabled;
+
             UnitStat modifier = _statModifiers[(int) statType];
 
             if (modifier == null)
             {
-                _logger.Trace($"Modifier : null");
+                if (trace) _logger.Trace("Modifier : null");
                 return 0;
             }
-            else
-            {
-                _logger.Trace($"Modifier : {modifier.TotalStat} {modifier.TotalMultiplier} {modifier.AvailableItemBonus} {modifier.InternalItemBonus} {modifier.ItemAddFromStat}");
-            }
+
+            if (trace) _logger.Trace($"Modifier : {modifier.TotalStat} {modifier.TotalMultiplier} {modifier.AvailableItemBonus} {modifier.InternalItemBonus} {modifier.ItemAddFromStat}");
 
             int linearStat = modifier.TotalStat;
 
             if (modifier.ItemAddFromStat != 0)
                 linearStat += _statModifiers[modifier.ItemAddFromStat].InternalItemBonus;
 
-            _logger.Trace($"HTStacks : {HTLStacks} linearstat {linearStat}" );
+            if (trace) _logger.Trace($"HTStacks : {HTLStacks} linearstat {linearStat}" );
 
             if (HTLStacks == 0 || (statType != Stats.Disrupt && statType != Stats.Evade))
                 return linearStat;
 
-            _logger.Trace($"return is {linearStat + Math.Min((byte)3, HTLStacks) * 15}");
+            if (trace) _logger.Trace($"return is {linearStat + Math.Min((byte)3, HTLStacks) * 15}");
 
             return linearStat + Math.Min((byte)3, HTLStacks) * 15;
         }
@@ -623,41 +624,49 @@ namespace WorldServer.World.Interfaces
 
         public short GetTotalStat(Stats bonusType)
         {
+            // CombatManager calls this several times per swing, so nothing here may allocate when trace
+            // is off. On net48 an interpolated string is built at the call site regardless of level, so
+            // every message below is gated. The linear modifier is also resolved once into a local: it
+            // used to be evaluated up to three times, one of those purely to feed a log line, and each
+            // evaluation re-entered GetStatLinearModifier and emitted further trace output of its own.
+            bool trace = _logger.IsTraceEnabled;
 
             if (GetUnit() == null)
             {
-                _logger.Trace($" GetUnit is null, returning 0");
+                if (trace) _logger.Trace(" GetUnit is null, returning 0");
                 return 0;
             }
 
-            _logger.Trace($" Bonus Type {bonusType}");
+            if (trace) _logger.Trace($" Bonus Type {bonusType}");
             int value = GetCoreStat(bonusType);
-            _logger.Trace($" Bonus Type Core Stat value = {value}");
+            if (trace) _logger.Trace($" Bonus Type Core Stat value = {value}");
 
             UnitStat statModifier = _statModifiers[(int)bonusType];
-            
 
             if (statModifier == null)
             {
-                _logger.Trace($" statModifier = null {value}");
+                if (trace) _logger.Trace($" statModifier = null {value}");
                 return (short) value;
             }
-            else
-            {
-                _logger.Trace($" statModifier = {statModifier.TotalStat}");
-            }
 
-            if (bonusType < Stats.BaseStatCount && value + GetStatLinearModifier(bonusType) <= 0)
+            if (trace) _logger.Trace($" statModifier = {statModifier.TotalStat}");
+
+            int linearModifier = GetStatLinearModifier(bonusType);
+
+            if (bonusType < Stats.BaseStatCount && value + linearModifier <= 0)
             {
-                _logger.Trace($" base returning 0 ");
+                if (trace) _logger.Trace(" base returning 0 ");
                 return 0;
             }
 
-            _logger.Trace($"GetStatLinearModifier {GetStatLinearModifier(bonusType)} ");
-            _logger.Trace($"statModifier.TotalMultiplier {statModifier.TotalMultiplier} ");
+            if (trace)
+            {
+                _logger.Trace($"GetStatLinearModifier {linearModifier} ");
+                _logger.Trace($"statModifier.TotalMultiplier {statModifier.TotalMultiplier} ");
+            }
 
-            value = (int)((value + GetStatLinearModifier(bonusType)) * statModifier.TotalMultiplier);
-            _logger.Trace($"value {value} ");
+            value = (int)((value + linearModifier) * statModifier.TotalMultiplier);
+            if (trace) _logger.Trace($"value {value} ");
             return (short)value;
         }
 
