@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -80,7 +81,8 @@ namespace WorldServer.World.Objects.Instances
             // instancing stuff
             InstanceService.SaveLockoutInstanceID(ZoneID + ":" + ID, Lockout);
 
-            new Thread(Update).Start();
+            // Background so a lingering instance thread cannot hold the process open during shutdown.
+            new Thread(Update) { IsBackground = true }.Start();
 
             Log.Success("Opening Instance","Instance ID "+ID+"  Map: "+Info.Name);
             // TOVL
@@ -128,10 +130,19 @@ namespace WorldServer.World.Objects.Instances
         {
             while (_running)
             {
-                CheckCombatGroups();
-                CheckRespawns();
-                CheckInstanceEmpty();
-                CheckPlayers();
+                // This loop owns a bare thread, so an escaping exception would take the whole server down
+                // rather than just this instance. RegionMgr and ScenarioMgr guard their loops the same way.
+                try
+                {
+                    CheckCombatGroups();
+                    CheckRespawns();
+                    CheckInstanceEmpty();
+                    CheckPlayers();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Instance " + ID, e.ToString());
+                }
 
                 Thread.Sleep(500);
             }

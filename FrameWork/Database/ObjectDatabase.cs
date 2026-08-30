@@ -54,7 +54,7 @@ namespace FrameWork
 
             _nextSaveTime = TCPManager.GetTimeStampMS() + SAVE_INTERVAL; 
 
-            ThreadStart start = Update;
+            ThreadStart start = RunUpdateLoop;
             _updater = new Thread(start);
             _updater.Start();
         }
@@ -284,6 +284,33 @@ namespace FrameWork
                     _operations.Add(new Tuple<DataObject, DatabaseOp>(dataObject, DatabaseOp.DOO_Delete));
                     dataObject.AllowDelete = false;
                     dataObject.AllowAdd = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Thread entry for the persistence pump. <see cref="Update"/> is an endless loop with no caller to
+        /// catch for it, so a single transient database failure — a dropped connection, a lock timeout, one
+        /// bad row — would kill this thread and, being unhandled, the whole server process. Worse, if it
+        /// merely died the server would keep running while silently persisting nothing.
+        ///
+        /// Pending work lives in fields (<c>_operations</c>, <c>_dirtyObjects</c>, <c>_nextSaveTime</c>), so
+        /// re-entering the pump resumes with that queue intact rather than discarding it.
+        /// </summary>
+        private void RunUpdateLoop()
+        {
+            while (true)
+            {
+                try
+                {
+                    Update();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(Connection?.SchemaName ?? "ObjectDatabase",
+                        "Persistence pump faulted, restarting it. Queued work is retained. " + e);
+
+                    Thread.Sleep(PROCESS_INTERVAL);
                 }
             }
         }

@@ -207,9 +207,29 @@ namespace FrameWork
 
             return (char)0;
         }
+        /// <summary>
+        /// Clamps a length that came off the wire to what this packet actually still holds.
+        ///
+        /// String lengths are supplied by the client, and an unclamped one turns a single malformed packet
+        /// into an enormous allocation — <see cref="GetString()"/> reads a 32-bit length, so a hostile client
+        /// could ask for gigabytes, and character creation feeds a 16-bit client-supplied name length straight
+        /// through. Clamping costs nothing in the honest case: reading past the end of the packet yields zero
+        /// bytes, and <see cref="Marshal.ConvertToString"/> already stops at the first NUL, so the resulting
+        /// string is identical.
+        /// </summary>
+        private int ClampToRemaining(long requested)
+        {
+            long remaining = Remain();
+
+            if (requested <= 0 || remaining <= 0)
+                return 0;
+
+            return (int)Math.Min(requested, remaining);
+        }
+
         public virtual string GetString()
         {
-            int len = (int)GetUint32();
+            int len = ClampToRemaining(GetUint32());
 
             var buf = new byte[len];
             Read(buf, 0, len);
@@ -219,7 +239,7 @@ namespace FrameWork
 
         public virtual string GetString16()
         {
-            var len = GetUint16();
+            int len = ClampToRemaining(GetUint16());
 
             var buf = new byte[len];
             Read(buf, 0, len);
@@ -228,8 +248,10 @@ namespace FrameWork
         }
         public virtual string GetString(int maxlen)
         {
-            var buf = new byte[maxlen];
-            Read(buf, 0, maxlen);
+            int len = ClampToRemaining(maxlen);
+
+            var buf = new byte[len];
+            Read(buf, 0, len);
 
             return Marshal.ConvertToString(buf);
         }

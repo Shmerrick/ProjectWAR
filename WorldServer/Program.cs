@@ -227,6 +227,11 @@ namespace WorldServer
             AcctMgr.UpdateRealm(Client.Info, Rm.RealmId);
             AcctMgr.UpdateRealmCharacters(Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>("Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>("Realm=2"));
 
+            // Reconcile the realm population against reality now that we are listening but nobody has
+            // connected yet. Relying on the shutdown path alone leaves a stale count behind whenever the
+            // process is killed or crashes, which then advertises phantom players to the launcher.
+            UpdateRealmPopulationSnapshot();
+
             Log.Info("GameCommands", "Available Game Commands:");
             WorldServer.Managers.Commands.CommandsBuilder.ListAllCommands(WorldServer.Managers.Commands.CommandDeclarations.BaseCommand);
 
@@ -277,6 +282,10 @@ namespace WorldServer
             SaveRuntimeState();
             WorldMgr.Stop();
             Player.Stop();
+
+            // Players are gone at this point, so publish a zeroed population rather than leaving the
+            // last live figure in the realm record.
+            UpdateRealmPopulationSnapshot();
         }
     }
 }

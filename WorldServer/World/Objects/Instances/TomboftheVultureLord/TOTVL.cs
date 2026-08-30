@@ -8,6 +8,33 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 {
+    /// <summary>
+    /// The traps in this instance each run their own loop on a bare thread. An exception escaping one of
+    /// those loops would terminate the entire server rather than just stopping the trap, so every trap
+    /// thread is started through here: guarded, named for the log, and background so it cannot hold the
+    /// process open during shutdown.
+    /// </summary>
+    internal static class TrapThread
+    {
+        public static void Start(ThreadStart body, string name)
+        {
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    body();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("TOTVL", name + " trap thread aborted: " + e);
+                }
+            })
+            { IsBackground = true };
+
+            thread.Start();
+        }
+    }
+
     class Pendulum : GameObject
     {
         byte Vfxstart;
@@ -49,7 +76,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         public void start()
         {
             active = true;
-            new Thread(swing).Start();
+            TrapThread.Start(swing, "swing");
         }
 
         public void swing()
@@ -334,7 +361,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         public void StartFireTrap()
         {
             Firetrap_active = true;
-            new Thread(Firetrap).Start();
+            TrapThread.Start(Firetrap, "Firetrap");
 
         }
 
@@ -348,7 +375,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         public void StartDartTrap()
         {
             Darttrap_active = true;
-            new Thread(Darttrap).Start();
+            TrapThread.Start(Darttrap, "Darttrap");
 
         }
 
@@ -369,8 +396,8 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             //StopPendulumtrapl();
             if (!Pendulum_Trap_init)
             {
-                new Thread(StartPendulumtrapl).Start();
-                new Thread(StartPendulumtrapr).Start();
+                TrapThread.Start(StartPendulumtrapl, "PendulumLeft");
+                TrapThread.Start(StartPendulumtrapr, "PendulumRight");
                 Pendulum_Trap_init = true;
             }
         }
