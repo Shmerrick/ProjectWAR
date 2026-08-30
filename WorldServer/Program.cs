@@ -84,7 +84,7 @@ namespace WorldServer
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
+            RegisterShutdownHandlers();
 
             Log.Info("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
 
@@ -269,6 +269,59 @@ namespace WorldServer
             }
         }
 
+        // Console control events we translate into a graceful shutdown. CTRL_CLOSE (the window's X,
+        // and what Process.CloseMainWindow sends) and the logoff/shutdown events were previously
+        // unhandled, which is why a launcher stop never persisted anything.
+        private const int CTRL_C_EVENT = 0;
+        private const int CTRL_BREAK_EVENT = 1;
+        private const int CTRL_CLOSE_EVENT = 2;
+        private const int CTRL_LOGOFF_EVENT = 5;
+        private const int CTRL_SHUTDOWN_EVENT = 6;
+
+        private delegate bool ConsoleCtrlHandler(int ctrlType);
+
+        /// <summary>Held in a static field: the delegate is passed to native code and must outlive the call.</summary>
+        private static ConsoleCtrlHandler _consoleCtrlHandler;
+
+        /// <summary>0 until a shutdown starts. Several signals can arrive at once, so shutdown runs once.</summary>
+        private static int _shutdownStarted;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetConsoleCtrlHandler(ConsoleCtrlHandler handler, [MarshalAs(UnmanagedType.Bool)] bool add);
+
+        /// <summary>
+        /// Routes every termination signal Windows will give us into <see cref="Shutdown"/>. Ctrl+C alone
+        /// was not enough: the launcher stops services by closing them, and a hard Process.Kill delivers
+        /// no signal at all, so the launcher must close rather than kill for any of this to run.
+        /// </summary>
+        private static void RegisterShutdownHandlers()
+        {
+            Console.CancelKeyPress += OnClose;
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => Shutdown("process exit");
+
+            _consoleCtrlHandler = ctrlType =>
+            {
+                switch (ctrlType)
+                {
+                    case CTRL_C_EVENT:
+                    case CTRL_BREAK_EVENT:
+                    case CTRL_CLOSE_EVENT:
+                    case CTRL_LOGOFF_EVENT:
+                    case CTRL_SHUTDOWN_EVENT:
+                        // Windows allows roughly five seconds here before terminating us regardless, which
+                        // is why Shutdown does the persistence work first and the tidy-up afterwards.
+                        Shutdown("console control event " + ctrlType);
+                        return true;
+                    default:
+                        return false;
+                }
+            };
+
+            if (!SetConsoleCtrlHandler(_consoleCtrlHandler, true))
+                Log.Error("Shutdown", "SetConsoleCtrlHandler failed; only Ctrl+C will shut down cleanly.");
+        }
+
         static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("onError", e.ExceptionObject.ToString());
@@ -276,23 +329,46 @@ namespace WorldServer
 
         public static void OnClose(object obj, object Args)
         {
-            Log.Info("Closing", "Closing the server");
+            Shutdown("console cancel key");
+        }
 
-            _botEditorApi?.Stop();
-            SaveRuntimeState();
-            WorldMgr.Stop();
-            Player.Stop();
+        /// <summary>
+        /// Persists everything that only exists in memory, then releases resources. Safe to call from any
+        /// signal handler and safe to call more than once; only the first caller does the work.
+        /// </summary>
+        public static void Shutdown(string reason)
+        {
+            if (Interlocked.CompareExchange(ref _shutdownStarted, 1, 0) != 0)
+                return;
+
+            Log.Info("Closing", "Closing the server (" + reason + ")");
+
+            // Persistence first, and each step guarded: the shutdown window is short and bounded, so one
+            // failing step must not cost us the remaining ones.
+            TryShutdownStep("save runtime state", SaveRuntimeState);
+            TryShutdownStep("stop world manager", WorldMgr.Stop);
+            TryShutdownStep("disconnect players", Player.Stop);
 
             // Players are gone at this point, so publish a zeroed population rather than leaving the
             // last live figure in the realm record.
-            UpdateRealmPopulationSnapshot();
+            TryShutdownStep("zero realm population", UpdateRealmPopulationSnapshot);
+            TryShutdownStep("stop bot editor API", () => _botEditorApi?.Stop());
+
+            // Log targets are async-wrapped, so flush before the process goes away or the shutdown
+            // record itself is lost.
+            TryShutdownStep("flush logs", () => NLog.LogManager.Shutdown());
+        }
+
+        private static void TryShutdownStep(string description, Action step)
+        {
+            try
+            {
+                step();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Shutdown", "Failed to " + description + ": " + e);
+            }
         }
     }
 }
-
-
-
-
-
-
-

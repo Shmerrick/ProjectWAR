@@ -62,17 +62,36 @@ namespace ServerLauncher
             }
         }
 
-        private void B_stop_Click(object sender, EventArgs e)
+        private async void B_stop_Click(object sender, EventArgs e)
         {
             if (_startupCancellation != null)
                 _startupCancellation.Cancel();
 
-            StopTrackedProcess(WorldServer);
-            StopTrackedProcess(LobbyServer);
-            StopTrackedProcess(LauncherServer);
-            StopTrackedProcess(AccountCacher);
+            // Stopping is now a graceful close with a timeout per service, so it can take a few seconds.
+            // Run it off the UI thread and hold the buttons so the window stays responsive meanwhile.
+            B_stop.Enabled = false;
+            SetControlsEnabled(false);
+            UpdateStatus("Stopping services...");
 
-            UpdateStatus("All tracked services stopped.");
+            try
+            {
+                // Order matters and must stay sequential: WorldServer's shutdown writes a realm population
+                // snapshot over RPC, so AccountCacher has to still be running when WorldServer goes down.
+                await Task.Run(() =>
+                {
+                    StopTrackedProcess(WorldServer);
+                    StopTrackedProcess(LobbyServer);
+                    StopTrackedProcess(LauncherServer);
+                    StopTrackedProcess(AccountCacher);
+                });
+
+                UpdateStatus("All tracked services stopped.");
+            }
+            finally
+            {
+                B_stop.Enabled = true;
+                SetControlsEnabled(true);
+            }
         }
 
         private async Task StartSelectedServersAsync(CancellationToken cancellationToken)
@@ -357,11 +376,41 @@ namespace ServerLauncher
             }
         }
 
+        /// <summary>
+        /// How long a service gets to shut itself down before we terminate it. WorldServer uses this
+        /// window to flush campaign progression and every dirty character to the database.
+        /// </summary>
+        private static readonly TimeSpan GracefulStopTimeout = TimeSpan.FromSeconds(15);
+
+        /// <summary>
+        /// Stops a service by closing it rather than killing it. Process.Kill is TerminateProcess: it
+        /// delivers no signal, so WorldServer's shutdown handler never ran and campaign state plus up to
+        /// a save-pump interval of character writes were dropped on every stop. CloseMainWindow posts
+        /// WM_CLOSE to the console window, which the service receives as CTRL_CLOSE_EVENT. Kill remains
+        /// the fallback for a service that is wedged or has no window to close.
+        /// </summary>
         private static void StopTrackedProcess(Process process)
         {
             try
             {
-                if (process != null && !process.HasExited)
+                if (process == null || process.HasExited)
+                    return;
+
+                bool closeRequested = false;
+                try
+                {
+                    closeRequested = process.CloseMainWindow();
+                }
+                catch (InvalidOperationException)
+                {
+                    // Process exited between the HasExited check and here; nothing left to do.
+                    return;
+                }
+
+                if (closeRequested && process.WaitForExit((int)GracefulStopTimeout.TotalMilliseconds))
+                    return;
+
+                if (!process.HasExited)
                     process.Kill();
             }
             catch
