@@ -109,6 +109,26 @@ mysql -u root -p war_characters < Database/war_characters.sql
 mysql -u root -p war_world < Database/war_world.sql
 ```
 
+Then apply the incremental update scripts, **in numerical order**. The base dumps are never edited, so every schema and data change since they were captured lives in these files. Skipping them leaves the server running against an out-of-date schema.
+
+```powershell
+# Each script selects its own database, so no database argument is needed.
+Get-ChildItem Database\*.sql |
+    Where-Object { $_.Name -match '^\d+_' } |
+    Sort-Object Name |
+    ForEach-Object { Write-Host "applying $($_.Name)"; mysql -u root -p < $_.FullName }
+```
+
+Current scripts, oldest first:
+
+| Script | What it does |
+|--------|--------------|
+| `01_add_tokunlock3.sql` | Adds `item_infos.TokUnlock3`, needed for the third Tome unlock on equip |
+| `02_restore_mailboxes.sql` | Restores the mailbox gameobject prototypes |
+| `03_add_hot_path_indexes.sql` | Indexes the per-login character lookups; without it every login full-scans `characters_items` |
+
+Every script selects its own database and is safe to re-run: `01` and `03` skip work that is already present, and `02` uses `REPLACE INTO`.
+
 Checkpoint: all three databases exist and contain tables.
 
 ### 3. Build the solution
