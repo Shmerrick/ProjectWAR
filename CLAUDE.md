@@ -46,6 +46,17 @@ Gameplay is served from in-memory caches — after boot, essentially the only re
 
 The ~2.1s "Slow SQL" warning at boot is the `Item_Info` load (88,727 rows) and is expected; it does not scale with players. The save pump batches every dirty object into a single unbounded transaction every 60s — fine at current scale, worth chunking if population grows a lot.
 
+### Logging and shutdown
+
+All four services load the same `bin/$(Configuration)/NLog.config` (copied from `WorldServer/NLog.config`), which is why every file name carries `${processname}`. Two things about it are deliberate and worth not undoing:
+
+- The catch-all rules run at **Info**, not Trace. At Trace the world log reached 34 MB / 275,011 lines in a day with one player, mostly per-swing stat maths. `autoReload="true"` is on, so to debug something you raise `minlevel` in the config and save — the running server picks it up in a second or two. Put it back afterwards.
+- `overflowAction="Discard"`. With `Block` a full async queue stalls the thread that produced the message, and on combat paths that thread is the 50 ms region tick, so the simulation would wait on disk. Dropping lines under load is the right trade here.
+
+Because logging sits on the swing path, **gate trace/debug messages behind `_logger.IsTraceEnabled`**. On net48 there are no interpolated-string handlers, so `_logger.Trace($"...")` builds and allocates the string whether or not the level is enabled — see `StatsInterface.GetTotalStat` for the pattern, and never call a real method inside a log argument.
+
+Shutdown runs through `Program.Shutdown(reason)`: idempotent, reachable from `SetConsoleCtrlHandler` (Ctrl+C, Ctrl+Break, window close, logoff, shutdown) and `ProcessExit`, with each step guarded and NLog flushed last. It persists campaign progression and force-saves both databases, so **stop services by closing them, never with `Process.Kill()`** — a hard kill delivers no signal and skips all of it. `ServerLauncher` closes first and only kills after a 15s timeout. A clean stop logs `Closing the server (...)`; if that line is missing from a session, the shutdown did not run.
+
 Runtime config lives in `bin/$(Configuration)/Configs/*.xml` (`Account.xml`, `World.xml`, `Lobby.xml`, `Launcher.xml`), generated from `aConfig` subclasses such as `WorldServer/Configs/WorldConfigs.cs` — adding a public field there adds an XML key. `PROJECTWAR_ENABLE_TLS` is retired; do not set it.
 
 Prerequisite data not in git: `deps/zones/` (download `zones.zip` from the `zones-data-v1` release) and the three MySQL databases `war_accounts`, `war_characters`, `war_world` (`war_world.sql` is inside `Database/war_world.7z`).
