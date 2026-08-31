@@ -1155,7 +1155,7 @@ namespace WorldServer.Managers
                     if (PQuestService._PQuests.ContainsKey(keepInfo.PQuestId))
                         keepInfo.PQuest = PQuestService._PQuests[keepInfo.PQuestId];
 
-            CharMgr.Database.ExecuteNonQuery("UPDATE war_characters.characters_value SET Online=0;");
+            CharMgr.Database.ExecuteNonQuery($"UPDATE `{CharMgr.Database.GetSchemaName()}`.characters_value SET Online=0;");
 
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
@@ -1267,52 +1267,51 @@ namespace WorldServer.Managers
         }
         public static void LoadPublicQuests()
         {
-            Zone_Info Zone = null;
-            PQuest_Info Info;
-            List<string> skippedPQs = new List<string>();
-
-            foreach (KeyValuePair<uint, PQuest_Info> Kp in PQuestService._PQuests)
+            HashSet<uint> keepPQuestIds = new HashSet<uint>();
+            foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
             {
-                Info = Kp.Value;
-                Zone = ZoneService.GetZone_Info(Info.ZoneId);
-                if (Zone == null)
-                    continue;
-
-
-                if (!PQuestService._PQuest_Objectives.TryGetValue(Info.Entry, out Info.Objectives))
-                    Info.Objectives = new List<PQuest_Objective>();
-                else
+                foreach (Keep_Info keepInfo in keepInfos)
                 {
-                    foreach (PQuest_Objective Obj in Info.Objectives)
-                    {
-                        Obj.Quest = Info;
-                        PQuestService.GeneratePQuestObjective(Obj, Obj.Quest);
-
-                        if (!PQuestService._PQuest_Spawns.TryGetValue(Obj.Guid, out Obj.Spawns))
-                            Obj.Spawns = new List<PQuest_Spawn>();
-                    }
+                    if (keepInfo.PQuestId != 0)
+                        keepPQuestIds.Add(keepInfo.PQuestId);
                 }
-
-                Log.Info("LoadPublicQuests", "Loaded public quest "+Info.Entry+" to region "+Zone.Region+" cell at X: "+ ((float)(Info.PinX / 4096) + Zone.OffX)+" "+ (float)(Info.PinY / 4096) + Zone.OffY);
-
-                bool skipLoad = false;
-
-                foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
-                {
-                    if (keepInfos.Any(keep => keep.PQuestId == Kp.Key))
-                    {
-                        skippedPQs.Add(Kp.Value.Name);
-                        skipLoad = true;
-                        break;
-                    }
-                }
-
-                if (!skipLoad)
-                    CellSpawnService.GetRegionCell(Zone.Region, (ushort)((float)(Info.PinX / 4096) + Zone.OffX), (ushort)((float)(Info.PinY / 4096) + Zone.OffY)).AddPQuest(Info);
             }
 
-            if (skippedPQs.Count > 0)
-                Log.Info("Skipped PQs", string.Join(", ", skippedPQs));
+            int keepOwnedPQuestCount = 0;
+
+            foreach (KeyValuePair<uint, PQuest_Info> pair in PQuestService._PQuests)
+            {
+                PQuest_Info info = pair.Value;
+                Zone_Info zone = ZoneService.GetZone_Info(info.ZoneId);
+                if (zone == null)
+                    continue;
+
+                if (!PQuestService._PQuest_Objectives.TryGetValue(info.Entry, out info.Objectives))
+                    info.Objectives = new List<PQuest_Objective>();
+                else
+                {
+                    foreach (PQuest_Objective objective in info.Objectives)
+                    {
+                        objective.Quest = info;
+                        PQuestService.GeneratePQuestObjective(objective, objective.Quest);
+
+                        if (!PQuestService._PQuest_Spawns.TryGetValue(objective.Guid, out objective.Spawns))
+                            objective.Spawns = new List<PQuest_Spawn>();
+                    }
+                }
+
+                if (keepPQuestIds.Contains(pair.Key))
+                {
+                    keepOwnedPQuestCount++;
+                    continue;
+                }
+
+                Log.Info("LoadPublicQuests", "Loaded public quest " + info.Entry + " to region " + zone.Region + " cell at X: " + ((float)(info.PinX / 4096) + zone.OffX) + " " + (float)(info.PinY / 4096) + zone.OffY);
+                CellSpawnService.GetRegionCell(zone.Region, (ushort)((float)(info.PinX / 4096) + zone.OffX), (ushort)((float)(info.PinY / 4096) + zone.OffY)).AddPQuest(info);
+            }
+
+            if (keepOwnedPQuestCount > 0)
+                Log.Info("LoadPublicQuests", $"Prepared {keepOwnedPQuestCount} keep-owned PQ metadata records; excluded them from normal cell spawning.");
         }
         public static void LoadQuestsRelation()
         {
@@ -1830,7 +1829,7 @@ namespace WorldServer.Managers
         {
             //turn off user specific packet logging when server restarts. This is because devs/gm forget to turn it off and log file grows > 20GB
             Log.Debug("WorldMgr", "Resetting user packet log settings...");
-            Database.ExecuteNonQuery("update war_accounts.accounts set PacketLog = 0");
+            Database.ExecuteNonQuery($"UPDATE `{Program.AcctMgr.GetAccountSchemaName()}`.accounts SET PacketLog=0");
         }
         #endregion
 

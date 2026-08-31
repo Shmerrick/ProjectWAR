@@ -581,7 +581,7 @@ namespace WorldServer.Managers
 
                 Log.Success("LoadCharacters", _maxCharGuid + " is the max char GUID.");
 
-                List<Character> auctionSellers = (List<Character>)Database.SelectObjects<Character>("CharacterId IN (SELECT SellerId FROM war_characters.auctions)");
+                List<Character> auctionSellers = (List<Character>)Database.SelectObjects<Character>($"CharacterId IN (SELECT SellerId FROM `{Database.GetSchemaName()}`.auctions)");
 
                 foreach (Character seller in auctionSellers)
                 {
@@ -1064,7 +1064,7 @@ namespace WorldServer.Managers
             if (accountChars.Loaded || Program.Config.PreloadAllCharacters)
                 return accountChars.Chars;
 
-            string whereString = "CharacterId IN (SELECT CharacterId from war_characters.characters WHERE AccountId = '" + accountId + "')";
+            string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters WHERE AccountId='{accountId}')";
             CharLoadSemaphore.WaitOne();
 
             Log.Info("LoadCharacters", "Forced to load from connection thread for account ID " + accountId);
@@ -1534,7 +1534,7 @@ namespace WorldServer.Managers
                 {
                     //Log.Success("LoadGuilds", "Loading guild " + gld.Name);
 
-                    List<Character> guildCharacters = (List<Character>)Database.SelectObjects<Character>("CharacterId IN (SELECT CharacterId FROM war_characters.guild_members WHERE GuildId = " + gld.GuildId + ")");
+                    List<Character> guildCharacters = (List<Character>)Database.SelectObjects<Character>($"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.guild_members WHERE GuildId={gld.GuildId})");
 
                     foreach (Character gChar in guildCharacters)
                     {
