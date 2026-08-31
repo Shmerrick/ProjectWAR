@@ -126,8 +126,12 @@ Current scripts, oldest first:
 | `01_add_tokunlock3.sql` | Adds `item_infos.TokUnlock3`, needed for the third Tome unlock on equip |
 | `02_restore_mailboxes.sql` | Restores the mailbox gameobject prototypes |
 | `03_add_hot_path_indexes.sql` | Indexes the per-login character lookups; without it every login full-scans `characters_items` |
+| `04_restore_guild_keep_claim_flags.sql` | Restores 21 packet-verified guild keep-claim flags; three keeps remain disabled pending authoritative coordinates |
+| `05_restore_invader_superior_ward_unlocks.sql` | Restores the five client-defined Superior Ward unlocks across all 24 Invader armor sets |
+| `06_remove_invalid_creature_ability_header.sql` | Removes a CSV header accidentally imported as an unusable creature ability row |
+| `07_restore_known_creature_ward_tiers.sql` | Restores 110 authoritative creature ward mappings from repository history and exact official-capture matches; preserves existing/custom tiers |
 
-Every script selects its own database and is safe to re-run: `01` and `03` skip work that is already present, and `02` uses `REPLACE INTO`.
+Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, and `07` fills only ward tiers currently encoded as none.
 
 Checkpoint: all three databases exist and contain tables.
 
@@ -264,6 +268,7 @@ For contributors and AI agents, please refer to the following architectural docu
 - **[System Guilds](docs/SYSTEM_GUILDS.md)**: Details the automated guild experience for new players.
 - **[Bot System](BOT_SYSTEM.md)**: Details the architecture, logic, and GM commands for the integrated player-like Bot System.
 - **[Internal Bug Tracker](docs/INTERNAL_BUG_TRACKER.md)**: Live ledger of known issues and regressions.
+- **[Ward System](docs/WARD_SYSTEM.md)**: Confirmed 1.4.8 ward progression and damage-scaling target, historical changes, and remaining evidence gaps.
 - **[AI Agent Rules](AGENTS.md)**: Single source of truth for repository-specific AI instructions.
 
 ## Recent Optimizations & Fixes (2026-03-30)

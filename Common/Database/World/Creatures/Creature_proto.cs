@@ -6,6 +6,19 @@ using GameData;
 
 namespace Common
 {
+    /// <summary>
+    /// The five retail PvE ward tiers. Creature rank is a separate attribute.
+    /// </summary>
+    public enum WardTier : byte
+    {
+        None = 0,
+        Lesser = 1,
+        Greater = 2,
+        Superior = 3,
+        Excelsior = 4,
+        Supreme = 5
+    }
+
     public enum CreatureTypes
     {
         NONE = 0,
@@ -1452,6 +1465,19 @@ namespace Common
         {
             get { return _Unks[2]; }
             set { if (_Unks == null)_Unks = new ushort[7]; _Unks[2] = value; }
+        }
+
+        /// <summary>
+        /// Gets the ward tier encoded in the low three bits of F_CREATE_MONSTER
+        /// offset 35. The remaining bits in Unk2 are unrelated packet flags.
+        /// </summary>
+        public WardTier Ward
+        {
+            get
+            {
+                byte tier = (byte)(Unk2 & 0x7);
+                return tier <= (byte)WardTier.Supreme ? (WardTier)tier : WardTier.None;
+            }
         }
 
         [DataElement(AllowDbNull = false)]

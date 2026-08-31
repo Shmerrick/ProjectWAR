@@ -14,11 +14,16 @@ namespace WorldServer.World.Interfaces
     {
         private readonly Dictionary<ushort, Character_tok> _tokUnlocks = new Dictionary<ushort, Character_tok>();
         private readonly Dictionary<ushort, Character_tok_kills> _tokKillCount = new Dictionary<ushort, Character_tok_kills>();
+        private readonly byte[] _wardFragments = new byte[5];
+        private readonly byte[] _effectiveWardFragments = new byte[5];
 
         private bool _loaded;
 
         public void Load(List<Character_tok> toks, List<Character_tok_kills> toksKills)
         {
+            Array.Clear(_wardFragments, 0, _wardFragments.Length);
+            Array.Clear(_effectiveWardFragments, 0, _effectiveWardFragments.Length);
+
             if (toks != null)
             {
                 if (_tokUnlocks.Count > 0)
@@ -30,7 +35,10 @@ namespace WorldServer.World.Interfaces
                 foreach (Character_tok tok in toks)
                 {
                     if (!_tokUnlocks.ContainsKey(tok.TokEntry))
+                    {
                         _tokUnlocks.Add(tok.TokEntry, tok);
+                        TrackWardFragment(tok.TokEntry);
+                    }
                 }
 
             }
@@ -85,6 +93,19 @@ namespace WorldServer.World.Interfaces
         public bool HasTok(ushort Entry)
         {
             return _tokUnlocks.ContainsKey(Entry);
+        }
+
+        /// <summary>
+        /// Returns the permanent fragments that satisfy the requested ward tier.
+        /// A completed higher ward satisfies every lower tier.
+        /// </summary>
+        public byte GetWardFragmentCount(WardTier wardTier)
+        {
+            int wardIndex = (int)wardTier - 1;
+            if (wardIndex < 0 || wardIndex >= _effectiveWardFragments.Length)
+                return 0;
+
+            return _effectiveWardFragments[wardIndex];
         }
 
         public void AddToks(string Toks)
@@ -155,6 +176,7 @@ namespace WorldServer.World.Interfaces
             };
 
             _tokUnlocks.Add(Entry, Tok);
+            TrackWardFragment(Entry);
             GetPlayer().AddXp(Info.Xp, false, false);
 
             // This checks if ToK we are adding is a part of larger ToK, for example title
@@ -197,6 +219,7 @@ namespace WorldServer.World.Interfaces
 
                             // ToK is added to the book
                             _tokUnlocks.Add((ushort)tokItemUnlock2.TokUnlock2, Tok2);
+                            TrackWardFragment((ushort)tokItemUnlock2.TokUnlock2);
                             GetPlayer().AddXp(InfoSetTok.Xp, false, false);
 
                             // Adding reward from final ToK - Title
@@ -212,6 +235,7 @@ namespace WorldServer.World.Interfaces
                             Tok_Info TokInfoTitle = TokService.GetTok((ushort)InfoSetTok.Rewards);
 
                             _tokUnlocks.Add((ushort)InfoSetTok.Rewards, Tok2Title);
+                            TrackWardFragment((ushort)InfoSetTok.Rewards);
                             GetPlayer().AddXp(TokInfoTitle.Xp, false, false);
 
                             //ToKs saved in DB :)
@@ -499,6 +523,7 @@ namespace WorldServer.World.Interfaces
                 GetPlayer().AddXp(Info.Xp, false, false);
 
                 _tokUnlocks.Add(Entry, Tok);
+                TrackWardFragment(Entry);
 
                 GetPlayer().Info.Toks = _tokUnlocks.Values.ToList();
                 
@@ -556,6 +581,7 @@ namespace WorldServer.World.Interfaces
 
                             // ToK is added to the book
                             _tokUnlocks.Add((ushort)item.TokUnlock2, Tok2);
+                            TrackWardFragment((ushort)item.TokUnlock2);
                             GetPlayer().AddXp(InfoSetTok.Xp, false, false);
 
                             // Adding reward from final ToK - Title
@@ -571,6 +597,7 @@ namespace WorldServer.World.Interfaces
                             Tok_Info TokInfoTitle = TokService.GetTok((ushort)InfoSetTok.Rewards);
 
                             _tokUnlocks.Add((ushort)InfoSetTok.Rewards, Tok2Title);
+                            TrackWardFragment((ushort)InfoSetTok.Rewards);
                             GetPlayer().AddXp(TokInfoTitle.Xp, false, false);
 
                             // ToKs saved in DB :)
@@ -580,6 +607,31 @@ namespace WorldServer.World.Interfaces
                         
                     }
                 }
+            }
+        }
+
+        private void TrackWardFragment(ushort tokEntry)
+        {
+            const ushort firstWardFragment = 7600;
+            const ushort lastWardFragment = 7624;
+            const int fragmentsPerWard = 5;
+
+            if (tokEntry < firstWardFragment || tokEntry > lastWardFragment)
+                return;
+
+            int wardIndex = (tokEntry - firstWardFragment) / fragmentsPerWard;
+            if (_wardFragments[wardIndex] < fragmentsPerWard)
+                _wardFragments[wardIndex]++;
+
+            bool higherWardComplete = false;
+            for (int index = _wardFragments.Length - 1; index >= 0; --index)
+            {
+                _effectiveWardFragments[index] = higherWardComplete
+                    ? (byte)fragmentsPerWard
+                    : _wardFragments[index];
+
+                if (_wardFragments[index] == fragmentsPerWard)
+                    higherWardComplete = true;
             }
         }
     }

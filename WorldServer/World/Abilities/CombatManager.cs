@@ -14,7 +14,66 @@ namespace WorldServer.World.Abilities
 {
     public static class CombatManager
     {
+        private static readonly float[] WardIncomingDamageScalars = { 3f, 2.6f, 2.2f, 1.8f, 1.4f, 1f };
+        private static readonly float[] WardOutgoingDamageScalars = { 0.4f, 0.55f, 0.7f, 0.85f, 1f, 1.15f };
 
+        private static void ApplyWardDamageScalar(AbilityDamageInfo damageInfo, Unit caster, Unit target)
+        {
+            Player player;
+            Creature wardedCreature;
+            float[] scalars;
+
+            Creature casterCreature = caster as Creature;
+            Player targetPlayer = GetWardPlayer(target);
+            if (IsWardCreature(casterCreature) && targetPlayer != null)
+            {
+                player = targetPlayer;
+                wardedCreature = casterCreature;
+                scalars = WardIncomingDamageScalars;
+            }
+            else
+            {
+                Creature targetCreature = target as Creature;
+                Player casterPlayer = GetWardPlayer(caster);
+                if (!IsWardCreature(targetCreature) || casterPlayer == null)
+                    return;
+
+                player = casterPlayer;
+                wardedCreature = targetCreature;
+                scalars = WardOutgoingDamageScalars;
+            }
+
+            WardTier wardTier = wardedCreature.Spawn?.Proto?.Ward ?? WardTier.None;
+            if (wardTier == WardTier.None || player.TokInterface == null)
+                return;
+
+            byte fragmentCount = player.TokInterface.GetWardFragmentCount(wardTier);
+            float scalar = scalars[Math.Min(fragmentCount, (byte)5)];
+
+            // Apply the ward as a final scalar before Guard splits the hit. This is
+            // independent of the ordinary bonus/reduction accumulator and also
+            // covers raw damage, which bypasses ApplyDamageModifiers.
+            damageInfo.Damage *= scalar;
+            damageInfo.Mitigation *= scalar;
+        }
+
+        private static Player GetWardPlayer(Unit unit)
+        {
+            Player player = unit as Player;
+            if (player != null)
+                return player;
+
+            Pet pet = unit as Pet;
+            return pet?.Owner;
+        }
+
+        private static bool IsWardCreature(Creature creature)
+        {
+            return creature != null
+                && !(creature is Pet)
+                && !(creature is Siege)
+                && !(creature is KeepCreature);
+        }
 
         #region Defense
         public static bool CheckDefense(AbilityCommandInfo cmdInfo, Unit caster, Unit target, bool isAoE)
@@ -628,11 +687,15 @@ namespace WorldServer.World.Abilities
 
                 #endregion
 
+                ApplyWardDamageScalar(damageInfo, caster, target);
+
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
 
                 damageInfo.ApplyDamageModifiers();
             }
+            else
+                ApplyWardDamageScalar(damageInfo, caster, target);
 
             #region Application
 
@@ -895,11 +958,15 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
 
+                ApplyWardDamageScalar(damageInfo, caster, target);
+
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
 
                 damageInfo.ApplyDamageModifiers();
             }
+            else
+                ApplyWardDamageScalar(damageInfo, caster, target);
 
             #region Application
 
@@ -1057,6 +1124,9 @@ namespace WorldServer.World.Abilities
                 creature.CheckDamageCaster(caster, damageInfo);
             }
 
+            if (damageInfo.DamageType == DamageTypes.RawDamage)
+                ApplyWardDamageScalar(damageInfo, caster, target);
+
             if (damageInfo.DamageEvent > 0 || damageInfo.DamageType != DamageTypes.RawDamage)
             {
                 #region Defense
@@ -1132,6 +1202,9 @@ namespace WorldServer.World.Abilities
                 damageInfo.DamageReduction *= damageReduction;
 
                 #endregion
+
+                if (damageInfo.DamageType != DamageTypes.RawDamage)
+                    ApplyWardDamageScalar(damageInfo, caster, target);
 
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -1333,6 +1406,8 @@ namespace WorldServer.World.Abilities
 
                 if (caster is Creature && !(caster is Pet) && caster.Level > target.EffectiveLevel + 3)
                     damageInfo.DamageBonus += (caster.Level - 3 - target.EffectiveLevel) * 0.4f;
+
+                ApplyWardDamageScalar(damageInfo, caster, target);
 
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -1550,6 +1625,8 @@ namespace WorldServer.World.Abilities
             damageInfo.DamageReduction *= damageReduction;
 
             #endregion
+
+            ApplyWardDamageScalar(damageInfo, caster, target);
 
             // Guard is separate because it needs to come after shielding
             target.BuffInterface.CheckGuard(damageInfo, caster);
