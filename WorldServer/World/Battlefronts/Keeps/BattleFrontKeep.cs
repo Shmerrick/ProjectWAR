@@ -468,6 +468,13 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 _logger.Info($"Guild Flag changing state from {GuildFlag.State} to {newState} ");
                 GuildFlag.State = newState;
+
+                if (newState == StateFlags.Unsecure)
+                {
+                    GuildFlag.ClaimingGuild = null;
+                    GuildFlag.OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+                    OwningGuild = null;
+                }
             }
         }
 

@@ -6,6 +6,7 @@ using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using SystemData;
 using WorldServer.NetWork.Handler;
@@ -153,13 +154,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool CanClaim(Player player)
         {
-            //foreach (var vaultUser in player.GldInterface.Guild.GuildVaultUser)
-            //{
-            //    if (player.CharacterId == vaultUser.CharacterId)
-            //        return true;
-            //}
+            var guild = player?.GldInterface?.Guild;
+            if (guild?.Info?.Members == null || guild.Info.Ranks == null || Keep == null)
+                return false;
 
-            return true;
+            if (Keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED || player.Realm != Keep.PendingRealm)
+                return false;
+
+            Guild_member member;
+            if (!guild.Info.Members.TryGetValue(player.CharacterId, out member))
+                return false;
+
+            Guild_rank rank;
+            if (!guild.Info.Ranks.TryGetValue(member.RankId, out rank))
+                return false;
+
+            return HasClaimPermission(rank);
+        }
+
+        private static bool HasClaimPermission(Guild_rank rank)
+        {
+            var encodedPermissions = rank?.Permissions?.Replace(" ", "");
+            var permission = (int)GuildPermissions.GUILDPERMISSONS_CLAIM_KEEP;
+            var byteOffset = permission / 8 * 2;
+
+            if (string.IsNullOrEmpty(encodedPermissions) || encodedPermissions.Length < byteOffset + 2)
+                return false;
+
+            byte permissionByte;
+            if (!byte.TryParse(encodedPermissions.Substring(byteOffset, 2), NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture, out permissionByte))
+                return false;
+
+            return (permissionByte & (1 << (permission % 8))) != 0;
         }
 
 
@@ -183,21 +210,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             }
 
-            if (this.Keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
+            if (Keep == null)
             {
-                player.SendClientMessage("You can only claim a keep when it's lord has been killed", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                player.SendClientMessage("This keep claim is not available yet", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (Keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
+            {
+                player.SendClientMessage("You can only claim a keep when its lord has been killed", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (player.Realm != Keep.PendingRealm)
+            {
+                player.SendClientMessage("You cannot claim a keep for the defending realm", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
 
             if (!CanClaim(player))
             {
-                player.SendClientMessage("You are not senior enough in your guild to claim this keep", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                return;
-            }
-
-            if (OwningRealm == player.Realm)
-            {
-                player.SendClientMessage("Your realm already owns this keep.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                player.SendClientMessage("Your guild rank does not permit you to claim keeps", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
 
@@ -240,14 +273,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override void NotifyInteractionComplete(NewBuff b)
         {
-            this.CapturingPlayer.SendClientMessage(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} for {this.CapturingPlayer.GldInterface.Guild.Info.Name}");
-            BattlefrontLogger.Info(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} for {this.CapturingPlayer.GldInterface.Guild.Info.Name}");
-            this.ClaimingGuild = this.CapturingPlayer.GldInterface.Guild;
-            this.OwningRealm = this.CapturingPlayer.Realm;
+            var player = CapturingPlayer;
             _captureInProgress = false;
             CapturingPlayer = null;
 
-            this.Keep.OnGuildClaimInteracted(this.ClaimingGuild.Info.GuildId);
+            if (State != StateFlags.Unsecure || !CanClaim(player))
+            {
+                player?.SendClientMessage("The keep claim is no longer valid", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            var guild = player.GldInterface.Guild;
+            player.SendClientMessage($"{player.Name} has claimed {Keep.Info.Name} for {guild.Info.Name}");
+            BattlefrontLogger.Info($"{player.Name} has claimed {Keep.Info.Name} for {guild.Info.Name}");
+            ClaimingGuild = guild;
+            OwningRealm = player.Realm;
+
+            Keep.OnGuildClaimInteracted(guild.Info.GuildId);
         }
         //public override void AddInRange(Object obj)
         //{
