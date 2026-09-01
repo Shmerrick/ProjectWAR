@@ -1,4 +1,9 @@
--- Restores creature ward tiers retained in repository data or verified against official captures.
+-- SUPERSEDED BY 08_move_creature_wards_to_spawns.sql.
+--
+-- This historical update restored ward bits by prototype before it was confirmed that the same
+-- prototype is reused with different wards in different locations. Script 08 reverses the 79
+-- changes made here and moves authoritative ward state to concrete spawn rows. This file remains
+-- in sequence so existing installations and fresh imports converge on the same final state.
 --
 -- F_CREATE_MONSTER offset 35 is creature_protos.Unk2. Its low three bits encode the ward tier;
 -- upper bits are unrelated flags and must be preserved. Capture-derived rows require an exact,

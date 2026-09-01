@@ -113,6 +113,7 @@ namespace WorldServer.Managers.Commands
                     newSpawn.ZoneID = (ushort)spawn.ZoneId;
                     newSpawn.Emote = spawn.Emote;
                     newSpawn.Level = spawn.Level;
+                    newSpawn.Ward = spawn.Ward;
                     newSpawn.SpawnGroupID = (uint)spawngroup;
                     newSpawn.ConnectedbossId = (uint)bossId;
                     newSpawn.Realm = (byte)realm;
@@ -151,6 +152,7 @@ namespace WorldServer.Managers.Commands
             newSpawn.ZoneID = (ushort)spawn.ZoneId;
             newSpawn.Emote = spawn.Emote;
             newSpawn.Level = spawn.Level;
+            newSpawn.Ward = spawn.Ward;
             newSpawn.SpawnGroupID = (uint)spawngroup;
             newSpawn.bossId = (uint)bossId;
             newSpawn.InstanceID = (byte)instanceid;

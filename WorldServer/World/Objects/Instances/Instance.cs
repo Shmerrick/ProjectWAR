@@ -368,6 +368,9 @@ namespace WorldServer.World.Objects.Instances
                     spawn.WorldZ = obj.WorldZ;
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
+                    spawn.Level = obj.Level;
+                    spawn.Emote = obj.Emote;
+                    spawn.Ward = obj.Ward;
                     spawn.Enabled = 1;
 
 					InstanceBossSpawn IS = null;
@@ -691,6 +694,9 @@ namespace WorldServer.World.Objects.Instances
                     spawn.WorldZ = obj.WorldZ;
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
+                    spawn.Level = obj.Level;
+                    spawn.Emote = obj.Emote;
+                    spawn.Ward = obj.Ward;
                     spawn.Enabled = 1;
 
                     InstanceSpawn IS = new InstanceSpawn(spawn, obj.SpawnGroupID, obj.ConnectedbossId, this);

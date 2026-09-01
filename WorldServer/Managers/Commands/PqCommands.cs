@@ -81,6 +81,7 @@ namespace WorldServer.Managers.Commands
                     newSpawn.ZoneId = spawn.ZoneId;
                     newSpawn.Emote = spawn.Emote;
                     newSpawn.Level = spawn.Level;
+                    newSpawn.Ward = spawn.Ward;
 
                     WorldMgr.Database.AddObject(newSpawn);
                     break;

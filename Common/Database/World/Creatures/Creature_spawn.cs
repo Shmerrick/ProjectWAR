@@ -25,6 +25,7 @@ namespace Common
         private byte _Emote;
         private byte _Faction;
         private byte _Level;
+        private byte _Ward;
         private uint _Oid;
         private byte _Enabled;
 
@@ -108,6 +109,32 @@ namespace Common
         {
             get { return _Level; }
             set { _Level = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Ward applied to this concrete spawn. Prototypes are reused across locations and
+        /// therefore cannot safely own ward state.
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public byte Ward
+        {
+            get { return _Ward; }
+            set
+            {
+                _Ward = value <= (byte)WardTier.Supreme ? value : (byte)WardTier.None;
+                Dirty = true;
+            }
+        }
+
+        public WardTier WardTier => (WardTier)_Ward;
+
+        /// <summary>
+        /// Combines prototype-owned upper packet flags with this spawn's ward tier.
+        /// </summary>
+        public ushort GetPacketUnk2()
+        {
+            ushort prototypeFlags = (ushort)((Proto?.Unk2 ?? 0) & ~0x7);
+            return (ushort)(prototypeFlags | _Ward);
         }
 
         [DataElement(AllowDbNull = false)]

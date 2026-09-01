@@ -39,13 +39,17 @@ WAR changed wards during its lifetime. Earlier descriptions used armor-piece bon
 
 ## Creature Ward Representation
 
-`F_CREATE_MONSTER` carries the creature's ward at packet offset 35. WAR-RE-Toolkit's server serializer names this field `Monster.Wards`; ProjectWAR already maps the same field to `creature_protos.Unk2`. Official capture families use bare values, `0xE8`-based values, and `1000`-based values. The ward tier is the low three bits:
+`F_CREATE_MONSTER` carries the creature instance's effective ward at packet offset 35. WAR-RE-Toolkit's server serializer names this field `Monster.Wards`. ProjectWAR previously copied the complete field from `creature_protos.Unk2`, but prototypes are reused at different levels, ranks, locations, and ward tiers. A prototype is therefore not an authoritative ward assignment.
+
+Official capture families use bare values, `0xE8`-based values, and `1000`-based values. The ward tier is the low three bits:
 
 ```text
-ward tier = creature_protos.Unk2 & 0x7
+ward tier = F_CREATE_MONSTER offset 35 & 0x7
 ```
 
-The upper bits must be preserved. Values 0 through 5 map to no ward, Lesser, Greater, Superior, Excelsior, and Supreme. Values 6 and 7 are invalid/reserved and are treated as no ward. Creature rank is encoded and processed separately. Across 748,044 official spawn packets that matched exactly one ProjectWAR prototype by normalized name, model, and level, this tier agrees with the database in 99.28% of packets; the mismatches identify missing data and identities whose ward changed between captures.
+The prototype supplies only the upper packet flags. The concrete world, instance, boss, or public-quest spawn supplies the low ward bits. Values 0 through 5 map to no ward, Lesser, Greater, Superior, Excelsior, and Supreme. Values 6 and 7 are invalid/reserved and are normalized to no ward. Creature rank is encoded and processed separately.
+
+Across 748,044 official spawn packets that matched exactly one ProjectWAR prototype by normalized name, model, and level, the low bits agreed with the historical prototype snapshot in 99.28% of packets. This validates the wire encoding, not prototype-level assignment: the match omitted the packet's location and cannot distinguish copies of the same prototype used with different wards.
 
 The client also defines these ward mechanic abilities:
 
@@ -57,13 +61,15 @@ The client also defines these ward mechanic abilities:
 | Excelsior | 12964 | 12965 |
 | Supreme | 12966 | 12967 |
 
-Abilities 12958-12967 establish the ward counters/effects, while completed sigil abilities 12975-12979 contain the final scalar table. They are client-mechanic evidence, not the creature assignment source. ProjectWAR reads each creature's tier directly from its prototype, caches player fragment totals and cumulative completions when the Tome interface loads or awards an unlock, and applies the scalar to direct, proc, periodic, auto-attack, off-hand, and raw damage. The combat path performs only fixed-size array and field lookups.
+Abilities 12958-12967 establish the ward counters/effects, while completed sigil abilities 12975-12979 contain the final scalar table. They are client-mechanic evidence, not the creature assignment source. ProjectWAR reads the effective tier from the concrete spawn, caches player fragment totals and cumulative completions when the Tome interface loads or awards an unlock, and applies the scalar to direct, proc, periodic, auto-attack, off-hand, and raw damage. The combat path performs only fixed-size array and field lookups.
 
 ## Assignment Coverage
 
-The current curated world dump contains 13,754 creature prototypes. Before the incremental update, 517 encode Lesser, 126 Greater, nine Superior, and 19 Excelsior; no prototype encodes Supreme. Master and a 2021 repository snapshot confirm 31 mappings already present in the current dump. A full scan of 926,226 official spawns adds 79 missing mappings whose normalized name, model, and level resolve to exactly one prototype and whose captured tier never conflicts. `Database/07_restore_known_creature_ward_tiers.sql` records all 110 mappings and changes only rows whose current low three bits are zero, preserving upper bits and existing/custom tiers.
+The current curated world dump contains 13,754 creature prototypes, but their low `Unk2` bits are historical packet snapshots rather than safe gameplay assignments. `Database/07_restore_known_creature_ward_tiers.sql` attempted to restore 79 additional prototype values from exact name/model/level capture matches. `Database/08_move_creature_wards_to_spawns.sql` reverses those changes and adds explicit `Ward` columns to `creature_spawns`, `instance_creature_spawns`, `instance_boss_spawns`, and `pquest_spawns`.
 
-Spawn packets do not contain ProjectWAR prototype entry IDs, so generic names, model/level mismatches, and any identity observed with multiple tiers remain excluded. Restore further rows only when packet identity can be tied unambiguously to a prototype. `Instance_Info.WardsNeeded` is not a creature tier, and assignments must not be inferred from rank, level, or instance membership.
+New spawn columns default to no ward. Existing prototype low bits are ignored by runtime combat and are replaced during packet serialization, preventing a reused prototype from leaking a ward into another location. Populate a spawn ward only when evidence identifies the concrete location or spawn; do not infer it merely from rank, level, name, or general dungeon membership. `Instance_Info.WardsNeeded` remains unverified and is not used as a creature tier.
+
+The 926,226-packet corpus remains useful for assignment work, but it must be reprocessed with zone and coordinate context. Generic identities, model/level-only matches, and observations that cannot be tied to one concrete spawn remain excluded.
 
 ## Evidence
 

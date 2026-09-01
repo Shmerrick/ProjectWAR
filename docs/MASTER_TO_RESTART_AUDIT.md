@@ -25,7 +25,7 @@ The initial, exclusive inventory accounts for every commit:
 
 Master commit `be17d15d` exposed a real RESTART defect: several live SQL statements ignored configured schema names. The useful portion was reimplemented against current APIs in `AccountMgr`, `CharMgr`, `WorldMgr`, and `NpcCommands`. Nine queries now use `GetSchemaName()` (or the account RPC equivalent). Obsolete CharacterUtility and project-reference changes from that commit were intentionally excluded.
 
-Master's world snapshot also retained ten creature ward assignments that helped recover the native ward field. Combined with a 2021 repository snapshot and exact official-capture correlations, `07_restore_known_creature_ward_tiers.sql` records 110 authoritative prototype mappings and fills 79 tiers absent from the current dump without replacing current/custom values. This is selective data recovery, not a reason to import Master's database wholesale.
+Master's world snapshot also retained creature packet values that helped identify the native ward field. A later audit established that prototypes are reused across locations with different levels, ranks, and wards, so those values validate the low-bit wire encoding but are not authoritative prototype-wide assignments. `08_move_creature_wards_to_spawns.sql` supersedes and reverses the 79 prototype changes from `07`; future recovery must target concrete spawns using location evidence.
 
 Release/x64 compilation succeeds with zero reported warnings or errors.
 
@@ -47,7 +47,7 @@ The 2020-2022 movement, AI, quest, and ability histories are long edit/revert ch
 
 There are 167 non-merge commits touching SQL/database paths. The prior curated import indexed 112 cooler-SAI SQL commits (including merge metadata), started from a full master database snapshot, retained master ability/AI and creature tables, restored known-good baseline tables, and preserved tables master had dropped. RESTART's `war_world.7z` then received additional schema and data repairs through April 2026.
 
-No master database commit should now be cherry-picked wholesale. Useful retained values such as the ward tiers above should be recovered through reviewed, idempotent incremental scripts. Commit `4ba4fa07` merely republishes base dumps, and `28e5fb24` repackages archives while deleting account/character base SQL; both conflict with current repository database rules. The 2023 Nordland PQ commit (`7328f2fd`) contains only a database archive and two compiled zone images; validate it against the separately distributed current zone asset bundle rather than importing the commit.
+No master database commit should now be cherry-picked wholesale. Useful retained values must be recovered through reviewed, idempotent incremental scripts and tied to the correct persistence scope; ward evidence, in particular, must resolve to concrete locations rather than prototypes. Commit `4ba4fa07` merely republishes base dumps, and `28e5fb24` repackages archives while deleting account/character base SQL; both conflict with current repository database rules. The 2023 Nordland PQ commit (`7328f2fd`) contains only a database archive and two compiled zone images; validate it against the separately distributed current zone asset bundle rather than importing the commit.
 
 ## Candidates Requiring New Work
 

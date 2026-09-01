@@ -1467,19 +1467,6 @@ namespace Common
             set { if (_Unks == null)_Unks = new ushort[7]; _Unks[2] = value; }
         }
 
-        /// <summary>
-        /// Gets the ward tier encoded in the low three bits of F_CREATE_MONSTER
-        /// offset 35. The remaining bits in Unk2 are unrelated packet flags.
-        /// </summary>
-        public WardTier Ward
-        {
-            get
-            {
-                byte tier = (byte)(Unk2 & 0x7);
-                return tier <= (byte)WardTier.Supreme ? (WardTier)tier : WardTier.None;
-            }
-        }
-
         [DataElement(AllowDbNull = false)]
         public ushort Unk3
         {

@@ -43,7 +43,7 @@ namespace WorldServer.World.Abilities
                 scalars = WardOutgoingDamageScalars;
             }
 
-            WardTier wardTier = wardedCreature.Spawn?.Proto?.Ward ?? WardTier.None;
+            WardTier wardTier = wardedCreature.Spawn?.WardTier ?? WardTier.None;
             if (wardTier == WardTier.None || player.TokInterface == null)
                 return;
 

@@ -49,6 +49,9 @@ namespace Common
         [DataElement]
         public byte Level { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public byte Ward { get; set; }
+
         [DataElement]
         public byte Emote { get; set; }
 

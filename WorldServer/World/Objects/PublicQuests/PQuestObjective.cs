@@ -84,6 +84,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     S.Emote = spawn.Emote;
                     //This sets NPC level from puest_spawns table, we are not using creature_protos here
                     S.Level = spawn.Level;
+                    S.Ward = spawn.Ward;
                     
                     PQuestCreature newCreature = new PQuestCreature(S, this, Quest);
                     newCreature.PQSpawnId = spawn.pquest_spawns_ID.Replace(" ", "");

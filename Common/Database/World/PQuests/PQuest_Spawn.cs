@@ -19,6 +19,7 @@ namespace Common
         public int _WorldO;
         private byte _Emote;
         private byte _Level;
+        private byte _Ward;
         private uint _Unk3;
 
         /// <summary>
@@ -102,6 +103,17 @@ namespace Common
         {
             get { return _Level; }
             set { _Level = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Ward
+        {
+            get { return _Ward; }
+            set
+            {
+                _Ward = value <= (byte)WardTier.Supreme ? value : (byte)WardTier.None;
+                Dirty = true;
+            }
         }
 
         [DataElement()]
