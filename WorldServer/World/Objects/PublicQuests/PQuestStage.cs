@@ -8,6 +8,7 @@ namespace WorldServer.World.Objects.PublicQuests
     public class PQuestStage
     {
         public int Number;
+        public ushort StageId;
         public string StageName;
         public string Description;
         public ushort Time;

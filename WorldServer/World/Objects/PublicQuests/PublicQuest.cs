@@ -46,15 +46,27 @@ namespace WorldServer.World.Objects.PublicQuests
             Players = new Dictionary<uint, ContributionInfo>();
             Stages = new List<PQuestStage>();
 
-            foreach (PQuest_Objective obj in info.Objectives)
+            IEnumerable<PQuest_Objective> objectives = info.Objectives;
+            if (info.Objectives.Any(x => x.StageId != 0))
             {
-                // Create a new public quest stage for this objective, if one did not previously exist.
-                bool exists = Stages.Any(x => x.StageName == obj.StageName);
+                objectives = info.Objectives
+                    .OrderBy(x => x.StageId == 0 ? ushort.MaxValue : x.StageId)
+                    .ThenBy(x => x.Guid);
+            }
 
-                if (!exists)
+            foreach (PQuest_Objective obj in objectives)
+            {
+                // Most legacy data groups objectives by display name. StageId allows consecutive
+                // phases to intentionally share that display name, as the 1.4.8 client does.
+                PQuestStage stage = obj.StageId == 0
+                    ? Stages.FirstOrDefault(x => x.StageId == 0 && x.StageName == obj.StageName)
+                    : Stages.FirstOrDefault(x => x.StageId == obj.StageId);
+
+                if (stage == null)
                 {
-                    PQuestStage stage = new PQuestStage
+                    stage = new PQuestStage
                     {
+                        StageId = obj.StageId,
                         StageName = obj.StageName,
                         Number = Stages.Count,
                         Description = obj.Description,
@@ -63,21 +75,14 @@ namespace WorldServer.World.Objects.PublicQuests
                     Stages.Add(stage);
                 }
 
-                // Assign this objective to its public quest stage.
-                foreach (PQuestStage stage in Stages)
+                PQuestObjective objective = new PQuestObjective
                 {
-                    if (stage.StageName == obj.StageName)
-                    {
-                        PQuestObjective objective = new PQuestObjective
-                        {
-                            Quest = this,
-                            Objective = obj,
-                            ObjectiveID = obj.Guid,
-                            Count = 0
-                        };
-                        stage.AddObjective(objective);
-                    }
-                }
+                    Quest = this,
+                    Objective = obj,
+                    ObjectiveID = obj.Guid,
+                    Count = 0
+                };
+                stage.AddObjective(objective);
             }
         }
 
@@ -190,9 +195,35 @@ namespace WorldServer.World.Objects.PublicQuests
 
                 if (player.DebugMode)
                     player.SendLocalizeString("PQ STAGE ID: " + Stage.Objectives.First().ObjectiveID, ChatLogFilters.CHATLOGFILTERS_ALLIANCE, GameData.Localized_text.CHAT_TAG_MONSTER_EMOTE);
-
-
             }
+
+            SendObjectiveTrackerState(player);
+        }
+
+        private void SendObjectiveTrackerState(Player player)
+        {
+            // The 1.4.8 client expects these packets after F_OBJECTIVE_INFO before it
+            // creates or refreshes the public-quest tracker. RvR objective traffic used
+            // to initialize this state accidentally when a player entered a lake.
+            PacketOut objectiveState = new PacketOut((byte)Opcodes.F_OBJECTIVE_STATE, 16);
+            objectiveState.WriteUInt32(Info.Entry);
+            objectiveState.Fill(0xFF, 6);
+            objectiveState.WriteUInt16(0);
+            objectiveState.WriteByte(0);
+            objectiveState.Fill(0, 2);
+            objectiveState.WriteByte(0);
+            player.SendPacket(objectiveState);
+
+            PacketOut realmBonus = new PacketOut((byte)Opcodes.F_REALM_BONUS, 3);
+            realmBonus.WriteByte((byte)player.Realm);
+            realmBonus.WriteUInt16(0);
+            player.SendPacket(realmBonus);
+
+            PacketOut statusUpdate = new PacketOut((byte)Opcodes.F_OBJECTIVE_UPDATE, 8);
+            statusUpdate.WriteUInt32(Info.Entry);
+            statusUpdate.WriteByte(9);
+            statusUpdate.Fill(0, 3);
+            player.SendPacket(statusUpdate);
         }
 
         #endregion
@@ -382,7 +413,8 @@ namespace WorldServer.World.Objects.PublicQuests
 
         }
 
-    public void HandleEvent(Player player, Objective_Type type, uint entry, int count, ushort contributionGain,string pqGoClicked = null)
+        public void HandleEvent(Player player, Objective_Type type, uint entry, int count, ushort contributionGain,
+            string pqGoClicked = null)
         {
             if (Stage == null)
                 return;
@@ -484,6 +516,7 @@ namespace WorldServer.World.Objects.PublicQuests
                         break;
 
                     case Objective_Type.QUEST_UNKNOWN:
+                    case Objective_Type.QUEST_SCRIPTED_EVENT:
                         if (obj.Objective.Guid == entry)
                             obj.Count += count;
                         break;
@@ -667,7 +700,9 @@ namespace WorldServer.World.Objects.PublicQuests
                     Stage = sStage;
                     Stage.Reset();
                     _stageTimeEnd = TCPManager.GetTimeStamp() + ((Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
-                    if (sStage.Objectives.First().Objective.Type != (byte)Objective_Type.QUEST_PROTECT_UNIT)
+                    byte objectiveType = sStage.Objectives.First().Objective.Type;
+                    if (objectiveType != (byte)Objective_Type.QUEST_PROTECT_UNIT &&
+                        objectiveType != (byte)Objective_Type.QUEST_SCRIPTED_EVENT)
                         EvtInterface.AddEvent(Failed, (Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE) * 1000, 1);
 
                     foreach (uint Plr in ActivePlayers)

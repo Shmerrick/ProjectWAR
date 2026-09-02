@@ -125,6 +125,9 @@ namespace Common
         [DataElement()]
         public uint AllowVfxUpdate { get; set; }
 
+        [DataElement()]
+        public ushort CaptureDuration { get; set; }
+
         [DataElement(AllowDbNull = true)]
         public ushort[] Unks { get; set; } = new ushort[6];
 

@@ -978,6 +978,10 @@ namespace WorldServer.World.Objects
             // Push the current state of all BattlefieldObjectives to the client immediately
             // so the zone map shows owner and capture status without requiring physical proximity.
             Region?.Campaign?.SendObjectives(this);
+
+            // Area and PQ state can be discovered before the client finishes loading. Tracker
+            // initialization sent above replaces that early UI state, so refresh it last.
+            CheckArea(true);
         }
 
         private void RestoreBotPositionFromValue()
@@ -2311,68 +2315,61 @@ namespace WorldServer.World.Objects
         }
 
         private ushort _currentAreaId;
+        private ushort _currentAreaZoneId;
+        private bool _currentAreaIsRvR;
 
         public void SendChapterBar()
         {
             if (CurrentArea == null)
+            {
+                if (_currentAreaId > 0)
+                    SendAreaTrackerState(_currentAreaId, _currentAreaZoneId, _currentAreaIsRvR, false);
+
+                _currentAreaId = 0;
+                _currentAreaZoneId = 0;
+                _currentAreaIsRvR = false;
                 return;
+            }
 
 #if DEBUG
             //Log.Info("new area ", "id " + CurrentArea.AreaId);
 #endif
 
-            PacketOut Out;
             if (IsInRvRLake)
             {
-                //notify entering lakes, required to show rvr tracker. TODO move it to switch_region
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(Zone.ZoneId);   //zoneID
-                Out.WriteByte(0x11);
-                Out.WriteByte(1);
-                Out.WriteByte(1);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
+                // Notify the client that the current zone contains an active RvR lake.
+                SendObjectiveTrackerZoneState(Zone.ZoneId);
+            }
 
-                //show rvr tracker
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(_currentAreaId);   //zoneID
-                Out.WriteByte(0x11);
-                Out.WriteByte(2);
-                Out.WriteByte(1);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
-            }
             if (_currentAreaId > 0)
-            {
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(_currentAreaId);   // area id
-                //Out.WriteUInt16(1);   // area id
-                Out.WriteByte(0x11);
-                Out.WriteByte(2);
-                Out.WriteByte(2);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
-            }
+                SendAreaTrackerState(_currentAreaId, _currentAreaZoneId, _currentAreaIsRvR, false);
 
             _currentAreaId = CurrentArea.AreaId;
+            _currentAreaZoneId = CurrentArea.ZoneId;
+            _currentAreaIsRvR = IsInRvRLake;
 
-            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-            Out.WriteUInt16(_currentAreaId);   // area id
-            //Out.WriteUInt16(1);   // area id
+            SendAreaTrackerState(_currentAreaId, _currentAreaZoneId, _currentAreaIsRvR, true);
+        }
+
+        private void SendAreaTrackerState(ushort areaId, ushort zoneId, bool isRvR, bool active)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
+            Out.WriteUInt16(areaId);
             Out.WriteByte(0x11);
             Out.WriteByte(2);
-            Out.WriteByte(1);
-            Out.WriteByte(0);
-            Out.Fill(0, 4);
+            Out.WriteByte(active ? (byte)1 : (byte)2);
+            Out.WriteByte(isRvR ? (byte)1 : (byte)0);
+
+            if (active)
+                Out.Fill(0, 4);
+            else
+            {
+                // Official 1.4.8 closes identify the zone that owned the old area.
+                // Omitting it leaves stale RvR influence in the client's area list.
+                Out.WriteUInt16(zoneId);
+                Out.Fill(0, 2);
+            }
+
             SendPacket(Out);
         }
         public void SendTitleUpdate()
@@ -5608,6 +5605,11 @@ namespace WorldServer.World.Objects
 
         public void ApplyBolster(byte newMaxLevel)
         {
+            // Buff removal can be reported more than once when duplicate bolster buffs are
+            // cleared. Once the player is already unbolstered there is no state to restore.
+            if (newMaxLevel == 0 && StsInterface.BolsterLevel == 0)
+                return;
+
             if (newMaxLevel > 0)
             {
                 // Because of the delay between queuing and application of the buff, the player may have attempted to change his gear or spec
@@ -6672,7 +6674,7 @@ namespace WorldServer.World.Objects
         public byte CurrentPQArea;
         private long _nextAreaCheckTime;
 
-        private void CheckArea()
+        private void CheckArea(bool refreshClientTrackers = false)
         {
             if (MoveBlock)
                 return;
@@ -6699,7 +6701,8 @@ namespace WorldServer.World.Objects
             }
             Log.Dump("CheckArea", " PQ Area : " + pqarea);
 
-            if (CurrentPQArea != pqarea)
+            bool pqAreaChanged = CurrentPQArea != pqarea;
+            if (pqAreaChanged)
             {
                 if (pqarea == 31)
                 {
@@ -6735,7 +6738,8 @@ namespace WorldServer.World.Objects
             bool wasInRvRLake = _isInRvRLake;
             bool isInRvRLake = IsRvRLakeArea(newArea);
 
-            if (newArea != previousArea)
+            bool areaChanged = newArea != previousArea;
+            if (areaChanged)
             {
                 if (newArea != null)
                 {
@@ -6784,14 +6788,23 @@ namespace WorldServer.World.Objects
                 if (wasInRvRLake)
                 {
                     Region.Campaign?.NotifyLeftLake(this);
-                    // Start 10-minute countdown to unflag PvP
-                    ((CombatInterface_Player)CbtInterface).NextAllowedDisable = TCPManager.GetTimeStampMS() + 10 * 60 * 1000;
-                    SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.TEXT_RVR_UNFLAG);
+                    ((CombatInterface_Player)CbtInterface).BeginPvpDisableCountdown();
                 }
             }
 
             _isInRvRLake = isInRvRLake;
-            //     else 
+
+            if (refreshClientTrackers)
+            {
+                if (!areaChanged && CurrentArea != null)
+                    SendChapterBar();
+            }
+
+            // Chapter packets can replace a PQ tracker initialized earlier in this method.
+            // Always send the active PQ last when its area changed or the client requested refresh.
+            if (pqAreaChanged || refreshClientTrackers)
+                QtsInterface.PublicQuest?.SendCurrentStage(this);
+            //     else
             //SendClientMessage("Same Area");
         }
 

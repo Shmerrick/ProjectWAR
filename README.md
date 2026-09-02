@@ -131,8 +131,13 @@ Current scripts, oldest first:
 | `06_remove_invalid_creature_ability_header.sql` | Removes a CSV header accidentally imported as an unusable creature ability row |
 | `07_restore_known_creature_ward_tiers.sql` | Historical prototype-level ward restoration; superseded by `08` because prototypes are reused across locations |
 | `08_move_creature_wards_to_spawns.sql` | Adds ward fields to concrete world, instance, boss, and PQ spawns and reverses the unsafe prototype assignments from `07` |
+| `09_normalize_spawn_ward_columns.sql` | Normalizes pre-existing ward columns to validated unsigned, non-null, default-zero fields |
+| `10_restore_ruinous_powers_tombstones.sql` | Restores the 25 capture-verified Perished Soul objects and their three-second interactions for Ruinous Powers stage II |
+| `11_restore_ruinous_powers_finale.sql` | Restores Mathus's timed ritual movement and the capture-verified Bloodhowler finale as separate phases |
+| `12_restore_norsca_chapter_state.sql` | Corrects Chaos Chapter 2 influence, restores Ruinous Powers scenery/ToK objects, and moves its reward chest to the official position |
+| `13_restore_mailbox_spawns.sql` | Restores 190 historical Order and Destruction mailbox spawns across 32 zones |
 
-Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, and `08` adds missing spawn columns before reversing the 79 rows changed by `07`.
+Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, `08` adds missing spawn columns before reversing the 79 rows changed by `07`, `09` enforces the final ward-column definition, `10` replaces only the spawn rows belonging to Ruinous Powers objective 800, `11` upserts only the two capture-backed finale phases and their spawns, `12` upserts only the three capture-backed Norsca objects while correcting the associated chapter and chest rows, and `13` replaces only the 190 historical mailbox GUIDs while preserving unrelated custom spawns.
 
 Checkpoint: all three databases exist and contain tables.
 

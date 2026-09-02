@@ -20,7 +20,8 @@ namespace Common
         QUEST_WIN_SCENARIO = 8,
         QUEST_CAPTURE_BO = 9,
         QUEST_CAPTURE_KEEP = 10,
-        QUEST_KILL_GO = 11
+        QUEST_KILL_GO = 11,
+        QUEST_SCRIPTED_EVENT = 12
     };
 
     // Fixed value of a character

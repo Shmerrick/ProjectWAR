@@ -21,6 +21,9 @@ namespace Common
         public string StageName { get; set; }
 
         [DataElement(AllowDbNull = false)]
+        public ushort StageId { get; set; }
+
+        [DataElement(AllowDbNull = false)]
         public byte Type { get; set; }
 
         [DataElement(Varchar = 255, AllowDbNull = false)]

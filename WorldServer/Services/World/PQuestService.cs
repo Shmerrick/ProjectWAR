@@ -82,11 +82,12 @@ namespace WorldServer.Services.World
                     goto case Objective_Type.QUEST_KILL_MOB;
                 case Objective_Type.QUEST_KILL_MOB:
                     {
-                        uint ObjID = 0;
-                        uint.TryParse(Obj.ObjectId, out ObjID);
-
-                        if (ObjID != 0)
-                            Obj.Creature = CreatureService.GetCreatureProto(ObjID);
+                        Obj.Creature = GetCreatureProto(Obj.ObjectId) ??
+                                       GetCreatureProto(Obj.ObjectId2) ??
+                                       GetCreatureProto(Obj.ObjectId3) ??
+                                       GetCreatureProto(Obj.ObjectId4) ??
+                                       GetCreatureProto(Obj.ObjectId5) ??
+                                       GetCreatureProto(Obj.ObjectId6);
 
                         if (Obj.Description.Length < 1 && Obj.Creature != null)
                             Obj.Description = Obj.Creature.Name;
@@ -126,6 +127,14 @@ namespace WorldServer.Services.World
                     }
                     break;
             }
+        }
+
+        private static Creature_proto GetCreatureProto(string objectId)
+        {
+            uint entry;
+            return uint.TryParse(objectId, out entry) && entry != 0
+                ? CreatureService.GetCreatureProto(entry)
+                : null;
         }
 
         public static List<PQuest_Loot> _PQLoot;

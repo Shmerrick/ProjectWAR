@@ -234,14 +234,18 @@ namespace WorldServer.World.Interfaces
         public void TogglePvPFlag()
         {
             if (IsPvp)
-            {
-                if (NextAllowedDisable == 0)
-                    NextAllowedDisable = TCPManager.GetTimeStampMS() + 10 * 60 * 1000;
-
-                _Owner.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.TEXT_RVR_UNFLAG);
-            }
+                BeginPvpDisableCountdown();
             else
                 EnablePvp();
+        }
+
+        public void BeginPvpDisableCountdown()
+        {
+            if (!IsPvp || NextAllowedDisable != 0)
+                return;
+
+            NextAllowedDisable = TCPManager.GetTimeStampMS() + 10 * 60 * 1000;
+            _player.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.TEXT_RVR_UNFLAG);
         }
 
         public void EnablePvp()

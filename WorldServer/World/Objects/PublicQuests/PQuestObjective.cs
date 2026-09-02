@@ -2,8 +2,6 @@
 using FrameWork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Objects.PublicQuests
@@ -124,6 +122,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
 
                     PQuestGameObject NewGo = new PQuestGameObject(S, this);
+                    NewGo.CaptureDuration = spawn.CaptureDuration;
                     if (NewGo != null)
                     { 
                         lock (ActiveGameObjects)

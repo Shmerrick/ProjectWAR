@@ -9,6 +9,10 @@ This file is the single source of truth for repository-specific AI-agent instruc
 3. Do not modify the base SQL dumps in `Database/` (`war_accounts.sql`, `war_characters.sql`, `war_world.sql`).
 4. If work requires database changes, add a new incremental update script instead of editing the base dumps.
 5. Run compile or validation checks before handing work off when the task materially changes code.
+6. Apply every new incremental SQL script to the database configured by the local Release build,
+   then verify the resulting schema and data so the local server is ready for end-to-end testing.
+   Do not claim database-backed functionality was tested when only compilation or an isolated
+   schema fixture was validated.
 
 ## P10-Inspired Workflow Rules
 

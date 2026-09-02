@@ -679,6 +679,7 @@
     <Compile Include="World\Scripting\Lairs\Beastlords\AllBeastlords.cs" />
     <Compile Include="World\Scripting\PublicQuests\BasicPublicQuest.cs" />
     <Compile Include="World\Scripting\PublicQuests\Destro\DeathstoneQuarry.cs" />
+    <Compile Include="World\Scripting\PublicQuests\Destro\RuinousPowers.cs" />
     <Compile Include="World\Scripting\PublicQuests\Order\RavenHostVanguard.cs" />
     <Compile Include="World\Scripting\Quests\BasicQuest.cs" />
     <Compile Include="World\Scripting\Quests\GrimmenhagenBurning.cs">
@@ -883,4 +884,3 @@ if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirecto
   </Target>
   <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>
-
