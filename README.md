@@ -141,8 +141,10 @@ Current scripts, oldest first:
 | `16_remove_orphaned_bilerot_spawn.sql` | Removes the sole Bilerot instance spawn whose prototype is missing and whose position is absent from official captures |
 | `17_restore_bilerot_death_respawn.sql` | Routes Destruction death releases from Bilerot Burrow back to the Inevitable City respawn |
 | `18_restore_endgame_dungeon_ward_tiers.sql` | Corrects the Destruction city dungeons to Lesser Ward and assigns Greater Ward to The Lost Vale |
+| `19_restore_help_tips.sql` | Restores 59 beginner help tips and the trigger table behind them, so Tome unlocks stop popping empty tip windows |
+| `20_restore_ward_fragment_equip_tasks.sql` | Sets `TokUnlock3` to the fragment task entry across all ten ward armour sets (1,377 items) and restores ten empty section 5 placeholder rows |
 
-Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, `08` adds ward fields to concrete spawns before reversing the 79 rows changed by `07`, `09` enforces the final ward-column definition, `10` replaces only the spawn rows belonging to Ruinous Powers objective 800, `11` upserts only the two capture-backed finale phases and their spawns, `12` upserts only the three capture-backed Norsca objects while correcting the associated chapter and chest rows, `13` replaces only the 190 historical mailbox GUIDs while preserving unrelated custom spawns, `14` enforces the Bilerot jump and records its original ward assignment, `15` changes only Bastion Stair's base-map routing plus the 195 exact spawn matches already present in its instance data, `16` deletes only the exact orphaned Bilerot spawn signature, `17` copies the canonical Inevitable City destination into the existing Destruction Bilerot respawn row, and `18` idempotently establishes the final Lesser/Greater requirements for zones `195`, `196`, and `260`.
+Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, `08` adds ward fields to concrete spawns before reversing the 79 rows changed by `07`, `09` enforces the final ward-column definition, `10` replaces only the spawn rows belonging to Ruinous Powers objective 800, `11` upserts only the two capture-backed finale phases and their spawns, `12` upserts only the three capture-backed Norsca objects while correcting the associated chapter and chest rows, `13` replaces only the 190 historical mailbox GUIDs while preserving unrelated custom spawns, `14` enforces the Bilerot jump and records its original ward assignment, `15` changes only Bastion Stair's base-map routing plus the 195 exact spawn matches already present in its instance data, `16` deletes only the exact orphaned Bilerot spawn signature, `17` copies the canonical Inevitable City destination into the existing Destruction Bilerot respawn row, `18` idempotently establishes the final Lesser/Greater requirements for zones `195`, `196`, and `260`, `19` replaces only its own 59 help-tip rows, and `20` keys on `TokUnlock2` plus `SlotId` rather than item names and upserts only the ten placeholder section 5 rows.
 
 Checkpoint: all three databases exist and contain tables.
 
@@ -276,6 +278,7 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 For contributors and AI agents, please refer to the following architectural documents:
 
+- **[Cross-Repo Map](docs/CROSS_REPO.md)**: Where the 1.4.8 evidence lives — the toolkit repo, the client installs, the packet corpus, and which repo answers which question. Start here for protocol/asset/game-data work.
 - **[System Guilds](docs/SYSTEM_GUILDS.md)**: Details the automated guild experience for new players.
 - **[Bot System](BOT_SYSTEM.md)**: Details the architecture, logic, and GM commands for the integrated player-like Bot System.
 - **[Internal Bug Tracker](docs/INTERNAL_BUG_TRACKER.md)**: Live ledger of known issues and regressions.
@@ -291,19 +294,35 @@ For contributors and AI agents, please refer to the following architectural docu
 
 ## Development Resources
 
-When analyzing network protocols, game assets, structures, or looking for reverse engineering findings, all contributors and AI agents should reference the **WAR-RE-Toolkit** repository:
-- **Local Path**: `D:\Repos\Shmerrick\WAR-RE-Toolkit`
-- **Remote**: Private GitHub repo `Shmerrick/WAR-RE-Toolkit`
+ProjectWAR is a restoration project, so nearly every change needs an authority outside this
+repository. **[docs/CROSS_REPO.md](docs/CROSS_REPO.md) is the canonical map of where that evidence
+lives** — read it before doing protocol, asset, or game-data work.
 
-This toolkit contains essential companion tools like `WarClientTool`, `AssetHashHunter`, `Diffuser`, and various database scripts required for emulator improvement.
+The short version:
+
+- **WAR-RE-Toolkit** — `D:\Repos\Shmerrick\WAR-RE-Toolkit` (private GitHub repo
+  `Shmerrick/WAR-RE-Toolkit`). Decoded findings in `RE_FINDINGS/{combat,network,world,evidence}`,
+  1,027 official packet captures in `libs/protocolservices/Packet Logs`, ~26 extraction and
+  analysis apps under `apps/` (`warclient`, `assethashhunter`, `warmyptool`, `warprotoextract`,
+  `geom2fbx`, `zone2unreal`, ...), all fronted by the `WarToolkitHub` desktop app. It builds with
+  .NET 10, **not** this repo's net48 MSBuild command.
+- **Live 1.4.8 client** — `C:\Users\Admin\Videos\Warhammer Online - Age of Reckoning`. `WAR.exe`
+  and the `.myp` archives; the ground truth for client behavior.
+- **Extracted client tree** — `C:\Users\Admin\Downloads\myps`. The root `ClientDataMatrix` and
+  native LOS generation read from.
+
+Search `RE_FINDINGS/` before decoding anything yourself, and cite the evidence path when
+explaining a change.
 
 ### Database Modification Rules
 
 **CRITICAL RULE FOR ALL CONTRIBUTORS AND AI AGENTS:**
 
 1. **NEVER modify** the base `.sql` files located in the `Database/` folder (`war_accounts.sql`, `war_characters.sql`, `war_world.sql`). These are meant for the initial setup by end-users.
-2. If a source code change requires a database schema or data modification, you **MUST create a new update script** (e.g., `update_001.sql`).
+2. If a source code change requires a database schema or data modification, you **MUST create a new update script**, named `NN_short_description.sql` with the next free number in the series (the table above lists the current scripts). Each script selects its own database and must be safe to re-run.
 3. These update scripts should be provided alongside the code changes, and end-users must be prompted to apply them to their database prior to loading the emulator for the server to run correctly.
+4. Apply the script to your own local Release database and verify the resulting schema and data before handing the work off. A clean compile is not verification of database-backed behavior (`AGENTS.md` rule 6).
+5. Note that the ORM auto-provisions unknown tables (`ObjectDatabase.CheckOrCreateTable` issues `CREATE TABLE IF NOT EXISTS` on registration), so a brand-new `DataObject` entity works without a script. Write one when **existing rows** need changing.
 
 ## RvR Terminology
 

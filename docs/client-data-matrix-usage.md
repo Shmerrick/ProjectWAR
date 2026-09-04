@@ -18,7 +18,11 @@ You can also launch the GUI explicitly:
 
 Default roots:
 
-- extracted root: `C:\Users\Admin\Pictures\WAR_extracted`
+- extracted root: resolved by `ExtractedDataRootResolver`, which takes the first of these that
+  exists — `--root` if passed, then `C:\Users\Admin\Pictures\WAR_extracted`, then
+  `C:\Users\Admin\Downloads\myps`, then `data\WAR_extracted`, then `..\WAR_extracted`. On this
+  machine only `C:\Users\Admin\Downloads\myps` is present, so that is what it resolves to; the
+  `Pictures\WAR_extracted` default no longer exists. See `docs/CROSS_REPO.md` for the full data-root map.
 - output root: `docs\data-matrix`
 
 ## GUI Workflow
@@ -222,7 +226,7 @@ The control-literal crosswalk now carries recovered interpretations for stable f
 If you want PowerShell to wait reliably for a CLI run and keep the printed status lines, use `Start-Process -Wait`:
 
 ```powershell
-Start-Process -FilePath (Resolve-Path '.\bin\Debug\ClientDataMatrix.exe') -ArgumentList 'report','operations','--root','C:\Users\Admin\Pictures\WAR_extracted','--output','docs\data-matrix' -Wait -NoNewWindow
+Start-Process -FilePath (Resolve-Path '.\bin\Debug\ClientDataMatrix.exe') -ArgumentList 'report','operations','--root','C:\Users\Admin\Downloads\myps','--output','docs\data-matrix' -Wait -NoNewWindow
 ```
 
 Optional overrides:

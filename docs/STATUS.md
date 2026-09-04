@@ -101,18 +101,21 @@ See `docs/data-matrix/overview/path-forward.md` for full roadmap and source-sear
 
 ## External Data Locations
 
+Verified 2026-09-04. `docs/CROSS_REPO.md` is the canonical map; this table is the subset that
+matters for the analysis tooling above.
+
 | Path | Contents |
 |------|----------|
-| `C:\Users\Admin\Downloads\myps` | Extracted WAR client files (gamedata CSV, strings TXT, BIN exports, zones, assetdb) |
-| `C:\Users\Admin\Music\Warhammer` | Original MYP archives, PacketLogger, reference docs, WAR.exe |
-| `C:\temp\world_extract` | Extracted world/zone asset tree (assetdb, zones) |
-| `C:\temp\los` | Native-generated LOS output (zone 280 bin) |
-| `C:\temp\los_baseline` | Baseline native LOS before parity fixes |
-| `C:\temp\los_fix1` | Intermediate LOS fix checkpoint |
-| `C:\temp\col_extract` | Extracted collision NIF files |
-| `C:\temp\art_extract`, `art2_extract`, `art3_extract` | Extracted ART MYP content |
-| `C:\temp\zone_fill` | Zone fill working area |
-| `C:\Users\Admin\source\repos\Shmerrick\WAR-RE-Toolkit` | RE toolkit: decompiled client code, BIN export parsers, ability enums |
+| `C:\Users\Admin\Downloads\myps` | Extracted WAR client files (gamedata CSV, strings TXT, BIN exports, zones, assetdb). The root `ClientDataMatrix` and native LOS generation read from |
+| `C:\Users\Admin\Videos\Warhammer Online - Age of Reckoning` | Live 1.4.8 client install: `WAR.exe`, the `.myp` archives, `assetdb`, `Interface` |
+| `D:\Repos\Shmerrick\WAR-RE-Toolkit` | RE toolkit: decoded findings (`RE_FINDINGS/`), 1,027 official packet captures (`libs/protocolservices/Packet Logs`), extraction and analysis apps |
+
+Paths in earlier revisions of this table are gone and should not be reintroduced:
+`C:\Users\Admin\Music\Warhammer` (MYP archives, PacketLogger, reference docs),
+`C:\Users\Admin\source\repos\Shmerrick\WAR-RE-Toolkit` (the toolkit moved to `D:\Repos\`), and the
+`C:\temp\*` extraction and LOS working areas (`world_extract`, `los`, `los_baseline`, `los_fix1`,
+`col_extract`, `art*_extract`, `zone_fill`), which were transient scratch space rather than
+durable inputs. Regenerate scratch areas from the extracted root when a task needs them.
 
 ## Bot System
 

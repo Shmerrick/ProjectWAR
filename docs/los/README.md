@@ -50,7 +50,7 @@ bin\Release\LosBuilder.exe compare --left-bin bin\Release\los\280.bin --right-bi
 Generate one zone natively:
 
 ```powershell
-bin\Release\LosBuilder.exe generate --input-root C:\Users\Admin\Pictures\WAR_extracted --output-root C:\temp\los --zone 280
+bin\Release\LosBuilder.exe generate --input-root C:\Users\Admin\Downloads\myps --output-root C:\temp\los --zone 280
 ```
 
 ## What Matters

@@ -73,9 +73,15 @@ The open dependabot branch is cut from master and does not apply.
 
 ## Hard rules
 
-1. **Never edit the base dumps** `Database/war_accounts.sql`, `war_characters.sql`, `war_world.sql`. Schema/data changes ship as a new numbered incremental script in `Database/` (e.g. `03_*.sql`), delivered with the code change and applied by the user before starting the server. Note that the ORM auto-provisions unknown tables — `ObjectDatabase` calls `CheckOrCreateTable`, which issues `CREATE TABLE IF NOT EXISTS` on registration — so a new `DataObject` entity does not strictly need a migration script to work; write one only when existing rows need changing.
+1. **Never edit the base dumps** `Database/war_accounts.sql`, `war_characters.sql`, `war_world.sql`. Schema/data changes ship as a new numbered incremental script in `Database/`, taking the next free number (the series currently runs through `20_restore_ward_fragment_equip_tasks.sql`), delivered with the code change. `AGENTS.md` rule 6 goes further than "the user applies it": apply the script to the local Release build's database and verify the resulting schema and data — never report database-backed work as tested when only the compile was checked. Note that the ORM auto-provisions unknown tables — `ObjectDatabase` calls `CheckOrCreateTable`, which issues `CREATE TABLE IF NOT EXISTS` on registration — so a new `DataObject` entity does not strictly need a migration script to work; write one only when existing rows need changing.
 2. `AGENTS.md` encodes a Power-of-Ten-derived discipline for server code. The rules that actually bite here: bound every loop on a live path (packet handlers, region ticks, campaign scans, queue drains); avoid allocation in per-packet/per-tick code; no recursion in runtime server code without a documented reason; check `Try*`/DB/IO/network return values and validate parsed packet data before acting on it; keep `#if` rare. Packet handlers, the region update loop, battlefront logic, and persistence boundaries get the strictest review.
-3. Reverse-engineering companion tooling and findings live in a separate private repo at `D:\Repos\Shmerrick\WAR-RE-Toolkit` (`WarClientTool`, `AssetHashHunter`, `Diffuser`, DB scripts). Consult it for protocol/asset/structure questions rather than guessing.
+3. **Two out-of-repo sources of truth outrank guessing, and are meant to be used actively — not only when stuck.** This is a restoration project: the client is the authoritative record of what the real 1.4.8 server did, and reasoning from this emulator's source alone just reproduces whatever it already got wrong.
+   - **`D:\Repos\Shmerrick\WAR-RE-Toolkit`** — the private companion RE repo. `RE_FINDINGS/{combat,network,world,evidence}` holds verified findings, `docs/{reference,research,functionality,checkpoints}` the write-ups, `apps/` ~26 extraction/analysis tools (`warclient`, `assethashhunter`, `warmyptool`, `warprotoextract`, `geom2fbx`, `zone2unreal`, `bot-template-viewer`, ...), and `tools/ToolkitControlCenter` the WPF hub that fronts them. It builds on .NET 10 / `WAR-RE-Toolkit.slnx` — a different toolchain from this repo, so don't apply the net48 MSBuild invocation there.
+   - **`C:\Users\Admin\Videos\Warhammer Online - Age of Reckoning`** — the live 1.4.8 client install: `WAR.exe`, the `.myp` archives (`art`, `world`, `data`, `interface`, `audio`, `vo_english`, `mft`, `patch`, `dev`), plus `assetdb`, `Interface`, `user`, and `notes`.
+
+   Before implementing anything protocol-, asset-, or data-structure-shaped, search `RE_FINDINGS/` and the toolkit `docs/` first and check the client for ground truth; say what you found there when explaining the change. Guessing at packet layouts and data structures is exactly how master's rejected commits drifted from the authentic sources of truth.
+
+   **`docs/CROSS_REPO.md` is the full map** — data roots (including the extracted client tree at `C:\Users\Admin\Downloads\myps` and the 1,027-capture packet corpus), a question-to-repo routing table, the order of authority when sources disagree, and the two cross-repo contracts (the bot editor API, and the private ward-sigil client component). Read it rather than re-deriving any of that.
 
 ## Architecture
 
@@ -127,5 +133,7 @@ Bots are real persisted `Player` characters on the shared account id `9999`, run
 - `BOT_SYSTEM.md` — bot architecture and GM commands.
 - `docs/STATUS.md` — per-project build outputs and current LOS-generation parity status.
 - `docs/INTERNAL_BUG_TRACKER.md` — live ledger of known bugs; update it when you find or fix one.
-- `docs/SYSTEM_GUILDS.md`, `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`.
+- `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching wards, guilds, or keep claims.
+- `docs/MASTER_TO_RESTART_AUDIT.md` — the per-change record of what master did and why `RESTART` rejected it. Consult it before concluding something is "missing" from this branch.
+- `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`, `docs/data-matrix/`.
 - `docs/handoffs/` — dated session checkpoints from prior work.

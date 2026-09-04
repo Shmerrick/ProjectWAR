@@ -13,6 +13,22 @@ This file is the single source of truth for repository-specific AI-agent instruc
    then verify the resulting schema and data so the local server is ready for end-to-end testing.
    Do not claim database-backed functionality was tested when only compilation or an isolated
    schema fixture was validated.
+7. Ground restoration work in an authority outside this repository, and search for it before
+   deriving it yourself. `docs/CROSS_REPO.md` maps the sources: the WAR-RE-Toolkit repo at
+   `D:\Repos\Shmerrick\WAR-RE-Toolkit` (decoded findings in `RE_FINDINGS/`, 1,027 official packet
+   captures under `libs/protocolservices/Packet Logs`), the live 1.4.8 client at
+   `C:\Users\Admin\Videos\Warhammer Online - Age of Reckoning`, and the extracted client tree at
+   `C:\Users\Admin\Downloads\myps`.
+8. When sources disagree, the order of authority is: the 1.4.8 client, then official packet
+   captures, then decoded toolkit findings, then this repository's own code and world database.
+   Existing emulator behavior is the thing being corrected, so it never settles a question about
+   what 1.4.8 did.
+9. Do not invent game data. Where no authority establishes a value, leave it unpopulated, say so
+   explicitly, and record the gap in `docs/INTERNAL_BUG_TRACKER.md` rather than filling it by
+   inference from rank, level, name, or a nearby row.
+10. Cite the evidence — file, offset, capture, or packet — in the commit message and in any doc
+    the change touches. Every factual claim about 1.4.8 in these docs names its source; preserve
+    that.
 
 ## P10-Inspired Workflow Rules
 
