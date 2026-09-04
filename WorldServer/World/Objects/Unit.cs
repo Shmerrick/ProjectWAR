@@ -1016,6 +1016,8 @@ namespace WorldServer.World.Objects
         {
             if (lootContainer != null && lootContainer.IsLootable())
             {
+                player.TokInterface.FireHelpTips(HelpTipTrigger.Loot);
+
                 player.PriorityGroup?.GroupLoot(player, lootContainer);
 
                 lootContainer.SendInteract(player, menu);

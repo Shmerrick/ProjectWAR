@@ -44,6 +44,7 @@ namespace WorldServer.World.Objects.Instances
     public class Instance
     {
         public ushort ID { get; set; }
+        public ushort ClientRegionInstanceId { get; }
         public Instance_Info Info;
         public RegionMgr Region;
         public List<Player> Players = new List<Player>();
@@ -68,6 +69,9 @@ namespace WorldServer.World.Objects.Instances
         {
             Lockout = lockouts;
             ID = id;
+            // Shared world regions use client id 1. InstanceMgr runtime ids are globally unique,
+            // so offsetting them produces a small, stable private-region id for every live instance.
+            ClientRegionInstanceId = id == ushort.MaxValue ? id : (ushort)(id + 1);
             ZoneID = zoneid;
             Realm = realm;
             Region = new RegionMgr(zoneid, ZoneService.GetRegionOrZone(zoneid),"", new BattlefrontCommunications());
@@ -88,22 +92,24 @@ namespace WorldServer.World.Objects.Instances
             // TOVL
             if (zoneid == 179)
             {
-                foreach (var p in GameObjectService.GameObjectSpawns.Where(e => e.Value.ZoneId == 179))
+                foreach (var spawn in GameObjectService.GameObjectSpawns.Where(x => x.Value.ZoneId == 179 && x.Value.Entry == 98908))
                 {
-                    if (p.Value.Entry == 98908)
-                    {
-                        GameObject go = new GameObject(p.Value);
-
-                        _Objects.Add(go);
-                        Region.AddObject(go,zoneid,true);
-
-                    }
+                    GameObject gameObject = new GameObject(spawn.Value);
+                    _Objects.Add(gameObject);
+                    Region.AddObject(gameObject, zoneid, true);
                 }
 
-                if (Info != null &&  Info.Objects.Count > 0)
-                    LoadObjects();
                 _evtInterface.AddEvent(UpdatePendulums, 7000, 0);
             }
+
+            if (Info != null && Info.Objects.Count > 0)
+                LoadObjects();
+
+            // RegionMgr queues additions and only places them from its update loop. Instance
+            // regions are not registered in WorldMgr._Regions, so WorldMgr cannot start them.
+            // Keep this updater in the background because an empty instance may linger until
+            // its lockout timeout and must not prevent a clean server shutdown.
+            Region.StartUpdateThread(true);
         }
 
         public void UpdatePendulums()
@@ -239,6 +245,7 @@ namespace WorldServer.World.Objects.Instances
                 }
 
                 player.InstanceID = ZoneID + ":" + ID;
+                player.ClientRegionInstanceId = ClientRegionInstanceId;
 
                 if (jump != null)
                 {
@@ -363,6 +370,17 @@ namespace WorldServer.World.Objects.Instances
                         Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
                     };
                     spawn.BuildFromProto(CreatureService.GetCreatureProto(obj.Entry));
+                    // A boss row pointing at a missing creature_protos entry must not abort
+                    // the whole instance: without this the constructor throws on
+                    // spawn.Proto.Name and the player is left unable to zone in at all.
+                    // LoadSpawns already guards the same way.
+                    if (spawn.Proto == null)
+                    {
+                        Log.Error("Creature Proto not found", "boss spawn entry " + obj.Entry
+                            + " (bossId " + obj.bossId + ", zone " + obj.ZoneID + ") skipped");
+                        continue;
+                    }
+
                     spawn.WorldO = (int)obj.WorldO;
                     spawn.WorldY = obj.WorldY;
                     spawn.WorldZ = obj.WorldZ;

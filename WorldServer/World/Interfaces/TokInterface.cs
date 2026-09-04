@@ -146,7 +146,9 @@ namespace WorldServer.World.Interfaces
                 AddTok(Info.Entry);
         }
         // variable itemEquipedToK checks if this ToK was triggered by equiping item. If it is true it was, otherwise it is false
-        public void AddTok(ushort Entry, bool itemEquipedToK = false)
+        // announce controls the client's "new Tome entry" ticker; help tips suppress it because
+        // the tip window is already their notification.
+        public void AddTok(ushort Entry, bool itemEquipedToK = false, bool announce = true)
         {
             if (HasTok(Entry))
                 return;
@@ -166,7 +168,7 @@ namespace WorldServer.World.Interfaces
                 return;
 
 
-            SendTok(Entry, true);
+            SendTok(Entry, announce);
 
             Character_tok Tok = new Character_tok
             {
@@ -258,6 +260,13 @@ namespace WorldServer.World.Interfaces
             GetPlayer().Info.Toks = _tokUnlocks.Values.ToList();
 
             CharMgr.Database.AddObject(Tok);
+
+            // Completing any one of a ward fragment's tasks awards that fragment. The recursion
+            // is one level deep and cannot go further: a fragment award has task digit 0, so it
+            // is never itself a task and never resolves here.
+            ushort wardFragmentEntry;
+            if (TokService.TryGetWardFragmentForTask(Entry, out wardFragmentEntry))
+                AddTok(wardFragmentEntry, false, announce);
         }
         public void SendAllToks()
         {
@@ -290,6 +299,48 @@ namespace WorldServer.World.Interfaces
             }
             GetPlayer().SendPacket(Out);
         }
+
+        /// <summary>
+        /// Unlocks every help tip configured for a trigger that the player has not seen yet.
+        /// Tips are ordinary Tome unlocks, so <see cref="AddTok"/> persists them and each tip is
+        /// therefore shown once per character.
+        /// </summary>
+        /// <param name="trigger">The server event that fired.</param>
+        /// <param name="triggerValue">
+        /// Event parameter, matched against Help_Tip.TriggerValue. A configured value of zero
+        /// matches anything.
+        /// </param>
+        public void FireHelpTips(HelpTipTrigger trigger, uint triggerValue = 0)
+        {
+            if (!_loaded)
+                return;
+
+            Player player = GetPlayer();
+
+            if (player == null)
+                return;
+
+            List<Help_Tip> tips = HelpTipService.GetTips(trigger);
+
+            for (int i = 0; i < tips.Count; ++i)
+            {
+                Help_Tip tip = tips[i];
+
+                if (tip.TriggerValue != 0 && tip.TriggerValue != triggerValue)
+                    continue;
+
+                if (tip.MaxRank != 0 && player.Level > tip.MaxRank)
+                    continue;
+
+                if (HasTok(tip.TokEntry))
+                    continue;
+
+                // Help tips announce themselves through the tip window, so the Tome ticker is
+                // suppressed to avoid a second notification for the same unlock.
+                AddTok(tip.TokEntry, false, false);
+            }
+        }
+
         public void SendTok(ushort Entry, bool Print)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_TOK_ENTRY_UPDATE);
@@ -297,7 +348,13 @@ namespace WorldServer.World.Interfaces
             Out.WriteUInt16(Entry);
             Out.WriteByte(1);
             Out.WriteByte((byte)(Print ? 1 : 0));
-            Out.WriteByte(1);
+
+            // Final byte is the client's help tip category. A non-zero value on an entry that is
+            // not a help tip pops an empty tip window: EA_HelpTips resolves the title and body
+            // from its HelpTipNames and HelpTipDescriptions string tables with (Entry - 11799)
+            // and finds nothing there.
+            Out.WriteByte(HelpTipService.GetTipType(Entry));
+
             GetPlayer().SendPacket(Out);
         }
 

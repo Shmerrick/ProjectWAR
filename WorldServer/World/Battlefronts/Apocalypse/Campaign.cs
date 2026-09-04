@@ -901,24 +901,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // Which battlefrontId?
                     var battleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
                     BattlefrontLogger.Info($"{plr.Name} {plr.Realm} BF Id : {battleFrontId}");
-                    try
+                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
                     {
-                        if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                        {
-                            OrderPlayerPopulationList[battleFrontId] += 1;
-                            _orderCount++;
-                        }
-                        else
-                        {
-                            DestructionPlayerPopulationList[battleFrontId] += 1;
-                            _destroCount++;
-                        }
+                        OrderPlayerPopulationList.AddOrUpdate(battleFrontId, 1, (key, count) => count + 1);
+                        _orderCount++;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        BattlefrontLogger.Debug($"{OrderPlayerPopulationList.Count} {DestructionPlayerPopulationList.Count}");
-                        BattlefrontLogger.Debug($"Could not add {plr.Name} to PopulationList. ");
-                        BattlefrontLogger.Warn($"{ex.Message}");
+                        DestructionPlayerPopulationList.AddOrUpdate(battleFrontId, 1, (key, count) => count + 1);
+                        _destroCount++;
                     }
 
                     // Tell the player about the objectives.
@@ -969,20 +960,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // Which battlefrontId?
                     var battleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
 
-                    try
+                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
                     {
-                        if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                        {
-                            OrderPlayerPopulationList[battleFrontId] -= 1;
-                            _orderCount--;
-                        }
-                        else
-                        {
-                            DestructionPlayerPopulationList[battleFrontId] -= 1;
-                            _destroCount--;
-                        }
+                        OrderPlayerPopulationList.AddOrUpdate(battleFrontId, 0,
+                            (key, count) => Math.Max(0, count - 1));
+                        _orderCount = Math.Max(0, _orderCount - 1);
                     }
-                    catch { }
+                    else
+                    {
+                        DestructionPlayerPopulationList.AddOrUpdate(battleFrontId, 0,
+                            (key, count) => Math.Max(0, count - 1));
+                        _destroCount = Math.Max(0, _destroCount - 1);
+                    }
                 }
             }
 

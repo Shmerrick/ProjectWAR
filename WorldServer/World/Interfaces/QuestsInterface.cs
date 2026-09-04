@@ -654,6 +654,9 @@ namespace WorldServer.World.Interfaces
                                             finisher.SendMeTo(_Owner.GetPlayer());
                                     }
                                 }
+
+                                if (questKp.Value.IsDone())
+                                    GetPlayer().TokInterface.FireHelpTips(HelpTipTrigger.QuestCompleted);
                             }
                         }
                     }

@@ -100,6 +100,18 @@ namespace WorldServer.NetWork.Handler
             else _lavaBuffs.Add(lavaBuff.Caster, lavaBuff);
         }
 
+        private static ushort ResolveMovementZone(Player player, ushort reportedZoneId)
+        {
+            // An instance is loaded into a temporary client atlas slot. During that transition
+            // the client can briefly report zone zero even though the server still has an
+            // authoritative private-region membership. Retain that known zone instead of
+            // treating the atlas edge as an escape from the shared world.
+            if (reportedZoneId == 0 && !string.IsNullOrEmpty(player.InstanceID) && player._Value.ZoneId != 0)
+                return player._Value.ZoneId;
+
+            return reportedZoneId;
+        }
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_ZONEJUMP, (int)eClientState.Playing, "F_JUMPZONE")]
         public static void F_ZONEJUMP(BaseClient client, PacketIn packet)
         {
@@ -275,6 +287,8 @@ namespace WorldServer.NetWork.Handler
                 //Hack Zone ID should be ushort but we only read a byte
                 if (cclient.Plr.ZoneId > 255)
                     zoneID = (ushort)Utils.setBit(zoneID,8,true);
+
+                zoneID = ResolveMovementZone(player, zoneID);
 
                 //hardcode to not allow players into gunbad in case we miss to invalidate the zone on push
 #if (!DEBUG)
@@ -487,7 +501,7 @@ namespace WorldServer.NetWork.Handler
                 ushort x = ((ushort)(((state2 >> 56 & 0x3) << 14) | ((state >> 0 & 0xFF) << 6) | ((state >> 10 & 0x3F))));
                 ushort y = ((ushort)(((state2 >> 40 & 0x3) << 14) | ((state2 >> 48 & 0xFF) << 6) | ((state2 >> 58 & 0x3F))));
                 ushort z = ((ushort)(((state2 >> 16 & 0x7) << 12) | ((state2 >> 24 & 0xFF) << 4) | ((state2 >> 36 & 0x0F))));
-                byte zoneID = ((byte)(((state2 >> 34 & 0x1) << 7) | ((state2 >> 32 & 0x3) << 5) | ((state2 >> 43 & 0x1F))));
+                ushort zoneID = ((byte)(((state2 >> 34 & 0x1) << 7) | ((state2 >> 32 & 0x3) << 5) | ((state2 >> 43 & 0x1F))));
                 ushort direction = ((ushort)(((state >> 16 & 0xFF) << 4) | ((state >> 28 & 0x0F))));
                 bool grounded = ((((state >> 9 & 0x1))) == 1);
                 bool walking = ((((state >> 48 & 0x1))) == 1);
@@ -495,6 +509,8 @@ namespace WorldServer.NetWork.Handler
                 bool notMoving = ((((state >> 63 & 0x1))) == 1);
                 byte fallState = ((byte)(((state >> 40 & 0x1F))));
                 byte groundtype = ((byte)(((state2 >> 73 & 0x1F))));
+
+                zoneID = ResolveMovementZone(player, zoneID);
 
                 if (fallState != 31 || ((moving || walking || !notMoving || !grounded) && player.Speed > 0))
                     player.IsMoving = true;

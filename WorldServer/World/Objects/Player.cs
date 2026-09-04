@@ -72,6 +72,14 @@ namespace WorldServer.World.Objects
 
         public string InstanceID { get; set; } = string.Empty;
 
+        // The client reserves region-instance id 1 for shared world regions. Private regions
+        // must use a distinct id so cached area and map state cannot bleed into the instance.
+        public ushort ClientRegionInstanceId { get; set; } = 1;
+
+        private ushort _clientInstanceZoneId;
+        private ushort _clientInstanceShiftX;
+        private ushort _clientInstanceShiftY;
+
         public static void AddPlayer(Player newPlayer)
         {
             bool Found = false;
@@ -609,6 +617,12 @@ namespace WorldServer.World.Objects
                 StsInterface.Load(CharMgr.GetCharacterInfoStats(Info.CareerLine, _Value.Level));
                 QtsInterface.Load(Info.Quests);
                 TokInterface.Load(Info.Toks, Info.TokKills);
+
+                // Items are equipped before the Tome interface exists, so their unlocks are
+                // granted here instead. This also backfills anything already worn whose unlock
+                // was not mapped when the character last equipped it.
+                ItmInterface.GrantEquippedItemUnlocks();
+
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
                 GldInterface.Load(Guild.Guild.GetGuildFromLeader(Info.CharacterId));
@@ -982,6 +996,9 @@ namespace WorldServer.World.Objects
             // Area and PQ state can be discovered before the client finishes loading. Tracker
             // initialization sent above replaces that early UI state, so refresh it last.
             CheckArea(true);
+
+            if (!IsBot)
+                TokInterface.FireHelpTips(HelpTipTrigger.Login);
         }
 
         private void RestoreBotPositionFromValue()
@@ -1853,24 +1870,158 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(0x0E10); // Idem
             SendPacket(Out);
         }
+        private static bool TryGetInstanceClientMapShift(ushort zoneId, out ushort shiftX, out ushort shiftY)
+        {
+            // Observed in official 1.4.8 S_PLAYER_INITTED captures. Instance slots can move
+            // between captures, but each pair below is a known-valid client atlas placement.
+            shiftX = 1;
+            switch (zoneId)
+            {
+                case 152:
+                case 166:
+                case 195:
+                    shiftY = 1;
+                    return true;
+                case 60:
+                case 63:
+                case 66:
+                case 155:
+                case 156:
+                case 169:
+                case 173:
+                case 241:
+                case 242:
+                    shiftY = 9;
+                    return true;
+                case 50:
+                case 64:
+                case 153:
+                case 163:
+                case 164:
+                case 177:
+                    shiftY = 17;
+                    return true;
+                case 154:
+                case 160:
+                case 165:
+                case 176:
+                case 179:
+                case 196:
+                    shiftY = 25;
+                    return true;
+                case 243:
+                case 244:
+                    shiftY = 33;
+                    return true;
+                case 260:
+                    shiftY = 41;
+                    return true;
+                default:
+                    shiftX = 0;
+                    shiftY = 0;
+                    return false;
+            }
+        }
+
+        public void GetClientWorldPosition(ushort zoneId, int worldX, int worldY, out uint clientWorldX, out uint clientWorldY)
+        {
+            clientWorldX = (uint)worldX;
+            clientWorldY = (uint)worldY;
+
+            if (_clientInstanceZoneId == 0 || _clientInstanceZoneId != zoneId)
+                return;
+
+            Zone_Info zone = ZoneService.GetZone_Info(zoneId);
+            if (zone == null)
+                return;
+
+            int localX = worldX - (zone.OffX << 12);
+            int localY = worldY - (zone.OffY << 12);
+            if (localX < 0 || localX > ushort.MaxValue || localY < 0 || localY > ushort.MaxValue)
+            {
+                Log.Error("GetClientWorldPosition", "Instance object is outside zone " + zoneId +
+                    ": " + worldX + "," + worldY);
+                return;
+            }
+
+            clientWorldX = (uint)(localX + (_clientInstanceShiftX << 13));
+            clientWorldY = (uint)(localY + (_clientInstanceShiftY << 13));
+        }
+
         public void SendInited()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.S_PLAYER_INITTED, 64);
+
+            // A region change is queued onto the destination RegionMgr. The client can finish
+            // its loading screen before that queue updates Player.Zone, while _Value already
+            // contains the destination selected by Teleport. Use that authoritative pending
+            // destination so instance offsets are never calculated against the previous zone.
+            Zone_Info initializationZone = ZoneService.GetZone_Info(_Value.ZoneId) ?? Zone?.Info;
+            uint clientWorldX = (uint)_Value.WorldX;
+            uint clientWorldY = (uint)_Value.WorldY;
+            ushort instanceOffsetX = 0;
+            ushort instanceOffsetY = 0;
+            ushort clientRegionInstanceId = 1;
+
+            _clientInstanceZoneId = 0;
+            _clientInstanceShiftX = 0;
+            _clientInstanceShiftY = 0;
+
+            if (!string.IsNullOrEmpty(InstanceID) && initializationZone != null)
+            {
+                if (!TryGetInstanceClientMapShift(initializationZone.ZoneId, out instanceOffsetX, out instanceOffsetY))
+                {
+                    // Captures show that the same instance map can occupy different atlas slots.
+                    // (1,1) is capture-verified and gives an unmapped instance a valid local frame.
+                    instanceOffsetX = 1;
+                    instanceOffsetY = 1;
+                }
+
+                int localX = _Value.WorldX - (initializationZone.OffX << 12);
+                int localY = _Value.WorldY - (initializationZone.OffY << 12);
+
+                if (localX >= 0 && localX <= ushort.MaxValue && localY >= 0 && localY <= ushort.MaxValue)
+                {
+                    clientWorldX = (uint)(localX + (instanceOffsetX << 13));
+                    clientWorldY = (uint)(localY + (instanceOffsetY << 13));
+                    _clientInstanceZoneId = initializationZone.ZoneId;
+                    _clientInstanceShiftX = instanceOffsetX;
+                    _clientInstanceShiftY = instanceOffsetY;
+                }
+                else
+                {
+                    Log.Error("SendInited", "Instance position is outside zone " + initializationZone.ZoneId +
+                        " for " + Name + ": " + _Value.WorldX + "," + _Value.WorldY);
+                    instanceOffsetX = 0;
+                    instanceOffsetY = 0;
+                }
+
+                clientRegionInstanceId = ClientRegionInstanceId;
+                if (clientRegionInstanceId <= 1)
+                {
+                    Log.Error("SendInited", "Invalid client region-instance identifier for " + Name +
+                        ": " + clientRegionInstanceId);
+                    clientRegionInstanceId = 2;
+                }
+            }
 
             Out.WriteUInt16(Oid);
             Out.WriteUInt16(0);
             Out.WriteUInt32(Info.CharacterId);
             Out.WriteUInt16((ushort)_Value.WorldZ);
             Out.WriteUInt16(0);
-            Out.WriteUInt32((uint)_Value.WorldX);
-            Out.WriteUInt32((uint)_Value.WorldY);
+            Out.WriteUInt32(clientWorldX);
+            Out.WriteUInt32(clientWorldY);
             Out.WriteUInt16((ushort)_Value.WorldO);
             Out.WriteByte(0);
             Out.WriteByte((byte)Realm);
-            Out.WriteUInt16(0); // XOFFSET - INSTANCING
-            Out.WriteUInt16(0); // YOFFSET - INSTANCING
-            Out.WriteUInt16(Zone.Info.Region);
-            Out.WriteUInt16(1); // instance id
+            Out.WriteUInt16(instanceOffsetX);
+            Out.WriteUInt16(instanceOffsetY);
+            ushort initializationRegion = initializationZone != null
+                ? (ushort)initializationZone.Region
+                : (ushort)_Value.RegionId;
+            Out.WriteUInt16(initializationRegion);
+            Out.WriteUInt16(clientRegionInstanceId);
             Out.WriteByte(0);
             Out.WriteByte(Info.Career);
             Out.Fill(0, 6);
@@ -2365,7 +2516,7 @@ namespace WorldServer.World.Objects
             else
             {
                 // Official 1.4.8 closes identify the zone that owned the old area.
-                // Omitting it leaves stale RvR influence in the client's area list.
+                // Omitting it leaves stale RvR or PvE influence in the client's area list.
                 Out.WriteUInt16(zoneId);
                 Out.Fill(0, 2);
             }
@@ -2836,10 +2987,24 @@ namespace WorldServer.World.Objects
 
         public void SendSwitchRegion(ushort zoneID)
         {
+            ushort switchRegionInstanceId = 1;
+            if (!string.IsNullOrEmpty(InstanceID))
+            {
+                switchRegionInstanceId = ClientRegionInstanceId;
+                if (switchRegionInstanceId <= 1)
+                {
+                    Log.Error("SendSwitchRegion", "Invalid private region-instance identifier for " + Name +
+                        ": " + switchRegionInstanceId);
+                    switchRegionInstanceId = 2;
+                }
+            }
+
             PacketOut Out = new PacketOut((byte)Opcodes.F_SWITCH_REGION, 20);
             Out.WriteUInt16(zoneID);
-            Out.Fill(0, 5);
-            Out.WriteByte(1); // Instance ID?
+            Out.Fill(0, 4);
+            // Official 1.4.8 private-region captures place a non-shared instance
+            // identifier at offsets 6-7. Shared-world transitions use value 1.
+            Out.WriteUInt16(switchRegionInstanceId);
             Out.WriteByte(2);
             Out.Fill(0, 11);
             SendPacket(Out);
@@ -3276,6 +3441,8 @@ namespace WorldServer.World.Objects
 
             EvtInterface.Notify(EventName.OnAddXP, null, xp);
 
+            TokInterface.FireHelpTips(HelpTipTrigger.XpGained);
+
             if (_currentXp == null)
                 return;
 
@@ -3329,6 +3496,8 @@ namespace WorldServer.World.Objects
             InternalAddXp(restXp, false, false);
 
             AbtInterface.OnPlayerLeveled((byte)(Level - 1), Level);
+
+            TokInterface.FireHelpTips(HelpTipTrigger.RankUp, Level);
 
             // Reset the bounty score for the player upon gaining an XP Level
             BountyManagerInstance?.ResetCharacterBounty(CharacterId, this);
@@ -3454,6 +3623,8 @@ namespace WorldServer.World.Objects
 
             RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString}");
 
+            TokInterface.FireHelpTips(HelpTipTrigger.RenownGained);
+
             EvtInterface.Notify(EventName.OnAddRenown, this, renown);
 
             if (shouldPool)
@@ -3522,6 +3693,7 @@ namespace WorldServer.World.Objects
             _Value.RenownRank += 1;
             _Value.Renown = 0;
             AbtInterface?.OnPlayerRenownChanged(oldRenownRank, _Value.RenownRank);
+            TokInterface.FireHelpTips(HelpTipTrigger.RenownRankUp, _Value.RenownRank);
             SetMaxActionPoints();
             if (remainder > 0)
                 InternalAddRenown(remainder, true);
@@ -3597,6 +3769,10 @@ namespace WorldServer.World.Objects
             // If influence > max influence for the chapter.
             if (infl.InfluenceCount > info.Tier3InfluenceCount)
                 infl.InfluenceCount = (ushort)info.Tier3InfluenceCount;
+
+            // The first filled third of the influence bar is the first claimable reward tier.
+            if (infl.InfluenceCount >= info.Tier1InfluenceCount)
+                TokInterface.FireHelpTips(HelpTipTrigger.InfluenceReward);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
             Out.WriteByte(0);
@@ -3777,6 +3953,9 @@ namespace WorldServer.World.Objects
         {
             _Value.Money += Money;
             SendMoney();
+
+            if (Money > 0)
+                TokInterface.FireHelpTips(HelpTipTrigger.MoneyGained);
         }
 
         #endregion
@@ -4029,6 +4208,8 @@ namespace WorldServer.World.Objects
 
             SendPlayerDeath();
             deathTime = TCPManager.GetTimeStampMS();
+
+            TokInterface.FireHelpTips(HelpTipTrigger.Death);
 
             // RB   5/24/2016   Players get off siege when they die
             if (CurrentSiege != null)
@@ -6013,6 +6194,8 @@ namespace WorldServer.World.Objects
             // Pulldown if high level player flags in a lower level zone
             if (state)
             {
+                TokInterface.FireHelpTips(HelpTipTrigger.RvrFlagged);
+
                 if (ScnInterface.Scenario == null && ShouldDebolster(Zone.Info.Tier))
                     TryDebolster(ScnInterface.Scenario?.Tier ?? Zone.Info.Tier);
             }
@@ -6364,6 +6547,16 @@ namespace WorldServer.World.Objects
             if (destination == null)
                 return;
 
+            // Portals and flights out of an instance return to a shared world region. Clear the
+            // runtime membership before the next S_PLAYER_INITTED packet is built; retaining it
+            // makes an ordinary flight look like another instance transition to the client.
+            if (destination.Type < 4 && !string.IsNullOrEmpty(InstanceID))
+            {
+                WorldMgr.InstanceMgr?.RemovePlayerFromInstances(this);
+                InstanceID = string.Empty;
+                ClientRegionInstanceId = 1;
+            }
+
             if (Zone != null && zoneID != Zone.ZoneId)
             {
                 QtsInterface.PublicQuest?.RemovePlayer(this, true);
@@ -6374,7 +6567,11 @@ namespace WorldServer.World.Objects
             // Change Region , so change thread and maps
             if (Zone == null || Zone.Info.Region != destination.Region)
             {
-                if (destination.Type == 4)
+                // Both zone types are instanced dungeons: Type 4 (Hunter's Vale, Mount
+                // Gunbad) and Type 6 (the 24 wing/boss maps, including Lost Vale and the
+                // city dungeons). Only Type 4 was handled, so teleporting into a Type 6
+                // zone dropped the player into an empty uninstanced map.
+                if (destination.Type == 4 || destination.Type == 6)
                 {
                     Zone_jump jump = new Zone_jump();
                     jump.ZoneID = destination.ZoneId;
@@ -6704,12 +6901,12 @@ namespace WorldServer.World.Objects
             bool pqAreaChanged = CurrentPQArea != pqarea;
             if (pqAreaChanged)
             {
-                if (pqarea == 31)
-                {
-                    QtsInterface.PublicQuest?.RemovePlayer(this, false);
-                    CurrentKeep?.RemovePlayer(this);
-                }
-                else if (pqarea > 28)  // keeps
+                // Detach the previous objective before resolving the new area. Otherwise an
+                // empty map pixel or a keep transition leaves the old PQ tracker active.
+                QtsInterface.PublicQuest?.RemovePlayer(this, false);
+                CurrentKeep?.RemovePlayer(this);
+
+                if (pqarea > 28 && pqarea != 31)  // keeps
                 {
                     foreach (var keep in Region.Campaign.Keeps)
                     {
@@ -6720,7 +6917,7 @@ namespace WorldServer.World.Objects
                         }
                     }
                 }
-                else
+                else if (pqarea > 0 && pqarea < 29)
                 {
                     foreach (KeyValuePair<uint, PublicQuest> pq in Region.PublicQuests)
                     {
@@ -6750,6 +6947,10 @@ namespace WorldServer.World.Objects
                     }
 
                     TokInterface.AddTok(newArea.TokExploreEntry);
+
+                    // A chapter area is a non-RvR area that carries an influence id for this realm.
+                    if (!newArea.IsRvR && (Realm == Realms.REALMS_REALM_ORDER ? newArea.OrderInfluenceId : newArea.DestroInfluenceId) > 0)
+                        TokInterface.FireHelpTips(HelpTipTrigger.ChapterEntered);
                 }
 
                 else
@@ -6759,7 +6960,6 @@ namespace WorldServer.World.Objects
                 }
 
                 CurrentArea = newArea;
-                SendChapterBar();
             }
 
             if (isInRvRLake)
@@ -6773,6 +6973,9 @@ namespace WorldServer.World.Objects
 
                 if (StsInterface.BolsterLevel == 0)
                     TryBolster(0, newArea);
+
+                if (!wasInRvRLake)
+                    TokInterface.FireHelpTips(HelpTipTrigger.RvrAreaEntered);
 
                 if (ScnInterface.Scenario == null && (!wasInRvRLake || previousArea?.ZoneId != newArea?.ZoneId))
                     Region.Campaign?.NotifyEnteredLake(this);
@@ -6794,11 +6997,11 @@ namespace WorldServer.World.Objects
 
             _isInRvRLake = isInRvRLake;
 
-            if (refreshClientTrackers)
-            {
-                if (!areaChanged && CurrentArea != null)
-                    SendChapterBar();
-            }
+            // Entering or leaving a PQ does not necessarily cross a chapter-map piece. Resend the
+            // chapter area in that case so the client is prompted to display the matching influence
+            // tracker before the PQ tracker is initialized below.
+            if (areaChanged || pqAreaChanged || refreshClientTrackers)
+                SendChapterBar();
 
             // Chapter packets can replace a PQ tracker initialized earlier in this method.
             // Always send the active PQ last when its area changed or the client requested refresh.

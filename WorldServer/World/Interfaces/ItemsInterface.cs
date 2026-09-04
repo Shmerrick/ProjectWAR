@@ -133,7 +133,7 @@ namespace WorldServer.World.Interfaces
                         Items[itm.SlotId] = itm;
 
                         if (IsEquipmentSlot(itm.SlotId))
-                            EquipItem(itm);
+                            EquipItem(itm, false);
                     }
 
                     else
@@ -809,10 +809,52 @@ namespace WorldServer.World.Interfaces
             return damage / 10f;
         }
 
-        public void EquipItem(Item Itm)
+        /// <summary>
+        /// Grants the Tome unlocks an equipped item carries: its own entry, which may also
+        /// complete a set, and its ward fragment task.
+        /// </summary>
+        private void GrantEquipUnlocks(Item_Info info)
+        {
+            if (info == null || _playerOwner == null)
+                return;
+
+            // The second argument marks this as an equip, which lets AddTok resolve the
+            // item's set-completion unlock as well.
+            if (info.TokUnlock > 0)
+                _playerOwner.TokInterface.AddTok(info.TokUnlock, true);
+
+            if (info.TokUnlock3 > 0)
+                _playerOwner.TokInterface.AddTok(info.TokUnlock3, true);
+        }
+
+        /// <summary>
+        /// Re-grants the unlocks for everything already worn. Called once after the Tome
+        /// interface has loaded, so a character wearing an item from before its unlock was
+        /// mapped does not have to unequip and re-equip it.
+        /// </summary>
+        public void GrantEquippedItemUnlocks()
+        {
+            if (_playerOwner == null)
+                return;
+
+            for (ushort slot = 0; slot < Items.Length; ++slot)
+            {
+                Item itm = Items[slot];
+
+                if (itm == null || !IsEquipmentSlot(slot))
+                    continue;
+
+                GrantEquipUnlocks(itm.Info);
+            }
+        }
+
+        public void EquipItem(Item Itm, bool grantUnlocks = true)
         {
             if (Itm == null || _playerOwner == null)
                 return;
+
+            if (grantUnlocks)
+                GrantEquipUnlocks(Itm.Info);
 
             if (Itm.Info.Bind == 2 && !Itm.BoundtoPlayer)
                 Itm.BoundtoPlayer = true;
@@ -2251,16 +2293,6 @@ namespace WorldServer.World.Interfaces
                             }
                             moveSuccess = true;
                             SendEquipped(null, destinationSlot, sourceSlot);
-
-                            if (_playerOwner != null && IsEquipmentSlot(destinationSlot))
-                            {
-                                if (sourceItem.Info.TokUnlock > 0)
-                                    // the 2nd value here is true because this is item we currently equipped and this might trigger 
-                                    // set unlock
-                                    _playerOwner.TokInterface.AddTok(sourceItem.Info.TokUnlock, true);
-                                if (sourceItem.Info.TokUnlock3 > 0)
-                                    _playerOwner.TokInterface.AddTok(sourceItem.Info.TokUnlock3, true);
-                            }
                         }
 
                         else
@@ -2292,11 +2324,6 @@ namespace WorldServer.World.Interfaces
                         EquipItem(sourceItem);
 
                     SendEquipped(null, destinationSlot, sourceSlot);
-
-                    if (_playerOwner != null && IsEquipmentSlot(destinationSlot) && sourceItem.Info.TokUnlock > 0)
-                        // the 2nd value here is true because this is item we currently equipped and this might trigger 
-                        // set unlock
-                        _playerOwner.TokInterface.AddTok(sourceItem.Info.TokUnlock, true);
 
                     moveSuccess = true;
                 }

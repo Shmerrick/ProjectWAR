@@ -1045,6 +1045,8 @@ namespace WorldServer.World.Objects
 
             plr.GrpInterface.SetGroupState(EGroupJoinState.Grouped);
 
+            plr.TokInterface.FireHelpTips(HelpTipTrigger.GroupJoined);
+
             _memberRWLock.ExitWriteLock();
             return true;
 
@@ -1298,6 +1300,8 @@ namespace WorldServer.World.Objects
 
             _leader = player;
             Realm = player.Realm;
+
+            player.TokInterface.FireHelpTips(HelpTipTrigger.GroupLeader);
             player.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_YOU_NOW_PARTY_LEADER);
 
             _groupCompositionDirty = true;
@@ -1648,6 +1652,17 @@ namespace WorldServer.World.Objects
 
             _warbandSlave = true;
             _warbandHandler = new WarbandHandler(this);
+
+            _memberRWLock.EnterReadLock();
+            try
+            {
+                foreach (Player member in Members)
+                    member?.TokInterface.FireHelpTips(HelpTipTrigger.WarbandFormed);
+            }
+            finally
+            {
+                _memberRWLock.ExitReadLock();
+            }
 
             _leader = null;
         }

@@ -668,6 +668,8 @@ namespace WorldServer.World.Objects
             GoldBag bag;
             if (_lootBags.TryGetValue(player.CharacterId, out bag))
             {
+                player.TokInterface.FireHelpTips(HelpTipTrigger.PublicQuestBag);
+
                 PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 32);
                 Out.WriteByte(4);
                 Out.WriteByte(1);

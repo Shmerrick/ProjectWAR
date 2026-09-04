@@ -209,7 +209,7 @@ namespace WorldServer.World.Objects.PublicQuests
             objectiveState.WriteUInt32(Info.Entry);
             objectiveState.Fill(0xFF, 6);
             objectiveState.WriteUInt16(0);
-            objectiveState.WriteByte(0);
+            objectiveState.WriteByte((byte)player.Realm);
             objectiveState.Fill(0, 2);
             objectiveState.WriteByte(0);
             player.SendPacket(objectiveState);
@@ -218,6 +218,12 @@ namespace WorldServer.World.Objects.PublicQuests
             realmBonus.WriteByte((byte)player.Realm);
             realmBonus.WriteUInt16(0);
             player.SendPacket(realmBonus);
+
+            PacketOut bonusState = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
+            bonusState.WriteUInt16(player.Oid);
+            bonusState.WriteByte(0x12);
+            bonusState.Fill(0, 7);
+            player.SendPacket(bonusState);
 
             PacketOut statusUpdate = new PacketOut((byte)Opcodes.F_OBJECTIVE_UPDATE, 8);
             statusUpdate.WriteUInt32(Info.Entry);
@@ -330,6 +336,8 @@ namespace WorldServer.World.Objects.PublicQuests
                 plr.TokInterface.AddTok((ushort)Info.TokDiscovered);
             if (Info.TokUnlocked > 0)
                 plr.TokInterface.AddTok((ushort)Info.TokUnlocked);
+
+            plr.TokInterface.FireHelpTips(HelpTipTrigger.PublicQuestEntered);
 
             if (!_started && !_ended)
                 Start();

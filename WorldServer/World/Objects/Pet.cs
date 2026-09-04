@@ -461,8 +461,10 @@ namespace WorldServer.World.Objects
 
             Out.WriteUInt16(Heading);
             Out.WriteUInt16((ushort)WorldPosition.Z);
-            Out.WriteUInt32((uint)WorldPosition.X);
-            Out.WriteUInt32((uint)WorldPosition.Y);
+            plr.GetClientWorldPosition(Spawn.ZoneId, WorldPosition.X, WorldPosition.Y,
+                out uint clientWorldX, out uint clientWorldY);
+            Out.WriteUInt32(clientWorldX);
+            Out.WriteUInt32(clientWorldY);
             Out.WriteUInt16(0); // Speed Z
             // 18
             if (Spawn.Proto.Model2 != 0)
@@ -480,7 +482,7 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0); // ?
             Out.WriteUInt16(Spawn.Proto._Unks[1]);
             Out.WriteByte(0);
-            Out.WriteUInt16(Spawn.GetPacketUnk2());
+            Out.WriteUInt16(Spawn.GetPacketDifficultyMask());
             Out.WriteUInt16(Spawn.Proto._Unks[3]);
             Out.WriteUInt16(Spawn.Proto._Unks[4]);
             Out.WriteUInt16(Spawn.Proto._Unks[5]);

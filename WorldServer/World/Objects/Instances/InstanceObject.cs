@@ -42,8 +42,10 @@ namespace WorldServer.World.Objects.Instances
 
             Out.WriteUInt16((ushort)Info.WorldO);
             Out.WriteUInt16((ushort)Info.WorldZ);
-            Out.WriteUInt32((uint)Info.WorldX);
-            Out.WriteUInt32((uint)Info.WorldY);
+            plr.GetClientWorldPosition(Instance.ZoneID, (int)Info.WorldX, (int)Info.WorldY,
+                out uint clientWorldX, out uint clientWorldY);
+            Out.WriteUInt32(clientWorldX);
+            Out.WriteUInt32(clientWorldY);
             Out.WriteUInt16((ushort)Info.DisplayID);
 
             Out.WriteByte((byte)(0));// Spawn.GetUnk(0) >> 8));
@@ -78,7 +80,8 @@ namespace WorldServer.World.Objects.Instances
 
             plr.SendPacket(Out);
 
-            base.SendMeTo(plr);
+            // GameObject.SendMeTo would emit a second F_CREATE_STATIC from Spawn. Instance
+            // objects are backed by Instance_Object instead, and therefore have no Spawn row.
         }
 
         public new void UpdateVfxState(byte state)

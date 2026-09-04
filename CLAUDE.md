@@ -36,7 +36,7 @@ This machine's dynamic TCP range is **1024–65534** (Windows default is 49152+)
 
 The 8000 case is the nasty one. Unreal binds `127.0.0.1:8000` while LauncherServer binds `0.0.0.0:8000` — **both succeed**, and Windows routes loopback connections to the more specific binding. The launcher then talks HTTP to Unreal instead of the raw-TCP patch service, ServerLauncher shows everything green, and LauncherServer's log is empty. Diagnose by comparing `127.0.0.1:8000` against the LAN IP: LauncherServer correctly *times out* on an HTTP request (it does not speak HTTP), while an instant HTTP 404 means something else holds loopback.
 
-6000-6010, 6800, 8048 and 10300 are reserved via `netsh int ipv4 add excludedportrange`. **Do not reserve 51932-51933** — exclusions block `HttpListener` (HTTP.SYS) even though raw sockets bind fine, which stops the bot editor API.
+6000-6010, 6800, **8000**, 8048 and 10300 are reserved via `netsh int ipv4 add excludedportrange`. **Do not reserve 51932-51933** — exclusions block `HttpListener` (HTTP.SYS) even though raw sockets bind fine, which stops the bot editor API. 8000 was added on 2026-09-04 after LauncherServer failed to bind it (`SocketException: Only one usage of each socket address`, then `Can not start server on port : 8000`) with nothing else holding it by the time the stack was inspected — a transient dynamic-port grab, which is exactly what the exclusion prevents. LauncherServer binds it with a raw `TcpListener`, not `HttpListener`, so the HTTP.SYS caveat above does not apply to it.
 
 Ports in play: 6800 AccountCacher RPC, 8000 LauncherServer, 8048 LobbyServer, 10300 world (from `war_accounts.realms.Port`), 51932/51933 the debug and bot-editor APIs, 6000+ RPC client ports.
 

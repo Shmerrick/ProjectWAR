@@ -373,6 +373,7 @@
     <Compile Include="Services\World\RVRProgressionService.cs" />
     <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
+    <Compile Include="Services\World\HelpTipService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
     <Compile Include="Services\World\WaypointService.cs" />

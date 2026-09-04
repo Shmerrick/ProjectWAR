@@ -190,6 +190,11 @@ namespace WorldServer.NetWork
         F_SWITCH_ATTACK_MODE = 0xDC,
         F_BUG_REPORT = 0xDD,
         F_OBJECT_EFFECT_STATE = 0xDE,
+        // Server->client, carries a creature's ward tier for the target frame sigil.
+        // Unused by the stock 1.4.8 client, which discards it, so this is safe to send to
+        // any client. Displaying the tier additionally requires a separately distributed
+        // client; that half is not part of this repository.
+        F_WARD_INFO = 0xDF,
         F_EXPERIENCE_TABLE = 0xE2,
         F_CREATE_PLAYER = 0xE3,
         F_UPDATE_STATE = 0xE4,

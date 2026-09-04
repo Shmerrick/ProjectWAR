@@ -33,7 +33,13 @@ namespace WorldServer.World.Objects.Instances
                 zoneID = Jump.ZoneID;
 
             Instance_Info II;
-            InstanceService._InstanceInfo.TryGetValue(zoneID, out II);
+            if (!InstanceService._InstanceInfo.TryGetValue(zoneID, out II) || II == null)
+            {
+                Log.Error("ZoneIn", "No instance_infos row for zone " + zoneID);
+                player.SendClientMessage("This dungeon is not configured on this server.");
+                return false;
+            }
+
             ushort InstanceMainID = II.Entry;
             
             ushort instanceid = 0;
@@ -311,13 +317,21 @@ namespace WorldServer.World.Objects.Instances
 
         public void RemovePlayerFromInstances(Player plr)
         {
-            if (_instances == null)
+            if (_instances == null || plr == null)
                 return;
 
-            for (int i = 0; i < _instances.Count; i++)
+            lock (_instances)
             {
-                if (_instances.Values.ElementAt(i).Players.Contains(plr))
-                    _instances.Values.ElementAt(i).Players.Remove(plr);
+                foreach (Instance instance in _instances.Values)
+                {
+                    lock (instance.Players)
+                    {
+                        if (!instance.Players.Remove(plr))
+                            continue;
+
+                        InstanceService.SavePlayerIDs(instance.ZoneID + ":" + instance.ID, instance.Players);
+                    }
+                }
             }
         }
     }

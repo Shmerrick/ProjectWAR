@@ -88,12 +88,12 @@ namespace WorldServer.World.Map
         }
 
         private Thread _updater;
-        public void StartUpdateThread()
+        public void StartUpdateThread(bool isBackground = false)
         {
             if (_updater != null)
                 return;
 
-            _updater = new Thread(Update);
+            _updater = new Thread(Update) { IsBackground = isBackground };
             _updater.Start();
         }
 

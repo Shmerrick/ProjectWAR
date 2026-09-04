@@ -129,12 +129,12 @@ namespace Common
         public WardTier WardTier => (WardTier)_Ward;
 
         /// <summary>
-        /// Combines prototype-owned upper packet flags with this spawn's ward tier.
+        /// Returns the client difficulty-mask identifier carried by F_CREATE_MONSTER.
+        /// Ward state is server-side and must not be folded into this independent field.
         /// </summary>
-        public ushort GetPacketUnk2()
+        public ushort GetPacketDifficultyMask()
         {
-            ushort prototypeFlags = (ushort)((Proto?.Unk2 ?? 0) & ~0x7);
-            return (ushort)(prototypeFlags | _Ward);
+            return Proto?.Unk2 ?? 0;
         }
 
         [DataElement(AllowDbNull = false)]

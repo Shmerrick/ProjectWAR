@@ -389,8 +389,10 @@ namespace WorldServer.World.Objects
 
             Out.WriteUInt16(Heading);
             Out.WriteUInt16((ushort)WorldPosition.Z);
-            Out.WriteUInt32((uint)WorldPosition.X);
-            Out.WriteUInt32((uint)WorldPosition.Y);
+            plr.GetClientWorldPosition(Spawn.ZoneId, WorldPosition.X, WorldPosition.Y,
+                out uint clientWorldX, out uint clientWorldY);
+            Out.WriteUInt32(clientWorldX);
+            Out.WriteUInt32(clientWorldY);
             Out.WriteUInt16(0); // Speed Z
             if (Model2 != 0)
                 Out.WriteUInt16(StaticRandom.Instance.Next(0, 100) < 50 ? Model1 : Model2);
@@ -408,7 +410,7 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0); // ?
             Out.WriteUInt16(Spawn.Proto._Unks[1]);
             Out.WriteByte(0);
-            Out.WriteUInt16(Spawn.GetPacketUnk2());
+            Out.WriteUInt16(Spawn.GetPacketDifficultyMask());
             Out.WriteUInt16(Spawn.Proto._Unks[3]);
             Out.WriteUInt16(Spawn.Proto._Unks[4]);
             Out.WriteUInt16(Spawn.Proto._Unks[5]);
@@ -469,6 +471,8 @@ namespace WorldServer.World.Objects
 
             plr.SendPacket(Out);
 
+            SendWardInfo(plr);
+
             // Send packet to prevent targeting of invulnerables
             if (IsInvulnerable)
             {
@@ -479,6 +483,29 @@ namespace WorldServer.World.Objects
                 Out.Fill(0, 6);
                 plr.SendPacket(Out);
             }
+        }
+
+        /// <summary>
+        /// Tells the client this creature's ward tier, immediately after the create packet so
+        /// the value is in place before the player can target it.
+        ///
+        /// A patched client resolves the Oid to its own object and records the tier against
+        /// that object, which is why the Oid is safe to key on here even though the client's
+        /// target tracker uses a different id space. Sent for every creature, tier 0 included,
+        /// so a recycled object cannot inherit a previous creature's ward.
+        ///
+        /// The stock 1.4.8 client routes this opcode to its no-op dispatcher case, so an
+        /// unpatched client ignores the packet.
+        /// </summary>
+        private void SendWardInfo(Player plr)
+        {
+            if (plr == null || Spawn == null || this is Pet || this is Siege)
+                return;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_WARD_INFO, 3);
+            Out.WriteUInt16(Oid);
+            Out.WriteByte(Spawn.Ward);
+            plr.SendPacket(Out);
         }
 
         private byte _gatherType;
@@ -494,6 +521,8 @@ namespace WorldServer.World.Objects
                 {
                     player.TokInterface.AddToks(Spawn.Proto.TokUnlock);
                 }
+
+                player.TokInterface.FireHelpTips(HelpTipTrigger.NpcInteract, (uint)Spawn.Proto.TitleId);
 
                 // perhaps do some checks?
                 switch (menu.Menu)
@@ -579,6 +608,14 @@ namespace WorldServer.World.Objects
                                     player.SendPacket(Out);
                                     break;
                             }
+
+                            // Both skill slots are reported: a trainer sets one of them, and the
+                            // help tip for the skill just learned is keyed on the skill id.
+                            if (player._Value.CraftingSkill != 0)
+                                player.TokInterface.FireHelpTips(HelpTipTrigger.TradeSkillLearned, player._Value.CraftingSkill);
+
+                            if (player._Value.GatheringSkill != 0)
+                                player.TokInterface.FireHelpTips(HelpTipTrigger.TradeSkillLearned, player._Value.GatheringSkill);
                         }
                         break;
                     case 9:

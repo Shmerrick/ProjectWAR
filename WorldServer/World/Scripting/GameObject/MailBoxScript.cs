@@ -1,4 +1,5 @@
-﻿using FrameWork;
+﻿using Common;
+using FrameWork;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -13,6 +14,8 @@ namespace WorldServer.World.Scripting.GameObject
             Log.Debug("MailBox", "OnInteract " + Target);
 
             Target.MlInterface.SendMailBox();
+
+            Target.TokInterface.FireHelpTips(HelpTipTrigger.MailboxUsed);
         }
     }
 }

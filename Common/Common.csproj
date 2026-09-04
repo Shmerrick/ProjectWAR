@@ -233,6 +233,7 @@
     <Compile Include="Database\World\Items\Mount_Info.cs" />
     <Compile Include="Database\World\Levels\Guild_Xp.cs" />
     <Compile Include="Database\World\Levels\Renown_Info.cs" />
+    <Compile Include="Database\World\Chapters\Help_Tip.cs" />
     <Compile Include="Database\World\Chapters\Tok_Info.cs" />
     <Compile Include="Database\World\Levels\Xp_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEventReward_Info.cs" />

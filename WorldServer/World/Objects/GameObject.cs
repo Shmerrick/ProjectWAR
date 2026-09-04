@@ -136,8 +136,10 @@ namespace WorldServer.World.Objects
 
             Out.WriteUInt16((ushort)Spawn.WorldO);
             Out.WriteUInt16((ushort)Spawn.WorldZ);
-            Out.WriteUInt32((uint)Spawn.WorldX);
-            Out.WriteUInt32((uint)Spawn.WorldY);
+            plr.GetClientWorldPosition(Spawn.ZoneId, Spawn.WorldX, Spawn.WorldY,
+                out uint clientWorldX, out uint clientWorldY);
+            Out.WriteUInt32(clientWorldX);
+            Out.WriteUInt32(clientWorldY);
             Out.WriteUInt16((ushort)Spawn.DisplayID);
 
             Out.WriteByte((byte)(Spawn.GetUnk(0) >> 8));

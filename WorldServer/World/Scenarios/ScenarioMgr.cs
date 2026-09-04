@@ -1278,6 +1278,8 @@ namespace WorldServer.World.Scenarios
                 return;
             }
 
+            player.TokInterface.FireHelpTips(HelpTipTrigger.ScenarioJoined);
+
             lock (_pendingQueueActions)
                 _pendingQueueActions.Add(new PlayerQueueAction(player, EPendingQueueAction.PQA_Add, (ushort)scenarioId));
         }
