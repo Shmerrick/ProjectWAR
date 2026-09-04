@@ -114,6 +114,36 @@ Since each realm gets its own region, each also gets its own `PublicQuest` objec
 `RegionMgr.PublicQuests` is keyed by entry per region — so the two realms' copies run
 independently rather than sharing or stacking state.
 
+### Influence ids pointed at the wrong chapters
+
+Worse than the award path: the per-realm ids on `zone_areas` were themselves wrong. Zone 160 held
+`DestroInfluenceId 128` / `OrderInfluenceId 129`, which are "Chapter 20: Surprise Attack" and
+"Warcamp: Krung's Scrappin' Spot" — both in zone 9, Nordland. Zone 60 held `65`/`64`, **neither of
+which exists in `chapter_infos`**, and `Player.AddInfluence` returns silently when
+`ChapterService.GetChapterEntry` misses. So Gunbad influence was discarded without a log line and
+Bastion Stair influence accumulated into two unrelated Nordland bars.
+
+`Database/23_fix_dungeon_influence_ids.sql` repoints both to the chapters `chapter_rewards` is
+actually built around — Bastion `2` Destruction / `6` Order, Gunbad `1` / `5` — and corrects the
+`pquest_info.ChapterId` fallback to name the right dungeon.
+
+### Influence from creature kills
+
+`Creature.HandleDeathRewards` granted XP, loot and quest credit but **no influence at all**, so
+killing dungeon trash advanced neither realm's bar and public quest completion was the only
+source. It now grants dungeon influence on the killer's own realm track, shared across damage
+sources in proportion to damage dealt, so a kill is worth the same however many players
+contributed. The zone is identified as a dungeon by the presence of an `instance_infos` row,
+resolved once per death rather than per player.
+
+The per-kill amount is `WorldConfigs.DungeonKillInfluence` (default 15). **No 1.4.8 figure for it
+has been recovered**, so it is a tunable rather than a restored constant; if a capture or source
+establishes the real value, set it and say so here.
+
+Because the ids come from the zone area, a player standing outside any defined area earns
+nothing — which is why gap 7 above matters: kills in the middle wing award no influence until
+`Steps of Ruin` has an area row.
+
 ## Restoration order
 
 Structure before content, because later work keys off these IDs:

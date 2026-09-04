@@ -980,6 +980,8 @@ namespace WorldServer.World.Objects
 
         protected override void HandleDeathRewards(Player killer)
         {
+            bool dungeonKill = IsInDungeonZone();
+
             if (Rank < 2)
             {
                 Player credited;
@@ -996,6 +998,9 @@ namespace WorldServer.World.Objects
                 GenerateLoot(credited.PriorityGroup != null ? credited.PriorityGroup.GetGroupLooter(credited) : GetLooter(credited), 1f);
 
                 CreditQuestKill(credited);
+
+                if (dungeonKill)
+                    GrantDungeonKillInfluence(credited, 1f);
             }
 
             else
@@ -1019,6 +1024,11 @@ namespace WorldServer.World.Objects
                     float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
                     uint xpShare = (uint)(totalXP * damageFactor);
+
+                    // Shared by damage dealt, so a kill is worth the same influence however many
+                    // players contributed to it.
+                    if (dungeonKill)
+                        GrantDungeonKillInfluence(curPlayer, damageFactor);
 
                     // Solo player, add their rewards directly.
                     if (curPlayer.PriorityGroup == null)
@@ -1063,6 +1073,48 @@ namespace WorldServer.World.Objects
                     CreditQuestKill(looter);
                 }
             }
+        }
+
+        /// <summary>
+        /// True when this creature stands in a zone that has an instance_infos row, i.e. a
+        /// dungeon. Resolved once per death rather than per contributing player.
+        /// </summary>
+        private bool IsInDungeonZone()
+        {
+            if (Zone == null || Program.Config.DungeonKillInfluence <= 0)
+                return false;
+
+            return InstanceService._InstanceInfo != null
+                && InstanceService._InstanceInfo.ContainsKey(Zone.ZoneId);
+        }
+
+        /// <summary>
+        /// Grants a share of dungeon influence for this kill to one player, on their own realm's
+        /// track. Both realms advance their own bar, which is what gates the wing bosses.
+        ///
+        /// The per-realm ids live on the zone area, so a player standing outside a defined area
+        /// earns nothing; that is deliberate, because the fallback id is the other realm's track.
+        /// Bastion Stair's middle wing currently has no area row at all, so kills there award
+        /// nothing until one exists -- see docs/BASTION_STAIR.md.
+        /// </summary>
+        private static void GrantDungeonKillInfluence(Player player, float damageFactor)
+        {
+            if (player == null || player.CurrentArea == null)
+                return;
+
+            uint influenceId = player.Realm == GameData.Realms.REALMS_REALM_ORDER
+                ? player.CurrentArea.OrderInfluenceId
+                : player.CurrentArea.DestroInfluenceId;
+
+            if (influenceId == 0)
+                return;
+
+            int share = (int)(Program.Config.DungeonKillInfluence * damageFactor);
+
+            if (share <= 0)
+                return;
+
+            player.AddInfluence((ushort)influenceId, (ushort)share);
         }
 
         protected void CreditQuestKill(Player killer)

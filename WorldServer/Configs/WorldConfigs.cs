@@ -24,6 +24,16 @@ namespace WorldServer.Configs
         public int XpRate = 1;
         public int RenownRate = 1;
         public int InfluenceRate = 1;
+
+        /// <summary>
+        /// Influence granted for killing a creature inside a dungeon, shared across the players
+        /// who damaged it in proportion to the damage they dealt. Zero disables it.
+        ///
+        /// Dungeon influence gates boss access, and public quest completion alone is a coarse
+        /// source of it. No 1.4.8 figure for the per-kill amount has been recovered, so this is a
+        /// tunable rather than a restored constant -- see docs/BASTION_STAIR.md.
+        /// </summary>
+        public int DungeonKillInfluence = 15;
         public int RankCap = 40;
         public int RenownCap = 100;
 
