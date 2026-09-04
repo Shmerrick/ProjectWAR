@@ -64,11 +64,11 @@ What is already correct:
 
 ## Gaps
 
-1. **Zone 160 is not realm-instanced.** Its 18 entry jumps are `Type 0` with `InstanceID = NULL`,
-   set by `Database/15_restore_shared_bastion_stair.sql`, which made the base map a shared PvE
-   zone. Mount Gunbad — the working reference, built the same way — uses `Type 4` with
-   `InstanceID = 60` on all ten of its jumps. The sources describe Bastion Stair as realm
-   instanced, so script 15's premise is wrong and needs revisiting rather than extending.
+1. ~~**Zone 160 is not realm-instanced.**~~ **Fixed 2026-09-04.** Its 18 entry jumps were `Type 0`
+   with `InstanceID = NULL`, set by `Database/15_restore_shared_bastion_stair.sql`, which made the
+   base map a shared PvE zone on a premise the sources contradict. They are now `Type 4` /
+   `InstanceID 160`, matching Mount Gunbad, and `instancetyp == 4` is implemented as a persistent
+   per-realm instance. See *Realm instancing* below.
 2. **No Order-side entrance NPCs.** Zone 160 has twelve Destruction-faction NPCs (factions 129
    and 130: `Valr the Maimed`, `Shakal Daemoncaller`, `Jodis Wolfscar`, `Krulnor Volheim`,
    `Injured Marauder`, ...) and **no Order equivalents**. Gunbad has the same asymmetry — its
@@ -90,6 +90,36 @@ What is already correct:
    `PieceId` 1-3. **`Steps of Ruin`, the middle wing, has no area row at all.** Without one a
    player there has no `CurrentArea`, so the realm-aware influence path cannot resolve and the
    middle wing cannot credit influence correctly for either realm.
+
+## Realm instancing
+
+`MovementHandlers` routes `Jump.Type` 4-6 to `InstanceMgr.ZoneIn`, where the code comment has
+always read `// jump type 4 = realm 5 = raid 6 = group instances` — but type 4 was never
+implemented. The only branch on the type set the raid player cap, and selection was purely
+group-leader based, so a Type 4 jump behaved exactly like a group instance. `Create_new_instance`
+also passed realm `0` unconditionally, and `Instance` filters its spawns with
+`obj.Realm == 0 || obj.Realm == Realm`, so realm-specific instance spawns could never load.
+
+Type 4 now selects on `(Instance_Info.Entry, player.Realm)`: one copy per realm, uncapped, and
+exempt from `CheckInstanceEmpty` so it is never torn down while empty. That persistence is the
+point — closing it would reset the public quest cycle and creature respawns every time the last
+player left, and the next player of that realm would arrive in a freshly initialised dungeon.
+Group and raid instances keep their existing behaviour entirely.
+
+**Public quests keep working through the existing path, with no new machinery.** A dungeon zone has
+`Region = ZoneId`, so an instance's `RegionMgr` carries the same region id as the world region and
+`RegionMgr.LoadSpawns` resolves the same `CellSpawnService` entry. `CellSpawns` is pure data —
+spawn lists with no region reference and no loaded flag — while the `Loaded` flag and object list
+live on the per-region `CellMgr`. Two realm regions therefore each build their own cells and
+create their own creatures, gameobjects and `PublicQuest` objects from one shared set of
+definitions, and cycle independently.
+
+The one hazard was double-spawning: zone 160's population is in `creature_spawns` (650 rows,
+loaded via cells) while `Instance.LoadSpawns` separately loads `instance_creature_spawns`, and all
+195 of those rows were exact duplicates of world rows. `Database/24_bastion_stair_realm_instance.sql`
+removes them, keeping the world table as the complete population. Mount Gunbad never had this
+problem — its 550 instance rows are the population and its 10 world rows are the entrance NPCs,
+with zero overlap.
 
 ## Public quests and realm separation
 

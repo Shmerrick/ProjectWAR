@@ -56,7 +56,11 @@ namespace WorldServer.World.Objects.Instances
         private EventInterface _evtInterface;
         private bool _running;
         public ushort ZoneID;
-        readonly byte Realm;
+        /// <summary>
+        /// 0 for a group or raid instance, otherwise the realm that owns this copy. A non-zero
+        /// realm both selects that realm's spawns and makes the instance persistent.
+        /// </summary>
+        public readonly byte Realm;
         public Instance_Lockouts Lockout = null;
         private int closetime;
         public byte state;
@@ -169,6 +173,14 @@ namespace WorldServer.World.Objects.Instances
 
         private void CheckInstanceEmpty()
         {
+            // A realm instance is the realm's single persistent copy of the dungeon, so it is
+            // never closed for being empty. Tearing it down would reset its public quests and
+            // creature respawns every time the last player left, and the next player of that
+            // realm would arrive in a freshly initialised dungeon rather than a running one.
+            // Group and raid instances keep the original behaviour.
+            if (Realm != 0)
+                return;
+
             if (Region.Players.Count > 0)
                 closetime = TCPManager.GetTimeStamp() + (int)Info.LockoutTimer * 60;
 

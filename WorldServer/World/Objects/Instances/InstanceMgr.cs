@@ -43,10 +43,53 @@ namespace WorldServer.World.Objects.Instances
             ushort InstanceMainID = II.Entry;
             
             ushort instanceid = 0;
-			
+
 			// Group Raid Instance
 			if (instancetyp == 5)
                 _maxplayers = 24;
+
+            // Realm instance (jump type 4): one persistent copy per realm rather than one per
+            // group. Every player of a realm shares their realm's dungeon, and it is uncapped.
+            //
+            // Selection is keyed on the realm alone, so a player always returns to the same copy,
+            // and the instance is never closed while empty (see Instance.CheckInstanceEmpty), so
+            // its public quests stay in cycle and its creatures keep respawning between visits.
+            if (instancetyp == 4)
+            {
+                byte realm = (byte)player.Realm;
+
+                if (realm == 0)
+                {
+                    Log.Error("ZoneIn", "Player " + player.Name + " has no realm; cannot enter realm instance for zone " + zoneID + ".");
+                    return false;
+                }
+
+                _maxplayers = 0;
+
+                lock (_instances)
+                {
+                    foreach (KeyValuePair<ushort, Instance> ii in _instances)
+                    {
+                        if (ii.Value.Info != null && ii.Value.Info.Entry == II.Entry && ii.Value.Realm == realm)
+                        {
+                            instanceid = ii.Key;
+                            break;
+                        }
+                    }
+                }
+
+                if (instanceid == 0)
+                    instanceid = Create_new_instance(player, Jump, realm);
+
+                if (instanceid == 0)
+                {
+                    Log.Error("ZoneIn", "Could not open a realm instance of zone " + zoneID + " for realm " + realm + ".");
+                    player.SendClientMessage("This dungeon could not be opened. Please try again.");
+                    return false;
+                }
+
+                return Join_Instance(player, instanceid, Jump, InstanceMainID);
+            }
 
             // instance handling
             lock (_instances)
@@ -143,7 +186,12 @@ namespace WorldServer.World.Objects.Instances
 			}
 		}
 
-        private ushort Create_new_instance(Player player, Zone_jump Jump)
+        /// <summary>
+        /// Opens a new instance. <paramref name="realm"/> is 0 for the ordinary group and raid
+        /// instances and the player's realm for a realm instance, which both selects the realm's
+        /// spawns and marks the instance as persistent.
+        /// </summary>
+        private ushort Create_new_instance(Player player, Zone_jump Jump, byte realm = 0)
         {
             lock (_instances)
             {
@@ -162,7 +210,7 @@ namespace WorldServer.World.Objects.Instances
 								else // group players gets the lockout of the leader
 									InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
 							}
-							ints = new TOTVL(Jump.ZoneID, i, 0, deadbosses);
+							ints = new TOTVL(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
                         }
@@ -177,7 +225,7 @@ namespace WorldServer.World.Objects.Instances
 								else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
                                     InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
 							}
-                            ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
+                            ints = new Instance(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
                         }
