@@ -137,7 +137,7 @@ Bots are real persisted `Player` characters on the shared account id `9999`, run
 - `BOT_SYSTEM.md` — bot architecture and GM commands.
 - `docs/STATUS.md` — per-project build outputs and current LOS-generation parity status.
 - `docs/INTERNAL_BUG_TRACKER.md` — live ledger of known bugs; update it when you find or fix one.
-- `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching wards, guilds, or keep claims.
+- `docs/BASTION_STAIR.md`, `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching wards, guilds, or keep claims.
 - `docs/MASTER_TO_RESTART_AUDIT.md` — the per-change record of what master did and why `RESTART` rejected it. Consult it before concluding something is "missing" from this branch.
 - `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`, `docs/data-matrix/`.
 - `docs/handoffs/` — dated session checkpoints from prior work.
