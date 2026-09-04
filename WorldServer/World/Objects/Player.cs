@@ -623,6 +623,11 @@ namespace WorldServer.World.Objects
                 // was not mapped when the character last equipped it.
                 ItmInterface.GrantEquippedItemUnlocks();
 
+                // Repairs characters holding a ward task with no fragment to show for it,
+                // including tasks completed by a route that leaves nothing equipped. Runs after
+                // the equip grants so a task unlocked just above is repaired in the same pass.
+                TokInterface.BackfillWardFragments();
+
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
                 GldInterface.Load(Guild.Guild.GetGuildFromLeader(Info.CharacterId));

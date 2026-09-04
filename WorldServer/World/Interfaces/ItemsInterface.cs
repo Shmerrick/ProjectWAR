@@ -835,7 +835,19 @@ namespace WorldServer.World.Interfaces
         public void GrantEquippedItemUnlocks()
         {
             if (_playerOwner == null)
+            {
+                Log.Error("GrantEquippedItemUnlocks", "No player owner; equipped Tome unlocks were not granted.");
                 return;
+            }
+
+            if (Items == null)
+            {
+                Log.Error("GrantEquippedItemUnlocks", _playerOwner.Name + " has no item array; equipped Tome unlocks were not granted.");
+                return;
+            }
+
+            int equipped = 0;
+            int wardItems = 0;
 
             for (ushort slot = 0; slot < Items.Length; ++slot)
             {
@@ -844,8 +856,18 @@ namespace WorldServer.World.Interfaces
                 if (itm == null || !IsEquipmentSlot(slot))
                     continue;
 
+                ++equipped;
+
+                if (itm.Info != null && itm.Info.TokUnlock3 > 0)
+                {
+                    ++wardItems;
+                    Log.Info("GrantEquippedItemUnlocks", _playerOwner.Name + " slot " + slot + " " + itm.Info.Name + " ward task " + itm.Info.TokUnlock3);
+                }
+
                 GrantEquipUnlocks(itm.Info);
             }
+
+            Log.Info("GrantEquippedItemUnlocks", _playerOwner.Name + " scanned " + equipped + " equipped item(s), " + wardItems + " carrying a ward fragment task.");
         }
 
         public void EquipItem(Item Itm, bool grantUnlocks = true)

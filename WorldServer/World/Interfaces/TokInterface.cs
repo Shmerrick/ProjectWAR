@@ -108,6 +108,53 @@ namespace WorldServer.World.Interfaces
             return _effectiveWardFragments[wardIndex];
         }
 
+        /// <summary>
+        /// Awards the fragment for every ward task this character already holds but whose
+        /// fragment is missing. Called once after Load, from Player.OnLoad.
+        ///
+        /// Ward tasks became fragment-awarding only after characters could already complete
+        /// them, so a character may hold the task with no fragment to show for it. Load itself
+        /// cannot repair this: it tracks entries 7600-7624 and a task is not one of them.
+        /// Equipment-based repair is not sufficient either, because a task may have been
+        /// completed by a route that leaves nothing worn.
+        ///
+        /// This only ever adds. Earned fragments are permanent and are never recalculated from
+        /// current equipment, per the 1.4.8 target in docs/WARD_SYSTEM.md.
+        /// </summary>
+        public void BackfillWardFragments()
+        {
+            if (!_loaded)
+                return;
+
+            // Collected first: AddTok mutates _tokUnlocks, which cannot be done while
+            // enumerating it. Bounded by the number of toks the character holds.
+            List<ushort> missingFragments = null;
+
+            foreach (KeyValuePair<ushort, Character_tok> held in _tokUnlocks)
+            {
+                ushort fragmentEntry;
+                if (!TokService.TryGetWardFragmentForTask(held.Key, out fragmentEntry))
+                    continue;
+
+                if (_tokUnlocks.ContainsKey(fragmentEntry))
+                    continue;
+
+                if (missingFragments == null)
+                    missingFragments = new List<ushort>();
+
+                if (!missingFragments.Contains(fragmentEntry))
+                    missingFragments.Add(fragmentEntry);
+            }
+
+            if (missingFragments == null)
+                return;
+
+            for (int i = 0; i < missingFragments.Count; ++i)
+                AddTok(missingFragments[i], false, false);
+
+            Log.Info("TokInterface", _Owner.Name + " backfilled " + missingFragments.Count + " ward fragment(s) from tasks already completed.");
+        }
+
         public void AddToks(string Toks)
         {
             if (!_loaded)
@@ -150,8 +197,24 @@ namespace WorldServer.World.Interfaces
         // the tip window is already their notification.
         public void AddTok(ushort Entry, bool itemEquipedToK = false, bool announce = true)
         {
+            // Resolved before the early return below. A character may already hold a ward
+            // fragment task while still missing the fragment it awards: the task could be
+            // unlocked long before the fragment cascade existed, and re-equipping the item
+            // reaches this method with the task already held. Returning early there would
+            // leave the ward permanently short, and would silently defeat the login backfill
+            // in ItmInterface.GrantEquippedItemUnlocks, which grants through this method.
+            // The recursion is one level deep and cannot go further: a fragment award has
+            // task digit 0, so it is never itself a task and never resolves here.
+            ushort wardFragmentEntry;
+            bool isWardFragmentTask = TokService.TryGetWardFragmentForTask(Entry, out wardFragmentEntry);
+
             if (HasTok(Entry))
+            {
+                if (isWardFragmentTask && !HasTok(wardFragmentEntry))
+                    AddTok(wardFragmentEntry, false, announce);
+
                 return;
+            }
 
             if (!_loaded)
             {
@@ -162,10 +225,20 @@ namespace WorldServer.World.Interfaces
             Tok_Info Info = TokService.GetTok(Entry);
 
             if (Info == null)
+            {
+                if (isWardFragmentTask)
+                    Log.Error("TokInterface", "Ward task " + Entry + " has no tok_infos row; fragment not awarded for " + _Owner.Name + ".");
+
                 return;
+            }
 
             if (Info.Realm != 0 && Info.Realm != _Owner.GetPlayer().Info.Realm)
+            {
+                if (isWardFragmentTask)
+                    Log.Error("TokInterface", "Ward task " + Entry + " is realm " + Info.Realm + " but " + _Owner.Name + " is realm " + _Owner.GetPlayer().Info.Realm + "; fragment not awarded.");
+
                 return;
+            }
 
 
             SendTok(Entry, announce);
@@ -261,11 +334,9 @@ namespace WorldServer.World.Interfaces
 
             CharMgr.Database.AddObject(Tok);
 
-            // Completing any one of a ward fragment's tasks awards that fragment. The recursion
-            // is one level deep and cannot go further: a fragment award has task digit 0, so it
-            // is never itself a task and never resolves here.
-            ushort wardFragmentEntry;
-            if (TokService.TryGetWardFragmentForTask(Entry, out wardFragmentEntry))
+            // Completing any one of a ward fragment's tasks awards that fragment. Resolved at
+            // the top of this method so the already-held case is handled there too.
+            if (isWardFragmentTask)
                 AddTok(wardFragmentEntry, false, announce);
         }
         public void SendAllToks()

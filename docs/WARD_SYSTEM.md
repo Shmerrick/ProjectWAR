@@ -34,7 +34,52 @@ Task 4 is a boss or PQ objective and task 5 an RvR objective; those remain unimp
 | 4 | Kill Warlock Peenk and/or Korthuk the Raging 12 Times (0/12) |
 | 5 | Kill 225 RR 45+ Players (0/225) |
 
-Tasks 1-3 work. Task 4 needs a named-boss kill counter and task 5 a renown-ranked player kill counter, both persisted per character and per fragment. That the first three tick correctly while 4 and 5 sit at 0 is independent confirmation of the `Flag = fragment * 10 + task` encoding above. `item_infos.TokUnlock3` carries the equip task entry, restored by `Database/20_restore_ward_fragment_equip_tasks.sql`, which supersedes the fragment entries written by `05_restore_invader_superior_ward_unlocks.sql`. That script also restores ten section 5 rows (7670-7674 Doomflayer, 7695-7699 Warpforged) that the world dump held as empty placeholders.
+Tasks 1-3 are confirmed working in game on 2026-09-04: equipping ward armour awards the task and
+its fragment on login, and the sigil wedges light. Two defects had to be cleared first.
+
+`TokUnlock3` reached the server only after `Database/21_sync_ward_fragment_tasks_to_mythic_items.sql`.
+`ItemService.LoadItem_Info` reads `mythic_src_item_infos` under the shipped
+`UseMythicActionCoverageTables = true`, while scripts `01`, `05` and `20` had written the mapping to
+`item_infos` alone — so every item carried `TokUnlock3 = 0` in memory and the equip branch never
+fired, silently (BUG-033). **A migration touching item columns must update both tables.**
+
+Separately, `AddTok` returned early on an already-held entry before reaching the fragment cascade,
+so a character holding the task from before the cascade existed could never receive its fragment,
+and the login backfill could not repair it because it grants through the same method. Fixed
+alongside, with `BackfillWardFragments` covering tasks completed by routes that leave nothing
+equipped (BUG-032).
+
+Task 4 needs a named-boss kill counter and task 5 a renown-ranked player kill counter, both
+persisted per character.
+
+### Task 4-6 counter binding
+
+`tok_infos` carries no threshold or counter reference — the "12 Times" in a task name is display
+text only. The client supplies both, in `interface/interfacecore/tome/sigils/fragment_tasks.csv`:
+
+```
+fragment id, sigil entry id, task num, AcId, AcId Max
+6,2,4,717,12      Greater, fragment 1, task 4 -> action counter 717, threshold 12
+6,2,5,726,225     Greater, fragment 1, task 5 -> action counter 726, threshold 225
+```
+
+`AcId` is an action counter id and `AcId Max` the completion threshold, matching the `(0/12)` and
+`(0/225)` the client renders for those two tasks. The server already speaks this protocol:
+`TokInterface.SendActionCounterUpdate` emits `F_ACTION_COUNTER_UPDATE(subtype, count)`, used today
+for bestiary kill counters. Ward AcIds occupy 700-735 and do not collide with bestiary ids.
+
+`fragments.csv` maps fragment id to (sigil entry, fragment index) and gives each fragment's task
+count, so a row resolves to a `tok_infos` entry as `Index = sigil entry` and
+`Flag = fragment index * 10 + task num`.
+
+So the server's remaining work per task is narrow: increment the counter, push the update, and
+award the task entry at the threshold — the existing `AddTok` cascade then awards the fragment.
+There are 31 such counters across tiers 1-3; Excelsior and Supreme define no task 4-6 rows at all.
+
+Progress cannot be stored in `characters_toks.Count`: `HasTok` treats the presence of a row as
+completion, so partial progress there would mark the task done. It cannot go in
+`characters_toks_kills` unfiltered either, because `SendBestiary` writes every row of that table
+into the bestiary packet behind a count prefix. That the first three tick correctly while 4 and 5 sit at 0 is independent confirmation of the `Flag = fragment * 10 + task` encoding above. `item_infos.TokUnlock3` carries the equip task entry, restored by `Database/20_restore_ward_fragment_equip_tasks.sql`, which supersedes the fragment entries written by `05_restore_invader_superior_ward_unlocks.sql`. That script also restores ten section 5 rows (7670-7674 Doomflayer, 7695-7699 Warpforged) that the world dump held as empty placeholders.
 
 The five original tiers, from lowest to highest, are Lesser, Greater, Superior, Excelsior, and Supreme. Higher completed wards cumulatively satisfy lower ward tiers.
 
