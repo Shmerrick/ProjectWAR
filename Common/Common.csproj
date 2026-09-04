@@ -128,6 +128,9 @@
     <Compile Include="Database\Character\Characters_quests.cs" />
     <Compile Include="Database\Character\Characters_socials.cs" />
     <Compile Include="Database\Character\Characters_tok_kills.cs" />
+    <Compile Include="Database\Character\Characters_action_counter.cs" />
+    <Compile Include="Database\World\Ward_Fragment_Task.cs" />
+    <Compile Include="Database\World\Ward_Task_Creature.cs" />
     <Compile Include="Database\Character\Characters_tok.cs" />
     <Compile Include="Database\Character\Characters_ability.cs" />
     <Compile Include="Database\Character\Characters_influence.cs" />

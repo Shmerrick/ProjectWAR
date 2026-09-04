@@ -80,10 +80,125 @@ namespace WorldServer.World.Interfaces
 
 
 
+            LoadActionCounters();
+
             _loaded = true;
 
             base.Load();
         }
+
+        #region Ward fragment task counters
+
+        /// <summary>Action counter id -> this character's progress on it.</summary>
+        private readonly Dictionary<ushort, Character_action_counter> _actionCounters = new Dictionary<ushort, Character_action_counter>();
+
+        /// <summary>
+        /// One indexed read per login. characters_action_counters is keyed (CharacterId, AcId),
+        /// so CharacterId is the leftmost primary key column and this is a ref lookup rather than
+        /// a scan. Kept out of CharMgr's bulk character load, which would need the same list
+        /// threaded through six separate paths.
+        /// </summary>
+        private void LoadActionCounters()
+        {
+            _actionCounters.Clear();
+
+            uint characterId = GetPlayer().CharacterId;
+
+            IList<Character_action_counter> counters =
+                CharMgr.Database.SelectObjects<Character_action_counter>("CharacterId=" + characterId);
+
+            if (counters == null)
+                return;
+
+            foreach (Character_action_counter counter in counters)
+                if (counter != null && !_actionCounters.ContainsKey(counter.AcId))
+                    _actionCounters.Add(counter.AcId, counter);
+        }
+
+        /// <summary>Current progress on an action counter.</summary>
+        public uint GetActionCounter(ushort acId)
+        {
+            Character_action_counter counter;
+            return _actionCounters.TryGetValue(acId, out counter) ? counter.Count : 0u;
+        }
+
+        /// <summary>
+        /// Pushes every ward task counter to the client so the fragment pages show real progress
+        /// rather than 0. Called once the Tome is loaded, from Player.OnLoad.
+        /// </summary>
+        public void SendWardTaskCounters()
+        {
+            if (!_loaded)
+                return;
+
+            foreach (Ward_Fragment_Task task in WardTaskService.GetWardTasks())
+                SendActionCounterUpdate(task.AcId, GetActionCounter(task.AcId));
+        }
+
+        /// <summary>
+        /// Advances a ward fragment task counter and awards its Tome entry once the client's
+        /// threshold is reached. Ignores ids that are not ward task counters, so callers can fire
+        /// events without knowing which are bound.
+        ///
+        /// The award goes through AddTok, so completing the task also awards its fragment and
+        /// cascades to the tier below exactly as an equip route does.
+        /// </summary>
+        public void IncrementWardTaskCounter(ushort acId, uint amount = 1)
+        {
+            if (!_loaded || amount == 0)
+                return;
+
+            Ward_Fragment_Task task;
+            if (!WardTaskService.TryGetWardTask(acId, out task))
+                return;
+
+            // Already complete: nothing to count, and the tok would be a no-op anyway.
+            if (task.TokEntry != 0 && HasTok(task.TokEntry))
+                return;
+
+            Character_action_counter counter;
+            if (_actionCounters.TryGetValue(acId, out counter))
+            {
+                if (counter.Count >= task.Threshold)
+                    return;
+
+                counter.Count += amount;
+                counter.Dirty = true;
+                CharMgr.Database.SaveObject(counter);
+            }
+            else
+            {
+                counter = new Character_action_counter
+                {
+                    CharacterId = GetPlayer().CharacterId,
+                    AcId = acId,
+                    Count = amount
+                };
+
+                _actionCounters.Add(acId, counter);
+                CharMgr.Database.AddObject(counter);
+            }
+
+            if (counter.Count > task.Threshold)
+                counter.Count = task.Threshold;
+
+            SendActionCounterUpdate(acId, counter.Count);
+
+            if (counter.Count < task.Threshold)
+                return;
+
+            if (task.TokEntry == 0)
+            {
+                // A client-defined counter with no tok_infos row to award: AcIds 704, 705 and 709.
+                // Recorded rather than silently dropped so the missing rows stay visible.
+                Log.Info("WardTask", GetPlayer().Name + " completed ward task counter " + acId + " but it has no Tome entry to award.");
+                return;
+            }
+
+            AddTok(task.TokEntry);
+        }
+
+        #endregion
         public override void Save()
         {
             foreach (KeyValuePair<ushort, Character_tok> Kp in _tokUnlocks)

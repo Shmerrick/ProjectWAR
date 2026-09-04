@@ -68,6 +68,34 @@ namespace WorldServer.World.Objects
         public static uint DestruCount;
         // The bounty level for this player. 
         public int BaseBountyValue => (_Value.Level) + (2 * _Value.RenownRank);
+
+        /// <summary>
+        /// Ward fragment task 5 counters for renown-ranked player kills, paired with the minimum
+        /// renown rank the victim must hold. The ranks are stated in the tasks' own tok_infos
+        /// names: 721 "Kill 100 RR 35+ Players", 726 "Kill 225 RR 45+ Players" and 731 "Kill 300
+        /// RR 55+ Players", the first fragment of the Lesser, Greater and Superior sigils.
+        /// </summary>
+        private static readonly ushort[] WardRenownKillCounters = { 721, 726, 731 };
+        private static readonly byte[] WardRenownKillMinimums = { 35, 45, 55 };
+
+        /// <summary>
+        /// Advances the renown-ranked kill counters when a player kills an enemy player of
+        /// sufficient renown rank. Same-realm kills do not count.
+        /// </summary>
+        private static void CreditWardRenownKill(Player killer, Player victim)
+        {
+            if (killer == null || victim == null || killer == victim)
+                return;
+
+            if (killer.Realm == victim.Realm)
+                return;
+
+            byte victimRenown = victim._Value.RenownRank;
+
+            for (int i = 0; i < WardRenownKillCounters.Length; ++i)
+                if (victimRenown >= WardRenownKillMinimums[i])
+                    killer.TokInterface.IncrementWardTaskCounter(WardRenownKillCounters[i]);
+        }
         public float AAOBonus { get; set; }
 
         public string InstanceID { get; set; } = string.Empty;
@@ -627,6 +655,9 @@ namespace WorldServer.World.Objects
                 // including tasks completed by a route that leaves nothing equipped. Runs after
                 // the equip grants so a task unlocked just above is repaired in the same pass.
                 TokInterface.BackfillWardFragments();
+
+                // Ward fragment task counters, so the Tome shows real progress rather than 0/N.
+                TokInterface.SendWardTaskCounters();
 
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
@@ -4593,6 +4624,8 @@ namespace WorldServer.World.Objects
             killer.AddXp(totalXP, 1, false, false);
             //killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {Name}");
             killer.AddInfluence(influenceId, (ushort)totalInfluence);
+
+            CreditWardRenownKill(killer, this);
             
             #endregion
 

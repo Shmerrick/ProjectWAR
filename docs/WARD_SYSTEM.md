@@ -60,9 +60,41 @@ Confirmed in game 2026-09-04: three different Supreme set pieces each cascaded d
 showed two independent sources ticked at once (`Equip Annihilator Shoulders` and `Acquire Third
 Fragment of the Greater Ward`), which is the intended any-one-of behaviour.
 
-Task 4 needs a named-boss kill counter and task 5 a renown-ranked player kill counter, both
-persisted per character. Neither is implemented, so capturing a Tier 4 keep currently awards no
-progress toward `Capture 10 Tier 4 Empire vs Chaos Keeps` — expected, not a regression.
+### Counter implementation
+
+All 32 client bindings are seeded into `ward_fragment_tasks` by
+`Database/25_ward_fragment_task_counters.sql`, resolved to their `tok_infos` entry by
+`Index = sigil` and `Flag = fragment * 10 + task`. Progress is stored per character in
+`characters_action_counters`, keyed `(CharacterId, AcId)`.
+
+`TokInterface.IncrementWardTaskCounter(acId)` advances a counter, pushes
+`F_ACTION_COUNTER_UPDATE`, and awards the task's Tome entry at the threshold — which then awards
+the fragment and cascades down the tiers exactly as an equip route does. Counters are pushed to
+the client on login so the fragment pages show real progress. `.ward counters`, `.ward add` and
+`.ward complete` inspect and drive them without grinding.
+
+Three counters have no `tok_infos` row to award — **704** (Greater helm), **705** (Superior helm)
+and **709** (Superior chest). They are stored with `TokEntry = 0`, still advance and display, and
+log on completion rather than failing silently. Restoring those rows is the same job script 20
+did for ten empty section 5 placeholders.
+
+Hooked so far:
+
+| Counters | Source | Status |
+|---|---|---|
+| 700, 702, 703, 706, 707, 715, 717, 718, 719 | Named boss kills, via `ward_task_creatures` | Working |
+| 716 | Completing any Bastion Stair public quest | Working |
+| 721, 726, 731 | Killing enemy players of RR 35+/45+/55+ | Working |
+| 701, 720 | Seraphine / Ssyridian Morbidae; "Any Lost Vale Mini Boss" | **No target** — names unresolved |
+| 708, 710, 722-725, 727-730, 732-735 | Keeps, zones, scenarios, city, fortresses, lair bosses | **Not hooked yet** |
+
+`ward_task_creatures` maps a counter to every creature that advances it, so an "and/or" task
+counts either. Six names in those tasks resolve to no `creature_protos` row — Warlock Peenk,
+Necromancer Malcidious, Seraphine, Ssyridian Morbidae, Twin Lectors, and the Lost Vale mini-boss
+set — and are deliberately absent rather than pointed at a guess.
+
+Because a keep-capture counter is not yet hooked, capturing a Tier 4 keep awards no progress
+toward `Capture 10 Tier 4 Empire vs Chaos Keeps` — expected, not a regression.
 
 ### Task 4-6 counter binding
 

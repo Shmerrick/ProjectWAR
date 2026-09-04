@@ -587,6 +587,12 @@ namespace WorldServer.World.Objects.PublicQuests
             }
         }
 
+        /// <summary>Bastion Stair's base map, whose public quests feed ward counter 716.</summary>
+        private const ushort BASTION_STAIR_ZONE = 160;
+
+        /// <summary>Action counter behind "Complete Any Bastion Stair PQ 5 Times".</summary>
+        private const ushort BASTION_STAIR_PQ_COUNTER = 716;
+
         /// <summary>
         /// The influence track this public quest credits for one player.
         ///
@@ -785,6 +791,11 @@ namespace WorldServer.World.Objects.PublicQuests
                     targPlayer.SendLocalizeString(Info.Name + " Complete", ChatLogFilters.CHATLOGFILTERS_SAY, GameData.Localized_text.CHAT_TAG_MONSTER_EMOTE);
                     //SendReinitTime(Plr, TIME_PQ_RESET);
                     targPlayer.AddInfluence((ushort)GetInfluenceId(targPlayer), 500);
+
+                    // "Complete Any Bastion Stair PQ 5 Times" -- Lesser sigil, second fragment,
+                    // task 4. Counter 716 counts completions of any public quest in zone 160.
+                    if (Info.ZoneId == BASTION_STAIR_ZONE)
+                        targPlayer.TokInterface.IncrementWardTaskCounter(BASTION_STAIR_PQ_COUNTER);
                 }
             }
             //sanity check - remove players in the PQ who won without doing anything

@@ -1001,6 +1001,8 @@ namespace WorldServer.World.Objects
 
                 if (dungeonKill)
                     GrantDungeonKillInfluence(credited, 1f, true);
+
+                CreditWardTaskKill(credited);
             }
 
             else
@@ -1071,6 +1073,11 @@ namespace WorldServer.World.Objects
                 {
                     GenerateLoot(looter, 1f);
                     CreditQuestKill(looter);
+
+                    // Boss counters credit every damage contributor, matching how the fight is
+                    // shared, rather than only the looter.
+                    foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
+                        CreditWardTaskKill(kvpair.Key);
                 }
             }
         }
@@ -1121,6 +1128,24 @@ namespace WorldServer.World.Objects
                 player.PriorityGroup.AddInfluenceCount(player, (ushort)influenceId, (ushort)share);
             else
                 player.AddInfluence((ushort)influenceId, (ushort)share);
+        }
+
+        /// <summary>
+        /// Advances any ward fragment task counter this creature is a target of, for one player.
+        /// A single dictionary lookup for creatures that are not targets, which is nearly all of
+        /// them.
+        /// </summary>
+        private void CreditWardTaskKill(Player player)
+        {
+            if (player == null)
+                return;
+
+            List<ushort> counters;
+            if (!WardTaskService.TryGetCountersForCreature(Entry, out counters))
+                return;
+
+            for (int i = 0; i < counters.Count; ++i)
+                player.TokInterface.IncrementWardTaskCounter(counters[i]);
         }
 
         protected void CreditQuestKill(Player killer)
