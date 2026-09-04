@@ -1000,7 +1000,7 @@ namespace WorldServer.World.Objects
                 CreditQuestKill(credited);
 
                 if (dungeonKill)
-                    GrantDungeonKillInfluence(credited, 1f);
+                    GrantDungeonKillInfluence(credited, 1f, true);
             }
 
             else
@@ -1028,7 +1028,7 @@ namespace WorldServer.World.Objects
                     // Shared by damage dealt, so a kill is worth the same influence however many
                     // players contributed to it.
                     if (dungeonKill)
-                        GrantDungeonKillInfluence(curPlayer, damageFactor);
+                        GrantDungeonKillInfluence(curPlayer, damageFactor, false);
 
                     // Solo player, add their rewards directly.
                     if (curPlayer.PriorityGroup == null)
@@ -1097,7 +1097,7 @@ namespace WorldServer.World.Objects
         /// Bastion Stair's middle wing currently has no area row at all, so kills there award
         /// nothing until one exists -- see docs/BASTION_STAIR.md.
         /// </summary>
-        private static void GrantDungeonKillInfluence(Player player, float damageFactor)
+        private static void GrantDungeonKillInfluence(Player player, float damageFactor, bool shareWithGroup)
         {
             if (player == null || player.CurrentArea == null)
                 return;
@@ -1114,7 +1114,13 @@ namespace WorldServer.World.Objects
             if (share <= 0)
                 return;
 
-            player.AddInfluence((ushort)influenceId, (ushort)share);
+            // A kill is worth the same total influence however many players share it. The higher
+            // rank path already splits by damage dealt per contributor, so it must not also split
+            // by group or the award would be divided twice.
+            if (shareWithGroup && player.PriorityGroup != null)
+                player.PriorityGroup.AddInfluenceCount(player, (ushort)influenceId, (ushort)share);
+            else
+                player.AddInfluence((ushort)influenceId, (ushort)share);
         }
 
         protected void CreditQuestKill(Player killer)
