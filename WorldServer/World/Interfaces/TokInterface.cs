@@ -109,8 +109,9 @@ namespace WorldServer.World.Interfaces
         }
 
         /// <summary>
-        /// Awards the fragment for every ward task this character already holds but whose
-        /// fragment is missing. Called once after Load, from Player.OnLoad.
+        /// Repairs ward progress the character earned but never received, in two directions:
+        /// a completed task whose fragment was never awarded, and a held fragment that never
+        /// completed task 2 on the tier below. Called once after Load, from Player.OnLoad.
         ///
         /// Ward tasks became fragment-awarding only after characters could already complete
         /// them, so a character may hold the task with no fragment to show for it. Load itself
@@ -128,31 +129,41 @@ namespace WorldServer.World.Interfaces
 
             // Collected first: AddTok mutates _tokUnlocks, which cannot be done while
             // enumerating it. Bounded by the number of toks the character holds.
-            List<ushort> missingFragments = null;
+            List<ushort> missing = null;
 
             foreach (KeyValuePair<ushort, Character_tok> held in _tokUnlocks)
             {
+                // A completed task whose fragment was never awarded.
                 ushort fragmentEntry;
-                if (!TokService.TryGetWardFragmentForTask(held.Key, out fragmentEntry))
-                    continue;
+                if (TokService.TryGetWardFragmentForTask(held.Key, out fragmentEntry) && !_tokUnlocks.ContainsKey(fragmentEntry))
+                {
+                    if (missing == null)
+                        missing = new List<ushort>();
 
-                if (_tokUnlocks.ContainsKey(fragmentEntry))
-                    continue;
+                    if (!missing.Contains(fragmentEntry))
+                        missing.Add(fragmentEntry);
+                }
 
-                if (missingFragments == null)
-                    missingFragments = new List<ushort>();
+                // A held fragment that never completed task 2 on the tier below. Granting the
+                // task awards that fragment, which cascades down the remaining tiers.
+                ushort lowerTaskEntry;
+                if (TokService.TryGetLowerWardTaskForFragment(held.Key, out lowerTaskEntry) && !_tokUnlocks.ContainsKey(lowerTaskEntry))
+                {
+                    if (missing == null)
+                        missing = new List<ushort>();
 
-                if (!missingFragments.Contains(fragmentEntry))
-                    missingFragments.Add(fragmentEntry);
+                    if (!missing.Contains(lowerTaskEntry))
+                        missing.Add(lowerTaskEntry);
+                }
             }
 
-            if (missingFragments == null)
+            if (missing == null)
                 return;
 
-            for (int i = 0; i < missingFragments.Count; ++i)
-                AddTok(missingFragments[i], false, false);
+            for (int i = 0; i < missing.Count; ++i)
+                AddTok(missing[i], false, false);
 
-            Log.Info("TokInterface", _Owner.Name + " backfilled " + missingFragments.Count + " ward fragment(s) from tasks already completed.");
+            Log.Info("TokInterface", _Owner.Name + " backfilled " + missing.Count + " ward unlock(s) from progress already earned.");
         }
 
         public void AddToks(string Toks)
@@ -212,6 +223,12 @@ namespace WorldServer.World.Interfaces
             {
                 if (isWardFragmentTask && !HasTok(wardFragmentEntry))
                     AddTok(wardFragmentEntry, false, announce);
+
+                // A fragment held from before the cross-tier cascade existed still owes the
+                // tier below its task 2. Resolved here for the same reason as above.
+                ushort heldLowerWardTaskEntry;
+                if (TokService.TryGetLowerWardTaskForFragment(Entry, out heldLowerWardTaskEntry) && !HasTok(heldLowerWardTaskEntry))
+                    AddTok(heldLowerWardTaskEntry, false, announce);
 
                 return;
             }
@@ -338,6 +355,15 @@ namespace WorldServer.World.Interfaces
             // the top of this method so the already-held case is handled there too.
             if (isWardFragmentTask)
                 AddTok(wardFragmentEntry, false, announce);
+
+            // Task 2 of a fragment is "acquire the same fragment of the next ward up", so
+            // earning this fragment completes that task one tier down and awards the fragment
+            // below it, which repeats until tier 1. Termination is guaranteed: each step moves
+            // strictly one sigil tier down, so the chain is at most four deep (Supreme to
+            // Lesser), and any fragment already held returns at the top of this method.
+            ushort lowerWardTaskEntry;
+            if (TokService.TryGetLowerWardTaskForFragment(Entry, out lowerWardTaskEntry))
+                AddTok(lowerWardTaskEntry, false, announce);
         }
         public void SendAllToks()
         {

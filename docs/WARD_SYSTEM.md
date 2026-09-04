@@ -49,8 +49,20 @@ and the login backfill could not repair it because it grants through the same me
 alongside, with `BackfillWardFragments` covering tasks completed by routes that leave nothing
 equipped (BUG-032).
 
+Task 2 is the cross-tier cascade: acquiring fragment N of tier T+1 completes task 2 of fragment N
+at tier T and awards that fragment, repeating down to Lesser. `TokService` maps each fragment to
+the task 2 below it (20 cascades: four tiers by five fragments) and `AddTok` follows the chain.
+Termination is structural — each hop drops exactly one sigil tier, so the chain is at most four
+deep, and an already-held entry returns immediately. Supreme's own task 2 (7670-7674) is the
+Doomflayer equip task rather than a higher ward, and is never a cascade target.
+
+Confirmed in game 2026-09-04: three different Supreme set pieces each cascaded down, and a fragment
+showed two independent sources ticked at once (`Equip Annihilator Shoulders` and `Acquire Third
+Fragment of the Greater Ward`), which is the intended any-one-of behaviour.
+
 Task 4 needs a named-boss kill counter and task 5 a renown-ranked player kill counter, both
-persisted per character.
+persisted per character. Neither is implemented, so capturing a Tier 4 keep currently awards no
+progress toward `Capture 10 Tier 4 Empire vs Chaos Keeps` — expected, not a regression.
 
 ### Task 4-6 counter binding
 

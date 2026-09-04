@@ -73,6 +73,9 @@ namespace WorldServer.Services.World
         /// <summary>Ward fragment task entry -> the fragment entry that completing it awards.</summary>
         private static Dictionary<ushort, ushort> _wardTaskFragments = new Dictionary<ushort, ushort>();
 
+        /// <summary>Ward fragment entry -> task 2 of the same fragment on the tier below.</summary>
+        private static Dictionary<ushort, ushort> _wardFragmentLowerTasks = new Dictionary<ushort, ushort>();
+
         /// <summary>
         /// Builds the ward task lookup from tok_infos section 5.
         ///
@@ -117,7 +120,50 @@ namespace WorldServer.Services.World
 
             _wardTaskFragments = taskFragments;
 
-            Log.Success("LoadTok_Infos", "Mapped " + taskFragments.Count + " ward fragment tasks");
+            // Task 2 of a fragment is "acquire the same fragment of the next ward up", so
+            // earning fragment N of tier T completes task 2 of fragment N at tier T-1 and
+            // awards that fragment in turn. Map each fragment award to the lower tier's task 2
+            // so the cascade can be followed downwards.
+            //
+            // Tier 1 has nothing below it and is skipped. Supreme's own task 2 (7670-7674) is
+            // the Doomflayer equip task rather than a higher ward, and is never a cascade
+            // target because no tier 6 fragment exists to reach it.
+            Dictionary<ushort, ushort> fragmentLowerTasks = new Dictionary<ushort, ushort>();
+
+            foreach (Tok_Info info in toks)
+            {
+                if (info.Section != SIGIL_SECTION || info.Flag % 10 != 0 || info.Index <= 1)
+                    continue;
+
+                uint fragmentIndex = info.Flag / 10;
+
+                ushort lowerTaskEntry = 0;
+
+                foreach (Tok_Info candidate in toks)
+                {
+                    if (candidate.Section != SIGIL_SECTION)
+                        continue;
+
+                    if (candidate.Index == info.Index - 1 && candidate.Flag == fragmentIndex * 10 + 2)
+                    {
+                        lowerTaskEntry = candidate.Entry;
+                        break;
+                    }
+                }
+
+                if (lowerTaskEntry == 0)
+                {
+                    Log.Error("TokService", "Ward fragment " + info.Entry + " (sigil " + info.Index + " fragment " + fragmentIndex + ") has no task 2 on the tier below; that cascade will not fire.");
+                    continue;
+                }
+
+                if (!fragmentLowerTasks.ContainsKey(info.Entry))
+                    fragmentLowerTasks.Add(info.Entry, lowerTaskEntry);
+            }
+
+            _wardFragmentLowerTasks = fragmentLowerTasks;
+
+            Log.Success("LoadTok_Infos", "Mapped " + taskFragments.Count + " ward fragment tasks and " + fragmentLowerTasks.Count + " cross-tier cascades");
         }
 
         /// <summary>
@@ -127,6 +173,15 @@ namespace WorldServer.Services.World
         public static bool TryGetWardFragmentForTask(ushort taskEntry, out ushort fragmentEntry)
         {
             return _wardTaskFragments.TryGetValue(taskEntry, out fragmentEntry);
+        }
+
+        /// <summary>
+        /// Returns task 2 of the same fragment one ward tier down, which acquiring this fragment
+        /// completes. False when the entry is not a ward fragment or is already at the lowest tier.
+        /// </summary>
+        public static bool TryGetLowerWardTaskForFragment(ushort fragmentEntry, out ushort lowerTaskEntry)
+        {
+            return _wardFragmentLowerTasks.TryGetValue(fragmentEntry, out lowerTaskEntry);
         }
 
         public static Tok_Bestiary GetTokBestiary(ushort subTypeId)
