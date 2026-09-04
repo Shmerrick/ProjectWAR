@@ -81,7 +81,38 @@ What is already correct:
    per-PQ — and none of its rows is a Bloodlord item. So the gold-bag gloves cannot drop.
 5. **Bloodlord defines only 5 of 24 career sets** (BUG-034): 25 of 120 armour pieces carry a
    non-zero `ItemSet`, against 120 of 120 for every other ward set.
-6. **`Arena Challenges` (PQ 501) has no objectives**, so it can never complete.
+6. **`Arena Challenges` (PQ 501) has no objectives and no spawns**, so it can never complete — and
+   it sits at exactly the same position as `Trail of Carnage` (329), `PinX/PinY 8782, 11202`. It
+   is an empty placeholder stacked on a real left-wing PQ. The other nine all have objectives
+   and spawns (39-143 each).
+7. **`zone_areas` defines only three areas for zone 160**: `Bastion Stair` (the entrance),
+   `Path of Fury` (right wing) and `Trail of Carnage` (left wing), all `AreaId 31` with
+   `PieceId` 1-3. **`Steps of Ruin`, the middle wing, has no area row at all.** Without one a
+   player there has no `CurrentArea`, so the realm-aware influence path cannot resolve and the
+   middle wing cannot credit influence correctly for either realm.
+
+## Public quests and realm separation
+
+Public quests are not realm-gated in data — `pquest_info` has no realm column, and all ten
+Bastion PQs are `Type 0`. Separation comes from the influence track, which `zone_areas` holds per
+realm: zone 160 is `OrderInfluenceId 129` / `DestroInfluenceId 128`, and Mount Gunbad is `64`/`65`.
+
+Both dungeons' PQs then store the **Destruction** id in `pquest_info.ChapterId` — 128 for all ten
+Bastion PQs, 65 for all nine Gunbad PQs. That is not a chapter reference at all, despite the
+column name; `chapter_infos` 128 is "Chapter 20: Surprise Attack" in zone 9, and 65 does not
+exist. The real dungeon chapters are `chapter_infos` 2/6 (Bastion, Destruction/Order) and 1/5
+(Gunbad), used by `chapter_rewards` for the rally master.
+
+`PublicQuest` resolved the influence id per realm from `CurrentArea` on the objective tick, but
+the two award paths that matter — 250 on stage completion and 500 on PQ completion — used
+`Info.ChapterId` unconditionally. Order players in either dungeon were therefore paid
+**Destruction** influence, so their own bar never filled and the Order influence gate on the wing
+bosses could never open. Fixed 2026-09-04 by routing all three through one realm-aware helper
+(BUG-036); the `Type == 0` guard confines the change to these two dungeons.
+
+Since each realm gets its own region, each also gets its own `PublicQuest` object per entry —
+`RegionMgr.PublicQuests` is keyed by entry per region — so the two realms' copies run
+independently rather than sharing or stacking state.
 
 ## Restoration order
 

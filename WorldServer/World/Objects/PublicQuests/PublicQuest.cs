@@ -535,19 +535,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 {
                     if (player != null)
                     {
-                        uint influenceid;
-
-                        if (Info.Type == 0 && player.CurrentArea != null)
-                        {
-                            if (player.Realm == GameData.Realms.REALMS_REALM_ORDER)
-                                influenceid = player.CurrentArea.OrderInfluenceId;
-                            else
-                                influenceid = player.CurrentArea.DestroInfluenceId;
-                        }
-                        else // normaly we should only use the area inf but to not break every pq we keep it like this for now
-                        {
-                            influenceid = Info.ChapterId;
-                        }
+                        uint influenceid = GetInfluenceId(player);
 
 
 
@@ -597,6 +585,34 @@ namespace WorldServer.World.Objects.PublicQuests
             {
                 NextStage();
             }
+        }
+
+        /// <summary>
+        /// The influence track this public quest credits for one player.
+        ///
+        /// Dungeon public quests store the *Destruction* influence id in ChapterId: Bastion
+        /// Stair's ten PQs all carry 128 and Mount Gunbad's nine carry 65, which are exactly the
+        /// DestroInfluenceId on their zone_areas rows (Order is 129 and 64). Awarding ChapterId
+        /// to everyone therefore gives Order players Destruction influence, so an Order player's
+        /// own bar never fills and the influence gate on the wing bosses can never open for them.
+        ///
+        /// The area row carries both realms' ids, so prefer it. The Info.Type == 0 guard is kept
+        /// from the original objective-tick logic: it covers both dungeons (all 19 of their PQs
+        /// are Type 0) and leaves the 557 world PQs of other types on the existing path.
+        /// </summary>
+        private uint GetInfluenceId(Player player)
+        {
+            if (Info.Type == 0 && player.CurrentArea != null)
+            {
+                uint areaInfluenceId = player.Realm == GameData.Realms.REALMS_REALM_ORDER
+                    ? player.CurrentArea.OrderInfluenceId
+                    : player.CurrentArea.DestroInfluenceId;
+
+                if (areaInfluenceId != 0)
+                    return areaInfluenceId;
+            }
+
+            return Info.ChapterId;
         }
 
         public override void Update(long msTick)
@@ -720,7 +736,7 @@ namespace WorldServer.World.Objects.PublicQuests
                         {
                             SendCurrentStage(targPlayer);
                             if (Stage.Number > 1)
-                                targPlayer.AddInfluence((ushort)Info.ChapterId, 250);
+                                targPlayer.AddInfluence((ushort)GetInfluenceId(targPlayer), 250);
                         }
                     }
                     return;
@@ -768,7 +784,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 {
                     targPlayer.SendLocalizeString(Info.Name + " Complete", ChatLogFilters.CHATLOGFILTERS_SAY, GameData.Localized_text.CHAT_TAG_MONSTER_EMOTE);
                     //SendReinitTime(Plr, TIME_PQ_RESET);
-                    targPlayer.AddInfluence((ushort)Info.ChapterId, 500);
+                    targPlayer.AddInfluence((ushort)GetInfluenceId(targPlayer), 500);
                 }
             }
             //sanity check - remove players in the PQ who won without doing anything
