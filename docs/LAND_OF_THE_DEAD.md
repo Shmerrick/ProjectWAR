@@ -149,6 +149,49 @@ writes this byte and `F_FLIGHT` re-checks the same rule before moving anyone, so
 gated server-side either way; but do not treat a 0 here as a supported way to present the
 destination as locked, because retail never sent one.
 
+## The warcamp assault
+
+When the expedition changes hands, the winning realm attacks the losing realm's expedition camp,
+which starts a public quest on both sides — one realm razes, the other defends. This is the
+mechanism behind the fourth lock reason above ("a massive war is currently underway in your
+realm's expedition camp; airships cannot safely land there at the moment").
+
+Both quests exist in `pquest_info` for zone 191:
+
+| Entry | Name | Type | Camp |
+|---|---|---|---|
+| 850 | Assault on Goldbarrow | 2 (Destruction) | Goldbarrow, the Order camp |
+| 851 | Assault on Da Dusty Dry | 1 (Order) | Da Dusty Dry, the Destruction camp |
+
+Two captures record them, and the tracker state in each is worth keeping:
+
+- `LAND ON THE DEAD ... PQ ASSAULT ON DA DUSTY DRY - DEFEND THE WARCAMP` — the race is **paused**
+  (timer 27 counting down to 18) with **Order** holding the expedition, Order 0/500 and
+  Destruction 0/500. Order has just won, and the Destruction player is defending their own camp.
+  This is the flip-triggered case.
+- `LAND ON THE DEAD ... PQ ASSAULT ON GOLDBARROW - RAZE THE WARCAMP` — the race is **running**
+  (timer 0) with **Destruction** holding, Order on 366/500. So the assault is not exclusively a
+  flip event; the holding realm can also raid the other camp while the race runs.
+
+**Neither quest can currently run.** Both carry `PQAreaId` 0 and pin 0,0, and neither has a single
+`pquest_spawns` row, so `Player.CheckArea` (which only matches painted areas 1-28) can never
+attach a player and there is nothing to spawn. They are inert data, not a live mechanic — which
+also means they are not the cause of any flight lockout on this server. Restoring them is open
+work; see BUG-075.
+
+### An open question about who may travel
+
+The defend capture undercuts the holder-exclusive access rule this server implements. Order holds
+the expedition (header realm 1) while a **Destruction** player is inside zone 191 defending Da
+Dusty Dry. A quest that exists for the losing realm to defend its own camp implies that realm can
+reach the zone at all, and `CanRealmAccessLotd` as written would forbid it.
+
+That is not conclusive — the capture begins mid-session, so the player may have flown in before
+the flip and simply stayed, and being present is not the same as being offered the flight. No
+capture yet pairs a flight list with a tracker showing the *other* realm as holder: every capture
+that lists zone 191 is a Destruction character at a time when Destruction holds it. The access
+rule is therefore left as it is rather than loosened on ambiguous evidence. See BUG-076.
+
 ## Operating it
 
 Reaching an owned state legitimately needs five Tier 4 battlefront locks. The GM commands stage

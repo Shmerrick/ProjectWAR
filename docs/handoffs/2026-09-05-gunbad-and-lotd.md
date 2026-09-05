@@ -226,3 +226,36 @@ an opaque client object id that cannot otherwise be traced back to a place in th
 Release/x64 solution build clean, no new warnings. Migration 38 applied and re-applied against
 the local Release database; base dumps untouched. `Test-RuntimeRegressions.ps1` passes. **Not
 client-tested** — the stack was not started.
+
+## Warcamp assault — user-supplied mechanism, 2026-09-05
+
+The user reported the retail behaviour: when the Land of the Dead expedition changes hands, the
+winning realm attacks the losing realm's expedition camp, starting a raze/defend public quest on
+both sides, and suggested that quest might be what locks travel.
+
+The mechanism is real and both quests are already in the database — `pquest_info` 850 "Assault on
+Goldbarrow" (Type 2, the Order camp) and 851 "Assault on Da Dusty Dry" (Type 1, the Destruction
+camp) — and two captures record them:
+
+- `... PQ ASSAULT ON DA DUSTY DRY - DEFEND THE WARCAMP`: race **paused** (timer 27 -> 18), **Order**
+  holding, both realms on 0/500. The flip-triggered case, with the Destruction player defending
+  their own camp.
+- `... PQ ASSAULT ON GOLDBARROW - RAZE THE WARCAMP`: race **running** (timer 0), **Destruction**
+  holding, Order on 366/500. So the assault is not exclusively a flip event.
+
+This is very likely the mechanism behind the client's fourth travel-lock reason, "airships cannot
+safely land there at the moment". It is recorded as BUG-075.
+
+**It is not what locked travel on this server.** Both quests are inert: `PQAreaId` 0, pin 0,0 and
+zero `pquest_spawns` rows, so `Player.CheckArea` — which only matches painted areas 1-28 — can
+never attach a player to them and there is nothing to spawn. Nothing in the server starts them.
+The observed lock is fully accounted for by `ZoneService.NormalizeZoneInfo` rewriting zone 191's
+pairing from 100 back to 4 at every boot, which the session log records verbatim and which the
+`PAIRING_LAND_OF_THE_DEAD` enum change fixes.
+
+The report did surface one thing worth acting on later. The defend capture has Order holding the
+expedition while a **Destruction** player is inside zone 191 defending Da Dusty Dry, and a quest
+that exists for the losing realm to defend its own camp implies that realm can reach the zone —
+which `CanRealmAccessLotd`, holder-exclusive as written, would forbid. That is not conclusive (the
+capture starts mid-session, and no capture yet pairs a flight list with a tracker naming the other
+realm as holder), so the rule was left alone and the question recorded as BUG-076.
