@@ -606,6 +606,14 @@ namespace WorldServer.World.Objects
             GoldChest chest = new GoldChest(spawn, info, ref players, bagCountMod, region);
 
             region.AddObject(chest, info.ZoneId);
+
+            // Reward chests were reported stacking three deep in Bastion Stair. One chest per
+            // completion is correct, so more than one at a position means more than one live
+            // PublicQuest for that entry, or an End() that ran more than once. Naming the region
+            // and quest here identifies which on the next occurrence.
+            Log.Info("GoldChest", "Created reward chest for public quest " + info.Entry + " (" + info.Name +
+                     ") in region " + region.RegionId + " zone " + info.ZoneId +
+                     " at " + info.GoldChestWorldX + "," + info.GoldChestWorldY + "," + info.GoldChestWorldZ);
         }
 
         public override void Dispose()

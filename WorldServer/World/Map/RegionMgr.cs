@@ -903,10 +903,19 @@ namespace WorldServer.World.Map
 
         public PublicQuest CreatePQuest(PQuest_Info quest)
         {
-            if (PublicQuests.ContainsKey(quest.Entry))
+            // Detecting the duplicate is not enough: falling through adds a second live
+            // PublicQuest to the region and only then throws on the dictionary key, leaving an
+            // orphan that keeps ticking and can award its own stage rewards and reward chest.
+            // Return the existing quest instead.
+            PublicQuest existing;
+            if (PublicQuests.TryGetValue(quest.Entry, out existing))
+            {
                 Log.Error("CreatePQuest",
-                    "Attempted to create public quest that was already contained: ZoneID:" + quest.ZoneId + " Entry: " +
-                    quest.Entry);
+                    "Public quest " + quest.Entry + " in zone " + quest.ZoneId +
+                    " is already live in region " + RegionId + "; reusing it instead of creating a duplicate.");
+                return existing;
+            }
+
             var zone = GetZoneMgr(quest.ZoneId);
             var obj = new PublicQuest(quest);
             AddObject(obj, quest.ZoneId);
