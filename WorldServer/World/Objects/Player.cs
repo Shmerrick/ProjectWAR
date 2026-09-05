@@ -6224,9 +6224,37 @@ namespace WorldServer.World.Objects
         public NewBuff ChickenDebuff { get; set; }
         public bool IsInRvRLake => IsRvRLakeArea(CurrentArea);
 
+        /// <summary>Region holding the Land of the Dead open zones and their scenery zones.</summary>
+        private const ushort LAND_OF_THE_DEAD_REGION = 9;
+
+        /// <summary>Tomb of the Vulture Lord, which sits in its own region but is Land of the Dead.</summary>
+        private const ushort TOMB_OF_THE_VULTURE_LORD_ZONE = 179;
+
+        /// <summary>
+        /// True anywhere in Land of the Dead. Region 9 covers Necropolis of Zandri and the
+        /// surrounding scenery zones; the Tomb of the Vulture Lord is region 179 but belongs to
+        /// the same content and is likewise RvR throughout.
+        /// </summary>
+        private bool IsLandOfTheDeadZone()
+        {
+            Zone_Info info = Zone?.Info;
+
+            if (info == null)
+                return false;
+
+            return info.Region == LAND_OF_THE_DEAD_REGION || info.ZoneId == TOMB_OF_THE_VULTURE_LORD_ZONE;
+        }
+
         private bool IsRvRLakeArea(Zone_Area area)
         {
             if (Program.Config.OpenRvR)
+                return true;
+
+            // Land of the Dead is RvR everywhere: its open zones, its scenery zones and the Tomb
+            // of the Vulture Lord alike. This is checked before the area lookup on purpose --
+            // zone 179 has no areasNNN.png, so CurrentArea is null there and every area-driven
+            // check would otherwise return false in the one dungeon that is explicitly RvR.
+            if (IsLandOfTheDeadZone())
                 return true;
 
             if (area == null || !area.IsRvR)
