@@ -87,6 +87,15 @@ namespace WorldServer.Services.World
             if (_tracker == null || player == null || player.Client == null)
                 return;
 
+            // The activation below names zone 191, and the client treats that as entering the
+            // zone: it displays the "Necropolis of Zandri" title card over whatever zone the
+            // player is really in. Both callers reached every player in the world -- one on
+            // login, one broadcasting on every tracker change -- so the card appeared repeatedly
+            // for players who had never been to Land of the Dead. Only send it to players who
+            // are actually there.
+            if (player.Zone == null || player.Zone.ZoneId != LotdZoneId)
+                return;
+
             player.SendObjectiveTrackerActivation(LotdZoneId, 0);
             player.SendRvrTracker();
             player.SendPacket(BuildTrackerPacket(player));
