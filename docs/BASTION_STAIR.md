@@ -1,9 +1,23 @@
 # Bastion Stair (1.4.8 Restoration Target)
 
-Latest retest: [commit handoff](handoffs/2026-09-05-commit-handoff.md). The user reports
-PQs seem fixed, but Destruction entry from Chaos Wastes now lands incorrectly (BUG-062).
-Earlier internal left-wing portal success does not validate this entrance. No entrance
-fix was made in the documentation/commit pass.
+Latest retest: [commit handoff](handoffs/2026-09-05-commit-handoff.md). The user reported
+PQs fixed but Destruction entry from Chaos Wastes landing incorrectly (BUG-062).
+
+**Entrance regression fixed 2026-09-05.** The cause was not entrance data. All three entry
+jumps (108003496, 108003624, 108856040) still arrive at the entrance hall, and the realm
+instance opened correctly (`Opening Realm Instance 643 Realm 2`). The BUG-054 dungeon-login
+recovery fired 175 ms later: the client re-sends `F_INIT_PLAYER` after the load screen of the
+cross-region teleport, `Player.IsInWorld()` is false while the instance region add is still
+queued, and the saved zone is the Type 4 dungeon — so the handler decided the player was
+logging in stuck inside a dungeon and rewrote the character to the Inevitable City.
+`MovementHandlers.F_INIT_PLAYER` now runs that recovery only when `Player.InstanceID` is empty.
+`Instance.AddPlayer` sets `InstanceID` before it teleports, so deliberate entry is excluded;
+the field is in-memory only and empty after a restart, so a real cold login still recovers.
+
+Still open: `instance_infos` rows 160 and 163-166 have NULL `OrderExitZoneJumpID` and
+`DestrExitZoneJumpID` (only The Lost Vale is populated at all), so a genuine cold login inside
+Bastion Stair recovers to the capital rather than the Chaos Wastes or Praag portal exterior.
+Filling those needs client evidence for the exit jump ids and was not guessed at.
 
 Influence correction: [2026-09-05 stabilization](handoffs/2026-09-05-stabilization.md). Client
 `interface/interfacecore/maps/zone160/influenceids.csv:2-3` specifies Order/Destruction

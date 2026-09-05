@@ -772,8 +772,18 @@ namespace WorldServer.NetWork.Handler
 
             if (!Plr.IsInWorld()) // If the player is not on a map, then we add it to the map
             {
+                // The client re-sends F_INIT_PLAYER after the load screen that follows a
+                // cross-region teleport, not only at cold login, and IsInWorld() is false while
+                // the destination region still has the add queued. Instance.AddPlayer sets
+                // InstanceID before it teleports, so a non-empty InstanceID means the player is
+                // arriving in an instance deliberately and must not be "recovered" out of it.
+                // Without this guard, walking the Chaos Wastes portal into Bastion Stair rewrote
+                // the character to the realm capital between the jump and the load screen
+                // (BUG-062). InstanceID is in-memory only and is empty after a restart, so a
+                // genuine cold login saved inside a dungeon zone still recovers.
                 Zone_Info savedZone = ZoneService.GetZone_Info(Plr.Info.Value.ZoneId);
-                if (savedZone != null && (savedZone.Type == 4 || savedZone.Type == 5 || savedZone.Type == 6))
+                if (savedZone != null && string.IsNullOrEmpty(Plr.InstanceID) &&
+                    (savedZone.Type == 4 || savedZone.Type == 5 || savedZone.Type == 6))
                 {
                     Zone_jump destination = WorldMgr.GetDungeonLoginDestination(savedZone.ZoneId, (byte)Plr.Realm);
                     if (destination == null)
