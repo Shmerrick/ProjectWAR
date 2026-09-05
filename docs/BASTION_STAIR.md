@@ -204,3 +204,29 @@ Structure before content, because later work keys off these IDs:
 Nothing above should be treated as licence to synthesise data. Where the Order-side spawns,
 Bloodlord set bonuses or boss loot tables are not established by capture or client, leave them
 unpopulated and record the gap — see `AGENTS.md` rules 8 and 9.
+
+## Bloodlord set evidence (2026-09-04)
+
+A tooltip captured from video gives one career's complete set. It is the first authentic
+Bloodlord data recovered and is the template for closing BUG-034.
+
+**Bloodlord Nightrobe** — 240 Armor, Bind on pickup, Minimum Rank 36, one talisman slot,
+alternate appearance available.
+
+- `+19 Willpower`, `+14 Wounds`, `+12 Intelligence`, `+52 Hit Points Every 4 Seconds`
+
+Set: **Bloodlord Warped Daemonhide Robes**, five pieces —
+Nightrobe, Warpmantle, Barbute, Bracers, Daemonspurs.
+
+| Pieces | Bonus |
+|---:|---|
+| 2 | +62 Intelligence |
+| 3 | +320 Spiritual Resistance |
+| 4 | +5% Disrupt |
+| 5 | +2 Path of Daemonology Abilities |
+
+The five-piece bonus names **Path of Daemonology**, a Magus mastery path, so this is the Magus
+set. That gives the naming convention (`Bloodlord <Career Kit Name>`), the piece count, the slot
+naming, and the 2/3/4/5-piece bonus structure — the same shape the other ward sets use. The
+remaining 19 careers still need their own names and bonuses from a source; do not extrapolate the
+numbers above across careers, since each set's stats differ by archetype.
