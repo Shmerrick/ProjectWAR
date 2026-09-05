@@ -613,6 +613,49 @@ namespace WorldServer.World.Objects
 
         }
 
+        /// <summary>
+        /// Moves a character back to its capital when it was saved inside a dungeon.
+        ///
+        /// A crash or hard kill leaves the last saved position inside the instance the player was
+        /// in. Nothing recreates that instance at login, so the character loads into a zone it
+        /// cannot legitimately occupy and ends up wherever the movement fallbacks put it. Sending
+        /// them to their own capital is both predictable and correct: Inevitable City for
+        /// Destruction, Altdorf for Order, the same pair TeleportToRealmFallback uses.
+        /// </summary>
+        private void RelocateFromDeadInstance()
+        {
+            if (IsBot || _Value == null || Client?._Account == null)
+                return;
+
+            Instance_Info instanceInfo;
+            if (!InstanceService._InstanceInfo.TryGetValue(_Value.ZoneId, out instanceInfo) || instanceInfo == null)
+                return;
+
+            ushort capitalZoneId = Realm == Realms.REALMS_REALM_DESTRUCTION ? (ushort)161 : (ushort)162;
+
+            SpawnPoint capital = WorldMgr.GetZoneRespawn(capitalZoneId, (byte)Realm, this);
+            if (capital == null)
+            {
+                Log.Error("RelocateFromDeadInstance", Name + " was saved in dungeon zone " + _Value.ZoneId +
+                          " but capital zone " + capitalZoneId + " has no respawn; leaving the saved position alone.");
+                return;
+            }
+
+            Zone_Info capitalZone = ZoneService.GetZone_Info(capital.ZoneId);
+            if (capitalZone == null)
+                return;
+
+            Log.Info("RelocateFromDeadInstance", Name + " was saved inside dungeon zone " + _Value.ZoneId +
+                     " (" + instanceInfo.Name + "); moving to capital zone " + capital.ZoneId + ".");
+
+            _Value.ZoneId = capital.ZoneId;
+            _Value.WorldX = capital.X;
+            _Value.WorldY = capital.Y;
+            _Value.WorldZ = (ushort)capital.Z;
+            _Value.WorldO = 0;
+            _Value.RegionId = capitalZone.Region;
+        }
+
         public override void OnLoad()
         {
             if (Client == null)
@@ -620,6 +663,8 @@ namespace WorldServer.World.Objects
                 Log.Error("Player OnLoad", "No client.");
                 return;
             }
+
+            RelocateFromDeadInstance();
 
             Client.State = (int)eClientState.WorldEnter;
 
