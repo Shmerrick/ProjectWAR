@@ -15,8 +15,11 @@ namespace WorldServer.Managers.Commands
             SendCsr(plr, LotdService.GetStatusSummary());
 
             if (plr != null)
+            {
                 SendCsr(plr, "Your realm can currently reach the expedition: "
                              + (LotdService.CanRealmAccessLotd(plr.Realm) ? "yes" : "no"));
+                SendCsr(plr, LotdService.GetTaxiDiagnostic(plr));
+            }
         }
 
         [CommandAttribute(EGmLevel.Developer, "Opens the expedition for a realm. Usage: .lotd unlock <1=Order|2=Destruction>")]

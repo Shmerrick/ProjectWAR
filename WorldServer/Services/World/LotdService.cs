@@ -190,6 +190,38 @@ namespace WorldServer.Services.World
         }
 
         /// <summary>
+        /// Reports the Land of the Dead record exactly as the flight-master packet will carry it, for the
+        /// player asking.
+        ///
+        /// The client discards a destination whose pairing is outside 1..3 and the expansion-map range,
+        /// and it disables any zone the server does not list, so a flight master that silently refuses
+        /// Land of the Dead has three possible causes that look identical in game: the taxi row is not in
+        /// the list at all, its pairing is wrong, or the availability byte is 0. This prints which.
+        /// </summary>
+        public static string GetTaxiDiagnostic(Player player)
+        {
+            if (player == null)
+                return "No player.";
+
+            System.Collections.Generic.List<Zone_Taxi> destinations = WorldMgr.GetTaxis(player);
+
+            for (int i = 0; i < destinations.Count; ++i)
+            {
+                Zone_Taxi taxi = destinations[i];
+                if (taxi.ZoneID != LotdZoneId)
+                    continue;
+
+                return "Flight list: " + destinations.Count + " destinations; Land of the Dead is #" + (i + 1)
+                     + " with pairing " + (taxi.Info?.Pairing.ToString() ?? "?")
+                     + " (client keeps 1-3 and 100+; 4 is discarded), price " + (taxi.Info?.Price.ToString() ?? "?")
+                     + ", available byte " + (IsTaxiAvailable(player, taxi) ? "1" : "0") + ".";
+            }
+
+            return "Flight list: " + destinations.Count + " destinations, and Land of the Dead is NOT among them, "
+                 + "so the client cannot enable it.";
+        }
+
+        /// <summary>
         /// Opens the expedition for a realm immediately, as winning the race would. Testing aid: reaching this
         /// state legitimately needs enough T4 battlefront locks to cross the threshold, which is impractical to
         /// stage by hand. Returns false if the realm is not Order or Destruction.
@@ -202,7 +234,30 @@ namespace WorldServer.Services.World
             if (realm != Realms.REALMS_REALM_ORDER && realm != Realms.REALMS_REALM_DESTRUCTION)
                 return false;
 
-            SetPausedState(realm, true);
+            // Grant the expedition in its settled state -- holder set, race running -- rather than in
+            // the 30-minute post-win pause.
+            //
+            // The pause is what the client calls "a massive war is currently underway in your realm's
+            // expedition camp; airships cannot safely land there at the moment, check back in a few
+            // minutes" (TOOLTIP_TRAVEL_WINDOW_LAND_OF_DEAD_REQUIREMENTS). Staging a win with
+            // SetPausedState therefore handed the tester the one state in which travel is expected to
+            // be refused, which is the opposite of what the command is for. The captures show the
+            // settled state is also the common one: the Inevitable City and Land of the Dead sessions
+            // both run at timer 0 with a realm still holding the expedition.
+            _tracker.State = (byte)LotdTrackerState.Active;
+            _tracker.OwningRealm = (byte)realm;
+            _tracker.UnlockEndsOnUtc = null;
+
+            if (realm == Realms.REALMS_REALM_ORDER)
+                _tracker.OrderResourcePoints = 0;
+            else
+                _tracker.DestructionResourcePoints = 0;
+
+            _lastBroadcastRemainingMinutes = -1;
+
+            SaveTracker();
+            BroadcastUnlockMessages(realm);
+            BroadcastTrackerUpdate();
             return true;
         }
 

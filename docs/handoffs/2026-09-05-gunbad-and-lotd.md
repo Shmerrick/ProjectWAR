@@ -136,3 +136,93 @@ look for the Tomb Kings bars; and `.lotd unlock <realm>` then fly.
 - The fourth Land of the Dead travel requirement — a war in the expedition camp grounding
   airships — has no server implementation.
 - BUG-058's painted-area work for Gunbad is unchanged.
+
+## Second retest pass — 2026-09-05 (evening)
+
+User retest confirmed Gunbad: "Gunbad inf tracker is now showing for the left wing and pqs seem
+to be functioning normally." Land of the Dead was still locked, and four further faults were
+reported. All are addressed or explained below.
+
+### Land of the Dead travel — the actual cause (BUG-067)
+
+The previous pass fixed `zone_infos.Pairing` to 100 in migration 37, and the running server had
+loaded it. It was still locked because of one line in the server's own startup:
+
+```
+WARN Zone_Info Normalized zone 191 pairing from 100 to 4 for Land of the Dead flight metadata.
+```
+
+`ZoneService.NormalizeZoneInfo` force-sets zone 191's pairing to
+`Pairing.PAIRING_LAND_OF_THE_DEAD` on every boot, and that enum member was **4** — the one value
+in the gap between `NUM_PAIRINGS` (3) and `ExpansionMapRegion.FIRST` (100) where the client
+discards a flight destination outright. The guard was silently reverting the migration.
+
+`PAIRING_LAND_OF_THE_DEAD` is now 100, so the guard and the data agree. Evidence for 100 is
+unchanged and is now doubly confirmed: a sweep of every capture found **~100 zone-191 flight
+records and all of them carry pairing 0x64**, byte-identical as `00 44 64 0B B8 00 BF 01`.
+
+That sweep also retired the previous pass's reading of the trailing byte as `zoneAvailable`: it
+is `01` in every one of those ~100 records, Order and Destruction alike, so it is a constant and
+cannot be what greys the destination out. `LotdService.IsTaxiAvailable` still drives it and
+`F_FLIGHT` still re-checks, so travel remains gated server-side, but the client-side mechanism
+that greys zone 191 is not this byte and is still unidentified.
+
+`ForceUnlock` no longer stages the win as a 30-minute pause. The pause is what the client
+describes as "airships cannot safely land there at the moment", so `.lotd unlock` was handing
+the tester the one state in which travel should fail. It now grants the settled state — holder
+set, race running — which is also the state the captures spend most of their time in.
+`.lotd status` additionally prints the exact flight record the packet will carry.
+
+### The Squig Nursery (BUG-070, BUG-071) — migration 38
+
+Three of its five objectives were unfinishable.
+
+- Prototypes **100515** and **100516** did not exist in `gameobject_protos`, so "Break Nursery
+  Slime" and the Foul Mouf da 'ungry trigger spawned nothing; the session log carries 19 x
+  "missing gameobject prototype 100515" and one for 100516. Both were identified by position,
+  not by name: converting each spawn into the capture's client frame and taking the nearest
+  `F_CREATE_STATIC` sighting gives "Nursery Slime" (DisplayID 166) for all 19 rows of 100515 and
+  "Writhing Effigy" (DisplayID 148) for the single 100516 row, every one at 11 units. Both carry
+  `Unk3 = 100`, matching Holmsteinn Supplies (551) and Monastery Door (59), the only other
+  prototype here used by a `QUEST_KILL_GO` objective.
+- "Monstrous Squigs" needs 50 kills and credited 16 of the 30 creatures **it spawns for itself**;
+  the 14 Deathspewin' Squig (38630) rows in its own spawn set counted for nothing. 38630 is now
+  its `ObjectId3`.
+
+After migration 38 all five objectives credit every one of their spawns.
+
+### A systemic finding (BUG-072)
+
+The two missing Gunbad prototypes are not isolated: **about 180 distinct `gameobject_protos`
+entries referenced by `pquest_spawns` do not exist**, across nearly every zone, including 846
+rows for entry 98827 in zone 106 and 658 for 100530. Every affected public-quest object stage
+spawns nothing. Only the two Gunbad prototypes are fixed here; the rest need the same positional
+identification against captures, zone by zone, and that is deliberately not attempted in bulk.
+
+### Mutant Exiles (BUG-074) — not a server fault
+
+Measured rather than assumed. The PQ's pin resolves through `pqarea002.png` to PQ area **8**,
+exactly matching its `PQAreaId`, so area detection is correct. Through `areas002.png` it resolves
+to area piece **2, "Black Tar Canyon" (AreaId 64)** — and both `zone_areas` and the client's own
+`deps/zones/zone002/influenceids.csv` bind area 64 to Order influence 36 **only**. There is no
+Destruction influence track there, so no chapter bar for a Destruction player is correct data.
+
+Only the northern 1,493 of the PQ area's 10,129 pixels overlap piece 1, "Da Scrub" (AreaId 63),
+which does carry Destruction influence 12 — which is exactly why influence appeared after moving
+north. The PQ's own `ChapterId` is 12, so it awards Da Scrub's track from an area that never
+displays it. Whether retail painted Mutant Exiles into Da Scrub is unresolved and was not
+guessed at. The missing PQ progress tracker is a separate symptom and was not reproduced.
+
+### Portal 629156888 (BUG-073)
+
+No `zone_jumps` row exists for it. A sweep of every capture found 88 distinct client jump ids and
+this is not among them, though the four Gunbad boss portals (62915688 / 62915752 / 62915816 /
+62915880) all are. Its destination cannot be derived without inventing one, so no row was added.
+`F_ZONEJUMP` now logs the zone and pin coordinates alongside an unknown id, because a jump id is
+an opaque client object id that cannot otherwise be traced back to a place in the world.
+
+### Validation
+
+Release/x64 solution build clean, no new warnings. Migration 38 applied and re-applied against
+the local Release database; base dumps untouched. `Test-RuntimeRegressions.ps1` passes. **Not
+client-tested** — the stack was not started.

@@ -1552,7 +1552,18 @@ namespace GameData
         PAIRING_EMPIRE_CHAOS = 2,
         PAIRING_GREENSKIN_DWARVES = 1,
         PAIRING_ELVES_DARKELVES = 3,
-        PAIRING_LAND_OF_THE_DEAD = 4
+        // Land of the Dead is not a fourth ordinary pairing; it is the first expansion map
+        // region, and the client keeps those in a separate numeric range. Official capture
+        // MECHANIC_orderflymaster_NecropoleOFZandri(LoD) #9 sends pairing 0x64 = 100 for zone
+        // 191, and every other zone-191 flight record found across the capture set agrees.
+        // The client corroborates the range independently: pairingview.lua:249 indexes string
+        // ids as LABEL_EXPANSION_MAP_REGION_100 + index - ExpansionMapRegion.FIRST, and
+        // worldview.lua:14 names its button EA_Window_WorldMapWorldViewPairingButton100.
+        //
+        // At 4 this sat between NUM_PAIRINGS (3) and ExpansionMapRegion.FIRST, the one gap
+        // where EA_InteractionFlightMasterWindow.GetNewDataAndSort discards a destination
+        // outright, so the flight master could never offer Land of the Dead.
+        PAIRING_LAND_OF_THE_DEAD = 100
     };
 
     public enum SalvagingTypes

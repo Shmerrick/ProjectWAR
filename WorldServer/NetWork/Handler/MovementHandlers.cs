@@ -172,6 +172,14 @@ namespace WorldServer.NetWork.Handler
 
             if (Jump == null)
             {
+                // Record where the portal is, not just its id. zone_jumps is keyed by an opaque
+                // client-side object id, so an id alone cannot be traced back to a place in the
+                // world and the row cannot be restored from it; the zone and pin coordinates
+                // below identify the portal well enough to match it against the client's world
+                // data or a packet capture.
+                Log.Error("F_ZONEJUMP", "Unknown jump id " + destinationId + " used by " + cclient.Plr.Name +
+                    " in zone " + (cclient.Plr.Zone?.ZoneId ?? 0) + " at " + cclient.Plr.X + "," + cclient.Plr.Y +
+                    "," + cclient.Plr.Z + "; no zone_jumps row exists for it.");
                 cclient.Plr.SendClientMessage("This portal's jump destination (" + destinationId + ") does not exist.");
                 SendJumpFailed(cclient.Plr);
                 return;

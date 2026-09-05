@@ -121,6 +121,12 @@ ExpansionMapRegion.FIRST`, and `worldview.lua:14` names the button
 `EA_Window_WorldMapWorldViewPairingButton100`. Migration 37 sets pairing 100 and the captured
 price of 3000. That is BUG-067.
 
+Migration 37 alone was not enough. `ZoneService.NormalizeZoneInfo` force-sets zone 191's pairing
+to `Pairing.PAIRING_LAND_OF_THE_DEAD` at every boot, and that enum member was also **4**, so the
+restored value was overwritten before the first flight master was ever opened — visible in the
+log as `Zone_Info Normalized zone 191 pairing from 100 to 4`. The enum is now 100, so the guard
+and the data agree and the guard keeps the value correct rather than fighting it.
+
 **Listing.** The destination used to be omitted from the flight list when the realm could not
 use it. The client is built the other way round: `ZoneNumbersLookup` hard-codes zone 191 for both
 realms, `ShowDefaultFrame` disables every button and re-enables only what the server lists, and
@@ -131,8 +137,17 @@ always lists it and `Creature.SendFlightInfo` writes the availability byte
 requests a disabled destination is refused.
 
 The flight packet's record layout, from `MECHANIC_orderflymaster_NecropoleOFZandri(LoD)` #9 —
-`0x0A`, count `0x1C` = 28, then 28 records of `[id:2][pairing:1][price:2][zone:2][available:1]`.
-Its last record is `00 3D 64 0B B8 00 BF 01`: id 61, pairing 100, price 3000, zone 191, available.
+`0x0A`, count `0x1C` = 28, then 28 records of `[id:2][pairing:1][price:2][zone:2][flag:1]`. Its
+last record is `00 3D 64 0B B8 00 BF 01`: id 61, pairing 100, price 3000, zone 191.
+
+**The trailing byte is not the availability flag.** A sweep of the whole capture set found about
+100 zone-191 flight records, from Order and Destruction players across many sessions, and every
+one is byte-identical — `00 44 64 0B B8 00 BF 01`, differing only in the id (61, 62 or 68). A
+value that never varies cannot be what greys the destination out, so whatever the client engine
+uses to disable zone 191 is not carried here and is still unidentified. `LotdService.IsTaxiAvailable`
+writes this byte and `F_FLIGHT` re-checks the same rule before moving anyone, so travel stays
+gated server-side either way; but do not treat a 0 here as a supported way to present the
+destination as locked, because retail never sent one.
 
 ## Operating it
 
@@ -140,7 +155,7 @@ Reaching an owned state legitimately needs five Tier 4 battlefront locks. The GM
 it directly:
 
 - `.lotd status` — who holds the expedition, both scores, whether the race is paused.
-- `.lotd unlock <realm>` — award the expedition now.
+- `.lotd unlock <realm>` — award the expedition now, in its settled state (holder set, race running). It deliberately does not stage the 30-minute post-win pause, which is the state the client describes as airships being unable to land.
 - `.lotd award <realm> <points>` — feed the real threshold path rather than bypassing it.
 - `.lotd reset` — return to an unowned race.
 
