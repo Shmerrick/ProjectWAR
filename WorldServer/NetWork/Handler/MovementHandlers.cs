@@ -979,6 +979,15 @@ namespace WorldServer.NetWork.Handler
 
                 Zone_Taxi destination = destinations[destId - 1];
 
+                // Unavailable destinations are still listed so the client can show them disabled
+                // with their requirements, so the request has to be re-checked here rather than
+                // trusted because it was in the list.
+                if (!LotdService.IsTaxiAvailable(cclient.Plr, destination))
+                {
+                    cclient.Plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_FLIGHT_INVALID_FLIGHT);
+                    return;
+                }
+
                 if (!cclient.Plr.RemoveMoney(destination.Info.Price))
                 {
                     cclient.Plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_FLIGHT_LACK_FUNDS);

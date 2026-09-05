@@ -1606,7 +1606,11 @@ namespace WorldServer.World.Objects
                 Out.WriteByte((byte)taxi.Info.Pairing);
                 Out.WriteUInt16(taxi.Info.Price);
                 Out.WriteUInt16(taxi.Info.ZoneId);
-                Out.WriteByte(1);
+                // flightData.zoneAvailable. Official capture
+                // MECHANIC_orderflymaster_NecropoleOFZandri(LoD) #9 lists 28 destinations as
+                // [id:2][pairing:1][price:2][zone:2][available:1], its last entry being
+                // 003D 64 0BB8 00BF 01 -- zone 191, pairing 100, price 3000, available.
+                Out.WriteByte(LotdService.IsTaxiAvailable(player, taxi) ? (byte)1 : (byte)0);
                 ++counts;
             }
             Out.Write(data);

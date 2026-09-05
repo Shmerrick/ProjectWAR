@@ -641,8 +641,10 @@ namespace WorldServer.Managers
                 if (!taxi.Enable)
                     continue;
 
-                if (!LotdService.ShouldExposeTaxi(Plr, taxi))
-                    continue;
+                // The Land of the Dead destination is always listed. Whether it can be used is
+                // carried by the availability byte in the flight packet, which is what the
+                // client's disabled-button-plus-requirements-tooltip design expects; see
+                // LotdService.IsTaxiAvailable. F_FLIGHT re-checks before moving anyone.
 
                 // LOTD visibility is controlled by LotdService; the generic tier token unlocks
                 // would otherwise hide the taxi again even after a realm wins access.

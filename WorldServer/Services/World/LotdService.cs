@@ -87,21 +87,48 @@ namespace WorldServer.Services.World
             if (_tracker == null || player == null || player.Client == null)
                 return;
 
-            // The activation below names zone 191, and the client treats that as entering the
-            // zone: it displays the "Necropolis of Zandri" title card over whatever zone the
-            // player is really in. Both callers reached every player in the world -- one on
-            // login, one broadcasting on every tracker change -- so the card appeared repeatedly
-            // for players who had never been to Land of the Dead. Only send it to players who
-            // are actually there.
-            if (player.Zone == null || player.Zone.ZoneId != LotdZoneId)
-                return;
+            // Two different packets were previously sent together and then suppressed together.
+            //
+            // The zone activation names zone 191, and the client treats that as entering the
+            // zone: it shows the "Necropolis of Zandri" title card over whatever zone the player
+            // is really in. That one genuinely must be limited to players who are there.
+            //
+            // The F_RRQ tracker packet must not be. It is the only source of the client's
+            // RRQ table (EASystem_RRQ GetRRQData), and the world map, the HUD tracker and the
+            // flight master all render straight from that table: EA_Window_WorldMap.ShouldShowRRQ
+            // gates on the map view, never on the player's zone, and EA_Window_RRQTracker is a
+            // HUD element. Suppressing it outside zone 191 meant the Land of the Dead bars could
+            // only ever appear to a player already standing in Land of the Dead.
+            //
+            // Official captures settle it: F_RRQ (0x74) is sent 13 times during a Chaos Wastes
+            // RvR session, 48 times during an Inevitable City siege and 29 times in Caledor,
+            // the first within the login burst each time.
+            // SendRvrTracker re-activates the tracker for whatever zone and area the player is
+            // standing in, so it belongs with the zone activation, not with every broadcast.
+            if (player.Zone != null && player.Zone.ZoneId == LotdZoneId)
+            {
+                player.SendObjectiveTrackerActivation(LotdZoneId, 0);
+                player.SendRvrTracker();
+            }
 
-            player.SendObjectiveTrackerActivation(LotdZoneId, 0);
-            player.SendRvrTracker();
             player.SendPacket(BuildTrackerPacket(player));
         }
 
-        public static bool ShouldExposeTaxi(Player player, Zone_Taxi taxi)
+        /// <summary>
+        /// Whether this destination may actually be flown to right now. The Land of the Dead
+        /// entry is always *listed*; this only decides the availability byte the client reads as
+        /// flightData.zoneAvailable.
+        ///
+        /// The client is built around the destination being present and disabled rather than
+        /// missing: EA_InteractionFlightMasterWindow.ZoneNumbersLookup hard-codes zone 191 for
+        /// both realms, ShowDefaultFrame disables every button and re-enables only what the
+        /// server lists, and OnMouseOverFlightMapPoint has a dedicated zone-191 branch that
+        /// prints TOOLTIP_TRAVEL_WINDOW_LAND_OF_DEAD_REQUIREMENTS -- "Locked for one or more
+        /// reasons: ... Your realm currently does not have an active expedition to the Land of
+        /// the Dead." Dropping the row from the list left the Tomb Kings map blank with no
+        /// explanation instead.
+        /// </summary>
+        public static bool IsTaxiAvailable(Player player, Zone_Taxi taxi)
         {
             if (taxi == null)
                 return false;
@@ -109,22 +136,28 @@ namespace WorldServer.Services.World
             if (taxi.ZoneID != LotdZoneId)
                 return true;
 
-            if (_tracker == null)
-                return false;
-
             return CanRealmAccessLotd(player?.Realm ?? Realms.REALMS_REALM_NEUTRAL);
         }
 
+        /// <summary>
+        /// Whether a realm currently holds the expedition, and so may fly to Land of the Dead.
+        ///
+        /// Ownership is *not* limited to the pause window. The Paused state freezes the resource
+        /// race for <see cref="LotdResourceTracker.UnlockDurationMinutes"/> after a win; the
+        /// winning realm keeps access after it expires, until the other realm wins.
+        ///
+        /// Official capture PvE_Landofdead_SHAMY40RR95 shows this directly: a Destruction player
+        /// quests in zone 191 for the whole session while the tracker header carries timer 0 and
+        /// realm 2, i.e. no active pause but Destruction still holding. At ordinal 21916 Order
+        /// crosses the threshold and the header flips to timer 30 / realm 1 in one packet.
+        /// Requiring Paused here limited access to 30 minutes per win, which no capture supports.
+        /// </summary>
         public static bool CanRealmAccessLotd(Realms realm)
         {
             if (_tracker == null)
                 return false;
 
-            // Access is open only during the Paused window when a realm has won the expedition.
-            if ((LotdTrackerState)_tracker.State != LotdTrackerState.Paused)
-                return false;
-
-            // Owning realm has access; neutral means nobody won yet.
+            // Neutral means nobody has won the expedition yet.
             if (_tracker.OwningRealm == (byte)Realms.REALMS_REALM_NEUTRAL)
                 return false;
 
@@ -132,25 +165,28 @@ namespace WorldServer.Services.World
         }
 
         /// <summary>
-        /// Human-readable tracker state, for GM diagnostics. The expedition flight is hidden whenever the
-        /// tracker is not Paused with an owning realm, and that is indistinguishable in-game from a broken
-        /// flight master — so being able to read the state directly matters.
+        /// Human-readable tracker state, for GM diagnostics. Only the owning realm can fly to Land of
+        /// the Dead, and a realm holds it until the other realm wins, so "who owns it" is the single
+        /// question behind a flight master that appears to be refusing travel.
         /// </summary>
         public static string GetStatusSummary()
         {
             if (_tracker == null)
-                return "Land of the Dead tracker is not loaded; the expedition flight stays hidden. Apply Database/update_005_lotd_resource_tracker.sql.";
+                return "Land of the Dead tracker is not loaded, so neither realm can reach it. Apply Database/update_005_lotd_resource_tracker.sql.";
 
-            string window = (LotdTrackerState)_tracker.State == LotdTrackerState.Paused
-                ? GetRemainingOpenMinutes() + " min remaining"
-                : "closed";
+            string race = (LotdTrackerState)_tracker.State == LotdTrackerState.Paused
+                ? "race paused " + GetRemainingOpenMinutes() + "/" + _tracker.UnlockDurationMinutes + " min"
+                : "race running";
 
-            return "LOTD " + (LotdTrackerState)_tracker.State
-                 + " | owner " + (Realms)_tracker.OwningRealm
+            string access = _tracker.OwningRealm == (byte)Realms.REALMS_REALM_NEUTRAL
+                ? "nobody -- neither realm can travel until one wins (.lotd unlock <realm> to stage it)"
+                : ((Realms)_tracker.OwningRealm) + " (holds it until the other realm wins)";
+
+            return "LOTD " + race
+                 + " | expedition held by " + access
                  + " | Order " + _tracker.OrderResourcePoints + "/" + _tracker.Threshold
                  + " | Destruction " + _tracker.DestructionResourcePoints + "/" + _tracker.Threshold
-                 + " | +" + _tracker.PointsPerBattlefrontLock + " per T4 battlefront lock"
-                 + " | access window " + _tracker.UnlockDurationMinutes + " min (" + window + ")";
+                 + " | +" + _tracker.PointsPerBattlefrontLock + " per T4 battlefront lock";
         }
 
         /// <summary>
@@ -176,7 +212,11 @@ namespace WorldServer.Services.World
             if (_tracker == null)
                 return false;
 
-            ResumeRace(true);
+            ResetTrackerForRace();
+            _lastBroadcastRemainingMinutes = -1;
+            SaveTracker();
+            BroadcastResumeMessage();
+            BroadcastTrackerUpdate();
             return true;
         }
 
@@ -340,11 +380,10 @@ namespace WorldServer.Services.World
                     dirty = true;
                 }
 
-                if (_tracker.OwningRealm != (byte)Realms.REALMS_REALM_NEUTRAL)
-                {
-                    _tracker.OwningRealm = (byte)Realms.REALMS_REALM_NEUTRAL;
-                    dirty = true;
-                }
+                // Ownership deliberately survives here. An Active tracker with an owning realm is
+                // the normal steady state -- the race running again after a win, with the winner
+                // still holding the expedition -- and clearing it on every boot would have
+                // revoked flight access at each restart.
 
                 if (_tracker.OrderResourcePoints >= _tracker.Threshold)
                 {
@@ -370,6 +409,15 @@ namespace WorldServer.Services.World
             _tracker.State = (byte)LotdTrackerState.Paused;
             _tracker.OwningRealm = (byte)owningRealm;
             _tracker.UnlockEndsOnUtc = DateTime.UtcNow.AddMinutes(_tracker.UnlockDurationMinutes);
+
+            // Capture PvE_Landofdead_SHAMY40RR95 #21808 -> #21916: Order goes 448/500 -> 0/500 in
+            // the packet that awards it the expedition, while Destruction stays untouched on
+            // 256/500. Only the winner's progress is spent.
+            if (owningRealm == Realms.REALMS_REALM_ORDER)
+                _tracker.OrderResourcePoints = 0;
+            else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                _tracker.DestructionResourcePoints = 0;
+
             _lastBroadcastRemainingMinutes = GetRemainingOpenMinutes();
 
             SaveTracker();
@@ -381,9 +429,19 @@ namespace WorldServer.Services.World
             BroadcastTrackerUpdate();
         }
 
+        /// <summary>
+        /// Ends the post-win pause and lets the resource race accumulate again.
+        ///
+        /// This does not clear ownership or either realm's score. Capture
+        /// 2013-09-25 Inevitable City shows the tracker running with timer 0, realm 2 still shown
+        /// as the holder, and Order's total climbing 26 -> 30 -> 42 across the session; the
+        /// Chaos Wastes capture shows Order frozen on 431 for the whole 29 -> 17 minute pause.
+        /// So the pause freezes scoring, and the holder persists through it and beyond.
+        /// </summary>
         private static void ResumeRace(bool broadcast)
         {
-            ResetTrackerForRace();
+            _tracker.State = (byte)LotdTrackerState.Active;
+            _tracker.UnlockEndsOnUtc = null;
             _lastBroadcastRemainingMinutes = -1;
             SaveTracker();
 
@@ -394,6 +452,10 @@ namespace WorldServer.Services.World
             BroadcastTrackerUpdate();
         }
 
+        /// <summary>
+        /// Returns the tracker to a clean, unowned race. Only for an explicit GM reset and for
+        /// repairing a row that is Paused with no owner or no expiry -- never on normal unpause.
+        /// </summary>
         private static void ResetTrackerForRace()
         {
             _tracker.State = (byte)LotdTrackerState.Active;
@@ -505,22 +567,18 @@ namespace WorldServer.Services.World
             return (byte)GetRemainingOpenMinutes();
         }
 
+        /// <summary>
+        /// Header byte 9, which the client reads as rrqData.realmWithAccess and uses to show the
+        /// holder's emblem beside the bars.
+        ///
+        /// This is the realm holding the expedition, and it persists while the race runs again
+        /// after a win -- captures show realm 2 held steady across a whole Inevitable City siege
+        /// session at timer 0. It is never the viewing player's realm and never the current
+        /// leader; before anyone has won it is neutral.
+        /// </summary>
         private static byte BuildHeaderRealmValue(Player player)
         {
-            // When LotD is locked (Paused state) a specific realm won access — show them as the owner.
-            if ((LotdTrackerState)_tracker.State == LotdTrackerState.Paused &&
-                _tracker.OwningRealm != (byte)Realms.REALMS_REALM_NEUTRAL)
-            {
-                return _tracker.OwningRealm;
-            }
-
-            // When LotD is still being contested (Active state), nobody owns it yet.
-            // Show whichever realm is currently leading so both factions see the same value.
-            // Never return the *viewing player's* realm — that made every player think they owned LotD.
-            if (_tracker.LastScoringRealm != (byte)Realms.REALMS_REALM_NEUTRAL)
-                return _tracker.LastScoringRealm;
-
-            return (byte)Realms.REALMS_REALM_NEUTRAL;
+            return _tracker.OwningRealm;
         }
 
         private static void WriteRealmProgress(PacketOut packet, byte realm, int score)
