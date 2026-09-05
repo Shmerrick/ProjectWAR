@@ -6170,6 +6170,14 @@ namespace WorldServer.World.Objects
             if (area == null || !area.IsRvR)
                 return false;
 
+            // Zone_Area.IsRvR is simply Realm == 0, which every dungeon area also satisfies, so a
+            // realm-instanced public dungeon would otherwise flag its whole map as an RvR lake and
+            // chicken or RvR-flag players inside it. Type 4 is that dungeon kind and only Mount
+            // Gunbad and Hunter's Vale carry it. The group instances stay eligible: Tomb of the
+            // Vulture Lord is Type 6 and is a genuine RvR dungeon.
+            if (Zone?.Info != null && Zone.Info.Type == 4)
+                return false;
+
             return !IsInsideWarcampBuffer(area.ZoneId);
         }
 
