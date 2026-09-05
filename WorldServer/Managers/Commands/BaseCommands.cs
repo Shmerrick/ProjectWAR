@@ -1072,13 +1072,21 @@ namespace WorldServer.Managers.Commands
 
             Player.OrderCount = 0;
             Player.DestruCount = 0;
-            WorldServer.Program.UpdateRealmPopulationSnapshot();
 
-            // Step 6: Stop region and scenario managers.
-            WorldMgr.Stop();
+            // Step 6: Hand off to the canonical shutdown rather than repeating it here.
+            //
+            // Program.Shutdown saves runtime state (which force-saves both databases), stops the
+            // world manager, disconnects any player this drain missed, zeroes realm population,
+            // stops the bot editor API and flushes NLog last. Duplicating a subset of that here
+            // meant .boot skipped the bot editor API and the log flush, and never wrote the
+            // "Closing the server" line that marks a clean stop -- so a .boot shutdown was
+            // indistinguishable in the log from a hard kill.
+            //
+            // It is also idempotent. Calling it takes the guard, so the ProcessExit handler that
+            // Environment.Exit fires below returns immediately instead of running the whole
+            // teardown a second time against already-disposed state.
+            WorldServer.Program.Shutdown("GM boot command by " + plr.Name);
 
-            WorldServer.Program.SaveRuntimeState();
-            Log.Info("Shutdown", "Server has shut down cleanly.");
             Environment.Exit(0);
             return true;
         }
