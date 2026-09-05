@@ -187,10 +187,19 @@ namespace WorldServer.World.Objects.Instances
 		}
 
         /// <summary>
-        /// Base of the id range reserved for realm instances. Group and raid instances are handed
-        /// the first free id from 1 upwards, so a high base keeps the two apart permanently.
+        /// Realm instance ids occupy a small reserved block at the bottom, and the dynamic
+        /// allocator starts above it. Putting the fixed ids high instead would leave them
+        /// reachable: group and raid instances take the first free id counting upwards, so a
+        /// long-running server could eventually allocate into the reserved range and collide.
+        /// Reserving the bottom makes that impossible by construction.
+        ///
+        /// A realm id is 1 + (Instance_Info.Entry * 4) + realm, and the highest dungeon entry is
+        /// in the low hundreds, so the block is comfortably inside its ceiling.
         /// </summary>
-        private const ushort REALM_INSTANCE_ID_BASE = 60000;
+        private const ushort REALM_INSTANCE_ID_BASE = 1;
+
+        /// <summary>First id the dynamic allocator may use. Everything below is reserved.</summary>
+        private const ushort DYNAMIC_INSTANCE_ID_MIN = 2000;
 
         /// <summary>
         /// The fixed id of a realm's copy of a dungeon.
@@ -205,9 +214,10 @@ namespace WorldServer.World.Objects.Instances
         {
             int id = REALM_INSTANCE_ID_BASE + (info.Entry * 4) + realm;
 
-            if (id > ushort.MaxValue)
+            if (id >= DYNAMIC_INSTANCE_ID_MIN)
             {
-                Log.Error("GetRealmInstanceId", "Instance " + info.Entry + " realm " + realm + " exceeds the realm instance id range.");
+                Log.Error("GetRealmInstanceId", "Instance " + info.Entry + " realm " + realm +
+                          " derives id " + id + ", which is outside the reserved range below " + DYNAMIC_INSTANCE_ID_MIN + ".");
                 return 0;
             }
 
@@ -249,7 +259,9 @@ namespace WorldServer.World.Objects.Instances
         {
             lock (_instances)
             {
-                for (ushort i = 1; i < ushort.MaxValue ; i++)
+                // Starts above the reserved block so a dynamic id can never collide with a
+                // realm instance's fixed id, however many instances have been opened.
+                for (ushort i = DYNAMIC_INSTANCE_ID_MIN; i < ushort.MaxValue ; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
