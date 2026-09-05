@@ -772,6 +772,29 @@ namespace WorldServer.NetWork.Handler
 
             if (!Plr.IsInWorld()) // If the player is not on a map, then we add it to the map
             {
+                Zone_Info savedZone = ZoneService.GetZone_Info(Plr.Info.Value.ZoneId);
+                if (savedZone != null && (savedZone.Type == 4 || savedZone.Type == 5 || savedZone.Type == 6))
+                {
+                    Zone_jump destination = WorldMgr.GetDungeonLoginDestination(savedZone.ZoneId, (byte)Plr.Realm);
+                    if (destination == null)
+                    {
+                        Log.Error("F_INIT_PLAYER", "No valid dungeon exit or realm-capital respawn for " + Plr.Name);
+                        cclient.Disconnect("Dungeon login recovery destination is unavailable");
+                        return;
+                    }
+
+                    // Recover before queueing the player in any region. OnLoad also runs on
+                    // legitimate instance entry and is too late to change region ownership.
+                    Plr.Info.Value.ZoneId = destination.ZoneID;
+                    Plr.Info.Value.RegionId = ZoneService.GetZone_Info(destination.ZoneID).Region;
+                    Plr.Info.Value.WorldX = (int)destination.WorldX;
+                    Plr.Info.Value.WorldY = (int)destination.WorldY;
+                    Plr.Info.Value.WorldZ = destination.WorldZ;
+                    Plr.Info.Value.WorldO = destination.WorldO;
+                    CharMgr.Database.SaveObject(Plr.Info.Value);
+                    Log.Notice("F_INIT_PLAYER", "Recovered " + Plr.Name + " from dungeon " + savedZone.ZoneId + " to zone " + destination.ZoneID);
+                }
+
                 if (WorldMgr.NormalizePlayerWorldPosition(Plr, out string recoveryReason))
                 {
                     CharMgr.Database.SaveObject(Plr.Info.Value);
@@ -787,23 +810,6 @@ namespace WorldServer.NetWork.Handler
                     RegionMgr region = WorldMgr.GetRegion(regionId, true);
                     if (region.AddObject(Plr, zoneId, true))
                         return;
-                }
-                else if(info?.Type == 4 || info?.Type == 5|| info?.Type == 6)  // login into a instance results in teleport outside
-                {
-                    if (InstanceService._InstanceInfo.TryGetValue(zoneId, out Instance_Info II))
-                    {
-                        Zone_jump ExitJump = null;
-                        if (Plr.Realm == Realms.REALMS_REALM_ORDER)
-                            ExitJump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
-                        else if (Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                            ExitJump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
-
-                        if (ExitJump == null)
-                            Log.Error("Exit Jump in Instance", " " + zoneId + " missing!");
-                        else
-                            Plr.Teleport(ExitJump.ZoneID, ExitJump.WorldX, ExitJump.WorldY, ExitJump.WorldZ, ExitJump.WorldO);
-                    }
-                    return;
                 }
 
                 // Warp a player to their bind point if they attempt to load into a scenario map.

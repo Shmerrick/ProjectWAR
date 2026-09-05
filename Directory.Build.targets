@@ -1,18 +1,24 @@
 <Project>
   <Target Name="MoveLibrariesToLibs" AfterTargets="Build" Condition="'$(OutputType)' == 'Exe' Or '$(OutputType)' == 'WinExe'">
     <ItemGroup>
-      <!-- Move runtime DLLs while keeping app configs and shared project outputs beside executables. -->
-      <FilesToRelocate Include="$(OutDir)*.dll;$(OutDir)*.dll.config"
-                       Exclude="$(OutDir)*config.xml;$(OutDir)Common.dll;$(OutDir)Common.dll.config;$(OutDir)FrameWork.dll;$(OutDir)FrameWork.dll.config" />
+      <!-- Read resolved inputs, not the shared output folder which other projects are still writing. -->
+      <RuntimeLibraries Include="@(ReferenceCopyLocalPaths)"
+                        Condition="('%(Extension)' == '.dll' Or '%(Extension)' == '.config') And '%(Filename)' != 'Common' And '%(Filename)' != 'FrameWork' And '%(Filename)' != 'Common.dll' And '%(Filename)' != 'FrameWork.dll'" />
+      <RuntimeContentLibraries Include="@(ContentWithTargetPath)"
+                               Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)' != '' And '%(ContentWithTargetPath.CopyToOutputDirectory)' != 'Never' And '%(ContentWithTargetPath.Extension)' == '.dll'" />
     </ItemGroup>
-    <MakeDir Directories="$(OutDir)libs" Condition="'@(FilesToRelocate)' != ''" />
-    <!-- Shared output directories can change during parallel solution builds, so copy only files that still exist. -->
-    <Copy SourceFiles="@(FilesToRelocate)"
-          DestinationFiles="@(FilesToRelocate->'$(OutDir)libs\%(Filename)%(Extension)')"
+    <MakeDir Directories="$(OutDir)libs" Condition="'@(RuntimeLibraries)' != '' Or '@(RuntimeContentLibraries)' != ''" />
+    <Copy SourceFiles="@(RuntimeLibraries)"
+          DestinationFiles="@(RuntimeLibraries->'$(OutDir)libs\%(DestinationSubDirectory)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"
-          Condition="'@(FilesToRelocate)' != '' and Exists('%(FilesToRelocate.Identity)')"
+          Condition="'@(RuntimeLibraries)' != ''"
           Retries="3"
-          RetryDelayMilliseconds="100"
-          ContinueOnError="WarnAndContinue" />
+          RetryDelayMilliseconds="100" />
+    <Copy SourceFiles="@(RuntimeContentLibraries)"
+          DestinationFiles="@(RuntimeContentLibraries->'$(OutDir)libs\%(TargetPath)')"
+          SkipUnchangedFiles="true"
+          Condition="'@(RuntimeContentLibraries)' != ''"
+          Retries="3"
+          RetryDelayMilliseconds="100" />
   </Target>
 </Project>

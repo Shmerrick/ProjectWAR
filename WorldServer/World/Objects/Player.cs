@@ -613,65 +613,6 @@ namespace WorldServer.World.Objects
 
         }
 
-        /// <summary>
-        /// Moves a character back to its capital when it was saved inside a dungeon.
-        ///
-        /// A crash or hard kill leaves the last saved position inside the instance the player was
-        /// in. Nothing recreates that instance at login, so the character loads into a zone it
-        /// cannot legitimately occupy and ends up wherever the movement fallbacks put it. Sending
-        /// them to their own capital is both predictable and correct: Inevitable City for
-        /// Destruction, Altdorf for Order, the same pair TeleportToRealmFallback uses.
-        /// </summary>
-        /// <summary>
-        /// One-shot guard. OnLoad runs again every time the player enters an instance, so without
-        /// this the relocation below fires on entry and ejects them from the dungeon they just
-        /// walked into.
-        /// </summary>
-        private bool _deadInstanceChecked;
-
-        private void RelocateFromDeadInstance()
-        {
-            if (_deadInstanceChecked)
-                return;
-
-            _deadInstanceChecked = true;
-
-            if (IsBot || _Value == null || Client?._Account == null)
-                return;
-
-            // Entering a dungeon legitimately also re-enters OnLoad, but by then the player is
-            // already initialised. Only a fresh login can be sitting on a stale saved position.
-            if (_initialized || _initInProgress)
-                return;
-
-            Instance_Info instanceInfo;
-            if (!InstanceService._InstanceInfo.TryGetValue(_Value.ZoneId, out instanceInfo) || instanceInfo == null)
-                return;
-
-            ushort capitalZoneId = Realm == Realms.REALMS_REALM_DESTRUCTION ? (ushort)161 : (ushort)162;
-
-            SpawnPoint capital = WorldMgr.GetZoneRespawn(capitalZoneId, (byte)Realm, this);
-            if (capital == null)
-            {
-                Log.Error("RelocateFromDeadInstance", Name + " was saved in dungeon zone " + _Value.ZoneId +
-                          " but capital zone " + capitalZoneId + " has no respawn; leaving the saved position alone.");
-                return;
-            }
-
-            Zone_Info capitalZone = ZoneService.GetZone_Info(capital.ZoneId);
-            if (capitalZone == null)
-                return;
-
-            Log.Info("RelocateFromDeadInstance", Name + " was saved inside dungeon zone " + _Value.ZoneId +
-                     " (" + instanceInfo.Name + "); moving to capital zone " + capital.ZoneId + ".");
-
-            _Value.ZoneId = capital.ZoneId;
-            _Value.WorldX = capital.X;
-            _Value.WorldY = capital.Y;
-            _Value.WorldZ = (ushort)capital.Z;
-            _Value.WorldO = 0;
-            _Value.RegionId = capitalZone.Region;
-        }
 
         public override void OnLoad()
         {
@@ -681,7 +622,6 @@ namespace WorldServer.World.Objects
                 return;
             }
 
-            RelocateFromDeadInstance();
 
             Client.State = (int)eClientState.WorldEnter;
 
@@ -2442,7 +2382,9 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0x11);
             Out.WriteByte(1);
             Out.WriteByte(1);
-            Out.WriteByte(0);
+            // INSTANCE_GUNBAD_PART1, F_UPDATE_STATE #335: 003C 11 01 01 01.
+            // Client tracker classification is independent of server PvP eligibility.
+            Out.WriteByte(zoneId == 60 ? (byte)1 : (byte)0);
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.Fill(0, 2);
@@ -2584,9 +2526,9 @@ namespace WorldServer.World.Objects
             //Log.Info("new area ", "id " + CurrentArea.AreaId);
 #endif
 
-            if (IsInRvRLake)
+            if (IsInRvRLake || CurrentArea.ZoneId == 60)
             {
-                // Notify the client that the current zone contains an active RvR lake.
+                // Gunbad needs zone-scoped area tracking without becoming an RvR lake.
                 SendObjectiveTrackerZoneState(Zone.ZoneId);
             }
 
@@ -2595,7 +2537,8 @@ namespace WorldServer.World.Objects
 
             _currentAreaId = CurrentArea.AreaId;
             _currentAreaZoneId = CurrentArea.ZoneId;
-            _currentAreaIsRvR = IsInRvRLake;
+            // INSTANCE_GUNBAD_PART1, F_UPDATE_STATE #381: 001F 11 02 01 01.
+            _currentAreaIsRvR = IsInRvRLake || CurrentArea.ZoneId == 60;
 
             SendAreaTrackerState(_currentAreaId, _currentAreaZoneId, _currentAreaIsRvR, true);
         }
@@ -3827,75 +3770,62 @@ namespace WorldServer.World.Objects
 
         public void AddInfluence(ushort chapter, ushort value)
         {
-            _logger.Debug($"Adding influence for {Name} to {value} for chapter {chapter}");
+            if (_logger.IsDebugEnabled)
+                _logger.Debug($"Adding influence for {Name} to {value} for chapter {chapter}");
             if (chapter == 0)
                 return;
 
             Chapter_Info info = ChapterService.GetChapterEntry(chapter);
             if (info == null)
             {
-                _logger.Debug($"chapter {chapter} not found");
+                if (_logger.IsDebugEnabled)
+                    _logger.Debug($"chapter {chapter} not found");
                 return;
             }
 
             if (Info.Influences == null)
                 Info.Influences = new List<Characters_influence>();
 
-            Characters_influence infl = null;
+            Characters_influence infl = Info.Influences.SingleOrDefault(x => x.InfluenceId == chapter);
 
-            infl = Info.Influences.SingleOrDefault(x => x.InfluenceId == chapter);
-            
-            //foreach (Characters_influence inf in Info.Influences)
-            //    if (inf.InfluenceId == chapter) { infl = inf; break; }
-
+            uint awardedValue = value;
             if (Region != null && Region.Matches((Races)Info.Race))
-                value = (ushort)Math.Ceiling(value * RACIAL_INF_FACTOR);
+                awardedValue = (uint)Math.Ceiling(value * RACIAL_INF_FACTOR);
 
             if (infl == null)
             {
                 _logger.Debug($"chapter influence not found - adding");
-                infl = new Characters_influence((int)Info.CharacterId, chapter, value);
+                infl = new Characters_influence((int)Info.CharacterId, chapter, Math.Min(awardedValue, info.Tier3InfluenceCount));
                 Info.Influences.Add(infl);
                 CharMgr.Database.AddObject(infl);
             }
             else
             {
-                infl.InfluenceCount += value;
+                infl.InfluenceCount = (uint)Math.Min((ulong)infl.InfluenceCount + awardedValue, info.Tier3InfluenceCount);
                 _logger.Debug($"chapter influence found - modifying");
             }
-
-            // If influence > max influence for the chapter.
-            if (infl.InfluenceCount > info.Tier3InfluenceCount)
-                infl.InfluenceCount = (ushort)info.Tier3InfluenceCount;
 
             // The first filled third of the influence bar is the first claimable reward tier.
             if (infl.InfluenceCount >= info.Tier1InfluenceCount)
                 TokInterface.FireHelpTips(HelpTipTrigger.InfluenceReward);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
-            Out.WriteByte(0);
-            Out.WriteByte((byte)chapter);
-            Out.Fill(0, 4);
-            Out.WriteUInt16((ushort)infl.InfluenceCount);          // needs curretn value + mew value
-            Out.WriteByte(1);
-            Out.Fill(0, 3);
-            SendPacket(Out);
-
-
+            SendInfluenceUpdate(chapter, infl.InfluenceCount);
         }
 
-        public void SetInfluence(ushort chapter, ushort value)
+        public void SetInfluence(ushort chapter, uint value)
         {
-            _logger.Debug($"Setting influence for {Name} to {value} for chapter {chapter}");
+            if (_logger.IsDebugEnabled)
+                _logger.Debug($"Setting influence for {Name} to {value} for chapter {chapter}");
             Chapter_Info info = ChapterService.GetChapterEntry(chapter);
             if (info == null)
             {
-                _logger.Debug($"chapter {chapter} not found");
+                if (_logger.IsDebugEnabled)
+                    _logger.Debug($"chapter {chapter} not found");
                 return;
             }
 
             if (value > info.Tier3InfluenceCount)
-                value = (ushort)info.Tier3InfluenceCount;
+                value = info.Tier3InfluenceCount;
 
 
             if (Info.Influences == null)
@@ -3916,14 +3846,20 @@ namespace WorldServer.World.Objects
                 infl.InfluenceCount = value;
             }
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
-            Out.WriteByte(0);
-            Out.WriteByte((byte)chapter);
-            Out.Fill(0, 4);
-            Out.WriteUInt16(value);
-            Out.WriteByte(1);
-            Out.Fill(0, 3);
-            SendPacket(Out);
+            SendInfluenceUpdate(chapter, value);
+        }
+
+        private void SendInfluenceUpdate(ushort chapter, uint value)
+        {
+            var packet = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
+            packet.WriteByte(0);
+            packet.WriteByte((byte)chapter);
+            packet.Fill(0, 2);
+            // WAR.exe 0x4C5359 reads a uint32 at payload +4 (F_INFLUENCE_UPDATE).
+            packet.WriteUInt32(value);
+            packet.WriteByte(1);
+            packet.Fill(0, 3);
+            SendPacket(packet);
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_INFLUENCE_DETAILS, (int)eClientState.Playing, "F_INFLUENCE_DETAILS")]
@@ -3982,9 +3918,8 @@ namespace WorldServer.World.Objects
 
             itemlist = ItmInterface.GetChapterRewards(1, info);
 
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteUInt16((ushort)info.Tier1InfluenceCount);        //influnce costs
+            // WAR.exe 0x4DDF60 reads each tier cost through uint32 reader 0x91EDA9.
+            Out.WriteUInt32(info.Tier1InfluenceCount);
             Out.WriteByte(chapterinf == null ? (byte)1 : chapterinf.Tier_1_Itemtaken ? (byte)2 : (byte)1);
             Out.Fill(0, 6);
             Out.WriteUInt16(0x01F4);        // ??
@@ -3999,9 +3934,7 @@ namespace WorldServer.World.Objects
 
             itemlist = ItmInterface.GetChapterRewards(2, info);
 
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteUInt16((ushort)info.Tier2InfluenceCount);        //influnce costs
+            Out.WriteUInt32(info.Tier2InfluenceCount);
             Out.WriteByte(chapterinf == null ? (byte)1 : chapterinf.Tier_2_Itemtaken ? (byte)2 : (byte)1);
             Out.Fill(0, 6);
             Out.WriteUInt16(0x01F4);       // ??
@@ -4016,9 +3949,7 @@ namespace WorldServer.World.Objects
 
             itemlist = ItmInterface.GetChapterRewards(3, info);
 
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteUInt16((ushort)info.Tier3InfluenceCount);        //influnce costs
+            Out.WriteUInt32(info.Tier3InfluenceCount);
             Out.WriteByte(chapterinf == null ? (byte)1 : chapterinf.Tier_3_Itemtaken ? (byte)2 : (byte)1);
             Out.Fill(0, 6);
             Out.WriteUInt16(0x01F4);   // ??
@@ -4444,7 +4375,7 @@ namespace WorldServer.World.Objects
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
             // Only do this if not in an SC
-            if (ScnInterface.Scenario == null)
+            if (ScnInterface.Scenario == null && (string.IsNullOrEmpty(InstanceID) || IsInRvRLake))
             {
                 var battleFrontManager = GetBattlefrontManager(Region.RegionId);
                 // Reset this characters bounty to their base bounty.
@@ -4452,7 +4383,7 @@ namespace WorldServer.World.Objects
                 // Reset the impacts on this character.
                 battleFrontManager.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
             }
-            else
+            else if (ScnInterface.Scenario != null)
             {
                 // In a Scenario
                 ScenarioMgr.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
@@ -6649,15 +6580,7 @@ namespace WorldServer.World.Objects
 
             ZoneMgr newZoneMgr = Region.GetZoneMgr(newZone.ZoneId);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_JUMP, 20);
-            Out.WriteUInt32(worldX);
-            Out.WriteUInt32(worldY);
-            Out.WriteUInt16(Oid);
-            Out.WriteUInt16(worldZ);
-            Out.WriteUInt16(heading);
-            Out.Fill(0, 5);
-            Out.WriteByte(1);
-            SendPacket(Out);
+            SendPacket(BuildPlayerJumpPacket(newZone.ZoneId, worldX, worldY, worldZ, heading));
 
             X = newZoneMgr.CalculPin(worldX, true);
             Y = newZoneMgr.CalculPin(worldY, false);
@@ -6669,6 +6592,23 @@ namespace WorldServer.World.Objects
 
             if (FlightEnabled == 1)
                 SendUpdateState((byte)StateOpcode.Flight, 1, 1);
+        }
+
+        private PacketOut BuildPlayerJumpPacket(ushort zoneId, uint worldX, uint worldY, ushort worldZ, ushort heading)
+        {
+            // INSTANCE_GUNBAD_PART1 F_PLAYER_JUMP #326292 uses the same shifted
+            // atlas as S_PLAYER_INITTED #286846, not the server's 819200 map origin.
+            GetClientWorldPosition(zoneId, (int)worldX, (int)worldY,
+                out uint clientWorldX, out uint clientWorldY);
+            PacketOut packet = new PacketOut((byte)Opcodes.F_PLAYER_JUMP, 20);
+            packet.WriteUInt32(clientWorldX);
+            packet.WriteUInt32(clientWorldY);
+            packet.WriteUInt16(Oid);
+            packet.WriteUInt16(worldZ);
+            packet.WriteUInt16(heading);
+            packet.Fill(0, 5);
+            packet.WriteByte(1);
+            return packet;
         }
 
         public void Teleport(ushort zoneID, uint worldX, uint worldY, ushort worldZ, ushort worldO)
@@ -7005,6 +6945,7 @@ namespace WorldServer.World.Objects
 
         public Zone_Area CurrentArea;
         public byte CurrentPQArea;
+        private ushort _currentPQZoneId;
         private long _nextAreaCheckTime;
 
         private void CheckArea(bool refreshClientTrackers = false)
@@ -7034,37 +6975,27 @@ namespace WorldServer.World.Objects
             }
             Log.Dump("CheckArea", " PQ Area : " + pqarea);
 
-            bool pqAreaChanged = CurrentPQArea != pqarea;
-            if (pqAreaChanged)
+            bool pqAreaChanged = CurrentPQArea != pqarea || _currentPQZoneId != Zone.ZoneId;
+            // PQs are cell-loaded. A first area check can precede creation of the PQ object;
+            // retry attachment without requiring the player to leave and re-enter the pixel area.
+            bool retryPQAttachment = pqarea > 0 && pqarea < 29 && QtsInterface.PublicQuest == null;
+            PublicQuest nextPQ = null;
+            if (pqAreaChanged || retryPQAttachment)
             {
-                // Detach the previous objective before resolving the new area. Otherwise an
-                // empty map pixel or a keep transition leaves the old PQ tracker active.
-                QtsInterface.PublicQuest?.RemovePlayer(this, false);
-                CurrentKeep?.RemovePlayer(this);
-
-                if (pqarea > 28 && pqarea != 31)  // keeps
-                {
-                    foreach (var keep in Region.Campaign.Keeps)
-                    {
-                        if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
-                        {
-                            Log.Info("CheckArea", " Adding Keep : " + keep.Info.Name);
-                            keep.AddPlayer(this);
-                        }
-                    }
-                }
-                else if (pqarea > 0 && pqarea < 29)
+                if (pqarea > 0 && pqarea < 29)
                 {
                     foreach (KeyValuePair<uint, PublicQuest> pq in Region.PublicQuests)
                     {
-                        if (pq.Value.Info.ZoneId == Zone.ZoneId && pqarea == pq.Value.Info.PQAreaId)
+                        if (pq.Value.Info.ZoneId == Zone.ZoneId && pqarea == pq.Value.Info.PQAreaId &&
+                            (pq.Value.Info.Type == 0 || pq.Value.Info.Type == (byte)Realm))
                         {
-                            pq.Value.AddPlayer(this);
+                            nextPQ = pq.Value;
+                            break;
                         }
                     }
                 }
-                CurrentPQArea = pqarea;
             }
+            bool pqTrackerChanged = pqAreaChanged || nextPQ != null;
 
             Zone_Area previousArea = CurrentArea;
             Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId, (ushort)Z);
@@ -7136,12 +7067,29 @@ namespace WorldServer.World.Objects
             // Entering or leaving a PQ does not necessarily cross a chapter-map piece. Resend the
             // chapter area in that case so the client is prompted to display the matching influence
             // tracker before the PQ tracker is initialized below.
-            if (areaChanged || pqAreaChanged || refreshClientTrackers)
+            if (areaChanged || pqTrackerChanged || refreshClientTrackers)
                 SendChapterBar();
 
-            // Chapter packets can replace a PQ tracker initialized earlier in this method.
-            // Always send the active PQ last when its area changed or the client requested refresh.
-            if (pqAreaChanged || refreshClientTrackers)
+            if (pqTrackerChanged)
+            {
+                QtsInterface.PublicQuest?.RemovePlayer(this, false);
+                CurrentKeep?.RemovePlayer(this);
+                // Client alerttextwindow.lua PQEnterExtraText reads GetAreaData while handling
+                // the first PQ packet. Sending it before the chapter produced the KEEP banner.
+                if (nextPQ != null)
+                    nextPQ.AddPlayer(this);
+                else if (pqarea > 28 && pqarea != 31 && Region.Campaign != null)
+                {
+                    foreach (var keep in Region.Campaign.Keeps)
+                        if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
+                            keep.AddPlayer(this);
+                }
+                CurrentPQArea = pqarea;
+                _currentPQZoneId = Zone.ZoneId;
+            }
+
+            // Chapter packets can replace a PQ tracker; always refresh the active PQ last.
+            if (pqTrackerChanged || refreshClientTrackers)
                 QtsInterface.PublicQuest?.SendCurrentStage(this);
             //     else
             //SendClientMessage("Same Area");
@@ -7549,6 +7497,9 @@ namespace WorldServer.World.Objects
                 return false;
 
             string[] split = lockout.Split(':');
+            if (split.Length < 3 || !int.TryParse(split[1], out int expires) || expires <= TCPManager.GetTimeStamp())
+                return false;
+
             for (int i = 2; i < split.Length; i++)
             {
                 if (uint.TryParse(split[i], out uint parsedBossId) && parsedBossId == bossId)

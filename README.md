@@ -104,9 +104,9 @@ Import the SQL files. `war_world` is shipped as a compressed archive — extract
 7z e Database\war_world.7z -o Database\
 
 mysql -u root -p -e "CREATE DATABASE war_accounts; CREATE DATABASE war_characters; CREATE DATABASE war_world;"
-mysql -u root -p war_accounts < Database/war_accounts.sql
-mysql -u root -p war_characters < Database/war_characters.sql
-mysql -u root -p war_world < Database/war_world.sql
+mysql -u root -p war_accounts -e "source Database/war_accounts.sql"
+mysql -u root -p war_characters -e "source Database/war_characters.sql"
+mysql -u root -p war_world -e "source Database/war_world.sql"
 ```
 
 Then apply the incremental update scripts, **in numerical order**. The base dumps are never edited, so every schema and data change since they were captured lives in these files. Skipping them leaves the server running against an out-of-date schema.
@@ -116,7 +116,11 @@ Then apply the incremental update scripts, **in numerical order**. The base dump
 Get-ChildItem Database\*.sql |
     Where-Object { $_.Name -match '^\d+_' } |
     Sort-Object Name |
-    ForEach-Object { Write-Host "applying $($_.Name)"; mysql -u root -p < $_.FullName }
+    ForEach-Object {
+        Write-Host "applying $($_.Name)"
+        mysql -u root -p -e "source Database/$($_.Name)"
+        if ($LASTEXITCODE -ne 0) { throw "Migration failed: $($_.Name)" }
+    }
 ```
 
 Current scripts, oldest first:
@@ -144,7 +148,7 @@ Current scripts, oldest first:
 | `19_restore_help_tips.sql` | Restores 59 beginner help tips and the trigger table behind them, so Tome unlocks stop popping empty tip windows |
 | `20_restore_ward_fragment_equip_tasks.sql` | Sets `TokUnlock3` to the fragment task entry across all ten ward armour sets (1,377 items) and restores ten empty section 5 placeholder rows |
 | `21_sync_ward_fragment_tasks_to_mythic_items.sql` | Copies those ward tasks into `mythic_src_item_infos`, the table the server actually loads items from under the shipped `UseMythicActionCoverageTables = true`. Without it scripts `01`, `05` and `20` are invisible to the running server |
-| `23_fix_dungeon_influence_ids.sql` | Repoints Bastion Stair and Mount Gunbad influence at their own chapters. Their `zone_areas` ids named two unrelated Nordland chapters (Bastion) or chapters that do not exist (Gunbad), so dungeon influence was mis-credited or silently discarded |
+| `23_fix_dungeon_influence_ids.sql` | Historical erroneous change: confused chapter row IDs with influence track IDs. Superseded by `32`; apply the complete series |
 | `24_bastion_stair_realm_instance.sql` | Makes Bastion Stair realm-instanced like Mount Gunbad (entry jumps to `Type 4` / `InstanceID 160`), superseding script `15`'s shared-zone premise, and removes 195 `instance_creature_spawns` rows that exactly duplicate world spawns and would otherwise spawn twice |
 | `25_ward_fragment_task_counters.sql` | Creates `ward_fragment_tasks` and seeds all 32 ward task counter bindings from the client's `fragment_tasks.csv` — the only source for each counter id and its completion threshold |
 | `26_ward_task_creatures.sql` | Creates `ward_task_creatures` and maps the boss-kill counters to the ten creatures their task names resolve to; six names with no matching prototype are deliberately left unmapped |
@@ -153,6 +157,10 @@ Current scripts, oldest first:
 | `29_fix_boss_map_influence_ids.sql` | Extends script `23` to the four Bastion boss maps, which still named two unrelated Nordland chapters |
 | `30_boss_maps_award_no_influence.sql` | Corrects `29`: video of the live dungeon shows the instanced boss fights award **no** influence, so their ids are zeroed. The dungeon proper keeps `6`/`2` |
 | `31_bastion_stair_zone_type_and_portals.sql` | Sets zone 160 to `Type 4` so in-dungeon portals stop ejecting players from their realm instance, and returns the 15 internal wing portals to `Type 0` — script `24` had made all 18 jumps `Type 4`, so every wing portal opened a new instance |
+| `32_restore_client_dungeon_influence_tracks.sql` | Corrects `23`: restores the exact Order/Destruction tracks in client `maps/zone160/influenceids.csv` (129/128) and `maps/zone060/influenceids.csv` (64/65), plus PQ fallback IDs; lookup uses `chapter_infos.InfluenceEntry` |
+| `33_restore_verified_area_influence_tracks.sql` | Repairs seven populated area bindings from exact client `maps/zone011`, `zone101`, `zone107`, `zone120` and `zone209` `influenceids.csv` rows; each statement cites its source line |
+| `34_restore_holmsteinn_supply_prototype.sql` | Restores the missing model-10 supply prototype used by 43 existing Holmsteinn Revisited placements, from official `PQ_T1CHAOS_EASY_holmsteinn revisited_CH2` static-object packets |
+| `35_restore_bastion_kaarn_and_path_chest.sql` | Restores Kaarn's scale and Path of Fury's chest position from `bastion_stairs.txt.gz` packets 71889 and 46264, with atlas initialization 18276 |
 
 Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, `08` adds ward fields to concrete spawns before reversing the 79 rows changed by `07`, `09` enforces the final ward-column definition, `10` replaces only the spawn rows belonging to Ruinous Powers objective 800, `11` upserts only the two capture-backed finale phases and their spawns, `12` upserts only the three capture-backed Norsca objects while correcting the associated chapter and chest rows, `13` replaces only the 190 historical mailbox GUIDs while preserving unrelated custom spawns, `14` enforces the Bilerot jump and records its original ward assignment, `15` changes only Bastion Stair's base-map routing plus the 195 exact spawn matches already present in its instance data, `16` deletes only the exact orphaned Bilerot spawn signature, `17` copies the canonical Inevitable City destination into the existing Destruction Bilerot respawn row, `18` idempotently establishes the final Lesser/Greater requirements for zones `195`, `196`, and `260`, `19` replaces only its own 59 help-tip rows, and `20` keys on `TokUnlock2` plus `SlotId` rather than item names and upserts only the ten placeholder section 5 rows.
 
@@ -286,8 +294,14 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 ## Developer Documentation
 
+Latest delivery and known regressions: [2026-09-05 commit handoff](docs/handoffs/2026-09-05-commit-handoff.md).
+PQs reportedly improved, but the Destruction Chaos Wastes entrance to Bastion Stair is
+currently reported broken. Do not interpret successful builds as complete gameplay validation.
+
 For contributors and AI agents, please refer to the following architectural documents:
 
+- **[Latest stabilization handoff](docs/handoffs/2026-09-05-stabilization.md)**: Corrects the earlier dungeon-influence diagnosis, records client evidence, and lists what remains unverified.
+- **[Validation tools](tools/validation/README.md)**: Repeatable runtime regression checks and a read-only audit of the configured Release world database and zone assets.
 - **[Cross-Repo Map](docs/CROSS_REPO.md)**: Where the 1.4.8 evidence lives — the toolkit repo, the client installs, the packet corpus, and which repo answers which question. Start here for protocol/asset/game-data work.
 - **[System Guilds](docs/SYSTEM_GUILDS.md)**: Details the automated guild experience for new players.
 - **[Bot System](BOT_SYSTEM.md)**: Details the architecture, logic, and GM commands for the integrated player-like Bot System.

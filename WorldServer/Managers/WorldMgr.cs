@@ -230,6 +230,46 @@ namespace WorldServer.Managers
             return GetRealmSafeFallback(realm, $"zone {zoneId}");
         }
 
+        public static Zone_jump GetDungeonLoginDestination(ushort dungeonZoneId, byte realm)
+        {
+            if (realm != (byte)Realms.REALMS_REALM_ORDER && realm != (byte)Realms.REALMS_REALM_DESTRUCTION)
+                return null;
+
+            if (InstanceService._InstanceInfo.TryGetValue(dungeonZoneId, out Instance_Info instance))
+            {
+                uint exitId = realm == (byte)Realms.REALMS_REALM_ORDER
+                    ? instance.OrderExitZoneJumpID : instance.DestrExitZoneJumpID;
+                Zone_jump exit = ZoneService.GetZoneJump(exitId);
+                if (IsSafeDungeonLoginDestination(exit))
+                    return exit;
+            }
+
+            // User-requested recovery policy: missing/unusable dungeon exit -> own capital.
+            // Reuse configured realm respawns; never synthesize an exit or resolve jump 0.
+            ushort capitalZoneId = realm == (byte)Realms.REALMS_REALM_DESTRUCTION ? (ushort)161 : (ushort)162;
+            Zone_Respawn respawn = ZoneService.GetZoneRespawn(capitalZoneId, realm);
+            if (respawn == null || respawn.Realm != realm)
+                return null;
+
+            SpawnPoint capital = new SpawnPoint(respawn);
+            var destination = new Zone_jump
+            {
+                ZoneID = capital.ZoneId, WorldX = (uint)capital.X, WorldY = (uint)capital.Y,
+                WorldZ = (ushort)capital.Z, WorldO = respawn.WorldO
+            };
+            return destination.ZoneID == capitalZoneId && IsSafeDungeonLoginDestination(destination) ? destination : null;
+        }
+
+        private static bool IsSafeDungeonLoginDestination(Zone_jump destination)
+        {
+            if (destination == null || destination.Type != 0)
+                return false;
+
+            Zone_Info zone = ZoneService.GetZone_Info(destination.ZoneID);
+            return zone != null && zone.Type == 0 && destination.WorldZ > 0 &&
+                IsWorldPositionInsideZone(zone, (int)destination.WorldX, (int)destination.WorldY);
+        }
+
         public static bool NormalizePlayerWorldPosition(Player player, out string reason)
         {
             if (player?.Info?.Value == null)

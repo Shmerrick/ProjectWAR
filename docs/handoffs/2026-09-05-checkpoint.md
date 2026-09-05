@@ -1,5 +1,11 @@
 # Checkpoint — 2026-09-05
 
+**Correction later on 2026-09-05:** read [the stabilization handoff](2026-09-05-stabilization.md)
+before using this historical checkpoint. Migration 23 confused `chapter_infos.Entry` with
+`InfluenceEntry`. The client `maps/zone160/influenceids.csv:2-3` and
+`maps/zone060/influenceids.csv:2-3` establish tracks 129/128 and 64/65, restored by migration 32.
+The 231-area count and the proposed map-rectangle fallback below are also superseded there.
+
 Current state of the ward, dungeon-influence and Bastion Stair work. Everything described here is
 committed and pushed on `RESTART` through `70aa1e4e`. Read this before continuing that work.
 

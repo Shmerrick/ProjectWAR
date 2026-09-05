@@ -289,6 +289,11 @@ namespace WorldServer.World.Interfaces
                     return;
                 }
 
+                // Encounter cleanup may remove a standard bonus that was never applied.
+                // An absent bucket contributes nothing and must not throw on boss combat exit.
+                if (_bonusPctStats == null || index >= _bonusPctStats.Length || _bonusPctStats[index] == null)
+                    return;
+
                 for (int i = 0; i < _bonusPctStats[index].Count; ++i)
                 {
                     if (value == _bonusPctStats[index][i])

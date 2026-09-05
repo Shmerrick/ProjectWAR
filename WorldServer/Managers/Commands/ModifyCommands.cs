@@ -401,8 +401,15 @@ namespace WorldServer.Managers.Commands
         {
             int chapter = GetInt(ref values);
             int value = GetInt(ref values);
+            if (chapter <= 0 || chapter > byte.MaxValue || value < 0)
+            {
+                plr.SendClientMessage("Specify an influence track from 1 to 255 and a non-negative value.");
+                return false;
+            }
             plr = GetTargetOrMe(plr) as Player;
-            plr.SetInfluence((ushort)chapter, (ushort)value);
+            if (plr == null)
+                return false;
+            plr.SetInfluence((ushort)chapter, (uint)value);
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;

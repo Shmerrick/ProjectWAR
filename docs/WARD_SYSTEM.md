@@ -73,10 +73,10 @@ the fragment and cascades down the tiers exactly as an equip route does. Counter
 the client on login so the fragment pages show real progress. `.ward counters`, `.ward add` and
 `.ward complete` inspect and drive them without grinding.
 
-Three counters have no `tok_infos` row to award — **704** (Greater helm), **705** (Superior helm)
-and **709** (Superior chest). They are stored with `TokEntry = 0`, still advance and display, and
-log on completion rather than failing silently. Restoring those rows is the same job script 20
-did for ten empty section 5 placeholders.
+Counters **704** (Greater helm), **705** (Superior helm) and **709** (Superior chest) could not
+bind until migration 27 repaired their comma-split task rows. All 32 counters now have nonzero
+`TokEntry` bindings, verified against the Release database on 2026-09-05 by
+`tools/validation/Get-WorldDataHealth.ps1`. See *Counter data repairs* below.
 
 Hooked so far:
 

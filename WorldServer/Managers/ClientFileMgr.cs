@@ -75,22 +75,22 @@ namespace WorldServer.Managers
         public List<PQuest_Info> PQAreas;
         public Color[,] HeightMapOffset;
         public Color[,] HeightMapTerrain;
-        public byte[,] AreaPixels = new byte[1024, 1024];
-        public byte[,] PQAreaPixels = new byte[1024, 1024];
+        public byte[,] AreaPixels;
+        public byte[,] PQAreaPixels;
 
         public ClientZoneInfo(ushort zoneId)
         {
             ZoneId = zoneId;
             Influences = new List<AreaInfluence>();
-            Folder = Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", zoneId) + "/";
+            Folder = Path.Combine(Program.Config.ZoneFolder, $"zone{zoneId:000}");
             Areas = ZoneService.GetZoneAreas(zoneId).OrderBy(area => area.PieceId).ToList();
 
             try
             {
                 //LoadHeightMap();
-                LoadInfluences();
                 LoadAreaMap();
                 LoadPQAreaMap();
+                LoadInfluences();
 
                 //Log.Success("ClientFile", zoneId + " Loaded " + Influences.Count + " influence entries and " + Areas.Count + " area infos.");
             }
@@ -136,52 +136,53 @@ namespace WorldServer.Managers
 
         public void LoadAreaMap()
         {
-            string filePath = Path.Combine(Folder, "areas" + $"{ZoneId:000}" + ".png");
-            if (File.Exists(filePath))
-            {
-                //Log.Success("LoadAreaMap", "Loading area map for zone ID "+ZoneId);
-                using (Bitmap map = new Bitmap(filePath))
-                {
-                    for (int x = 0; x < 1024; ++x)
-                    {
-                        for (int y = 0; y < 1024; ++y)
-                        {
-                            Color curPx = map.GetPixel(x, y);
-                            AreaPixels[x, y] = (byte)(1 + (curPx.R >> 4) + (curPx.G >> 4));
-                        }
-                    }
-                }
-
-                //Log.Success("LoadAreaMap", "Loaded area map for zone ID " + ZoneId);
-            }
-
-            //else Log.Error("LoadAreaMap", "No area map found for zone ID "+ZoneId);
+            AreaPixels = LoadOverlay("areas");
         }
 
         //Use 1024x1024 PNG color overlay to define a PQ area.
         //Color must be different for each pq for the pq to function correctly.
         public void LoadPQAreaMap()
         {
-            string filePath = Path.Combine(Folder, "pqarea" + $"{ZoneId:000}" + ".png");
-            if (File.Exists(filePath))
+            PQAreaPixels = LoadOverlay("pqarea");
+        }
+
+        private byte[,] LoadOverlay(string prefix)
+        {
+            string filePath = Path.Combine(Folder, prefix + $"{ZoneId:000}" + ".png");
+            if (!File.Exists(filePath))
             {
-                //Log.Success("LoadPQAreaMap", "Loading PQ area map for zone ID " + ZoneId);
+                Log.Notice("ClientFile", "Missing zone overlay " + filePath + "; its area lookup is unavailable (BUG-041).");
+                return null;
+            }
+
+            try
+            {
                 using (Bitmap map = new Bitmap(filePath))
                 {
+                    if (map.Width != 1024 || map.Height != 1024)
+                    {
+                        Log.Error("ClientFile", "Invalid zone overlay " + filePath + ": expected 1024x1024, got " + map.Width + "x" + map.Height);
+                        return null;
+                    }
+
+                    var pixels = new byte[1024, 1024];
                     for (int x = 0; x < 1024; ++x)
                     {
                         for (int y = 0; y < 1024; ++y)
                         {
                             Color curPx = map.GetPixel(x, y);
-                            PQAreaPixels[x, y] = (byte)(1 + (curPx.R >> 4) + (curPx.G >> 4));
+                            pixels[x, y] = (byte)(1 + (curPx.R >> 4) + (curPx.G >> 4));
                         }
                     }
+                    return pixels;
                 }
-
-                //Log.Success("LoadPQAreaMap", "Loaded PQ area map for zone ID " + ZoneId);
             }
-
-            //else Log.Error("LoadPQAreaMap", "No PQ area map found for zone ID " + ZoneId);
+            catch (Exception e)
+            {
+                // One bad overlay must not prevent the independent overlay from loading.
+                Log.Error("ClientFile", "Cannot load zone overlay " + filePath + ": " + e.Message);
+                return null;
+            }
         }
 
         public void LoadInfluences()
@@ -199,12 +200,13 @@ namespace WorldServer.Managers
                     while ((line = reader.ReadLine()) != null)
                     {
                         string[] datas = line.Split(',');
-                        AreaInfluence area = new AreaInfluence
+                        if (datas.Length < 3 || !ushort.TryParse(datas[0], out ushort number) ||
+                            !byte.TryParse(datas[1], out byte realm) || !ushort.TryParse(datas[2], out ushort influence))
                         {
-                            AreaNumber = ushort.Parse(datas[0]),
-                            Realm = byte.Parse(datas[1]),
-                            InfluenceId = ushort.Parse(datas[2])
-                        };
+                            Log.Error("ClientFile", "Invalid influence row in " + filePath + ": " + line);
+                            continue;
+                        }
+                        AreaInfluence area = new AreaInfluence { AreaNumber = number, Realm = realm, InfluenceId = influence };
                         Influences.Add(area);
                     }
                 }
@@ -213,6 +215,21 @@ namespace WorldServer.Managers
 
         public Zone_Area GetZoneAreaFor(ushort pinX, ushort pinY, ushort zoneId,ushort pinz = 0)
         {
+            if (zoneId != ZoneId)
+                return null;
+
+            // Gunbad has a persistent zone-wide influence area, independent of local PQ
+            // pieces. Client maps/zone060/influenceids.csv only binds area 31; official
+            // INSTANCE_GUNBAD_PART1 #381/#71466 activates it across instance entries.
+            // The legacy painted map's 1..8 pieces must not hide that enclosing area.
+            if (zoneId == 60 && Areas != null)
+                foreach (Zone_Area area in Areas)
+                    if (area.AreaId == 31)
+                        return area;
+
+            if (AreaPixels == null)
+                return null;
+
             byte areaId = AreaPixels[pinX >> 6, pinY >> 6];
            // Log.Error("areaid", "    " + areaId);
            // fix for black craig keep in the dungeon
@@ -233,7 +250,7 @@ namespace WorldServer.Managers
 
         public byte GetPQAreaFor(ushort pinX, ushort pinY, ushort zoneId)
         {
-            return PQAreaPixels[pinX >> 6, pinY >> 6];
+            return zoneId == ZoneId && PQAreaPixels != null ? PQAreaPixels[pinX >> 6, pinY >> 6] : (byte)0;
         }
     }
 
@@ -242,88 +259,54 @@ namespace WorldServer.Managers
         public HeightMapInfo(int zoneID)
         {
             ZoneID = zoneID;
+            _heights = new Lazy<int[,]>(LoadHeights);
         }
 
-        public int ZoneID;
-        public Bitmap Offset;
-        public Bitmap Terrain;
-
-        private bool _loaded;
+        public readonly int ZoneID;
+        private readonly Lazy<int[,]> _heights;
 
         public int GetHeight(int pinX, int pinY)
         {
-            Load();
-
-            if (Offset == null || Terrain == null)
+            if (pinX < 0 || pinY < 0)
                 return -1;
 
-            pinX = (int)(pinX / 64f);
-            pinY = (int)(pinY / 64f);
-            Bitmap off = null;
-            lock (Offset)
-            { 
-                off = (Bitmap)Offset.Clone();
-            }
-
-            Bitmap terr = null;
-            lock (Terrain)
-            {
-                terr = (Bitmap)Terrain.Clone();
-            }
-
-
-            try
-            {
-                if (pinX < 0 || pinX > off.Width || pinX > terr.Width)
-                    return -1;
-
-                if (pinY < 0 || pinY > off.Height || pinY > terr.Height)
-                    return -1;
-            }
-            catch
-            {
+            int[,] heights = _heights.Value;
+            pinX >>= 6;
+            pinY >>= 6;
+            if (heights == null || pinX >= heights.GetLength(0) || pinY >= heights.GetLength(1))
                 return -1;
-            }
 
-            float fZValue = 0;
-
-            try
-            {
-                {
-                    Color iColor = off.GetPixel(pinX, pinY);
-                    fZValue += iColor.R * 31; // 0 -> 30
-                }
-
-                {
-                    Color iColor = terr.GetPixel(pinX, pinY);
-                    fZValue += iColor.R;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("HeightMap", e.ToString());
-            }
-
-            fZValue *= 16;
-
-            return (int)fZValue - 30;
+            return heights[pinX, pinY];
         }
 
         public void Load()
         {
-            if (_loaded)
-                return;
+            // Lazy publishes a complete immutable raster to concurrent callers exactly once.
+            _ = _heights.Value;
+        }
 
-            _loaded = true;
-
+        private int[,] LoadHeights()
+        {
             try
             {
-                Offset = new Bitmap(Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/offset.png"); // /zones/zone003/offset.png
-                Terrain = new Bitmap(Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/terrain.png"); // /zones/zone003/offset.png
+                string folder = Path.Combine(Program.Config.ZoneFolder, $"zone{ZoneID:000}");
+                using (var offset = new Bitmap(Path.Combine(folder, "offset.png")))
+                using (var terrain = new Bitmap(Path.Combine(folder, "terrain.png")))
+                {
+                    if (offset.Size != terrain.Size || offset.Width > 1024 || offset.Height > 1024)
+                        throw new InvalidDataException("Height rasters must have matching dimensions no larger than 1024x1024.");
+
+                    var heights = new int[offset.Width, offset.Height];
+                    for (int x = 0; x < offset.Width; x++)
+                        for (int y = 0; y < offset.Height; y++)
+                            heights[x, y] = (offset.GetPixel(x, y).R * 31 + terrain.GetPixel(x, y).R) * 16 - 30;
+                    return heights;
+                }
             }
             catch (Exception e)
             {
                 Log.Error("HeightMap", "[" + ZoneID + "] Invalid HeightMap \n " + e);
+                return null;
             }
         }
     }
@@ -332,19 +315,23 @@ namespace WorldServer.Managers
     {
         #region HeightMap Images
 
-        public static Dictionary<int, HeightMapInfo> Heights = new Dictionary<int, HeightMapInfo>();
+        private static readonly Dictionary<int, HeightMapInfo> Heights = new Dictionary<int, HeightMapInfo>();
+        private static readonly object HeightsLock = new object();
 
         public static int GetHeight(int zoneID, int pinX, int pinY)
         {
             HeightMapInfo info;
-            if (!Heights.TryGetValue(zoneID, out info))
+            lock (HeightsLock)
             {
-                Log.Success("HeightMap", "[" + zoneID + "] Loading Height Map..");
-                info = new HeightMapInfo(zoneID);
-                Heights.Add(zoneID, info);
+                if (!Heights.TryGetValue(zoneID, out info))
+                {
+                    info = new HeightMapInfo(zoneID);
+                    Heights.Add(zoneID, info);
+                }
             }
 
-            return info.GetHeight(pinX, pinY) / 2;
+            int height = info.GetHeight(pinX, pinY);
+            return height == -1 ? -1 : height / 2;
         }
 
         #endregion

@@ -281,7 +281,8 @@ namespace WorldServer.World.Objects.Instances
                     players = players.Substring(0, players.Length - 1);
 
                 player.SendClientMessage("Registered players: " + players, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                player.SendClientMessage("Note: Wait for your party leader to get into the instance if you find yourself in another instance ID.", SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                if (Realm == 0)
+                    player.SendClientMessage("Note: Wait for your party leader to get into the instance if you find yourself in another instance ID.", SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 
@@ -340,7 +341,10 @@ namespace WorldServer.World.Objects.Instances
 
                 InstanceService._InstanceLockouts[Lockout.InstanceID] = Lockout;
                 Lockout.Dirty = true;
-				WorldMgr.Database.SaveObject(Lockout);
+                if (!Lockout.IsValid && string.IsNullOrEmpty(Lockout.ObjectId))
+                    WorldMgr.Database.AddObject(Lockout);
+                else
+                    WorldMgr.Database.SaveObject(Lockout);
 			}
 
             InstanceService.SaveLockoutInstanceID(ZoneID + ":" + ID, Lockout);
@@ -863,6 +867,11 @@ namespace WorldServer.World.Objects.Instances
             var nextUtc = System.TimeZoneInfo.ConvertTimeToUtc(nextServerMidnight, System.TimeZoneInfo.Local);
 
             return (int)(nextUtc - new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+        }
+
+        public bool IsBossKilled(uint bossId)
+        {
+            return ParseDeadBossIds().Contains(bossId);
         }
 
         private HashSet<uint> ParseDeadBossIds()

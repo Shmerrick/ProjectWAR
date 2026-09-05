@@ -837,64 +837,8 @@ namespace WorldServer.World.Objects
             */
         }
 
-        public override void SendMeTo(Player plr)
-        {
-            // Log.Info("STATIC", "Creating static oid=" + Oid + " name=" + Name + " x=" + Spawn.WorldX + " y=" + Spawn.WorldY + " z=" + Spawn.WorldZ + " doorID=" + Spawn.DoorId);
-            PacketOut Out = new PacketOut((byte)Opcodes.F_CREATE_STATIC);
-            Out.WriteUInt16(Oid);
-            Out.WriteUInt16(VfxState); //ie: red glow, open door, lever pushed, etc
-
-            Out.WriteUInt16((ushort)Spawn.WorldO);
-            Out.WriteUInt16((ushort)Spawn.WorldZ);
-            Out.WriteUInt32((uint)Spawn.WorldX);
-            Out.WriteUInt32((uint)Spawn.WorldY);
-            Out.WriteUInt16((ushort)Spawn.DisplayID);
-
-            Out.WriteByte((byte)(Spawn.GetUnk(0) >> 8));
-
-            // Get the database if the value hasnt been changed (currently only used for keep doors)
-            if (Realm == Realms.REALMS_REALM_NEUTRAL)
-                Out.WriteByte((byte)(Spawn.GetUnk(0) & 0xFF));
-            else
-                Out.WriteByte((byte)Realm);
-
-            Out.WriteUInt16(Spawn.GetUnk(1));
-            Out.WriteUInt16(Spawn.GetUnk(2));
-            Out.WriteByte(Spawn.Unk1);
-
-            int flags = Spawn.GetUnk(3);
-
-            if (Realm != Realms.REALMS_REALM_NEUTRAL && !IsInvulnerable)
-                flags |= 8; // Attackable (stops invalid target errors)
-
-            LootContainer loots = LootsMgr.GenerateLoot(this, plr, 1);
-            if ((loots != null && loots.IsLootable()) || (plr.QtsInterface.PublicQuest != null) || plr.QtsInterface.GameObjectNeeded(Spawn.Entry) || Spawn.DoorId != 0)
-            {
-                flags |= 4; // Interactable
-            }
-
-            Out.WriteUInt16((ushort)flags);
-            Out.WriteByte(Spawn.Unk2);
-            Out.WriteUInt32(Spawn.Unk3);
-            Out.WriteUInt16(Spawn.GetUnk(4));
-            Out.WriteUInt16(Spawn.GetUnk(5));
-            Out.WriteUInt32(Spawn.Unk4);
-
-            Out.WritePascalString(Name);
-
-            if (Spawn.DoorId != 0)
-            {
-                Out.WriteByte(0x04);
-
-                Out.WriteUInt32(Spawn.DoorId);
-            }
-            else
-                Out.WriteByte(0x00);
-
-            plr.SendPacket(Out);
-
-            base.SendMeTo(plr);
-        }
+        // Use GameObject.SendMeTo: it sends one creation packet in the player's instance
+        // coordinate frame. The former override sent a second, raw-world copy first.
 
         public void Scoreboard(ContributionInfo playerRoll, int preIndex, int postIndex)
         {

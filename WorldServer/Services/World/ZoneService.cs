@@ -149,6 +149,10 @@ namespace WorldServer.Services.World
         }
         public static Zone_jump GetZoneJump(uint Entry)
         {
+            // Zero means an unconfigured optional exit, not the legacy Avelorn row.
+            if (Entry == 0)
+                return null;
+
             Zone_jump jump;
             Zone_Jumps.TryGetValue(Entry, out jump);
             return jump;

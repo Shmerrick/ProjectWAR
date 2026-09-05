@@ -405,8 +405,9 @@ namespace WorldServer.Managers.Commands
                 TryParse(values[1], out npcupdateflag);
             }
 
-            int inputFlag = GetInt(ref values);
-            if (inputFlag != 0 && inputFlag != 1)
+            int inputFlag;
+            if (values.Count == 0 || !int.TryParse(values[0], out inputFlag) ||
+                (inputFlag != 0 && inputFlag != 1))
             {
                 plr.SendClientMessage("Usage: .fly <0|1> (0=disable, 1=enable)", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;

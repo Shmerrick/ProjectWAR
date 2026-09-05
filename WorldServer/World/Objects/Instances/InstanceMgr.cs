@@ -239,9 +239,7 @@ namespace WorldServer.World.Objects.Instances
                 if (_instances.ContainsKey(id))
                     return id;
 
-                Instance_Lockouts deadbosses = null;
-                if (player._Value.GetLockout(Jump.InstanceID) != null)
-                    InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
+                Instance_Lockouts deadbosses = ResolveCharacterLockout(player._Value, info.Entry);
 
                 _instances.Add(id, new Instance(Jump.ZoneID, id, realm, deadbosses));
             }
@@ -268,29 +266,17 @@ namespace WorldServer.World.Objects.Instances
                         if (Jump.ZoneID == 179)
                         {
                             TOTVL ints = null;
-                            Instance_Lockouts deadbosses = null;
-							if (player._Value.GetLockout(Jump.InstanceID) != null)
-							{
-								if (player.PriorityGroup == null) // solo player gets his own lockouts
-									InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
-								else // group players gets the lockout of the leader
-									InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
-							}
-							ints = new TOTVL(Jump.ZoneID, i, realm, deadbosses);
+                            Instance_Lockouts deadbosses = ResolveCharacterLockout(
+                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump.InstanceID);
+                            ints = new TOTVL(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
                         }
                         else
                         {
                             Instance ints = null;
-                            Instance_Lockouts deadbosses = null;
-                            if (player._Value.GetLockout(Jump.InstanceID) != null)
-							{	
-								if (player.PriorityGroup == null) // solo player gets his own lockouts
-									InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
-								else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
-                                    InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
-							}
+                            Instance_Lockouts deadbosses = ResolveCharacterLockout(
+                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump.InstanceID);
                             ints = new Instance(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
@@ -301,11 +287,48 @@ namespace WorldServer.World.Objects.Instances
             return 0;
         }
 
+        internal static Instance_Lockouts ResolveCharacterLockout(Character_value value, ushort zoneId)
+        {
+            string saved = value?.GetLockout(zoneId);
+            if (string.IsNullOrWhiteSpace(saved))
+                return null;
+
+            string[] parts = saved.Split(':');
+            if (parts.Length < 3 || !int.TryParse(parts[1], out int expires) || expires <= TCPManager.GetTimeStamp())
+                return null;
+
+            // Character records include :boss:boss; the world dictionary key does not.
+            // Use this character's own progress, not another group's same-day record.
+            var bosses = new SortedSet<uint>();
+            for (int i = 2; i < parts.Length; ++i)
+                if (uint.TryParse(parts[i], out uint boss) && boss != 0)
+                    bosses.Add(boss);
+
+            return bosses.Count == 0 ? null : new Instance_Lockouts
+            {
+                InstanceID = "~" + zoneId + ":" + expires,
+                Bosseskilled = string.Join(":", bosses)
+            };
+        }
+
         private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, ushort InstancemainID)
         {
             lock (_instances)
             {
-                _instances.TryGetValue(Instanceid, out Instance inst);
+                if (!_instances.TryGetValue(Instanceid, out Instance inst))
+                    return false;
+
+                if (inst.Realm == 0 && InstanceService._InstanceBossSpawns.TryGetValue(InstancemainID, out List<Instance_Boss_Spawn> bosses))
+                {
+                    foreach (Instance_Boss_Spawn boss in bosses)
+                    {
+                        if (boss.ZoneID == inst.ZoneID && player.HasLockout(inst.ZoneID, boss.bossId) && !inst.IsBossKilled(boss.bossId))
+                        {
+                            player.SendClientMessage("Your lockout does not allow you to join a fresh copy of this encounter.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                            return false;
+                        }
+                    }
+                }
 
                 if (inst.EncounterInProgress)
                 {

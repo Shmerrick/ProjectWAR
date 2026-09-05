@@ -53,6 +53,8 @@ so the two describe the same places with different edges. Expect a quest to trig
 early or late at the boundary, and correct a radius per zone if it matters.
 
 Zone 160's `areas160.png` is uniform on purpose: all three of its `zone_areas` rows carry the same
-`OrderInfluenceId 6` / `DestroInfluenceId 2`, so a single area yields exactly correct influence
-everywhere in the zone. Only the displayed sub-area name is coarser, and two of the three wings
-have no row at all.
+`OrderInfluenceId 129` / `DestroInfluenceId 128` after migration 32, matching client
+`interface/interfacecore/maps/zone160/influenceids.csv:2-3`. A single area therefore selects
+the same influence tracks everywhere. The displayed sub-area name is coarser, and `Steps of
+Ruin` still lacks its own row. The earlier 6/2 values confused chapter row keys with tracks;
+see `docs/handoffs/2026-09-05-stabilization.md`.

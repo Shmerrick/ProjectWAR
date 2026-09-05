@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Common;
@@ -276,12 +277,38 @@ namespace WorldServer.World.Map
 
 
         /// <summary>
-        ///     A list of players currently within this region. Should only be accessed from within this region's thread!
+        ///     Membership snapshot, safe to enumerate from any thread. Player state still belongs
+        ///     to its region thread. A new snapshot is published only when membership changes.
         /// </summary>
-        public readonly List<Player> Players = new List<Player>();
+        public ReadOnlyCollection<Player> Players => _playerSnapshot;
 
-        public int OrderPlayers { get; set; }
-        public int DestPlayers { get; set; }
+        private readonly List<Player> _players = new List<Player>();
+        private volatile ReadOnlyCollection<Player> _playerSnapshot = Array.AsReadOnly(Array.Empty<Player>());
+
+        public int OrderPlayers { get; private set; }
+        public int DestPlayers { get; private set; }
+
+        // Membership writes run only on the region thread; readers never see the mutable list.
+        private void AddPlayer(Player player)
+        {
+            if (_players.Contains(player))
+                return;
+
+            _players.Add(player);
+            if (player.Realm == Realms.REALMS_REALM_ORDER) OrderPlayers++;
+            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION) DestPlayers++;
+            _playerSnapshot = Array.AsReadOnly(_players.ToArray());
+        }
+
+        private void RemovePlayer(Player player)
+        {
+            if (!_players.Remove(player))
+                return;
+
+            if (player.Realm == Realms.REALMS_REALM_ORDER) OrderPlayers--;
+            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION) DestPlayers--;
+            _playerSnapshot = Array.AsReadOnly(_players.ToArray());
+        }
 
         private void AddNewObjects()
         {
@@ -304,12 +331,7 @@ namespace WorldServer.World.Map
                             if (plr != null)
                             {
                                 plr.InRegionChange = true;
-                                if (!Players.Contains(plr))
-                                {
-                                    Players.Add(plr);
-                                    if (plr.Realm == Realms.REALMS_REALM_ORDER) OrderPlayers++;
-                                    if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION) DestPlayers++;
-                                }
+                                AddPlayer(plr);
                             }
                         }
 
@@ -368,8 +390,8 @@ namespace WorldServer.World.Map
                             }
                         }
 
-                        if (removeInfo.Obj is Player)
-                            Players.Remove((Player) removeInfo.Obj);
+                        if (removeInfo.Obj is Player player)
+                            RemovePlayer(player);
                     }
 
                     _objectsToRemove.Clear();

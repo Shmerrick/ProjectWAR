@@ -2,6 +2,39 @@
 
 ProjectWAR is a C# private server emulator for Warhammer Online: Age of Reckoning. It targets .NET 4.8, x64. The solution is `ProjectWAR.sln`.
 
+## Latest stabilization (2026-09-05)
+
+Current handoff: [commit summary and latest retest](handoffs/2026-09-05-commit-handoff.md).
+User reports PQs seem fixed, but the Destruction entrance from Chaos Wastes to Bastion
+Stair now lands incorrectly (BUG-062). This entrance regression is unresolved. The blue-orb
+explanation has been retracted (BUG-063); its identity is unverified. This is a partial
+stabilization delivery, not a declaration that the dungeon backlog is fixed.
+
+Latest follow-up: [dungeon retest handoff](handoffs/2026-09-05-dungeon-retest.md).
+Migration 35 is applied locally. Dungeon login recovery, saved boss suppression, PQ counter/
+completion updates, single chest serialization and Gunbad's enclosing influence area have
+new regression coverage. User confirmed Bastion Destruction influence, the left-wing portal,
+ward PQ counters and Holmsteinn supply visibility before this pass. Remaining failures are
+listed in the handoff; these new changes still require an in-client retest.
+
+Follow-up to the in-client test reports: [PQ/Gunbad handoff](handoffs/2026-09-05-pq-gunbad.md).
+Migration 34 is applied locally; supply construction, deferred PQ startup and tracker/jump
+packet checks pass. The affected PQs and Gunbad still need an in-client retest. Remaining
+data/ability warnings are recorded rather than suppressed.
+
+See [the current handoff](handoffs/2026-09-05-stabilization.md) for evidence and verification.
+Migrations 32/33 restore client-verified influence tracks; the earlier dungeon repair used
+chapter row keys instead of `InfluenceEntry`. Source: extracted client
+`interface/interfacecore/maps/zone160/influenceids.csv:2-3`, `zone060/influenceids.csv:2-3`,
+and the seven exact CSV bindings cited by migration 33. Influence arithmetic and packets now
+preserve 32-bit totals/costs (live client `WAR.exe` `0x4C5359`, `0x4DDF60`).
+
+Height sampling now caches immutable data and preserves unavailable results; region membership
+publishes safe snapshots; dependency staging reads resolved source files. Reproducible checks
+and a read-only Release database audit are in `tools/validation/`. The current audit finds
+42 area rows with missing influence tracks, not the older 231 count based on the wrong key.
+In-client dungeon testing and the documented restoration data gaps remain outstanding.
+
 ## Built Projects
 
 All of the following produce binaries under `bin/Debug/` and `bin/Release/`:

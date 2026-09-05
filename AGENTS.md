@@ -4,7 +4,16 @@ This file is the single source of truth for repository-specific AI-agent instruc
 
 ## Start of session
 
-Read **`docs/handoffs/2026-09-05-checkpoint.md`** first. It carries the current state of the ward,
+Read **`docs/handoffs/2026-09-05-commit-handoff.md`** for the latest user retest and delivery
+state. Destruction's Chaos Wastes entrance to Bastion Stair is broken; the blue-orb
+identification was retracted. Earlier portal/PQ confirmations do not close those issues.
+
+Read **`docs/handoffs/2026-09-05-stabilization.md`** first. It corrects the earlier checkpoint's
+influence-key diagnosis using the client `maps/zone160/influenceids.csv` and
+`maps/zone060/influenceids.csv`: runtime lookup uses `chapter_infos.InfluenceEntry`, not `Entry`.
+Migrations 32/33 and the 32-bit influence repair must not be reverted to that mistaken premise.
+
+Then read **`docs/handoffs/2026-09-05-checkpoint.md`** for the preceding state of the ward,
 dungeon-influence and Bastion Stair work: what is verified in game, what is open with nothing
 invented to cover it, the one blocker that shapes the rest (BUG-041, missing zone area bitmaps),
 mistakes already made and reverted so they are not repeated, and the conventions in this codebase

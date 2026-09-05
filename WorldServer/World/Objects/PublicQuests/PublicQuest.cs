@@ -148,7 +148,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 Out.WriteByte(1);  // 1 1 condition 2 or condition
                 Out.WriteUInt16(0);
                 Out.WritePascalString(Info.Name);
-                Out.WriteUInt32((UInt32)(_stageTimeEnd - TCPManager.GetTimeStamp()));       // time left
+                Out.WriteUInt32((uint)Math.Max(0, _stageTimeEnd - TCPManager.GetTimeStamp()));
                 Out.Fill(0, 4);
                 player.SendPacket(Out);
             }
@@ -161,7 +161,9 @@ namespace WorldServer.World.Objects.PublicQuests
                 Out.WriteByte(1);  // 1 1 condition 2 or condition
                 Out.WriteUInt16(0);
                 Out.WritePascalString(Info.Name);
-                Out.WriteByte(Info.Type);
+                // INSTANCE_GUNBAD_PART1 F_OBJECTIVE_INFO (A Taint from Below): this
+                // field is 2 even though the realm field above is 0. It is not a realm.
+                Out.WriteByte(2);
                 Out.WriteUInt32(UInt32.Parse(Stage.Objectives.First().Objective.ObjectId));
                 Out.WriteByte(0);
                 Out.WriteByte((byte)Stage.Objectives.Count);
@@ -176,19 +178,20 @@ namespace WorldServer.World.Objects.PublicQuests
                     i++;
                 }
 
-                Out.WriteByte((byte)(Info.PQDifficult > 0 ? (Info.PQDifficult - 1) : 0 - 1));    // difficulty 0 - 2
+                Out.WriteByte(Info.ZoneId == 60 ? (byte)0xFF :
+                    (byte)(Info.PQDifficult > 0 ? (Info.PQDifficult - 1) : 0 - 1));
                 Out.WriteByte(0);
                 Out.WritePascalString(Stage.StageName);
                 Out.WriteByte(0);
                 Out.WritePascalString(Stage.Objectives.First().Objective.Description);
-                Out.WriteUInt16(0);
-                if (Stage.Number == 0)
-                    Out.WriteUInt16(0);
-                else
-                    Out.WriteUInt16(1);
-                Out.WriteUInt32((UInt32)(_stageTimeEnd - TCPManager.GetTimeStamp()));       // time left
+                // Captures carry total and remaining seconds as uint32s. An untimed first
+                // stage has zero for both, not a negative timestamp cast to ~2 billion seconds.
+                Out.WriteUInt32(Stage.Number == 0 ? 0u : (uint)(Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
+                Out.WriteUInt32(Stage.Number == 0 ? 0u : (uint)Math.Max(0, _stageTimeEnd - TCPManager.GetTimeStamp()));
                 Out.WriteUInt32(0);
-                Out.WriteByte(0x48);
+                // Gunbad capture: 0x41; Chaos chapter 2 captures: 0x43.
+                uint influenceId = GetInfluenceId(player);
+                Out.WriteByte(influenceId <= byte.MaxValue ? (byte)influenceId : (byte)0);
                 Out.WriteUInt32(0);
                 player.SendPacket(Out);
 
@@ -252,6 +255,9 @@ namespace WorldServer.World.Objects.PublicQuests
 
             base.OnLoad();
             IsActive = true;
+            // Area detection can attach players while this object is still queued for load.
+            if (ActivePlayers.Count > 0)
+                Start();
         }
 
         public void AddPlayer(Player plr)
@@ -370,7 +376,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public void Start()
         {
-            if (_started || _ended)
+            if (!Loaded || _started || _ended)
                 return;
 
             foreach (PQuestStage sStage in Stages)
@@ -382,6 +388,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     {
                         Stage = sStage;
                         Stage.Reset();
+                        _started = true;
                         foreach (uint Plr in ActivePlayers)
                         {
                             Player targPlayer = Player.GetPlayer(Plr);
@@ -394,9 +401,14 @@ namespace WorldServer.World.Objects.PublicQuests
                     }
 
                 }
-                catch
+                catch (Exception error)
                 {
-                    continue;
+                    Log.Error("PublicQuest.Start", $"PQ {Info.Entry} ({Name}), stage {sStage.Number} failed: {error}");
+                    // Do not permanently mark a failed spawn pass as started.
+                    sStage.Cleanup();
+                    Stage = null;
+                    _started = false;
+                    return;
                 }
             }
 
@@ -404,7 +416,6 @@ namespace WorldServer.World.Objects.PublicQuests
             Log.Success("PQuest", "Starting Quest " + Info.Name);
             #endif
 
-            _started = true;
         }
 
         private long _nextContributionTick;
@@ -424,7 +435,7 @@ namespace WorldServer.World.Objects.PublicQuests
         public void HandleEvent(Player player, Objective_Type type, uint entry, int count, ushort contributionGain,
             string pqGoClicked = null)
         {
-            if (Stage == null)
+            if (!_started || _ended || Stage == null)
                 return;
 
             byte objid = 0;
@@ -570,7 +581,9 @@ namespace WorldServer.World.Objects.PublicQuests
                             PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_UPDATE);
                             Out.WriteUInt32(Info.Entry);
                             Out.WriteByte(1);
-                            Out.WriteByte(Info.Type); //realm
+                            // Matches the post-name objective-list kind in F_OBJECTIVE_INFO.
+                            // Official Path of Fury F_OBJECTIVE_UPDATE #1170: 01 02, not realm 0.
+                            Out.WriteByte(2);
                             Out.WriteUInt32(UInt32.Parse(Stage.Objectives.First().Objective.ObjectId)); //ephermal id, sent in main packet for PQ_INFO
                             Out.WriteByte(objid); //index of objective to update
                             Out.WriteUInt16((ushort)obj.Count); // new total
@@ -789,6 +802,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 if (targPlayer != null)
                 {
                     targPlayer.SendLocalizeString(Info.Name + " Complete", ChatLogFilters.CHATLOGFILTERS_SAY, GameData.Localized_text.CHAT_TAG_MONSTER_EMOTE);
+                    SendCurrentStage(targPlayer);
                     //SendReinitTime(Plr, TIME_PQ_RESET);
                     targPlayer.AddInfluence((ushort)GetInfluenceId(targPlayer), 500);
 
@@ -870,6 +884,10 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public void Failed()
         {
+            if (_ended || !_started)
+                return;
+
+            _stageTimeEnd = TCPManager.GetTimeStamp() + TIME_PQ_RESET;
             EvtInterface.RemoveEvent(Failed);
             EvtInterface.AddEvent(Reset, TIME_PQ_RESET * 1000, 1);
             _started = false;

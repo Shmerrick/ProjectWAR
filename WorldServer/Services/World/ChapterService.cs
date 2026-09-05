@@ -9,6 +9,7 @@ namespace WorldServer.Services.World
     {
 
         public static Dictionary<uint, Chapter_Info> _Chapters;
+        private static Dictionary<uint, Chapter_Info> _chaptersByInfluence = new Dictionary<uint, Chapter_Info>();
 
         [LoadingFunction(true)]
         public static void LoadChapter_Infos()
@@ -16,6 +17,21 @@ namespace WorldServer.Services.World
             Log.Debug("WorldMgr", "Loading Chapter_Infos...");
 
             _Chapters = Database.MapAllObjects<uint, Chapter_Info>("Entry");
+            var byInfluence = new Dictionary<uint, Chapter_Info>();
+            foreach (Chapter_Info chapter in _Chapters.Values)
+            {
+                if (chapter.InfluenceEntry == 0)
+                    continue;
+
+                if (byInfluence.TryGetValue(chapter.InfluenceEntry, out Chapter_Info existing))
+                {
+                    Log.Notice("Chapter_Info", "Shared influence " + chapter.InfluenceEntry + " on chapters " +
+                        existing.Entry + " and " + chapter.Entry + "; retaining the first chapter.");
+                    continue;
+                }
+                byInfluence.Add(chapter.InfluenceEntry, chapter);
+            }
+            _chaptersByInfluence = byInfluence;
 
             Log.Success("LoadChapter_Infos", "Loaded " + _Chapters.Count + " Chapter_Infos");
         }
@@ -48,12 +64,33 @@ namespace WorldServer.Services.World
 
         public static Chapter_Info GetChapterEntry(ushort InfluenceEntry)
         {
-            List<Chapter_Info> Chapters = new List<Chapter_Info>();
+            _chaptersByInfluence.TryGetValue(InfluenceEntry, out Chapter_Info chapter);
+            return chapter;
+        }
 
-            foreach (Chapter_Info chapter in _Chapters.Values)
-                if (chapter.InfluenceEntry == InfluenceEntry)
-                    return chapter;
-            return null;
+        // Deferred until all immediate loaders finish, so both chapter and area caches exist.
+        // Report data gaps once at boot rather than allocating/logging on every influence award.
+        [LoadingFunction(false)]
+        public static void ValidateAreaInfluenceReferences()
+        {
+            int invalidAreas = 0;
+            foreach (List<Zone_Area> areas in ZoneService._Zone_Area.Values)
+            {
+                foreach (Zone_Area area in areas)
+                {
+                    bool missingOrder = area.OrderInfluenceId != 0 && !_chaptersByInfluence.ContainsKey(area.OrderInfluenceId);
+                    bool missingDestro = area.DestroInfluenceId != 0 && !_chaptersByInfluence.ContainsKey(area.DestroInfluenceId);
+                    if (!missingOrder && !missingDestro)
+                        continue;
+
+                    invalidAreas++;
+                    Log.Error("Zone_Area", "Zone " + area.ZoneId + " piece " + area.PieceId +
+                        " references missing influence tracks: Order=" + area.OrderInfluenceId +
+                        " (missing=" + missingOrder + "), Destruction=" + area.DestroInfluenceId +
+                        " (missing=" + missingDestro + "). Influence cannot be awarded on the missing tracks (BUG-038).");
+                }
+            }
+            Log.Notice("Zone_Area", "Influence reference validation: " + invalidAreas + " area rows with missing tracks.");
         }
 
         public static Dictionary<uint, List<Chapter_Reward>> _Chapters_Reward;

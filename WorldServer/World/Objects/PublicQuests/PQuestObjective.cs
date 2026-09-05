@@ -58,7 +58,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     Creature_proto proto = CreatureService.GetCreatureProto(spawn.Entry);
                     if (proto == null)
                     {
-                        Log.Error("PQCreature", "No Proto");
+                        Log.Error("PQCreature", $"PQ {Quest?.Info.Entry}, objective {ObjectiveID}, spawn {spawn.pquest_spawns_ID}: missing creature prototype {spawn.Entry}.");
                         continue;
                     }
 
@@ -102,8 +102,8 @@ namespace WorldServer.World.Objects.PublicQuests
                     GameObject_proto Proto = GameObjectService.GetGameObjectProto(spawn.Entry);
                     if (Proto == null)
                     {
-                        Log.Error("PQGO", "No Proto");
-                        return;
+                        Log.Error("PQGO", $"PQ {Quest?.Info.Entry}, objective {ObjectiveID}, spawn {spawn.pquest_spawns_ID}: missing gameobject prototype {spawn.Entry}.");
+                        continue;
                     }
 
                     GameObject_spawn S = new GameObject_spawn();

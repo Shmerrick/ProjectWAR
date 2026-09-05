@@ -1,5 +1,16 @@
 # Bastion Stair (1.4.8 Restoration Target)
 
+Latest retest: [commit handoff](handoffs/2026-09-05-commit-handoff.md). The user reports
+PQs seem fixed, but Destruction entry from Chaos Wastes now lands incorrectly (BUG-062).
+Earlier internal left-wing portal success does not validate this entrance. No entrance
+fix was made in the documentation/commit pass.
+
+Influence correction: [2026-09-05 stabilization](handoffs/2026-09-05-stabilization.md). Client
+`interface/interfacecore/maps/zone160/influenceids.csv:2-3` specifies Order/Destruction
+tracks **129/128**, restored by migration 32. The database chapter row keys **6/2** are not
+influence IDs. Runtime totals and reward costs now retain 32 bits, matching client `WAR.exe`
+`0x4C5359` and `0x4DDF60`; the previous ushort narrowing broke the configured 75,150 cap.
+
 Status of the Tier 4 Chaos/Empire dungeon and what restoring it requires. Written 2026-09-04 from
 packet captures, the extracted client, contemporary documentation, and the live database.
 
@@ -88,8 +99,9 @@ What is already correct:
 7. **`zone_areas` defines only three areas for zone 160**: `Bastion Stair` (the entrance),
    `Path of Fury` (right wing) and `Trail of Carnage` (left wing), all `AreaId 31` with
    `PieceId` 1-3. **`Steps of Ruin`, the middle wing, has no area row at all.** Without one a
-   player there has no `CurrentArea`, so the realm-aware influence path cannot resolve and the
-   middle wing cannot credit influence correctly for either realm.
+   distinct middle-wing area cannot be named. The generated uniform `areas160.png` currently
+   resolves the entrance row everywhere, so influence can still accrue on the zone-wide
+   client tracks 129/128; this does not recover the missing sub-area boundaries or names.
 
 ## Realm instancing
 
@@ -127,11 +139,11 @@ Public quests are not realm-gated in data — `pquest_info` has no realm column,
 Bastion PQs are `Type 0`. Separation comes from the influence track, which `zone_areas` holds per
 realm: zone 160 is `OrderInfluenceId 129` / `DestroInfluenceId 128`, and Mount Gunbad is `64`/`65`.
 
-Both dungeons' PQs then store the **Destruction** id in `pquest_info.ChapterId` — 128 for all ten
-Bastion PQs, 65 for all nine Gunbad PQs. That is not a chapter reference at all, despite the
-column name; `chapter_infos` 128 is "Chapter 20: Surprise Attack" in zone 9, and 65 does not
-exist. The real dungeon chapters are `chapter_infos` 2/6 (Bastion, Destruction/Order) and 1/5
-(Gunbad), used by `chapter_rewards` for the rally master.
+Both dungeons' PQs store the **Destruction influence track** in `pquest_info.ChapterId` — 128
+for all ten Bastion PQs, 65 for all nine Gunbad PQs after migration 32. The runtime lookup
+joins `chapter_infos.InfluenceEntry`, not `Entry`. The corresponding database chapter keys
+are 2/6 (Bastion, Destruction/Order) and 1/5 (Gunbad). Client CSV sources are
+`interface/interfacecore/maps/zone160/influenceids.csv:2-3` and `zone060/influenceids.csv:2-3`.
 
 `PublicQuest` resolved the influence id per realm from `CurrentArea` on the objective tick, but
 the two award paths that matter — 250 on stage completion and 500 on PQ completion — used
@@ -144,18 +156,15 @@ Since each realm gets its own region, each also gets its own `PublicQuest` objec
 `RegionMgr.PublicQuests` is keyed by entry per region — so the two realms' copies run
 independently rather than sharing or stacking state.
 
-### Influence ids pointed at the wrong chapters
+### Migration 23 used the wrong lookup key
 
-Worse than the award path: the per-realm ids on `zone_areas` were themselves wrong. Zone 160 held
-`DestroInfluenceId 128` / `OrderInfluenceId 129`, which are "Chapter 20: Surprise Attack" and
-"Warcamp: Krung's Scrappin' Spot" — both in zone 9, Nordland. Zone 60 held `65`/`64`, **neither of
-which exists in `chapter_infos`**, and `Player.AddInfluence` returns silently when
-`ChapterService.GetChapterEntry` misses. So Gunbad influence was discarded without a log line and
-Bastion Stair influence accumulated into two unrelated Nordland bars.
-
-`Database/23_fix_dungeon_influence_ids.sql` repoints both to the chapters `chapter_rewards` is
-actually built around — Bastion `2` Destruction / `6` Order, Gunbad `1` / `5` — and corrects the
-`pquest_info.ChapterId` fallback to name the right dungeon.
+The original 129/128 and 64/65 tracks were correct. Migration 23 treated those numbers as
+`chapter_infos.Entry`, concluded they were missing/unrelated, and changed them to 6/2 and 5/1.
+That diagnosis inverted the real `ChapterService.GetChapterEntry` lookup and introduced wrong
+awards. `Database/32_restore_client_dungeon_influence_tracks.sql` restores the values from the
+client CSV rows cited above. It was applied twice and verified against the Release database
+using `InfluenceEntry`. Past character points are not reassigned because their source zone is
+not recorded. In-client retesting remains necessary.
 
 ### Influence from creature kills
 
@@ -170,9 +179,9 @@ The per-kill amount is `WorldConfigs.DungeonKillInfluence` (default 15). **No 1.
 has been recovered**, so it is a tunable rather than a restored constant; if a capture or source
 establishes the real value, set it and say so here.
 
-Because the ids come from the zone area, a player standing outside any defined area earns
-nothing — which is why gap 7 above matters: kills in the middle wing award no influence until
-`Steps of Ruin` has an area row.
+Because the ids come from the zone area, a player outside any resolved area earns nothing.
+The existing uniform Bastion map provides influence coverage through its entrance row, while
+the missing `Steps of Ruin` row remains a sub-area identity gap (see gap 7).
 
 ## Restoration order
 
@@ -237,9 +246,11 @@ Video of the live dungeon shows influence accruing **throughout the Bastion Stai
 inside the instanced boss fights**. `Database/30_boss_maps_award_no_influence.sql` expresses that
 by zeroing the influence ids on zones 163-166; `Player.AddInfluence` returns immediately on
 chapter 0 and `Creature.GrantDungeonKillInfluence` skips a zero id, so boss kills award nothing
-while respawns, Tome explore entries and area naming are untouched. Zone 160 keeps `6`/`2`.
+while respawns, Tome explore entries and area naming are untouched. Migration 32 restores
+zone 160 to client tracks `129`/`128`.
 
-Note that until BUG-041 is resolved, area-based influence resolves in exactly one place in the
+Historical diagnosis before the generated Bastion overlays (superseded by the stabilization
+handoff and migration 32): area-based influence resolved in exactly one place in the
 dungeon: zone 164 carries a `zone_areas` row with `PieceId 0`, and with no `areasNNN.png` the
 `AreaPixels` grid is all zeroes, so `GetZoneAreaFor` computes `areaId 0` and matches it. That is
 the only reason any Bastion influence exists in the character database at all (46 points on the

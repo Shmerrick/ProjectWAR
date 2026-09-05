@@ -20,7 +20,11 @@ msbuild WorldServer\WorldServer.csproj /p:Platform=x64 /p:Configuration=Release
 
 All projects output to the shared `bin/$(Configuration)/`. `Directory.Build.targets` then relocates runtime DLLs into `bin/$(Configuration)/libs/` for every EXE, keeping `Common.dll` and `FrameWork.dll` beside the executables; `WorldServer` calls `SetDllDirectory("libs")` at startup so `DllImport` still resolves natives (e.g. `WarZone64.dll`).
 
-**There is no automated test suite.** A clean compile with no new warnings is the verification bar (`AGENTS.md` rule 9). If a package restore fails, restore NuGet packages in Visual Studio or run `nuget restore ProjectWAR.sln`.
+Targeted automated checks now live in `tools/validation/`: run `Test-RuntimeRegressions.ps1`
+after building for height/overlay, region-membership and influence-packet regressions.
+`Get-WorldDataHealth.ps1` audits the configured Release database with SELECTs only. These do
+not replace in-client testing. Compile with no new warnings (`AGENTS.md` rule 9).
+If restore fails, restore NuGet packages in Visual Studio or run `nuget restore ProjectWAR.sln`.
 
 Running the stack: always launch `bin/Release/ServerLauncher.exe` and use "Start All". The four services (`AccountCacher` -> `LauncherServer` -> `LobbyServer` -> `WorldServer`) have startup-order dependencies and race if started individually.
 
@@ -73,7 +77,7 @@ The open dependabot branch is cut from master and does not apply.
 
 ## Hard rules
 
-1. **Never edit the base dumps** `Database/war_accounts.sql`, `war_characters.sql`, `war_world.sql`. Schema/data changes ship as a new numbered incremental script in `Database/`, taking the next free number (the series currently runs through `20_restore_ward_fragment_equip_tasks.sql`), delivered with the code change. `AGENTS.md` rule 6 goes further than "the user applies it": apply the script to the local Release build's database and verify the resulting schema and data — never report database-backed work as tested when only the compile was checked. Note that the ORM auto-provisions unknown tables — `ObjectDatabase` calls `CheckOrCreateTable`, which issues `CREATE TABLE IF NOT EXISTS` on registration — so a new `DataObject` entity does not strictly need a migration script to work; write one only when existing rows need changing.
+1. **Never edit the base dumps** `Database/war_accounts.sql`, `war_characters.sql`, `war_world.sql`. Schema/data changes ship as a new numbered incremental script in `Database/`, taking the next free number (the series currently runs through `33_restore_verified_area_influence_tracks.sql`), delivered with the code change. `AGENTS.md` rule 6 goes further than "the user applies it": apply the script to the local Release build's database and verify the resulting schema and data — never report database-backed work as tested when only the compile was checked. Note that the ORM auto-provisions unknown tables — `ObjectDatabase` calls `CheckOrCreateTable`, which issues `CREATE TABLE IF NOT EXISTS` on registration — so a new `DataObject` entity does not strictly need a migration script to work; write one only when existing rows need changing.
 
    **Caret suffixes on name columns are data, not corruption.** `creature_protos`, `quests_maps` and `boss_spawn` carry `^m`/`^M`, `^f`/`^F`, `^n` and `^p` suffixes — grammatical gender markers (masculine, feminine, neuter, plural) for German and French localisation. The client uses the same convention, e.g. `Mad Mixas^n,in` in `data/strings/english/zones/zone060_area_names.txt`. `^M` looks like caret notation for a carriage return and was once stripped as an import artifact across 5,210 rows; that was wrong and had to be reverted from the base dump. **Never strip them** — make name-based lookups tolerate the suffix instead.
 
@@ -88,6 +92,15 @@ The open dependabot branch is cut from master and does not apply.
    **`docs/CROSS_REPO.md` is the full map** — data roots (including the extracted client tree at `C:\Users\Admin\Downloads\myps` and the 1,027-capture packet corpus), a question-to-repo routing table, the order of authority when sources disagree, and the two cross-repo contracts (the bot editor API, and the private ward-sigil client component). Read it rather than re-deriving any of that.
 
 ## Architecture
+
+### Influence identity correction (2026-09-05)
+
+`ChapterService.GetChapterEntry` resolves `chapter_infos.InfluenceEntry`, **not** its `Entry`
+row key. Client `interface/interfacecore/maps/zone160/influenceids.csv:2-3` specifies Bastion
+Order/Destruction tracks **129/128**, and `zone060/influenceids.csv:2-3` specifies Gunbad
+**64/65**. Migration 23 changed these to row IDs and broke awards; migration 32 restores them.
+Migration 33 repairs seven additional client-verified area bindings. See
+`docs/handoffs/2026-09-05-stabilization.md` before relying on older checkpoint claims.
 
 ### Service topology
 
@@ -140,4 +153,4 @@ Bots are real persisted `Player` characters on the shared account id `9999`, run
 - `docs/BASTION_STAIR.md`, `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching wards, guilds, or keep claims.
 - `docs/MASTER_TO_RESTART_AUDIT.md` — the per-change record of what master did and why `RESTART` rejected it. Consult it before concluding something is "missing" from this branch.
 - `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`, `docs/data-matrix/`.
-- `docs/handoffs/` — dated session checkpoints from prior work. **`2026-09-05-checkpoint.md` is the current one**; read it before touching wards, dungeon influence or Bastion Stair.
+- `docs/handoffs/` — dated session checkpoints. **`2026-09-05-commit-handoff.md` is current**; it records the broken Chaos Wastes entrance, PQ retest improvement, retracted blue-orb explanation and remaining work. The earlier checkpoint is historical; use the stabilization handoff for corrected influence-key evidence.
