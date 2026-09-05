@@ -247,3 +247,31 @@ pre-script-23 id 129). With script 30 that map now awards nothing, which is the 
 behaviour, so **no area-driven influence will accrue anywhere in Bastion Stair until the zone
 area bitmap problem is solved**. Public quest influence still flows through the `ChapterId`
 fallback.
+
+## Realm instance identity
+
+Realm instances have **fixed ids**, not allocated ones: `1 + (Instance_Info.Entry * 4) + realm`,
+so Bastion Stair is `643` for Destruction and `642` for Order, the same across restarts. Instance
+lockouts are keyed `"ZoneID:ID"`, so an id that shifted when instances happened to open in a
+different order would silently orphan every lockout referencing it.
+
+They occupy a reserved block at the bottom of the id space and the dynamic allocator for group and
+raid instances starts at `2000`. The reservation is deliberately low rather than high: the dynamic
+allocator counts upwards from its floor, so a high reserved range would eventually be reachable on
+a long-running server, while a low one cannot be reached at all.
+
+Realm instances are also exempt from `CheckInstanceEmpty`, so they are never torn down while empty
+and their public quest cycle and creature respawns keep running between visits.
+
+## Zone type
+
+`zone_infos.Type` for zone 160 is `4`, matching Mount Gunbad. This is not cosmetic:
+`Player.Teleport(zoneID, ...)` leaves the instance when `destination.Type < 4`, so with the old
+`Type 0` every in-dungeon portal ejected the player from their realm instance. Type 4 is the
+realm-instanced public dungeon type, carried only by Hunter's Vale and Mount Gunbad; the group
+instances — Tomb of the Vulture Lord, Bloodwrought Enclave, Bilerot Burrow, The Lost Vale — are
+Type 6.
+
+Only the three entrance jumps are `Type 4`. The fifteen portals inside the dungeon are `Type 0`
+plain teleports, which now keep the player inside their realm instance rather than opening a new
+one per wing.

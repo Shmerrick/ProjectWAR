@@ -2,6 +2,15 @@
 
 This file is the single source of truth for repository-specific AI-agent instructions.
 
+## Start of session
+
+Read **`docs/handoffs/2026-09-05-checkpoint.md`** first. It carries the current state of the ward,
+dungeon-influence and Bastion Stair work: what is verified in game, what is open with nothing
+invented to cover it, the one blocker that shapes the rest (BUG-041, missing zone area bitmaps),
+mistakes already made and reverted so they are not repeated, and the conventions in this codebase
+that bite — parallel item tables, a `ChapterId` column that is not a chapter, and influence that
+fails silently.
+
 ## Baseline Repository Rules
 
 1. Read `README.md` before making code or database changes.

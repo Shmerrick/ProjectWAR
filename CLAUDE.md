@@ -140,4 +140,4 @@ Bots are real persisted `Player` characters on the shared account id `9999`, run
 - `docs/BASTION_STAIR.md`, `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching wards, guilds, or keep claims.
 - `docs/MASTER_TO_RESTART_AUDIT.md` — the per-change record of what master did and why `RESTART` rejected it. Consult it before concluding something is "missing" from this branch.
 - `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`, `docs/data-matrix/`.
-- `docs/handoffs/` — dated session checkpoints from prior work.
+- `docs/handoffs/` — dated session checkpoints from prior work. **`2026-09-05-checkpoint.md` is the current one**; read it before touching wards, dungeon influence or Bastion Stair.

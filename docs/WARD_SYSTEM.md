@@ -230,3 +230,13 @@ The official packet corpus remains useful for reconstructing spawn identity, pos
 - Extracted client: `data/gamedata/monsterdifficultymask.csv` and `interface/interfacecore/source/targetunitframe.lua`
 - WAR-RE-Toolkit: IDA/Ghidra client analysis, packet models, and official Bilerot packet logs
 - Steelbrand, *Definitive Guide to Armor Sets in Warhammer Online* (2010), accepted as the 1.4.8 scalar reference
+
+## Counter data repairs
+
+Three task rows were unusable until 2026-09-05. `tok_infos` 7708, 7713 and 7714 each carry a comma
+inside their name and the CSV import behind the world dump split on it, shifting every following
+column: the broken `Index` held the real `Section` and the broken `Flag` the real `Index`, with the
+true `Flag` lost. They are exactly the three counters that could not bind — AcIds 704, 705 and 709
+— so they were never missing rows, only corrupted ones, and a player could drive such a counter to
+its threshold and watch the task stay unticked. `Database/27_fix_comma_split_ward_tasks.sql`
+restores them; all 32 counters now bind.
