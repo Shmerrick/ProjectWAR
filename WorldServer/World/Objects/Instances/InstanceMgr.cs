@@ -18,7 +18,11 @@ namespace WorldServer.World.Objects.Instances
 
         }
 		
-        private byte _maxplayers = 6;
+        /// <summary>
+        /// Player cap for an ordinary group instance. Raids use 24 and realm instances are
+        /// uncapped; both are decided per entry in <see cref="ZoneIn"/>, never stored.
+        /// </summary>
+        private const byte GROUP_INSTANCE_MAX_PLAYERS = 6;
 
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
         {
@@ -44,9 +48,12 @@ namespace WorldServer.World.Objects.Instances
             
             ushort instanceid = 0;
 
-			// Group Raid Instance
-			if (instancetyp == 5)
-                _maxplayers = 24;
+            // Capacity belongs to this entry, not to the manager. It used to be a field that was
+            // raised to 24 for a raid or dropped to 0 for a realm instance and never put back, so
+            // the first Gunbad or Bastion Stair entry left every later group instance on the wrong
+            // cap for the rest of the server's life -- including the branch below that turns a
+            // group member away with "this instance is already full".
+            byte maxplayers = instancetyp == 5 ? (byte)24 : GROUP_INSTANCE_MAX_PLAYERS;
 
             // Realm instance (jump type 4): one persistent copy per realm rather than one per
             // group. Every player of a realm shares their realm's dungeon, and it is uncapped.
@@ -64,7 +71,7 @@ namespace WorldServer.World.Objects.Instances
                     return false;
                 }
 
-                _maxplayers = 0;
+                maxplayers = 0; // realm instances are uncapped
 
                 lock (_instances)
                 {
@@ -88,7 +95,7 @@ namespace WorldServer.World.Objects.Instances
                     return false;
                 }
 
-                return Join_Instance(player, instanceid, Jump, InstanceMainID);
+                return Join_Instance(player, instanceid, Jump, InstanceMainID, maxplayers);
             }
 
             // instance handling
@@ -140,7 +147,7 @@ namespace WorldServer.World.Objects.Instances
                                     }
                                     else
                                     {
-                                        if (ii.Value.Players.Count < _maxplayers)
+                                        if (ii.Value.Players.Count < maxplayers)
                                         {
                                             instanceid = ii.Key; // enter
                                             break;
@@ -169,7 +176,7 @@ namespace WorldServer.World.Objects.Instances
 				instanceid = Create_new_instance(player, Jump);
 			}
             
-            if (!Join_Instance(player, instanceid, Jump, InstanceMainID))
+            if (!Join_Instance(player, instanceid, Jump, InstanceMainID, maxplayers))
 				return false;
 
 			return true;
@@ -311,7 +318,7 @@ namespace WorldServer.World.Objects.Instances
             };
         }
 
-        private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, ushort InstancemainID)
+        private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, ushort InstancemainID, byte maxplayers)
         {
             lock (_instances)
             {
@@ -336,7 +343,7 @@ namespace WorldServer.World.Objects.Instances
                     return false;
                 }
 
-                if (_maxplayers == 0 || inst.Players.Count < _maxplayers)
+                if (maxplayers == 0 || inst.Players.Count < maxplayers)
                 {
                     if (Jump != null && Jump.ZoneID == 179)
                         ((TOTVL)inst).AddPlayer(player, Jump);

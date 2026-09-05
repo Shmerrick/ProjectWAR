@@ -259,3 +259,72 @@ that exists for the losing realm to defend its own camp implies that realm can r
 which `CanRealmAccessLotd`, holder-exclusive as written, would forbid. That is not conclusive (the
 capture starts mid-session, and no capture yet pairs a flight list with a tracker naming the other
 realm as holder), so the rule was left alone and the question recorded as BUG-076.
+
+## Third retest pass — 2026-09-05, in Land of the Dead
+
+Travel now works: the user flew from the Inevitable City to Land of the Dead, which confirms the
+`PAIRING_LAND_OF_THE_DEAD` fix. Nine further faults were reported from inside the zone.
+
+### Fixed
+
+**Swapped warcamp taxis (BUG-077, migration 39).** A Destruction player taking the expedition
+flight landed in the *Order* warcamp and was killed; an Order player landed in the *Destruction*
+warcamp. Death respawn was correct for both, which is the clue: `zone_respawns` is right and
+`zone_taxis` is not. Converting the respawn pins to world coordinates (zone 191 OffX 48 / OffY
+364) lines the two sets up with the Z values matching to the unit:
+
+```
+respawn 274, realm 2 Destruction -> 254002, 1497939, 10328
+respawn 275, realm 1 Order       -> 257638, 1536364, 10248
+taxi RealmID 1 (Order)           -> 254486, 1498271, 10328   <- Destruction warcamp
+taxi RealmID 2 (Destruction)     -> 257648, 1536559, 10248   <- Order warcamp
+```
+
+Ownership is settled by capture rather than by the respawn rows alone: in
+`MECHANIC_orderflymaster_NecropoleOFZandri(LoD)` an Order player takes this exact flight,
+`F_SWITCH_REGION` #38 carries zone 0x00BF = 191, and `S_PLAYER_INITTED` #101 places the arrival at
+world 257326, 1536497 — the Order warcamp, and the point the database was giving Destruction.
+
+**Sedjhet Temple jars (BUG-079, migration 39).** Objective 2404 places 8 objects of gameobject
+prototype 98962, which did not exist — an instance of the ~180 missing prototypes in BUG-072.
+Identified positionally from the Sedjhet Temple capture as **"Hieratic Jar", DisplayID 7869,
+Unk3 100**: 10 sightings, one spawn row matching a sighting exactly and the rest 306-328 units off
+across quest cycles, with the name matching the objective verbatim. Zone 191 is not an instance,
+so capture coordinates are world coordinates with no atlas shift.
+
+**Instance player cap (BUG-080).** `InstanceMgr._maxplayers` was a mutable field, initialised to
+6 then set to 24 for a raid or 0 for a realm instance and never reset. The first Gunbad or Bastion
+Stair entry left every later group instance on the wrong cap for the rest of the server's life,
+including the branch that turns a joining group member away with "This instance is already full."
+Capacity is now a per-entry local passed into `Join_Instance`. This is a plausible contributor to
+the reported inaccessible Tomb of the Vulture Lord portal, but is not confirmed as its cause —
+`zone_jumps` row 200797160 exists and is correct (zone 179, Type 6, InstanceID 179), and
+`instance_infos` is keyed by ZoneID so it resolves.
+
+### The largest finding — Land of the Dead has almost no public-quest data (BUG-078)
+
+Of the 28 realm-paired PQ rows in zone 191, **26 have zero `pquest_spawns` rows**, and **13 of the
+14 Order-side rows (886-899) have zero objectives at all**. Only Obelisk of Judgement (558/887)
+and Sedjhet Temple (556/886) carry anything. That is the direct explanation for "no PQ trackers
+show on screen" in Land of the Dead, and for it being worse on Order. `pqarea191.png` is present
+and correct, so this is not an area-detection fault.
+
+Restoring it means rebuilding objectives, stages, counts and spawn sets per quest from the eleven
+Land of the Dead captures. Not attempted here, and it is a substantial piece of work.
+
+### Reported, recorded, not fixed
+
+- **BUG-081** PQ reward chests cannot be looted and go straight to the mailbox. The chest is
+  created correctly (log: "Created reward chest for public quest 556 (Sedjhet Temple) in region 9
+  zone 191"), so the fault is in the award path, not chest creation. Not diagnosed.
+- **BUG-082** Destruction talisman vendors sell none of the decaying gems. No capture of these
+  vendors located.
+- **BUG-083** The four Tombs (241-244) can be entered without holding or consuming PQ gifts;
+  `instance_infos` carries no gate for them and the requirement appears never to have been built.
+- **BUG-084** Order PQs 594 "Colossus of the Vulture Lord" and 893 "Temple of Ualatp" share
+  `PQAreaId` 7, so which one an Order player attaches to is arbitrary.
+- **BUG-075** The warcamp siege not triggering after Order took the zone is the already-recorded
+  unimplemented assault mechanic, not a regression.
+
+The flight to Land of the Dead passing through character select before loading is the existing
+BUG-059 cross-region symptom and was not investigated in this pass.
