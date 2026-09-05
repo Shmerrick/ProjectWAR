@@ -79,7 +79,7 @@ namespace WorldServer.World.Objects.Instances
                 }
 
                 if (instanceid == 0)
-                    instanceid = Create_new_instance(player, Jump, realm);
+                    instanceid = Create_realm_instance(player, Jump, realm, II);
 
                 if (instanceid == 0)
                 {
@@ -185,6 +185,60 @@ namespace WorldServer.World.Objects.Instances
 				return new TimeSpan(Math.Abs(int.Parse(lockout.Split(':')[1]) - TCPManager.GetTimeStampMS()));
 			}
 		}
+
+        /// <summary>
+        /// Base of the id range reserved for realm instances. Group and raid instances are handed
+        /// the first free id from 1 upwards, so a high base keeps the two apart permanently.
+        /// </summary>
+        private const ushort REALM_INSTANCE_ID_BASE = 60000;
+
+        /// <summary>
+        /// The fixed id of a realm's copy of a dungeon.
+        ///
+        /// Realm instances are permanent, so their ids must be derived rather than allocated: a
+        /// first-free id would shift whenever instances open in a different order, and instance
+        /// lockouts are keyed "ZoneID:ID", so a shifted id silently orphans every lockout that
+        /// referenced it. Deriving from the dungeon and the realm gives the same id for the life
+        /// of the server and across restarts.
+        /// </summary>
+        private static ushort GetRealmInstanceId(Instance_Info info, byte realm)
+        {
+            int id = REALM_INSTANCE_ID_BASE + (info.Entry * 4) + realm;
+
+            if (id > ushort.MaxValue)
+            {
+                Log.Error("GetRealmInstanceId", "Instance " + info.Entry + " realm " + realm + " exceeds the realm instance id range.");
+                return 0;
+            }
+
+            return (ushort)id;
+        }
+
+        /// <summary>
+        /// Opens a realm's permanent copy of a dungeon at its fixed id.
+        /// </summary>
+        private ushort Create_realm_instance(Player player, Zone_jump Jump, byte realm, Instance_Info info)
+        {
+            ushort id = GetRealmInstanceId(info, realm);
+
+            if (id == 0)
+                return 0;
+
+            lock (_instances)
+            {
+                if (_instances.ContainsKey(id))
+                    return id;
+
+                Instance_Lockouts deadbosses = null;
+                if (player._Value.GetLockout(Jump.InstanceID) != null)
+                    InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
+
+                _instances.Add(id, new Instance(Jump.ZoneID, id, realm, deadbosses));
+            }
+
+            Log.Success("Opening Realm Instance", "Instance ID " + id + "  Realm " + realm + "  Map: " + info.Name);
+            return id;
+        }
 
         /// <summary>
         /// Opens a new instance. <paramref name="realm"/> is 0 for the ordinary group and raid

@@ -622,9 +622,26 @@ namespace WorldServer.World.Objects
         /// them to their own capital is both predictable and correct: Inevitable City for
         /// Destruction, Altdorf for Order, the same pair TeleportToRealmFallback uses.
         /// </summary>
+        /// <summary>
+        /// One-shot guard. OnLoad runs again every time the player enters an instance, so without
+        /// this the relocation below fires on entry and ejects them from the dungeon they just
+        /// walked into.
+        /// </summary>
+        private bool _deadInstanceChecked;
+
         private void RelocateFromDeadInstance()
         {
+            if (_deadInstanceChecked)
+                return;
+
+            _deadInstanceChecked = true;
+
             if (IsBot || _Value == null || Client?._Account == null)
+                return;
+
+            // Entering a dungeon legitimately also re-enters OnLoad, but by then the player is
+            // already initialised. Only a fresh login can be sitting on a stale saved position.
+            if (_initialized || _initInProgress)
                 return;
 
             Instance_Info instanceInfo;

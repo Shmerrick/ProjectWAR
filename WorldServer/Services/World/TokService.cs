@@ -132,10 +132,16 @@ namespace WorldServer.Services.World
 
             foreach (Tok_Info info in toks)
             {
-                if (info.Section != SIGIL_SECTION || info.Flag % 10 != 0 || info.Index <= 1)
+                // Section 5 also holds rows that are not sigil fragments at all -- Flag 0 with a
+                // large Index. Bound both to the real sigil shape (tiers 1-5, fragments 1-5) so
+                // they are skipped silently instead of each logging a missing-cascade error.
+                if (info.Section != SIGIL_SECTION || info.Flag % 10 != 0 || info.Index <= 1 || info.Index > 5)
                     continue;
 
                 uint fragmentIndex = info.Flag / 10;
+
+                if (fragmentIndex < 1 || fragmentIndex > 5)
+                    continue;
 
                 ushort lowerTaskEntry = 0;
 

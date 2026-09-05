@@ -159,6 +159,17 @@ namespace WorldServer.NetWork.Handler
 			else
 				Jump = ZoneService.GetZoneJump(destinationId);
 
+            // zone_jumps carries a row at Entry 0 that lands in Avelorn, so a portal the server
+            // reads as id 0 -- an unconfigured portal, or one whose id did not survive the packet
+            // -- teleports the player there instead of failing. Reject it before the lookup.
+            if (destinationId == 0)
+            {
+                Log.Error("F_ZONEJUMP", cclient.Plr.Name + " used a portal that resolved to jump id 0; refusing rather than sending them to the Entry 0 destination.");
+                cclient.Plr.SendClientMessage("This portal is not configured on this server.");
+                SendJumpFailed(cclient.Plr);
+                return;
+            }
+
             if (Jump == null)
             {
                 cclient.Plr.SendClientMessage("This portal's jump destination (" + destinationId + ") does not exist.");
