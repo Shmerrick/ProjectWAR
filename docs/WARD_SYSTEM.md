@@ -24,7 +24,7 @@ The armour tasks are:
 | 2 | *next tier ward* | *next tier ward* | *next tier ward* | *next tier ward* | Doomflayer |
 | 3 | Bloodlord | Sentinel | Darkpromise | — | Warpforged |
 
-Task 4 is a boss or PQ objective and task 5 an RvR objective; those remain unimplemented. The client renders both, so their exact wording is known. Confirmed in game on the Greater Ward page, first fragment (2026-09-04):
+Task 4 is a boss or PQ objective and task 5 an RvR objective. Both are now counter-driven — see *Counter implementation* below for which are hooked. Confirmed in game on the Greater Ward page, first fragment (2026-09-04):
 
 | Task | Text shown by the client |
 |:---|:---|
@@ -118,7 +118,7 @@ count, so a row resolves to a `tok_infos` entry as `Index = sigil entry` and
 
 So the server's remaining work per task is narrow: increment the counter, push the update, and
 award the task entry at the threshold — the existing `AddTok` cascade then awards the fragment.
-There are 31 such counters across tiers 1-3; Excelsior and Supreme define no task 4-6 rows at all.
+There are 32 such counters across tiers 1-3; Excelsior and Supreme define no task 4-6 rows at all.
 
 Progress cannot be stored in `characters_toks.Count`: `HasTok` treats the presence of a row as
 completion, so partial progress there would mark the task done. It cannot go in
