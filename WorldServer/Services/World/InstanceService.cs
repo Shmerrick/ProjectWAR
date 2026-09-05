@@ -84,10 +84,29 @@ namespace WorldServer.Services.World
 
             IList<Instance_Lockouts> InstanceLockouts = Database.SelectAllObjects<Instance_Lockouts>();
 
+            int duplicates = 0;
+
             foreach (Instance_Lockouts Obj in InstanceLockouts)
             {
+                if (Obj == null || Obj.InstanceID == null)
+                    continue;
+
+                // instance_lockouts is written at runtime, so it can contain a duplicate key that
+                // no migration put there: a boss with two instance_boss_spawns rows produced one
+                // lockout row per BossID for the same instance. A bad row must not stop the
+                // server booting, so keep the first and report the rest.
+                if (_InstanceLockouts.ContainsKey(Obj.InstanceID))
+                {
+                    ++duplicates;
+                    Log.Error("LoadInstance_Lockouts", "Duplicate lockout for instance " + Obj.InstanceID + " (bosses killed: " + Obj.Bosseskilled + "); ignoring the extra row.");
+                    continue;
+                }
+
                 _InstanceLockouts.Add(Obj.InstanceID, Obj);
             }
+
+            if (duplicates > 0)
+                Log.Error("LoadInstance_Lockouts", duplicates + " duplicate lockout row(s) ignored. Clear them from war_world.instance_lockouts once the instance is no longer locked.");
 
             Log.Success("WorldMgr", "Loaded " + _InstanceLockouts.Count + "Instance_Lockouts");
         }
