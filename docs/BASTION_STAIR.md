@@ -230,3 +230,20 @@ set. That gives the naming convention (`Bloodlord <Career Kit Name>`), the piece
 naming, and the 2/3/4/5-piece bonus structure — the same shape the other ward sets use. The
 remaining 19 careers still need their own names and bonuses from a source; do not extrapolate the
 numbers above across careers, since each set's stats differ by archetype.
+
+## Influence: where it is earned
+
+Video of the live dungeon shows influence accruing **throughout the Bastion Stair map but not
+inside the instanced boss fights**. `Database/30_boss_maps_award_no_influence.sql` expresses that
+by zeroing the influence ids on zones 163-166; `Player.AddInfluence` returns immediately on
+chapter 0 and `Creature.GrantDungeonKillInfluence` skips a zero id, so boss kills award nothing
+while respawns, Tome explore entries and area naming are untouched. Zone 160 keeps `6`/`2`.
+
+Note that until BUG-041 is resolved, area-based influence resolves in exactly one place in the
+dungeon: zone 164 carries a `zone_areas` row with `PieceId 0`, and with no `areasNNN.png` the
+`AreaPixels` grid is all zeroes, so `GetZoneAreaFor` computes `areaId 0` and matches it. That is
+the only reason any Bastion influence exists in the character database at all (46 points on the
+pre-script-23 id 129). With script 30 that map now awards nothing, which is the correct live
+behaviour, so **no area-driven influence will accrue anywhere in Bastion Stair until the zone
+area bitmap problem is solved**. Public quest influence still flows through the `ChapterId`
+fallback.
