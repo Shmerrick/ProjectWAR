@@ -476,3 +476,77 @@ That makes the ward assignment, after migration 42:
 
 Two ward-bearing dungeons per city, and the low-tier pair unwarded on both sides. Migration 42 is
 therefore the complete fix for the reported asymmetry, and no migration 43 is needed.
+
+## Fifth retest pass — boss deaths, the character-select drop, and Tomb of the Vulture Lord
+
+Confirmed working by the user: Order city dungeon Lesser wards, Tomb of the Vulture Lord entry,
+and the Gunbad boss instances.
+
+### The intermittent drop to character select (BUG-094)
+
+The critical one, and it is a race rather than a data fault. `RegionMgr.AddObject` only enqueues
+onto `_objectsToAdd`; `Object.Zone` — and therefore `IsInWorld()` — stays false from the moment a
+cross-region teleport runs until the region thread processes that add. `Player.Teleport` also
+sends the client a region switch, so the client reloads and answers with `F_INIT_PLAYER` inside
+that window. When it wins the race, the handler takes its `!IsInWorld()` branch and re-places a
+player who is already on their way somewhere: the `info?.Type == 0` test fails for an instance
+zone, so it falls through to the rally-point teleport and pulls the player straight back out.
+
+`Player.MoveBlock` marks exactly this window — set only by that teleport (`Player.cs:6719`) and
+cleared only by `F_DUMP_STATICS` once the client has finished loading — and is false during a
+genuine login, where the Player object is fresh. `F_INIT_PLAYER` now checks it and initialises
+the same way the already-in-world path does (`Loaded = false; StartInit()`), leaving the queued
+add to complete. `StartInit` is safe with a null `Zone` because `SendInited` reads `_Value.ZoneId`,
+which the teleport has already set to the destination.
+
+### Gunbad wing boss deaths (BUG-093, migration 43)
+
+Killing a wing boss threw a NullReferenceException out of `Unit.SetDeath`, logged at 21:38:15 for
+Wight Lord Solithex and 21:40:51 for 'Ard ta Feed. All four boss scripts call
+`BasicGunbad.CreateExitPortal`, which handed gameobject prototype 98878 straight to
+`GameObject_spawn.BuildFromProto` with the lookup result unchecked, and 98878 did not exist.
+
+Identified from `INSTANCE_GUNBAD_PART1` as **"Gunbad Entrance Portal", DisplayID 1583, Unk3
+25700** — the capture's only portal object among 30 distinct statics, and one of its three
+sightings sits **15 units** from Masta Mixa's own sighting in the Gunbad Lab, precisely where
+`MastaMixa.cs` calls `CreateExitPortal` with the boss's spawn position. Both prototype lookups in
+`BasicGunbad` are now guarded.
+
+### Character data written to the world database (BUG-095)
+
+`InstanceService.ClearLockouts` saved a `Character_value` through `ServiceBase.Database`, which is
+the world database, producing `UPDATE characters_value` against `war_world` and the error "Table
+'war_world.characters_value' doesn't exist". Instance lockout clearing was silently lost. Now
+uses `CharMgr.Database`.
+
+### Tomb of the Vulture Lord arrival side (BUG-096)
+
+It is an invadable RvR dungeon with a side per realm, but `zone_jumps` has no realm column and
+only one row leads there. Converting this zone's per-realm respawns to world coordinates shows
+which side that row is on:
+
+```
+Order respawn        352594, 280743, 13052
+Destruction respawn  352690, 282116, 13053
+jump 200797160       352622, 282163, 13053   <- 85 units from Destruction, same Z
+```
+
+So every arrival landed on the Destruction side. `TOTVL` now overrides `AddPlayer` and places each
+player at their own realm's `zone_respawns` point — the same data the death-release path already
+uses, so no coordinates were invented. Scoped to this dungeon by type: every instance zone has two
+realm respawn rows, but elsewhere they are interior respawn points rather than a split entrance,
+so applying it generally would move arrivals in dungeons that share one entrance.
+
+### Recorded, not fixed
+
+- **BUG-097** Tomb of the Vulture Lord's ten public quests all have objectives and **zero** spawn
+  rows, except one row on The Regiment of Khsar. Nine are Destruction-only, one Order, one
+  neutral. Same class and scale as the Land of the Dead gap (BUG-078); twelve official captures
+  exist to rebuild from, and that was not attempted.
+- **BUG-098** Migration 43 also sets zone 179's creature and boss ward to Greater at the user's
+  direction, mirroring The Lost Vale. A content decision, not capture-derived.
+- **BUG-099** "Monstrous Squigs" asks for 50 kills from 30 now-crediting spawn points. All nine
+  Gunbad public quests are Type 0 and serve both realms identically, so nothing is realm-specific.
+  The capture supports 10 Spikestabba object ids against our 7 rows and 10 Warchargin' against 9,
+  which would not close a 20-kill gap; whether the shortfall is spawn count, the 76-152s
+  public-quest respawn timer or the target of 50 is unresolved. No spawns invented.

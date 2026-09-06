@@ -3,6 +3,7 @@ using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldServer.Managers;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
 
@@ -372,7 +373,11 @@ namespace WorldServer.Services.World
                 return;
 
             plr._Value.ClearLockouts((int)Info.LockoutTimer);
-            Database.SaveObject(plr._Value);
+
+            // Character_value lives in the character database. ServiceBase.Database is the world
+            // database, so this used to issue "UPDATE characters_value" against war_world and fail
+            // with "Table 'war_world.characters_value' doesn't exist", losing the cleared lockouts.
+            CharMgr.Database.SaveObject(plr._Value);
         }
 
         #endregion

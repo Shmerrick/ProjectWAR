@@ -247,7 +247,7 @@ namespace WorldServer.World.Objects.Instances
 			return _BossSpawns.Count;
 		}
 
-        public void AddPlayer(Player player, Zone_jump jump)
+        public virtual void AddPlayer(Player player, Zone_jump jump)
         {
             lock (Players)
             {

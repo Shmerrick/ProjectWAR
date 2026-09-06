@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FrameWork;
 using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -98,6 +99,14 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             GameObject_proto Proto = GameObjectService.GetGameObjectProto((uint)Entry);
 
+            // Same hazard as CreateExitPortal: BuildFromProto dereferences the prototype, and this
+            // runs from script events where an exception would abort the surrounding encounter.
+            if (Proto == null)
+            {
+                Log.Error("BasicGunbad", "Gameobject prototype " + Entry + " is missing; the scripted object was not created.");
+                return;
+            }
+
             GameObject_spawn Spawn = new GameObject_spawn();
             Spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
             Spawn.BuildFromProto(Proto);
@@ -152,6 +161,17 @@ namespace WorldServer.World.Objects.Instances.Gunbad
         public void CreateExitPortal(int X, int Y, int Z, int O)
         {
             GameObject_proto Proto = GameObjectService.GetGameObjectProto(98878); // This is portal
+
+            // Every Gunbad wing boss calls this on death. GameObject_spawn.BuildFromProto
+            // dereferences the prototype, so a missing 98878 threw a NullReferenceException out
+            // of SetDeath and the boss was removed from the region mid-teardown -- observed for
+            // Wight Lord Solithex and 'Ard ta Feed. Migration 43 restores the prototype; this
+            // guard keeps a future gap costing the exit portal rather than the kill.
+            if (Proto == null)
+            {
+                Log.Error("BasicGunbad", "Exit portal prototype 98878 is missing; no portal was created after this boss died.");
+                return;
+            }
 
             GameObject_spawn Spawn = new GameObject_spawn();
             Spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();

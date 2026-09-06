@@ -295,6 +295,55 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
     class TOTVL : Instance
     {
+        /// <summary>
+        /// Places an arriving player on their own realm's side of the entrance hall.
+        ///
+        /// Tomb of the Vulture Lord is an invadable RvR dungeon: both realms enter the same copy
+        /// and can fight each other, so each has its own arrival point. `zone_jumps` has no realm
+        /// column and only one row leads here (200797160, world 352622,282163,13053), which is
+        /// the Destruction point -- about 85 units from the Destruction respawn at
+        /// 352690,282116 with the same Z, and roughly 1,373 from the Order one at 352594,280743.
+        /// Every arriving player therefore landed on the Destruction side, and an Order player
+        /// arrived among the enemy.
+        ///
+        /// The per-realm entry points already exist as this zone's `zone_respawns` rows, which
+        /// are also what the death-release path uses, so they are taken as the source of truth
+        /// rather than new coordinates being invented. This is scoped to Tomb of the Vulture Lord
+        /// by type: every instance zone has two realm respawn rows, but in the others they are
+        /// ordinary interior respawn points rather than a split entrance, so applying this
+        /// generally would move arrivals in dungeons that share one entrance.
+        /// </summary>
+        public override void AddPlayer(Player player, Zone_jump jump)
+        {
+            Zone_jump realmEntry = BuildRealmEntry(player, jump);
+            base.AddPlayer(player, realmEntry ?? jump);
+        }
+
+        private Zone_jump BuildRealmEntry(Player player, Zone_jump jump)
+        {
+            if (player == null || jump == null || jump.ZoneID != ZoneID)
+                return null;
+
+            Zone_Respawn respawn = ZoneService.GetZoneRespawn(ZoneID, (byte)player.Realm);
+            if (respawn == null || respawn.Realm != (byte)player.Realm)
+                return null;
+
+            SpawnPoint point = new SpawnPoint(respawn);
+            if (point.ZoneId != ZoneID)
+                return null;
+
+            return new Zone_jump
+            {
+                ZoneID = ZoneID,
+                WorldX = (uint)point.X,
+                WorldY = (uint)point.Y,
+                WorldZ = (ushort)point.Z,
+                WorldO = respawn.WorldO,
+                Type = jump.Type,
+                InstanceID = jump.InstanceID
+            };
+        }
+
 
         private GameObject[] _Pendulums = new GameObject[12];
         private GameObject[] _Firetrap = new GameObject[44];

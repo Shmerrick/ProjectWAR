@@ -780,6 +780,26 @@ namespace WorldServer.NetWork.Handler
 
             if (!Plr.IsInWorld()) // If the player is not on a map, then we add it to the map
             {
+                // A cross-region teleport queues the add onto the destination region, tells the
+                // client to switch region, and sets MoveBlock. RegionMgr.AddObject only enqueues,
+                // so Object.Zone -- and therefore IsInWorld() -- stays false until the region
+                // thread runs that add. The reloading client answers with F_INIT_PLAYER, and when
+                // it wins that race everything below re-places a player who is already on their
+                // way somewhere: for an instance zone the Type == 0 test fails and the code falls
+                // through to the rally-point teleport, pulling the player straight back out. That
+                // is the intermittent drop to character select.
+                //
+                // MoveBlock is set only by that teleport (Player.Teleport) and cleared only by
+                // F_DUMP_STATICS once the client has finished loading, so it marks exactly this
+                // window and is false during a genuine login. Initialise the same way the
+                // already-in-world path does and let the queued add finish on the region thread.
+                if (Plr.MoveBlock)
+                {
+                    Plr.Loaded = false;
+                    Plr.StartInit();
+                    return;
+                }
+
                 // The client re-sends F_INIT_PLAYER after the load screen that follows a
                 // cross-region teleport, not only at cold login, and IsInWorld() is false while
                 // the destination region still has the add queued. Instance.AddPlayer sets
