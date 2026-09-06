@@ -650,3 +650,46 @@ capture and in `creature_spawns`.
 - **"Hall Defenders Destroyed"**, 30 kills, is ambiguous between the Skeletal Warrior/Archer and
   Desiccated Protector/Archer pairs, both present in the Hall of the Heavens capture.
 - **"Colossus of the Vulture Lord Destroyed"** names creature 98843, which has no zone-191 spawn.
+
+## Eighth pass — Bastion Stair object gaps, and tracker hygiene
+
+`Get-DungeonReadiness.ps1` reported three Bastion Stair gaps. Migration 46 closes all three, and
+the report is now clean apart from BUG-069.
+
+**The Brass Legion's seal.** Objective 1552 "Seal Broken" places one object of prototype 100536,
+which did not exist. Its world position converts to client 40983,238162,16210, and the nearest
+static in the sixteen Bastion captures is **"Khornite Altar", DisplayID 902, at 40984,238164,16210
+— two units away**, sighted 20 times. An altar is also what a "Seal Broken" interaction in a
+Khorne dungeon should be.
+
+**Trail of Carnage's Bloodherd Champion.** Objective 1518 is a *kill* objective pointed at
+prototype 2000687, which exists in neither creature nor gameobject prototypes, and whose single
+spawn row was marked as a game object. The creature is real and already placed: 2000682
+"Bloodherd Champion^m", level 34, ten `creature_spawns` rows — and the captures sight it with
+exactly **ten distinct object ids at level 34**, so the population already matches the live server
+and only the objective's target was wrong. Re-targeted; the unresolvable game-object row removed.
+No creature added.
+
+**Twenty-four unusable rows in Thar'lgnan's map.** Zone 163 carried 24 `creature_spawns` for
+prototype 2000689, which does not exist — and which could not be placed even if it did: zone 163's
+world coordinates run 983040-1048576 and these rows sit at X≈22,523, Y≈143,338, outside the zone
+and not valid pin coordinates either since Y exceeds the 65,535 ceiling. Deleted as unusable on
+both counts rather than repaired, because nothing identifies what they were meant to be.
+
+### Not gaps after all
+
+The report's other two entries, Bastion objectives 1550 "Chorek the Unstoppable" and 1551
+"Juggernaut", each have a world spawn and a public-quest spawn already. The tool counts only
+spawns keyed to an objective's own Guid, so it flags them; with ordinary creature kills now
+crediting an attached quest they are fine. The Gunbad `pqarea060.png` and Bastion `pqarea160.png`
+overlays are both present — the "missing zone overlay" lines in regression output come from the
+test fixture's temporary directory, not from `deps/zones`.
+
+### Tracker hygiene
+
+- **BUG-086** closed as a duplicate of BUG-088: both are the Tomb of the Vulture Lord pendulum
+  NullReferenceException, fixed by migration 41 and the guarded lookups.
+- **BUG-099** closed as superseded by BUG-102. Its open question — whether the Monstrous Squig
+  shortfall was spawn count, respawn timing or the target of 50 — was answered by the ten-minute
+  dungeon respawn, now overridable per objective.
+- **BUG-085** closed by migration 46.
