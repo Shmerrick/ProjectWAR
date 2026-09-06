@@ -592,7 +592,33 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         public void createPenulums()
         {
             GameObject_proto proto;
-            GameObjectService.GameObjectProtos.TryGetValue(98908, out proto);
+
+            // These three lookups previously discarded their result, and every trap constructor
+            // dereferences proto.Name, so a missing prototype threw out of the TOTVL constructor
+            // and the instance was never added -- the portal simply did nothing. Observed in
+            // bin/Release/logs/WorldServer_2026-09-05.log at 17:52:20 and 18:00:25, a
+            // NullReferenceException in Pendulum..ctor via createPenulums, with prototypes
+            // 98908, 100489 and 100490 all absent from gameobject_protos.
+            //
+            // The traps are one encounter, so they are all-or-nothing; a partial trap hall would
+            // be worse than none. Migration 41 restores all three prototypes, and this guard
+            // keeps a future data gap from costing the whole dungeon.
+            // Resolved unconditionally so every missing prototype is named in one message.
+            GameObjectService.GameObjectProtos.TryGetValue(98908, out GameObject_proto pendulumProto);
+            GameObjectService.GameObjectProtos.TryGetValue(100489, out GameObject_proto dartProto);
+            GameObjectService.GameObjectProtos.TryGetValue(100490, out GameObject_proto fireProto);
+
+            if (pendulumProto == null || dartProto == null || fireProto == null)
+            {
+                Log.Error("TOTVL", "Tomb of the Vulture Lord traps skipped: missing gameobject prototype(s) " +
+                    (pendulumProto == null ? "98908 (Pendulum) " : "") +
+                    (dartProto == null ? "100489 (Dart Trap) " : "") +
+                    (fireProto == null ? "100490 (Fire Trap) " : "") +
+                    "- the instance still opens without them.");
+                return;
+            }
+
+            proto = pendulumProto;
 
             Firetrap ft;
             Pendulum go;

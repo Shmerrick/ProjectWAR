@@ -328,3 +328,75 @@ Land of the Dead captures. Not attempted here, and it is a substantial piece of 
 
 The flight to Land of the Dead passing through character select before loading is the existing
 BUG-059 cross-region symptom and was not investigated in this pass.
+
+## Fourth pass — dungeon entry, Sigmar Crypts and difficulty design (2026-09-05)
+
+Continues work started by another agent that ran out of budget mid-task. Its `InstanceMgr`
+change, `DUNGEON_DIFFICULTY.md`, `CREATURE_LEVEL_SCALING.md`, ward-system additions and
+`Get-DungeonReadiness.ps1` were reviewed and kept; its `Database/40_restore_sigmar_crypts_lesser_ward.sql`
+was discarded.
+
+### Gunbad boss encounters (BUG-087)
+
+None of the four could be entered, by either realm. `instance_infos` gives zones 60, 63, 64, 65
+and 66 the same `Entry` of 60 — Gunbad is the **only** dungeon in that table whose Entry spans
+more than one zone; Bastion Stair's boss maps carry distinct entries 163-166. `ZoneIn` selected a
+group instance on `Info.Entry` alone, so a Type 6 boss jump matched the zone-60 realm instance
+the player was standing in, and `Join_Instance` teleported them to the boss zone's coordinates
+inside a region containing no such zone.
+
+Selection now also requires the instance's `ZoneID` to equal the destination's and its `Realm` to
+be 0, so a realm copy can never satisfy a group jump. No data change is needed:
+`Instance.LoadBossSpawns` already filters by ZoneID, so the shared Entry is harmless once
+selection is right, and every other dungeon is one zone per Entry so nothing else changes.
+
+### Tomb of the Vulture Lord (BUG-088, migration 41)
+
+The portal reported inaccessible in the previous pass has a cause. `TOTVL.createPenulums` looked
+up gameobject prototypes 98908, 100489 and 100490 and **discarded the `TryGetValue` result**,
+and every trap constructor dereferences `proto.Name`. All three were absent, so construction
+threw out of the TOTVL constructor and the instance was never added; the log records the
+NullReferenceException at 17:52:20 and 18:00:25.
+
+The three were identified from the twelve official Tomb of the Vulture Lord captures (2,232
+`F_CREATE_STATIC` frames) by three independent routes: the only trap names present are
+**Pendulum**, **Fire Trap** and **Dart Trap**; two of their DisplayIDs are already hardcoded in
+`TOTVL.cs` and match the capture exactly (7394 and 7471); and the coordinates hardcoded in
+`createPenulums` land within **2, 7 and 5 units** of same-name sightings once the zone-179
+`OffX/OffY 72/60` and `(1,25)` atlas shift are applied. All three carry `Unk3 = 100`. The lookups
+are now checked, so a future gap costs the trap hall rather than the dungeon.
+
+### Sigmar Crypts Lesser Ward (BUG-089) — not a bug
+
+The user reported it missing and then retracted ("I don't see it in old videos"). Both are
+consistent with the data. All 143 `instance_creature_spawns` rows and all 8 boss rows in zone 176
+already carry `Ward = 1`. The ward reaches the client through `Creature.SendWardInfo` over
+`F_WARD_INFO`, and that method's own comment records the stock 1.4.8 client routing the opcode to
+its no-op dispatcher case. Creature wards are a ProjectWAR extension visible only with the
+private ward-sigil client component, so they would never appear in retail footage.
+
+The discarded migration would have set `Ward = 1` on rows in zone 176 that already had it, and on
+138 `creature_spawns` rows that are themselves partly duplicates (BUG-090). Its authority was a
+2009 blog post, which does not meet the client-and-capture standard in `CLAUDE.md`.
+
+While checking this, zone 176 turned out to double-spawn: it has `Region = 176`, so cell loading
+spawns its 138 `creature_spawns` rows alongside the 143 instance rows, with **45 exact
+Entry+WorldX+WorldY duplicates** — the same overlap migration 24 removed for Bastion Stair.
+Recorded as BUG-090 and not fixed, because which table holds the authentic population has to be
+established per row first.
+
+### Difficulty modes
+
+`DUNGEON_DIFFICULTY.md` now carries the rank-40+ rule the user specified: Hard is existing rank
++1 and existing ward tier +1, Nightmare a further +1 each. It is measured against the nine
+dungeons whose stored levels actually reach 40, and records four decisions still needed — rows
+storing level 0 or no level at all (the four Tombs) have nothing to add to and need their
+effective level resolved first; scaling must be scoped to encounter creatures rather than every
+row in a zone; a +1 ward from a stored 0 would give five currently ward-free dungeons a Lesser
+ward; and the rule needs a ceiling above Supreme. Nothing is implemented.
+
+### Validation
+
+`WorldServer.csproj` compiles clean with no CS warnings; the full solution build could not run
+because the running server stack held `bin/Release`. Migration 41 applied and re-applied against the
+configured Release database; base dumps untouched. No server started, no in-client test.

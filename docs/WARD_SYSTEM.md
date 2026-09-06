@@ -158,6 +158,30 @@ WAR changed wards during its lifetime. Earlier descriptions used armor-piece bon
 
 ## Creature Ward Representation
 
+### Skull count means recommended party count
+
+The extracted 1.4.8 client explicitly explains skulls in
+`C:/Users/Admin/Downloads/myps/data/strings/english/helptipdesc.txt`, entry 73 (line 74):
+"The number of skulls indicate the number of parties that should be used to kill that monster."
+Thus one through four skulls communicate a recommendation of one through four parties.
+The same extracted client's `data/strings/english/interface/tutorialstrings.txt:55`, key
+`GROUPING_2_LABEL2`, states that a group holds up to six players, giving full-group sizes
+of 6, 12, 18 and 24 respectively. These are recommendations, not enforced minimums.
+The preceding sentences distinguish monsters of the same level by difficulty. This is an
+encounter-size recommendation, not evidence of a fixed per-skull damage or health multiplier.
+
+The display uses `TargetInfo:UnitDifficultyMask` in extracted
+`interface/default/eatemplate_unitframes/source/targetunitframe.lua:384-398`, with anchors
+named `ThreatLevel1` through `ThreatLevel4`; `data/gamedata/monsterdifficultymask.csv:2-5`
+maps 1001–1004 to 1–4 skulls. Rank and sigil are read separately in that Lua file.
+
+ProjectWAR currently does not apply a combat multiplier from this field. That implementation
+fact must not be presented as evidence that official skull ratings had no gameplay meaning.
+How Mythic budgeted stats and mechanics for each recommended party count remains unresolved;
+no formula was located in this investigation (2026-09-05). Web searches and targeted toolkit
+findings/schema searches did not establish one. Do not infer linear health or damage scaling
+from the party-count recommendation.
+
 The ward tier is stored on each concrete world, instance, boss, or public-quest spawn. Values 0 through 5 map to no ward, Lesser, Greater, Superior, Excelsior, and Supreme. Prototypes are reused at different levels, ranks, locations, and ward tiers, so `creature_protos` cannot authoritatively own this state.
 
 Ward must not be encoded in `F_CREATE_MONSTER` offset 35. Although an old WAR-RE-Toolkit serializer labels that field `Monster.Wards`, the extracted 1.4.8 client table `monsterdifficultymask.csv` defines values `1001` through `1004` as one through four difficulty skulls. In-client testing independently confirmed that sending `1002` displays two skulls. ProjectWAR therefore serializes the prototype's unchanged `Unk2` value as the difficulty mask and keeps the spawn ward separate for combat.

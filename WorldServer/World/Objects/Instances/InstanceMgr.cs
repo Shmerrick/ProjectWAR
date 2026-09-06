@@ -103,7 +103,7 @@ namespace WorldServer.World.Objects.Instances
             {
                 foreach (KeyValuePair<ushort, Instance> ii in _instances)
                 {
-                    if (ii.Value.Info.Entry == II.Entry)
+                    if (IsGroupInstanceCandidate(ii.Value, II))
                     {
                         // solo
                         if (player.PriorityGroup == null)
@@ -115,8 +115,7 @@ namespace WorldServer.World.Objects.Instances
                             }
                             else // create new instance if not
                             {
-                                instanceid = 0; // create new instance
-                                break;
+                                continue; // Another copy may contain this player.
                             }
                         else // group
                         {
@@ -131,8 +130,7 @@ namespace WorldServer.World.Objects.Instances
                                 }
                                 else // create new instance if not
                                 {
-                                    instanceid = 0; // create new instance
-                                    break;
+                                    continue; // Keep looking for the leader's copy.
                                 }
                             }
                             else
@@ -181,6 +179,15 @@ namespace WorldServer.World.Objects.Instances
 
 			return true;
 		}
+
+        internal static bool IsGroupInstanceCandidate(Instance instance, Instance_Info destination)
+        {
+            // Gunbad's cave and boss maps share Entry 60. Entry alone can select the
+            // realm cave for a group boss portal, whose destination is outside that region.
+            return instance != null && destination != null && instance.Realm == 0
+                && instance.ZoneID == destination.ZoneID
+                && instance.Info != null && instance.Info.Entry == destination.Entry;
+        }
 
 		private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
 		{

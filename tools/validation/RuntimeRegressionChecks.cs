@@ -53,6 +53,7 @@ internal static class RuntimeRegressionChecks
             CheckDungeonPackets();
             CheckDeferredPublicQuestStart();
             CheckDungeonRecoveryAndLockouts();
+            CheckGroupInstanceSelection();
             CheckEmptyBossBonusCleanup();
             Console.WriteLine("PASS: terrain/overlays, region snapshots, influence, PQ state, dungeon recovery/lockouts, instance packets and bonus cleanup.");
         }
@@ -61,6 +62,32 @@ internal static class RuntimeRegressionChecks
             // Delete only this invocation's uniquely named fixture directory.
             Directory.Delete(root, true);
         }
+    }
+
+    private static void CheckGroupInstanceSelection()
+    {
+        var select = typeof(InstanceMgr).GetMethod("IsGroupInstanceCandidate", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert(select != null, "Group instance destination filter exists");
+        var cave = (Instance)FormatterServices.GetUninitializedObject(typeof(Instance));
+        cave.Info = new Instance_Info { Entry = 60, ZoneID = 60 };
+        cave.ZoneID = 60;
+        typeof(Instance).GetField("Realm").SetValue(cave, (byte)1);
+        foreach (ushort zone in new ushort[] { 63, 64, 65, 66 })
+        {
+            var destination = new Instance_Info { Entry = 60, ZoneID = zone };
+            Assert(!(bool)select.Invoke(null, new object[] { cave, destination }), "Boss portal rejects realm cave");
+            var boss = (Instance)FormatterServices.GetUninitializedObject(typeof(Instance));
+            boss.Info = destination;
+            boss.ZoneID = zone;
+            Assert((bool)select.Invoke(null, new object[] { boss, destination }), "Boss portal accepts matching group map");
+            foreach (ushort other in new ushort[] { 63, 64, 65, 66 })
+                if (other != zone)
+                    Assert(!(bool)select.Invoke(null, new object[] { boss, new Instance_Info { Entry = 60, ZoneID = other } }),
+                        "Boss portal rejects another wing sharing the dungeon entry");
+            typeof(Instance).GetField("Realm").SetValue(boss, (byte)2);
+            Assert(!(bool)select.Invoke(null, new object[] { boss, destination }), "Group portal rejects a realm copy even on the same map");
+        }
+        Assert(!(bool)select.Invoke(null, new object[] { null, cave.Info }), "Null instance rejected");
     }
 
     private static void Assert(bool condition, string message)

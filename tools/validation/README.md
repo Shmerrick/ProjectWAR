@@ -1,5 +1,17 @@
 # Validation tools
 
+For the normal Gunbad/Bastion completion gate and planned custom difficulty work:
+
+```powershell
+./tools/validation/Get-DungeonReadiness.ps1 | ConvertTo-Json -Depth 5
+```
+
+This SELECT-only Release audit reports PQ coverage, missing prototypes, unattached/cross-zone
+spawns, objectives without their own spawns, instance exits and stored level/ward ranges across
+both dungeons and their boss maps. Ranges include friendly and utility NPCs; they are not
+authoritative difficulty baselines. Empty objectives may have scripted sources. See
+[difficulty requirements and retest gate](../../docs/DUNGEON_DIFFICULTY.md).
+
 Build the Release/x64 solution before running:
 
 ```powershell

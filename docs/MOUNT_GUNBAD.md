@@ -1,5 +1,9 @@
 # Mount Gunbad (1.4.8 Restoration Target)
 
+For the current completion gate, Release data audit and the user's planned Hard/Nightmare
+extensions, see [Dungeon difficulty work](DUNGEON_DIFFICULTY.md). The custom modes are not
+implemented; normal Gunbad still needs a complete client retest and the evidence gaps below.
+
 What the live server's Mount Gunbad looked like, measured from the official capture, and what
 this branch had instead. Written 2026-09-05.
 
