@@ -699,20 +699,20 @@ test fixture's temporary directory, not from `deps/zones`.
 The systemic missing-prototype problem, named as the top gate on making RESTART the default
 branch. **2,771 affected rows down to 588, a 79% reduction**, in two steps.
 
-### Step 1: 1,841 rows were never usable (migration 47)
+### Step 1: 1,842 rows cannot resolve, and are archived (migration 47)
 
 Every affected row is in a Type-0 zone, so its stored world coordinates are the capture's
 coordinates directly and no atlas shift is involved. Grouping them by the *objective* they belong
-to showed that 1,841 of the 2,771 sit on **kill** objectives, where a game object could not
+to showed that 1,842 of the 2,771 sit on **kill** objectives, where a game object could not
 satisfy the objective even if its prototype existed.
 
 Barony of Nordland alone accounts for 1,504 of them, and its shape is unambiguous:
 
 ```
-objective  762 "Norse Plunderer"     kill 8, creature 3551 -- 8 Type-1 spawns, plus 402 junk rows
-objective  764 "Hralgar the Kraken"  kill 1, creature 3548 -- 1 Type-1 spawn,  plus 734 junk rows
+objective  762 "Norse Plunderer"     kill 8, creature 3551 -- 8 Type-1 spawns, plus 402 unresolvable
+objective  764 "Hralgar the Kraken"  kill 1, creature 3548 -- 1 Type-1 spawn,  plus 734 unresolvable
 objective 1197 "Seeker Cultist"      kill 6, creature  535 -- 6 Type-1 spawns, plus  53 junk rows
-objective 1198 "Baruun the Seeker"   kill 1, creature  538 -- 1 Type-1 spawn,  plus 315 junk rows
+objective 1198 "Baruun the Seeker"   kill 1, creature  538 -- 1 Type-1 spawn,  plus 315 unresolvable
 ```
 
 Each objective's Type-1 creature spawn count already equals its kill target exactly, so the quest
@@ -747,3 +747,42 @@ Nine candidates were **rejected rather than restored**, and stay open:
 quests have no capture named for them, plus the nine rejected above. The technique is now
 mechanical and the tooling is in the scratchpad, so the remainder is a matter of widening the
 capture-to-quest name matching rather than new analysis.
+
+## Tenth pass — correcting migration 47
+
+The user challenged the word "junk" used above, and the challenge was justified. Two things were
+wrong.
+
+**The deletion.** The first revision of migration 47 removed the 1,842 rows outright. Rows that
+cannot be reconstructed from anywhere but the base dump should not be deleted on a "they do
+nothing" argument, because doing nothing at runtime is not the same as carrying no information.
+Migration 47 now moves them into `pquest_spawns_unresolved`, and migration 49 restores the archive
+verbatim from the untouched dump for databases where the deleting revision already ran. Both
+applied twice to the local Release database: archive 1,842 rows, nothing leaked back into the live
+table, no kill objective left empty.
+
+**The "debris on top" justification.** It was measured and it is false. Distance from each of the
+1,842 rows to the nearest surviving Type-1 row of the *same objective*:
+
+```
+within 50 units      34
+50 - 300 units      168
+over 300 units    1,640
+```
+
+They are distinct placements, not copies. That is precisely why they are worth keeping: a zone
+plus a position is what identified 39 other prototypes against the captures in migrations 38, 41,
+43, 46 and 48, and the same method can be pointed at these later.
+
+**What survives the correction.** The rows still cannot resolve — `PQuestObjective.Reset` logs the
+missing prototype and `continue`s — and a Type-2 row cannot credit a kill objective, since credit
+comes from `ObjectId..ObjectId6`. Of the 1,842, 1,676 name an Entry present in neither prototype
+table and 166 name a real `creature_protos` Entry; **none** of those 166 is the Entry its own
+objective asks the player to kill, and the same handful (2000489 Lord Xyshrenth, 15 The Eidolon,
+505 Belchgut^M, 547 Felde Refugee) recur across dozens of unrelated objectives in every pairing,
+so retyping them to Type 1 would place the wrong creature. Removing them from the live table is
+still the right call; destroying them was not.
+
+Audit method, reusable: `Database/war_world.7z` extracted to the scratchpad, its `pquest_spawns`
+table (29,437 rows) loaded into a throwaway `war_world_audit` schema, and the live table compared
+against it. No live data was written during the audit.
