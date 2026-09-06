@@ -45,6 +45,18 @@ namespace WorldServer.World.Objects.PublicQuests
         protected override void SetRespawnTimer()
         {
             int baseRespawn = 0;
+
+            // A per-objective override, in seconds. The dungeon default below is a flat ten
+            // minutes, which an objective cannot meet when its kill target exceeds its spawn
+            // count -- The Squig Nursery asks for 50 Monstrous Squigs from 30 spawn points, so at
+            // the default a full clear yields 30 kills and then stalls for ten minutes.
+            uint overrideSeconds = _objective?.Objective?.RespawnSeconds ?? 0;
+            if (overrideSeconds > 0)
+            {
+                EvtInterface.AddEvent(RezUnit, (int)overrideSeconds * 1000, 1);
+                return;
+            }
+
             if (_publicQuest.IsDungeon())
             {
                 baseRespawn = 60 * 10 * 1000; // 10 minutes

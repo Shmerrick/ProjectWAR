@@ -62,6 +62,16 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public byte NoRespawn { get; set; }
 
+        /// <summary>
+        /// Respawn delay in seconds for the creatures this objective spawns, overriding the
+        /// default timer in <see cref="PQuestCreature.SetRespawnTimer"/>. Zero keeps the default,
+        /// which is ten minutes flat inside a dungeon and a level- and rank-scaled value outside
+        /// one. Set it where an objective's kill target needs a faster cycle than its spawn count
+        /// can otherwise sustain.
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public uint RespawnSeconds { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint SoundId { get; set; }
 

@@ -550,3 +550,57 @@ so applying it generally would move arrivals in dungeons that share one entrance
   The capture supports 10 Spikestabba object ids against our 7 rows and 10 Warchargin' against 9,
   which would not close a 20-kill gap; whether the shortfall is spawn count, the 76-152s
   public-quest respawn timer or the target of 50 is unresolved. No spawns invented.
+
+## Sixth pass — Tomb of the Vulture Lord quests, ward evidence, squig respawn
+
+### Tomb of the Vulture Lord public quests (BUG-097, BUG-100, BUG-101)
+
+The previous pass recorded this as a Land of the Dead-style data gap — ten quests with objectives
+and no `pquest_spawns` rows — and expected a large rebuild from the twelve official captures.
+**That diagnosis was wrong**, and measuring it before writing any data is what caught it.
+
+Reconstructing the spawn sets from the captures produced 68 points, and comparing them against the
+database showed the population is already there: every creature the objectives name has
+`instance_creature_spawns` and `creature_spawns` rows in zone 179, in counts closely matching the
+capture — Eternal Vanguard 14 rows against 15 distinct object ids, Immortal Occultist 2 against 2,
+Leviathan Observer 6 against 10, Champion of Ualatp 10 against 14. Writing the reconstructed rows
+would have **doubled** a population that is already correct, so they were discarded.
+
+The real fault is that `PQuestCreature` was the only class that reported a kill to a public quest.
+Tomb of the Vulture Lord is built the other way round from Mount Gunbad: its objectives name the
+ordinary dungeon population rather than quest-spawned copies, so nothing could ever advance.
+`Creature` now reports its death to the killer's attached public quest when the quest's zone
+matches, excluding `PQuestCreature` so its own kills are not double-counted, and splitting
+contribution across damage sources by damage share and rank exactly as `PQuestCreature` does.
+
+Three objectives also named no creature at all. All three resolve from the captures, and every
+entry already has spawns in zone 179 — so only the objective-to-creature link was added, never a
+creature:
+
+| Objective | Resolved to | Evidence |
+|---|---|---|
+| 2483 Anointing Embalmers Destroyed | 93901 Anointing Embalmer | exact name match; 10 object ids, 10 instance spawns |
+| 2484 High Priest Herakh Defeated | 93834 High Priest Herakh | the two identically named objectives on other quests already name it |
+| 2495 / 10052 Skeletal Soldiers Destroyed | the six Khsar creatures | the capture holds exactly six; 98 world spawns against a 27-kill target |
+
+After migration 44 every Tomb of the Vulture Lord kill objective names creatures that exist in
+zone 179.
+
+### The Greater ward (BUG-098) — correction
+
+An earlier entry called this an unevidenced content decision. That was wrong and is withdrawn.
+The requirement is established by the user from recorded footage of the live game, and
+corroborated by the dungeon's reward tier: Tomb of the Vulture Lord awards Warlord gear, which
+sits at the Greater ward step. Migration 43's zone-179 Greater ward stands on that.
+
+### Monstrous Squig respawn (BUG-102, supersedes BUG-099)
+
+The earlier estimate of a 76-152 second respawn was wrong: `PQuestCreature.SetRespawnTimer` takes
+its `IsDungeon()` branch for zone 60 and returns a flat **ten minutes**. With 50 kills wanted from
+30 spawn points, a full clear yields 30 and then stalls — which is exactly the reported symptom,
+and it was never realm-specific.
+
+`pquest_objectives.RespawnSeconds` now overrides the timer per objective, defaulting to 0 so
+everything else keeps its current behaviour. Migration 44 adds the column and sets **15 seconds**
+for Monstrous Squigs and the squigs spawned alongside it, at the user's direction. The column add
+is guarded through `information_schema` because MySQL 8 has no `ADD COLUMN IF NOT EXISTS`.

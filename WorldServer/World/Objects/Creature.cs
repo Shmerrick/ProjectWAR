@@ -13,6 +13,7 @@ using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
 using WorldServer.World.Interfaces;
+using WorldServer.World.Objects.PublicQuests;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -1180,6 +1181,60 @@ namespace WorldServer.World.Objects
             }
 
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
+
+            CreditPublicQuestKill();
+        }
+
+        /// <summary>
+        /// Reports this creature's death to any public quest whose active stage names its
+        /// prototype, for creatures the quest did not spawn itself.
+        ///
+        /// PQuestCreature reports its own kills, and until now it was the only class that did, so
+        /// a public quest whose objectives name the ordinary dungeon population could never
+        /// advance. Tomb of the Vulture Lord is built that way throughout: every creature its
+        /// objectives ask for -- Eternal Vanguard, Champion of Ualatp, Leviathan Observer, the six
+        /// Khsar types and the rest -- already exists in instance_creature_spawns and
+        /// creature_spawns, in counts matching the official captures, with no pquest_spawns rows
+        /// at all. Supplying them as PQuestCreatures instead would double a population that is
+        /// already correct.
+        ///
+        /// PQuestCreature instances are excluded so their kills are not counted twice.
+        /// Contribution mirrors PQuestCreature.HandleDeathRewards: shared across damage sources
+        /// by their share of the damage, scaled by rank.
+        /// </summary>
+        private void CreditPublicQuestKill()
+        {
+            if (this is PQuestCreature || Spawn == null || TotalDamageTaken == 0)
+                return;
+
+            int rankMod;
+            switch (Rank)
+            {
+                case 1: rankMod = 4; break;
+                case 2: rankMod = 20; break;
+                default: rankMod = 1; break;
+            }
+
+            bool credited = false;
+
+            foreach (KeyValuePair<Player, uint> source in DamageSources)
+            {
+                Player player = source.Key;
+                if (player == null || player.IsDisposed)
+                    continue;
+
+                PublicQuest quest = player.QtsInterface.PublicQuest;
+                if (quest == null || quest.Info == null || quest.Info.ZoneId != Spawn.ZoneId)
+                    continue;
+
+                float damageFactor = (float)source.Value / TotalDamageTaken;
+
+                // Only the first contributor increments the objective; the rest take their share
+                // of the contribution, exactly as PQuestCreature does for its own kills.
+                quest.HandleEvent(player, Objective_Type.QUEST_KILL_MOB, Spawn.Entry, credited ? 0 : 1,
+                    (ushort)(100 * damageFactor * rankMod));
+                credited = true;
+            }
         }
 
         public override void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)
