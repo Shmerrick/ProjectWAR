@@ -164,3 +164,16 @@ respawns even where an objective has fewer spawn points than its target count.
   and look like Return of Reckoning additions. They were not removed — that is a content
   decision, not a level correction.
 - BUG-058's painted-area work (Gunbad's eight pieces resolving one area row) is unchanged.
+- **BUG-073.** Portal jump id 629156888, reported as refusing entry, has no `zone_jumps` row and
+  appears in none of the 88 distinct client jump ids across the capture set. `F_ZONEJUMP` now logs
+  the zone and pin coordinates of an unknown id, so the next report locates the portal instead of
+  inviting a guessed destination row.
+- **Monstrous Squig respawn.** Objective Guid 2301 carries `RespawnSeconds` 15 (migration 44),
+  honoured by `PQuestCreature.SetRespawnTimer` ahead of the flat 10-minute dungeon default. This
+  was set at the user's direction and is not capture-derived. It covers all three creature types
+  the objective names -- Spikestabba (38631), Warchargin' (38629) and Deathspewin' (38630) Squig,
+  30 spawn rows -- which is the reading of "its add group mobs" the objective itself supports.
+  **Open question for the user:** the same stage's objective 2302 "Swarmin' Lit'l Squig" (38628,
+  35 kills, 71 spawns) was left at the flat 10-minute dungeon default. If the intent was the whole
+  squig encounter rather than the Monstrous Squigs objective, 2302 needs the same 15 seconds; it
+  was not changed because that is a difficulty decision, not a correction.

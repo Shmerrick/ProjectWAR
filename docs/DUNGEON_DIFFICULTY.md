@@ -127,19 +127,29 @@ Use this as an end-to-end retest record; passing automated checks does not tick 
 
 ## Current Release audit
 
-`tools/validation/Get-DungeonReadiness.ps1` was executed against the configured Release world
-database on 2026-09-05, starting from commit f6f022c3. It changes no data.
+`tools/validation/Get-DungeonReadiness.ps1` was re-run against the configured Release world
+database on 2026-09-05 at commit cd438227, with migrations 34-49 applied. It changes no data.
 
-- All nine Gunbad PQs have objectives and spawn rows. All nonzero-type Gunbad objectives
-  have their own spawn rows; this does not establish playable stage progression.
-- Gunbad still has 24 missing creature rows for prototype 387121. The repaired Nursery
-  object prototypes are no longer missing. One zone-60 spawn belongs to a zone-103 PQ.
-- Bastion has missing PQ objects 2000687 and 100536, one row each, and 24 zone-163 world
-  creatures with missing prototypes. Arena Challenges (501) has no objectives/spawns.
-  These require investigation, including whether particular rows are inactive metadata.
-- All ten Gunbad/Bastion instance-info rows have empty exit jump fields.
-- All audited creature spawn ward values are zero. No Hard ward assignments were made.
+- All nine Gunbad PQs have objectives and spawn rows, and every nonzero-type Gunbad objective
+  has its own spawn rows. That is data completeness, not proof of playable stage progression.
+- One missing PQ prototype is left in Gunbad: 387121, 24 rows on objective 2293 (BUG-069).
+  It is not one of that objective's credited targets, so it does not gate completion.
+- The Bastion gaps this section previously listed are closed by migration 46: PQ object
+  100536 is the Khornite Altar, objective 1518 was re-targeted to creature 2000682, and the
+  24 zone-163 rows for the non-existent prototype 2000689 were removed. Arena Challenges
+  (501) still has no objectives or spawns.
+- Two Bastion objectives have no spawn rows of their own -- 1550 Chorek the Unstoppable and
+  1551 Juggernaut, both single-kill. Their targets (49164, 8530) exist; whether these are
+  scripted adds is not established, so nothing was changed.
+- All ten Gunbad/Bastion instance-info rows still have empty exit jump fields.
+- Ward assignment now stands at Lesser (1) on all four city dungeons and Greater (2) on the
+  two Warlord-tier ones, verified against the database: Bloodwrought Enclave (195) and Bilerot
+  Burrow (196) from migration 18; Sigmar Crypts (176) already carried Lesser and was the parity
+  reference for migration 42, which gave Warpblade Tunnels (154, 177) the same; The Lost Vale
+  (260) from migration 18 and Tomb of the Vulture Lord (179) from migration 43, the latter by
+  the user's direction rather than capture evidence. Gunbad and Bastion Stair remain unwarded,
+  which is correct for their tier. **No Hard or Nightmare assignment has been made anywhere.**
 
-Runtime regressions and the existing SELECT-only PQ construction checks passed against the
-current binaries. The latter covers Holmsteinn and Destruction of the Weak, not Gunbad.
-No server was started, no game test performed, and no SQL or runtime gameplay code changed.
+Runtime regressions, the SELECT-only PQ construction checks and the read-only world data
+health audit all pass against the current binaries. No server was started and no in-client
+test was performed.

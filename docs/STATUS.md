@@ -2,11 +2,40 @@
 
 ProjectWAR is a C# private server emulator for Warhammer Online: Age of Reckoning. It targets .NET 4.8, x64. The solution is `ProjectWAR.sln`.
 
-## Latest stabilization (2026-09-05)
+## Current state (2026-09-05, after cd438227)
 
-Current handoff: [commit summary and latest retest](handoffs/2026-09-05-commit-handoff.md).
+Current handoff: [Gunbad, Land of the Dead and public quests](handoffs/2026-09-05-gunbad-and-lotd.md).
+It supersedes the three earlier 2026-09-05 handoffs for anything it covers.
+
+Solution builds clean at Release x64 with **zero warnings**. `tools/validation/`
+`Test-RuntimeRegressions.ps1`, `Test-PublicQuestData.ps1`, `Get-DungeonReadiness.ps1` and
+`Get-WorldDataHealth.ps1` all pass against the configured Release database. Migrations 34-49
+are applied locally, each twice to prove idempotency.
+
+What this session changed, in one list:
+
+- **Mount Gunbad** — RoR level edits reverted to the packet-capture levels (migration 36),
+  PQ objective/entry columns un-transposed, boss maps enterable, wing-boss death crash fixed.
+- **Land of the Dead** — travel restored (`PAIRING_LAND_OF_THE_DEAD` 4 -> 100; the client
+  discards any pairing that is neither 1-3 nor >= 100), tracker UI shown to every player,
+  access model corrected to holder-keeps-until-beaten, warcamp taxis unswapped, 30 kill
+  objectives mapped to their creatures (migration 45).
+- **Public quests** — ordinary creature kills now credit an attached public quest, which is
+  what made Tomb of the Vulture Lord and most Land of the Dead quests advance at all; a
+  per-objective `RespawnSeconds` override; 35 object prototypes recovered from captures.
+- **Dungeons** — Tomb of the Vulture Lord entry crash and per-realm arrival, Bastion Stair
+  Chaos Wastes entrance (BUG-062), the character-select drop (BUG-094), `_maxplayers` shared
+  state (BUG-080), and `characters_value` being written to the world database.
+
+**None of it has been verified in-client since the last round of fixes.** That, not the
+remaining data gaps, is the largest blocker to `RESTART` replacing `master`. Items explicitly
+waiting on a client test are marked "client retest pending" in the bug tracker.
+
+### Preceding stabilization (2026-09-05)
+
+Historical, kept for its evidence. Handoff: [commit summary and latest retest](handoffs/2026-09-05-commit-handoff.md).
 User reports PQs seem fixed, but the Destruction entrance from Chaos Wastes to Bastion
-Stair now lands incorrectly (BUG-062). This entrance regression is unresolved. The blue-orb
+Stair now lands incorrectly (BUG-062) — since fixed, see the current handoff. The blue-orb
 explanation has been retracted (BUG-063); its identity is unverified. This is a partial
 stabilization delivery, not a declaration that the dungeon backlog is fixed.
 

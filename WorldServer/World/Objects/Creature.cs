@@ -1661,10 +1661,13 @@ namespace WorldServer.World.Objects
                 Out.WriteByte((byte)taxi.Info.Pairing);
                 Out.WriteUInt16(taxi.Info.Price);
                 Out.WriteUInt16(taxi.Info.ZoneId);
-                // flightData.zoneAvailable. Official capture
-                // MECHANIC_orderflymaster_NecropoleOFZandri(LoD) #9 lists 28 destinations as
-                // [id:2][pairing:1][price:2][zone:2][available:1], its last entry being
-                // 003D 64 0BB8 00BF 01 -- zone 191, pairing 100, price 3000, available.
+                // Trailing byte of the 8-byte flight record. Its meaning is NOT confirmed: a sweep
+                // of the whole capture set found ~100 zone-191 records, Order and Destruction
+                // alike, all byte-identical as 00 44 64 0B B8 00 BF 01 -- the byte is 01 in every
+                // one, so retail never sent a 0 here and this cannot be shown to be the flag that
+                // greys the destination out. Writing 0 for an unavailable destination is a
+                // deliberate, unverified deviation (BUG-105); gating does not depend on it,
+                // because F_FLIGHT re-checks IsTaxiAvailable before moving anyone.
                 Out.WriteByte(LotdService.IsTaxiAvailable(player, taxi) ? (byte)1 : (byte)0);
                 ++counts;
             }

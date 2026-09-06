@@ -244,6 +244,22 @@ Abilities 12958-12967 establish the ward counters/effects, while completed sigil
 
 New spawn columns default to no ward. Populate them only when evidence identifies the concrete encounter or location; do not infer a tier merely from rank, level, or name. `Database/18_restore_endgame_dungeon_ward_tiers.sql` assigns Lesser Ward to the Destruction city dungeons (Bloodwrought Enclave and Bilerot Burrow) and Greater Ward to The Lost Vale. `Instance_Info.WardsNeeded` remains unverified and is not used as a creature tier.
 
+Coverage as verified against the configured Release database on 2026-09-05 (`instance_creature_spawns` and `instance_boss_spawns`, uniform per zone):
+
+| Zone | Dungeon | Tier | Source |
+|---:|---|---|---|
+| 176 | Sigmar Crypts | Lesser (1) | pre-existing; the parity reference for migration 42 |
+| 154, 177 | Warpblade Tunnels 1 and 2 | Lesser (1) | migration 42 |
+| 195 | Bloodwrought Enclave | Lesser (1) | migration 18 |
+| 196 | Bilerot Burrow | Lesser (1) | migration 18 |
+| 260 | The Lost Vale | Greater (2) | migration 18 |
+| 179 | Tomb of the Vulture Lord | Greater (2) | migration 43, by the user's direction (Warlord-tier rewards), not capture-derived |
+
+Both realms' city dungeons therefore carry Lesser Ward. Mount Gunbad and Bastion Stair are
+deliberately unwarded. The world `creature_spawns` rows for these zones are left alone; the
+Destruction pair were never uniformly warded there either, so instance rows are the tier of
+record.
+
 The official packet corpus remains useful for reconstructing spawn identity, position, rank, and difficulty. It is not a creature-ward assignment source because the 1.4.8 spawn field previously treated as ward is the independent difficulty mask.
 
 ## Evidence
