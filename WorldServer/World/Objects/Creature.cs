@@ -1151,6 +1151,9 @@ namespace WorldServer.World.Objects
 
         protected void CreditQuestKill(Player killer)
         {
+            // Tome classification is optional; PQ targets need no CreatureSubType.
+            CreditPublicQuestKill();
+
             byte subtype = Spawn.Proto.CreatureSubType;
 
             if (subtype == 0)
@@ -1181,8 +1184,6 @@ namespace WorldServer.World.Objects
             }
 
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
-
-            CreditPublicQuestKill();
         }
 
         /// <summary>
@@ -1215,7 +1216,7 @@ namespace WorldServer.World.Objects
                 default: rankMod = 1; break;
             }
 
-            bool credited = false;
+            HashSet<PublicQuest> creditedQuests = null;
 
             foreach (KeyValuePair<Player, uint> source in DamageSources)
             {
@@ -1229,11 +1230,12 @@ namespace WorldServer.World.Objects
 
                 float damageFactor = (float)source.Value / TotalDamageTaken;
 
-                // Only the first contributor increments the objective; the rest take their share
-                // of the contribution, exactly as PQuestCreature does for its own kills.
-                quest.HandleEvent(player, Objective_Type.QUEST_KILL_MOB, Spawn.Entry, credited ? 0 : 1,
+                // Bound to this death's finite contributor set. Allocate only for an attached
+                // quest, and count once per quest instance (realm copies are independent).
+                if (creditedQuests == null)
+                    creditedQuests = new HashSet<PublicQuest>();
+                quest.HandleEvent(player, Objective_Type.QUEST_KILL_MOB, Spawn.Entry, creditedQuests.Add(quest) ? 1 : 0,
                     (ushort)(100 * damageFactor * rankMod));
-                credited = true;
             }
         }
 

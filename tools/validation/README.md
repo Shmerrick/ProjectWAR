@@ -73,3 +73,21 @@ the script never changes them. Source details and current measurements are in
 
 Passing these tools is not an end-to-end game test. After migrations/build changes, use
 ServerLauncher to start the stack and retest the affected gameplay in the client.
+
+The September 6 review adds ordinary-creature PQ checks to the runtime suite: subtype-zero
+targets, multiple contributors to one quest, independent realm quests, unmatched/cross-zone
+quests, zero damage and exclusion of PQ-owned creatures. Lockout fixtures now use Gunbad
+boss-map destinations 63-66 with shared InstanceID 60, matching the Release zone_jumps rows.
+
+After applying `Database/51_archive_deleted_bastion_creature_placements.sql`, run:
+
+```powershell
+./tools/validation/Test-ArchiveRecovery.ps1
+```
+
+This SELECT-only check verifies all 15 original columns of the 24 archived creature records,
+their absence from the live spawn table, and the archive schema. It exercises migration 47's
+corrected empty-objective count with derived-table fixtures containing an affected empty
+objective, an affected populated objective and an unrelated empty objective. The archival
+source is the untouched `Database/war_world.7z` creature_spawns records, reproduced in migration
+51; these are preserved emulator data, not newly established retail placements.

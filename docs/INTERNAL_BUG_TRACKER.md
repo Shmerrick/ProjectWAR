@@ -2,6 +2,19 @@
 
 This document tracks internal bugs, regression, and known issues within the ProjectWAR emulator.
 
+## September 6 review corrections
+
+Evidence and validation: [review-fix handoff](handoffs/2026-09-06-review-fixes.md).
+These corrections qualify BUG-055 and BUG-100's earlier delivery status.
+
+| ID | Finding and correction | Status |
+|:---|:---|:---|
+| BUG-106 | Ordinary-creature PQ credit ran after the Tome subtype-zero return. Release targets 2000682 and 94104 were skipped. `Creature.CreditQuestKill` now credits PQs before that guard. | Fixed; runtime regression passed, client retest pending |
+| BUG-107 | Gunbad entry restored lockouts by shared InstanceID 60 although `Instance.ApplyLockout` saves boss maps 63-66. `InstanceMgr.ResolveCharacterLockout` now derives the key from the destination jump's ZoneID. | Fixed; runtime regression passed, live re-entry retest pending |
+| BUG-108 | Migration 46 deleted 24 unresolved creature placements without preservation. Migration 51 archives the verbatim base-dump creature_spawns GUIDs 1081553-1081576 (all disabled) in creature_spawns_unresolved. Their retail identities/coordinates remain unresolved and no live placements were restored. | Data recovered and verified; identity/placement evidence gap remains open |
+| BUG-109 | One shared kill-credit flag suppressed other attached quest instances, including separate realm quests. `Creature.CreditPublicQuestKill` now deduplicates per quest instance within the contributor set. | Fixed; runtime regression passed, client retest pending |
+| BUG-110 | Migration 47's INNER JOIN followed by COUNT(*)=0 always reported no emptied objectives. Its SELECT now checks archived objectives with NOT EXISTS live spawns; migration 51 delivers the audit to existing installations too. | Fixed; negative SQL fixture and Release audit passed |
+
 ## Active Bugs
 
 | ID | Summary | Description | Status | Priority | Reported |

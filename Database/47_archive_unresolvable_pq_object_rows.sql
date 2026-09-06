@@ -1,6 +1,6 @@
 -- 47_archive_unresolvable_pq_object_rows.sql
 --
--- (Filename kept at its original number for series continuity; the script no longer deletes.)
+-- (Number retained for series continuity; removed live rows are preserved in an archive.)
 --
 -- Moves public-quest game-object spawn rows that cannot resolve at runtime out of
 -- `pquest_spawns` and into an archive table, so the server stops logging them every reset while
@@ -65,7 +65,7 @@ DELETE s
 --   pq_object_rows_missing_prototype  -- what remains of BUG-072, all on interaction objectives
 --   on_kill_objectives                -- must be 0
 --   archived_rows                     -- must equal what was moved; nothing is lost
---   kill_objectives_left_empty        -- must be 0
+--   kill_objectives_left_empty        -- investigate nonzero; world/script spawns may serve them
 SELECT
     (SELECT COUNT(*) FROM pquest_spawns s LEFT JOIN gameobject_protos g ON g.Entry = s.Entry
       WHERE s.Type = 2 AND g.Entry IS NULL)                                        AS pq_object_rows_missing_prototype,
@@ -74,12 +74,10 @@ SELECT
        LEFT JOIN gameobject_protos g ON g.Entry = s.Entry
       WHERE s.Type = 2 AND g.Entry IS NULL AND o.Type = 2)                         AS on_kill_objectives,
     (SELECT COUNT(*) FROM pquest_spawns_unresolved)                                AS archived_rows,
-    (SELECT COUNT(*) FROM (
-        SELECT o.Guid FROM pquest_objectives o
-          JOIN pquest_spawns s0 ON s0.Objective = o.Guid
-         WHERE o.Type = 2
-         GROUP BY o.Guid
-        HAVING COUNT(*) = 0) z)                                                    AS kill_objectives_left_empty;
+    (SELECT COUNT(*) FROM pquest_objectives o
+      WHERE o.Type = 2
+        AND EXISTS (SELECT 1 FROM pquest_spawns_unresolved a WHERE a.Objective = o.Guid)
+        AND NOT EXISTS (SELECT 1 FROM pquest_spawns s WHERE s.Objective = o.Guid))    AS kill_objectives_left_empty;
 
 -- What is left, by objective type, so the remaining BUG-072 work is visible.
 SELECT o.Type AS objective_type, COUNT(*) AS rows_remaining, COUNT(DISTINCT s.Entry) AS distinct_prototypes

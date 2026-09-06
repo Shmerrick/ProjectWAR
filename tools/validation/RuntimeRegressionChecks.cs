@@ -52,6 +52,7 @@ internal static class RuntimeRegressionChecks
             CheckInfluence();
             CheckDungeonPackets();
             CheckDeferredPublicQuestStart();
+            CheckOrdinaryCreatureQuestCredit();
             CheckDungeonRecoveryAndLockouts();
             CheckGroupInstanceSelection();
             CheckEmptyBossBonusCleanup();
@@ -395,16 +396,85 @@ internal static class RuntimeRegressionChecks
         int future = TCPManager.GetTimeStamp() + 3600;
         var value = new Character_value { Lockouts = "~164:" + future + ":161:164" };
         var resolve = typeof(InstanceMgr).GetMethod("ResolveCharacterLockout", BindingFlags.Static | BindingFlags.NonPublic);
-        var restored = (Instance_Lockouts)resolve.Invoke(null, new object[] { value, (ushort)164 });
+        var destination = new Zone_jump { ZoneID = 164, InstanceID = 164 };
+        var restored = (Instance_Lockouts)resolve.Invoke(null, new object[] { value, destination });
         Assert(restored.InstanceID == "~164:" + future && restored.Bosseskilled == "161:164",
             "Character lockout must separate its key and killed-boss list");
         var copy = (Instance)FormatterServices.GetUninitializedObject(typeof(Instance));
         copy.Lockout = restored;
         Assert(copy.IsBossKilled(161) && !copy.IsBossKilled(162), "Restored boss suppression uses the saved IDs");
         value.Lockouts = "~164:1:161";
-        Assert(resolve.Invoke(null, new object[] { value, (ushort)164 }) == null, "Expired lockout cannot suppress a fresh boss");
+        Assert(resolve.Invoke(null, new object[] { value, destination }) == null, "Expired lockout cannot suppress a fresh boss");
         value.Lockouts = "~164:invalid:161";
-        Assert(resolve.Invoke(null, new object[] { value, (ushort)164 }) == null, "Malformed lockout must not throw");
+        Assert(resolve.Invoke(null, new object[] { value, destination }) == null, "Malformed lockout must not throw");
+        foreach (ushort bossZone in new ushort[] { 63, 64, 65, 66 })
+        {
+            value.Lockouts = "~60:" + future + ":999~" + bossZone + ":" + future + ":123";
+            destination = new Zone_jump { ZoneID = bossZone, InstanceID = 60 };
+            restored = (Instance_Lockouts)resolve.Invoke(null, new object[] { value, destination });
+            Assert(restored.InstanceID == "~" + bossZone + ":" + future && restored.Bosseskilled == "123",
+                "Gunbad entry restores its boss-map lockout, not the cave's shared dungeon ID");
+            copy.Lockout = restored;
+            Assert(copy.IsBossKilled(123) && !copy.IsBossKilled(999), "Only the destination map's dead bosses are suppressed");
+        }
+        Assert(resolve.Invoke(null, new object[] { value, null }) == null, "Missing destination cannot resolve a lockout");
+    }
+
+    private static PublicQuest KillQuestFixture(uint id, uint target, ushort zone)
+    {
+        var objective = new PQuest_Objective { Guid = id, StageName = "Stage I", Type = 2,
+            ObjectId = target.ToString(), Creature = new Creature_proto { Entry = target },
+            Count = 10, Spawns = new List<PQuest_Spawn>() };
+        var quest = new PublicQuest(new PQuest_Info { Entry = id, Name = "Kill fixture", ZoneId = zone,
+            Objectives = new List<PQuest_Objective> { objective } });
+        quest.Loaded = true;
+        quest.Start();
+        return quest;
+    }
+
+    private static Player QuestContributor(uint id, PublicQuest quest)
+    {
+        var player = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        player.Info = new Character { CharacterId = id };
+        player._Value = new Character_value { Level = 40 };
+        player.QtsInterface = new QuestsInterface();
+        player.QtsInterface.PublicQuest = quest;
+        return player;
+    }
+
+    private static void CheckOrdinaryCreatureQuestCredit()
+    {
+        // No Tome subtype or killer is needed to credit damage contributors' PQs.
+        var creature = new Creature();
+        creature.Spawn = new Creature_spawn { Entry = 94104, ZoneId = 179,
+            Proto = new Creature_proto { Entry = 94104, CreatureSubType = 0 } };
+        var order = KillQuestFixture(901, 94104, 179);
+        var destruction = KillQuestFixture(592, 94104, 179);
+        var unrelated = KillQuestFixture(590, 12345, 179);
+        var otherZone = KillQuestFixture(591, 94104, 191);
+        var contributors = (Dictionary<Player, uint>)typeof(Unit).GetField("DamageSources",
+            BindingFlags.Instance | BindingFlags.NonPublic).GetValue(creature);
+        contributors.Add(QuestContributor(1, unrelated), 20);
+        contributors.Add(QuestContributor(2, otherZone), 20);
+        contributors.Add(QuestContributor(3, order), 20);
+        contributors.Add(QuestContributor(4, order), 20);
+        contributors.Add(QuestContributor(5, destruction), 20);
+        var total = typeof(Unit).GetField("TotalDamageTaken", BindingFlags.Instance | BindingFlags.NonPublic);
+        total.SetValue(creature, (uint)100);
+        var credit = typeof(Creature).GetMethod("CreditQuestKill", BindingFlags.Instance | BindingFlags.NonPublic);
+        credit.Invoke(creature, new object[] { null });
+        Assert(order.Stage.Objectives[0].Count == 1, "Two contributors to one PQ count a subtype-zero kill once");
+        Assert(destruction.Stage.Objectives[0].Count == 1, "Separate realm quest also receives the kill");
+        Assert(unrelated.Stage.Objectives[0].Count == 0 && otherZone.Stage.Objectives[0].Count == 0,
+            "Unmatched and cross-zone quests cannot consume or receive another quest's credit");
+        total.SetValue(creature, (uint)0);
+        credit.Invoke(creature, new object[] { null });
+        Assert(order.Stage.Objectives[0].Count == 1, "No damage cannot create PQ credit");
+        var pqCreature = (PQuestCreature)FormatterServices.GetUninitializedObject(typeof(PQuestCreature));
+        pqCreature.Spawn = creature.Spawn;
+        total.SetValue(pqCreature, (uint)100);
+        credit.Invoke(pqCreature, new object[] { null });
+        Assert(order.Stage.Objectives[0].Count == 1, "PQ-owned creatures retain their separate death-credit path");
     }
 
     private static void CheckEmptyBossBonusCleanup()

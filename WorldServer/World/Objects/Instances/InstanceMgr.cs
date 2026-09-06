@@ -253,7 +253,7 @@ namespace WorldServer.World.Objects.Instances
                 if (_instances.ContainsKey(id))
                     return id;
 
-                Instance_Lockouts deadbosses = ResolveCharacterLockout(player._Value, info.Entry);
+                Instance_Lockouts deadbosses = ResolveCharacterLockout(player._Value, Jump);
 
                 _instances.Add(id, new Instance(Jump.ZoneID, id, realm, deadbosses));
             }
@@ -281,7 +281,7 @@ namespace WorldServer.World.Objects.Instances
                         {
                             TOTVL ints = null;
                             Instance_Lockouts deadbosses = ResolveCharacterLockout(
-                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump.InstanceID);
+                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump);
                             ints = new TOTVL(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
@@ -290,7 +290,7 @@ namespace WorldServer.World.Objects.Instances
                         {
                             Instance ints = null;
                             Instance_Lockouts deadbosses = ResolveCharacterLockout(
-                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump.InstanceID);
+                                (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump);
                             ints = new Instance(Jump.ZoneID, i, realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
@@ -301,8 +301,14 @@ namespace WorldServer.World.Objects.Instances
             return 0;
         }
 
-        internal static Instance_Lockouts ResolveCharacterLockout(Character_value value, ushort zoneId)
+        internal static Instance_Lockouts ResolveCharacterLockout(Character_value value, Zone_jump destination)
         {
+            if (destination == null)
+                return null;
+
+            // ApplyLockout saves the actual map, not the shared dungeon Entry/InstanceID.
+            // Gunbad boss maps 63-66 all use InstanceID 60 in their entrance jumps.
+            ushort zoneId = destination.ZoneID;
             string saved = value?.GetLockout(zoneId);
             if (string.IsNullOrWhiteSpace(saved))
                 return null;
