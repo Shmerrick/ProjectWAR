@@ -168,12 +168,21 @@ respawns even where an objective has fewer spawn points than its target count.
   appears in none of the 88 distinct client jump ids across the capture set. `F_ZONEJUMP` now logs
   the zone and pin coordinates of an unknown id, so the next report locates the portal instead of
   inviting a guessed destination row.
-- **Monstrous Squig respawn.** Objective Guid 2301 carries `RespawnSeconds` 15 (migration 44),
-  honoured by `PQuestCreature.SetRespawnTimer` ahead of the flat 10-minute dungeon default. This
-  was set at the user's direction and is not capture-derived. It covers all three creature types
-  the objective names -- Spikestabba (38631), Warchargin' (38629) and Deathspewin' (38630) Squig,
-  30 spawn rows -- which is the reading of "its add group mobs" the objective itself supports.
-  **Open question for the user:** the same stage's objective 2302 "Swarmin' Lit'l Squig" (38628,
-  35 kills, 71 spawns) was left at the flat 10-minute dungeon default. If the intent was the whole
-  squig encounter rather than the Monstrous Squigs objective, 2302 needs the same 15 seconds; it
-  was not changed because that is a difficulty decision, not a correction.
+- **The Squig Nursery respawns as clusters.** The monstrous squigs are placed with small squigs
+  around them, and the capture confirms it: reducing INSTANCE_GUNBAD_PART1/PART2 to one record per
+  object id gives 40 distinct monstrous squigs (Deathspewin' 38630, Warchargin' 38629, Spikestabba
+  38631) and 169 small squigs (Swarmin' Lit'l Squig 38628 and its Squigling form), and 13 of the 40
+  bigs carry one to five smalls within 300 units at separations of 37-280. The database placement
+  already matches -- 11 of the 30 objective-2301 rows have a 2302 row within 300 units -- so no
+  position was changed.
+
+  What was wrong was the timing. Objective 2301 "Monstrous Squigs" got `RespawnSeconds` 15 in
+  migration 44; objective 2302 "Swarmin' Lit'l Squig" was left on the flat ten-minute dungeon
+  default, so a cleared pack came back with the big squig alone and its swarm ten minutes behind.
+  Migration 50 puts 2302 on 15 seconds too, so a pack returns together. Both values were set at the
+  user's direction and are not capture-derived.
+
+  The timers remain per-creature and independent -- a shared interval, not a linked cluster that
+  waits for every member to die before respawning any of them. In practice a pack dies within a few
+  seconds, so it returns within a few seconds. Strict lockstep would need a cluster grouping key,
+  which nothing in `pquest_spawns` records.

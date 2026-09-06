@@ -9,7 +9,7 @@ It supersedes the three earlier 2026-09-05 handoffs for anything it covers.
 
 Solution builds clean at Release x64 with **zero warnings**. `tools/validation/`
 `Test-RuntimeRegressions.ps1`, `Test-PublicQuestData.ps1`, `Get-DungeonReadiness.ps1` and
-`Get-WorldDataHealth.ps1` all pass against the configured Release database. Migrations 34-49
+`Get-WorldDataHealth.ps1` all pass against the configured Release database. Migrations 34-50
 are applied locally, each twice to prove idempotency.
 
 What this session changed, in one list:
