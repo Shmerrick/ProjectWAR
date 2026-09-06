@@ -400,3 +400,48 @@ ward; and the rule needs a ceiling above Supreme. Nothing is implemented.
 `WorldServer.csproj` compiles clean with no CS warnings; the full solution build could not run
 because the running server stack held `bin/Release`. Migration 41 applied and re-applied against the
 configured Release database; base dumps untouched. No server started, no in-client test.
+
+## Correction — creature wards did exist in retail (2026-09-05)
+
+An earlier statement in this session, that creature wards are a ProjectWAR extension which would
+never appear in retail footage, was **wrong** and is withdrawn. The user corrected it: wards show
+in retail on one realm's city dungeons but not the other's, and they want the missing side fixed.
+
+The client settles the first half. `targetunitframe.lua` builds a `SigilButton` on the hostile
+target frame, reads `TargetInfo:UnitSigilEntryId`, shows it only when non-zero, resolves the art
+via `TomeGetSigilDisplayInfo` and links it into the Tome armoury; and
+`interface/interfacecore/tome/sigils/sigil_entries.csv` holds exactly five entries with ability
+ids 12975-12979 — a 1:1 match with the five ward tiers. Retail displayed creature wards.
+
+What could **not** be established is how the server sent the sigil id (BUG-091). `F_WARD_INFO`
+(0xDF), which this server uses, appears in none of the nine city-dungeon captures, so it is not
+the retail transport. Ruled out: the fixed `F_CREATE_MONSTER` fields at payload offsets 23-43
+(the only small-valued candidate, offset 36, fires on Wealthy Merchant and Servant in Sigmar
+Crypts, so it is not a ward), and a sigil ability carried as an effect (no `F_INIT_EFFECTS` holds
+12975-12979; the apparent hits are coincidental byte windows inside damage, health and inventory
+packets). The client field is filled engine-side from `GetUpdatedTargets`, so the carrier is
+probably a target-scoped packet not yet identified.
+
+### The asymmetry, and what was changed (BUG-092, migration 42)
+
+The six city dungeons pair by tier, and the stored ward assignment was symmetric in two pairs and
+not the third:
+
+| Tier | Altdorf set | Ward | Inevitable City set | Ward |
+|---|---|---|---|---|
+| low | Sewers of Altdorf 152/153/169 | 0 | Sacellum Dungeons 155/156/173 | 0 |
+| mid | **Sigmar Crypts 176** | **1** | **Warpblade Tunnels 154/177** | **0** |
+| high | Bilerot Burrow 196 | 1 | Bloodwrought Enclave 195 | 1 |
+
+That leaves one city's set with two ward-bearing dungeons and the other's with one, which is the
+reported symptom. The pairing is supported by the stored level ranges: Sewers 0-20 against
+Sacellum 1-20, Sigmar Crypts 1-42 against Warpblade 1-43, Bilerot 1-43 against Bloodwrought
+40-42.
+
+Migration 42 mirrors Sigmar Crypts onto Warpblade Tunnels exactly — all 316 instance creature
+rows and all 5 instance boss rows to Lesser, the 318 world `creature_spawns` rows left at 0,
+because that is precisely how Sigmar Crypts stores it (143/143 and 8/8 at 1, all 138 world rows
+at 0). Sewers and Sacellum are untouched, being already symmetric at 0.
+
+This is a **content decision taken at the user's direction**, not a capture-derived restoration,
+and it is recorded as such. Whether it becomes visible depends on BUG-091.

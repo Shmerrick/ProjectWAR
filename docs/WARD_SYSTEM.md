@@ -264,3 +264,48 @@ true `Flag` lost. They are exactly the three counters that could not bind — Ac
 — so they were never missing rows, only corrupted ones, and a player could drive such a counter to
 its threshold and watch the task stay unticked. `Database/27_fix_comma_split_ward_tasks.sql`
 restores them; all 32 counters now bind.
+
+### How the client displays a creature's ward, and how this server sends it
+
+The client has a first-class display for creature wards, so they were visibly part of retail.
+`eatemplate_unitframes/source/targetunitframe.lua` creates a `SigilButton` on the hostile target
+frame only (line 210), reads `TargetInfo:UnitSigilEntryId(unitId)` (line 410), shows the button
+only when that id is non-zero (line 415), resolves the artwork through
+`TomeGetSigilDisplayInfo` (line 464), and on click opens the Tome at
+`GameData.Tome.SECTION_ARMORY_SIGILS`. `interface/interfacecore/tome/sigils/sigil_entries.csv`
+defines exactly five entries, ids 1-5, with ability ids 12975-12979 and slices
+`sigil01-mini`..`sigil05-mini` — a direct 1:1 with the five ward tiers Lesser through Supreme.
+
+**What carries that id from the server is not yet known.** This server sends the tier on its own
+opcode, `F_WARD_INFO` (0xDF), from `Creature.SendWardInfo`. That opcode occurs in none of the
+nine city-dungeon captures examined, so it is not what the live server used. Two candidates have
+been ruled out:
+
+- **A fixed `F_CREATE_MONSTER` field.** Payload offsets 23-43 were dumped across sacellum
+  west/east, warpblade north, bloodwrought, sigmar crypts, sewers north and bilerot. The only
+  small-valued candidate, offset 36, is non-zero on Wealthy Merchant, Servant and Patricia
+  Farnswoggle in Sigmar Crypts and on ordinary Warpblade trash, so it does not track a ward.
+- **A sigil ability applied as an effect.** No `F_INIT_EFFECTS` packet in those captures carries
+  ability 12975-12979; the apparent matches are coincidental 16-bit windows inside damage
+  (`0x14`), health (`0x05`) and inventory (`0xBD`) packets.
+
+`TargetInfo.m_Units` is filled engine-side from `GetUpdatedTargets`, so the carrier is most
+likely a target-scoped packet that has not been identified. Until that is settled, ward tiers
+stored in the database are only visible with the private ward-sigil client component, and no
+claim should be made either way about how retail delivered them. Tracked as BUG-091.
+
+### City dungeon ward assignment
+
+The six city dungeons pair by tier, and the stored assignment was symmetric in two pairs and not
+the third. Migration 42 closed the gap at the user's direction:
+
+| Tier | Altdorf set | Ward | Inevitable City set | Ward |
+|---|---|---|---|---|
+| low | Sewers of Altdorf 152/153/169 | 0 | Sacellum Dungeons 155/156/173 | 0 |
+| mid | Sigmar Crypts 176 | 1 Lesser | Warpblade Tunnels 154/177 | 1 Lesser (was 0) |
+| high | Bilerot Burrow 196 | 1 Lesser | Bloodwrought Enclave 195 | 1 Lesser |
+
+The pairing follows the stored level ranges: Sewers 0-20 against Sacellum 1-20, Sigmar Crypts
+1-42 against Warpblade 1-43, Bilerot 1-43 against Bloodwrought 40-42. Sigmar Crypts' own pattern
+was mirrored exactly — every instance creature and boss row at Lesser, the zone's world
+`creature_spawns` rows left at 0 — rather than every row in the zone being swept.
