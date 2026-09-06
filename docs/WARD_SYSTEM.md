@@ -276,10 +276,12 @@ only when that id is non-zero (line 415), resolves the artwork through
 defines exactly five entries, ids 1-5, with ability ids 12975-12979 and slices
 `sigil01-mini`..`sigil05-mini` — a direct 1:1 with the five ward tiers Lesser through Supreme.
 
-**What carries that id from the server is not yet known.** This server sends the tier on its own
-opcode, `F_WARD_INFO` (0xDF), from `Creature.SendWardInfo`. That opcode occurs in none of the
-nine city-dungeon captures examined, so it is not what the live server used. Two candidates have
-been ruled out:
+**Delivery on this server already works.** `Creature.SendWardInfo` sends the tier on `F_WARD_INFO`
+(0xDF), which the private ward-sigil client component renders; it is in use in Bilerot Burrow.
+
+What is not known is which packet the *live 1.4.8* server used for the same purpose. 0xDF occurs
+in none of the nine city-dungeon captures examined, so it is not the retail carrier. Two
+candidates were ruled out:
 
 - **A fixed `F_CREATE_MONSTER` field.** Payload offsets 23-43 were dumped across sacellum
   west/east, warpblade north, bloodwrought, sigmar crypts, sewers north and bilerot. The only
@@ -289,10 +291,10 @@ been ruled out:
   ability 12975-12979; the apparent matches are coincidental 16-bit windows inside damage
   (`0x14`), health (`0x05`) and inventory (`0xBD`) packets.
 
-`TargetInfo.m_Units` is filled engine-side from `GetUpdatedTargets`, so the carrier is most
-likely a target-scoped packet that has not been identified. Until that is settled, ward tiers
-stored in the database are only visible with the private ward-sigil client component, and no
-claim should be made either way about how retail delivered them. Tracked as BUG-091.
+`TargetInfo.m_Units` is filled engine-side from `GetUpdatedTargets`, so the retail carrier is most
+likely a target-scoped packet that has not been identified. That is a parity question for the RE
+record only; it does not affect this server, where ward tiers set in the database do display.
+Make no claim either way about how retail delivered them. Tracked as BUG-091.
 
 ### City dungeon ward assignment
 

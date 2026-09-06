@@ -445,3 +445,34 @@ at 0). Sewers and Sacellum are untouched, being already symmetric at 0.
 
 This is a **content decision taken at the user's direction**, not a capture-derived restoration,
 and it is recorded as such. Whether it becomes visible depends on BUG-091.
+
+### Follow-up: delivery already works, and the asymmetry was the instance table
+
+Two corrections to the section above, from the user.
+
+**Ward delivery is not an open problem.** `Creature.SendWardInfo` over `F_WARD_INFO` plus the
+private ward-sigil client component is the working path and is already in use in Bilerot Burrow.
+BUG-091 is withdrawn. The only thing still unknown is which packet the *live* server used for
+the same job, which is a parity question for the RE record and blocks nothing here.
+
+**The asymmetry is on the instance tables, not the world tables.** An intermediate reading of
+this data was wrong: `MAX(Ward)` on `creature_spawns` showed 1 for Bilerot and Bloodwrought, but
+that is 1 row of 254 and 2 of 104 respectively. Their world spawns are ~all 0, exactly like
+Sigmar Crypts' 138. The ward lives on `instance_creature_spawns` and `instance_boss_spawns` in
+every case, so no world-spawn migration was written.
+
+The entrances also correct which city each dungeon belongs to. Grouping the `zone_jumps` entries
+by their source-zone id prefix gives Sewers of Altdorf, Sigmar Crypts and Warpblade Tunnels in
+one set (`1702xxxxx`) and the Sacellum Dungeons, Bloodwrought Enclave and Bilerot Burrow in the
+other (`1689xxxxx`). Sigmar Crypts fixes the first as Altdorf, so Warpblade Tunnels is an Altdorf
+dungeon and Bilerot Burrow an Inevitable City one — the opposite of an earlier assumption here.
+
+That makes the ward assignment, after migration 42:
+
+| City | low tier | mid | high |
+|---|---|---|---|
+| Altdorf | Sewers 152/153/169 — none | Sigmar Crypts 176 — Lesser | Warpblade 154/177 — Lesser (added) |
+| Inevitable City | Sacellum 155/156/173 — none | Bloodwrought 195 — Lesser | Bilerot 196 — Lesser |
+
+Two ward-bearing dungeons per city, and the low-tier pair unwarded on both sides. Migration 42 is
+therefore the complete fix for the reported asymmetry, and no migration 43 is needed.
