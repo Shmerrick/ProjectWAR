@@ -604,3 +604,49 @@ and it was never realm-specific.
 everything else keeps its current behaviour. Migration 44 adds the column and sets **15 seconds**
 for Monstrous Squigs and the squigs spawned alongside it, at the user's direction. The column add
 is guarded through `information_schema` because MySQL 8 has no `ADD COLUMN IF NOT EXISTS`.
+
+## Seventh pass — Land of the Dead public quests
+
+Applying the Tomb of the Vulture Lord lesson to Land of the Dead, which had been recorded as the
+larger of the two data gaps.
+
+**The premise was wrong there too.** BUG-078 said 26 of 28 zone-191 quests had no spawn rows and
+needed a rebuild from the eleven captures. The population is in `creature_spawns` for zone 191 all
+along — 197 creature types — and with BUG-100 now crediting ordinary creature kills, the only
+thing missing was the link from each objective to the creature it counts. **40 of 53 kill
+objectives carried `ObjectId` 0.**
+
+Migration 45 maps 30 of them. Each mapping is a creature that both matches the objective's own
+wording and appears in that quest's own official capture, and each is recorded with its zone-191
+spawn count against the objective's kill target so the claim can be rechecked:
+
+| Objective | Mapped to | Spawns vs target |
+|---|---|---|
+| Quayside Skeletons Destroyed | Quayside Archer + Sandblade | 10 + 20 = **exactly 30** |
+| Forbidden Invokers Defeated | Forbidden Invoker | **exactly 4** |
+| Gaunt Skeletons Destroyed (×7) | Gaunt Dunebow/Soldier/Cavalry | 107 vs 20 |
+| Sakhmet's Skeletons Destroyed (×8) | the four Sakhmet dune types | 34 vs 30 |
+| Carrion Slain | Screeching/Merciless/Carrion | 207 vs 30 |
+| Celestial Images Destroyed | Image of Sebok + Image of Djaf | 62 vs 20 |
+| Withered Undead Destroyed (×3) | Withered Lancer/Marksman/Militia | 19 vs 20 |
+| Nekh Akhet, Kheiret, Amsu, Amen-Ser, Bahiti Net, Dregg Stinkeye, Graven Goldbarrow | the named boss | 1-6 each |
+
+Mapped kill objectives went from 13 to 43 of 53.
+
+One boss had no spawn anywhere: **Gahije the Invincible** (99714), the Quay of Seftu's target. The
+quest's capture sights him once at world 216720,1515280,6192 facing 113 at level 41, 486 units
+from the nearest Quayside Sandblade. Migration 45 restores that single row — the only creature
+this migration adds, everything else being a link to a creature already present.
+
+The coordinate frame was checked rather than assumed: zone 191 is not an instance, and the
+Quayside Archer spawns at 216741,1516644,6068 and 216993,1517989,6022 appear identically in the
+capture and in `creature_spawns`.
+
+### Left unmapped on purpose (BUG-104)
+
+- **"Grasping Hands Held Back"**, eight realm copies at 10 kills each, matches no creature in zone
+  191 nor in Ricci's Raiders' own capture. It is probably a game-object or scripted stage rather
+  than a kill objective.
+- **"Hall Defenders Destroyed"**, 30 kills, is ambiguous between the Skeletal Warrior/Archer and
+  Desiccated Protector/Archer pairs, both present in the Hall of the Heavens capture.
+- **"Colossus of the Vulture Lord Destroyed"** names creature 98843, which has no zone-191 spawn.
