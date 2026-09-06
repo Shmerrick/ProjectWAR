@@ -693,3 +693,57 @@ test fixture's temporary directory, not from `deps/zones`.
   shortfall was spawn count, respawn timing or the target of 50 — was answered by the ten-minute
   dungeon respawn, now overridable per objective.
 - **BUG-085** closed by migration 46.
+
+## Ninth pass — driving down BUG-072
+
+The systemic missing-prototype problem, named as the top gate on making RESTART the default
+branch. **2,771 affected rows down to 588, a 79% reduction**, in two steps.
+
+### Step 1: 1,841 rows were never usable (migration 47)
+
+Every affected row is in a Type-0 zone, so its stored world coordinates are the capture's
+coordinates directly and no atlas shift is involved. Grouping them by the *objective* they belong
+to showed that 1,841 of the 2,771 sit on **kill** objectives, where a game object could not
+satisfy the objective even if its prototype existed.
+
+Barony of Nordland alone accounts for 1,504 of them, and its shape is unambiguous:
+
+```
+objective  762 "Norse Plunderer"     kill 8, creature 3551 -- 8 Type-1 spawns, plus 402 junk rows
+objective  764 "Hralgar the Kraken"  kill 1, creature 3548 -- 1 Type-1 spawn,  plus 734 junk rows
+objective 1197 "Seeker Cultist"      kill 6, creature  535 -- 6 Type-1 spawns, plus  53 junk rows
+objective 1198 "Baruun the Seeker"   kill 1, creature  538 -- 1 Type-1 spawn,  plus 315 junk rows
+```
+
+Each objective's Type-1 creature spawn count already equals its kill target exactly, so the quest
+is fully supplied and the game-object rows are debris on top — the same shape as the Bloodherd
+Champion row removed by migration 46. Checked before deleting: all 88 affected kill objectives
+retain usable spawns and **none is left with an empty spawn set**.
+
+### Step 2: 35 prototypes restored from captures (migration 48)
+
+The capture set includes 192 files named `PQ_<pairing>_<difficulty>_<quest>_CH<n>`, so each
+missing prototype's quest could be matched to the capture named for that quest and each spawn
+position to the nearest `F_CREATE_STATIC` sighting in it.
+
+What makes this more than nearest-neighbour guessing is that the captured object's **name matches
+the objective's own wording**: "Destroy Mining Valves" resolves to *Mining Valve*, "Chests
+Ransacked" to *Suderheim Chest*, "Burn Rock Box" to *Burn Rock Box*, "Cocooned Marauder" to
+*Cocooned Marauder*, "Destroy Cannons" to *Cannon*. Most resolved at distance 0. Every entry in
+the migration records its quest, objective, row count, how many rows resolved to it and the
+closest distance.
+
+Nine candidates were **rejected rather than restored**, and stay open:
+
+- six resolved to the engine's generic "Combat and Career USE: Ground Target invisible" marker
+  rather than a quest object;
+- 99111 resolved to "Fire" for a *Grudgebreaker Cannon* objective;
+- 100112 to "Reikland Tent" for *Blow Up Powder Keg*;
+- 382 to "Oathbearer Banner" for a *Bloody Sun Banner* objective — opposing factions.
+
+### What is left
+
+588 rows, on interaction objectives (`Type` 3 use-object and `Type` 11 destroy-object) whose
+quests have no capture named for them, plus the nine rejected above. The technique is now
+mechanical and the tooling is in the scratchpad, so the remainder is a matter of widening the
+capture-to-quest name matching rather than new analysis.
