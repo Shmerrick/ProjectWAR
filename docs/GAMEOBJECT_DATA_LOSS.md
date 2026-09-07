@@ -68,17 +68,51 @@ This is what migrations `02`, `10`, `12`, `34`, `38` and `46` have been doing by
 reconstructs one public quest's objects from packet captures and toolkit StaticObject data.
 That work is re-deriving, one quest at a time, data that is sitting in git history.
 
-## Recovery
+## Recovery: proven, with 10 rows restored
 
-The pre-deletion dump is reachable without touching the working tree:
+Migration 72 restores the Pillage and Plunder wagons and the Thanquol's Incursion portal, and
+exists mainly to establish the method for the other 25,157 rows. Both objects work now.
 
-```
-git cat-file blob a4995e92:Database/war_world.7z > old_world.7z
-```
+The method, in order:
 
-A restore needs to, in order: recover the 25,167 spawn rows, derive or extract the ~2,600 missing
-prototypes (the toolkit's `apps/warprotoextract` and the client are the sources for names and any
-field the spawn row does not carry), and verify against captures for the areas that have them.
+1. **Take the original rows from git**, verbatim, including their Guids -- which are all still
+   unused, because the deletion removed rows and added none:
 
-**Nothing here should be inserted blind.** The Practice Target dummies earlier in this project
-failed precisely because prototype fields were copied from a row nobody had proven worked.
+   ```
+   git cat-file blob a4995e92:Database/war_world.7z > old_world.7z
+   ```
+
+   Preserve every column as stored, including the opaque `Unks` payloads and the inconsistent
+   NULL-versus-empty-string conventions between zones. Do not normalise anything.
+
+2. **Recover the prototype name from a capture, matched by the spawn's DisplayID.** This is the
+   only field the spawn row does not carry (10 of 25,167 deleted rows have an `AlternativeName`).
+   It works: DisplayID 211 resolves to "Weapon Wagon" in the Nordland captures, which is the same
+   zone as five of those spawns and matches the objective "Destroy Wagons"; DisplayID 9290
+   resolves to "Thanquol's Incursion" in all three Thanquol captures.
+
+3. **Take the remaining prototype fields from the destructible objects already in the database**
+   -- Nursery Slime (100515) and Siphoning Contraption (100517). The client-side "attackable" bit
+   lives per spawn in `Unks`, not on the prototype, so restored rows already declare it.
+
+### Scale of what is left
+
+25,157 rows across **2,611 distinct Entry values**. Every one needs a prototype, and the names are
+the work: only objects that appear in a capture can be named from one. 236 of those entries have
+deleted rows that disagree on DisplayID, so they cannot take a single prototype DisplayID blindly
+-- though `GameObject.SendMeTo` writes the **spawn's** DisplayID to the client, not the
+prototype's, so that affects naming rather than rendering.
+
+`GameObjectService.BuildFallbackProto` already synthesises a prototype from a spawn row for doors,
+and is the natural basis for a bulk pass. What it cannot supply is a real name.
+
+**Do not bulk-insert prototypes with invented names.** A wrong name is visible in the client
+tooltip on every one of these objects.
+
+## Tooling note
+
+The toolkit's `apps/warprotoextract` and the client itself are the other candidate sources for
+prototype names and any field a spawn row does not carry; neither has been evaluated for this yet.
+
+**Nothing should be inserted blind.** The Practice Target dummies earlier in this project failed
+precisely because prototype fields were copied from a row nobody had proven worked.
