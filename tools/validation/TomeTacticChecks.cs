@@ -247,13 +247,23 @@ internal static class TomeTacticChecks
             + "   ORDER BY CAST(SUBSTRING_INDEX(tb2.Kill1,';',1) AS UNSIGNED) DESC LIMIT 1)"
             + " GROUP BY f.AcId";
 
-        string sql = "SELECT l.Name, l.Threshold1, l.Threshold2, l.Threshold3, COUNT(*) bound, o.n"
+        // Each threshold unlocks a SEPARATELY NAMED tactic, not a rank of one tactic: the Giant
+        // line's 5/10/15 give Sky Titan's Bulwark, Sky Titan's Favor and Sky Titan's Strength,
+        // each bought and slotted on its own. So an unreachable threshold costs a distinct
+        // ability, and that is what this reports.
+        string sql = "SELECT l.Name, l.Threshold1, l.Threshold2, l.Threshold3, COUNT(*) bound, o.n,"
+            + " a1.Name, a2.Name, a3.Name"
             + " FROM (" + obtainable + ") o JOIN tome_tactic_lines l ON l.AcId = o.AcId"
             + " JOIN tome_tactic_fragments f2 ON f2.AcId = o.AcId"
-            + " GROUP BY l.AcId, l.Name, l.Threshold1, l.Threshold2, l.Threshold3, o.n ORDER BY l.AcId";
+            + " JOIN abilities a1 ON a1.Entry = l.Tactic1"
+            + " JOIN abilities a2 ON a2.Entry = l.Tactic2"
+            + " JOIN abilities a3 ON a3.Entry = l.Tactic3"
+            + " GROUP BY l.AcId, l.Name, l.Threshold1, l.Threshold2, l.Threshold3, o.n,"
+            + " a1.Name, a2.Name, a3.Name ORDER BY l.AcId";
 
         int tier1Dead = 0;
         int tier2Dead = 0;
+        int unobtainableTactics = 0;
         int tier3Dead = 0;
         int totalBound = 0;
         int totalObtainable = 0;
@@ -272,21 +282,27 @@ internal static class TomeTacticChecks
                     int t3 = reader.GetInt32(3);
                     int bound = reader.GetInt32(4);
                     int have = reader.GetInt32(5);
+                    string[] tacticNames = { reader.GetString(6), reader.GetString(7), reader.GetString(8) };
+                    int[] thresholds = { t1, t2, t3 };
 
                     totalBound += bound;
                     totalObtainable += have;
 
-                    // Every tier is tested. An earlier revision compared only tiers 1 and 3, which
-                    // hid the Man line reaching tier 1 and nothing further.
-                    int highest = have >= t3 ? 3 : have >= t2 ? 2 : have >= t1 ? 1 : 0;
+                    // Every threshold is tested. An earlier revision compared only the first and
+                    // third, which hid the Man line stopping after its first tactic.
                     if (have < t1) tier1Dead++;
                     if (have < t2) tier2Dead++;
                     if (have < t3) tier3Dead++;
 
-                    if (highest < 3)
-                        Console.WriteLine("  " + name + ": reaches tier " + highest + " only ("
-                            + have + " obtainable of " + bound + " bound; tiers need "
-                            + t1 + "/" + t2 + "/" + t3 + ")");
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (have >= thresholds[i])
+                            continue;
+
+                        unobtainableTactics++;
+                        Console.WriteLine("  " + tacticNames[i] + " (" + name + ") is unobtainable: needs "
+                            + thresholds[i] + " fragments, only " + have + " of " + bound + " can be earned");
+                    }
                 }
             }
         }
@@ -298,8 +314,13 @@ internal static class TomeTacticChecks
         // lines cannot reach tier 3 and one of those four -- Man -- cannot even reach tier 2.
         // Pinned at the known counts so this cannot silently worsen, and so fixing BUG-117 trips
         // the check and forces these numbers to be updated.
-        Equal(1, tier2Dead, "lines whose SECOND tier is unobtainable (BUG-117)");
-        Equal(4, tier3Dead, "lines whose final tier is unobtainable (BUG-117)");
+        Equal(1, tier2Dead, "lines whose SECOND tactic is unobtainable (BUG-117)");
+        Equal(4, tier3Dead, "lines whose THIRD tactic is unobtainable (BUG-117)");
+
+        // The figure that actually matters: each threshold is a separate, uniquely named tactic,
+        // so five distinct abilities cannot be earned at all -- Harrier's Ken, Sky Titan's
+        // Strength, Boon of Tenacity, Boon of Persistence and Cunning Stratagem.
+        Equal(5, unobtainableTactics, "named tactics that cannot be earned (BUG-117)");
         Equal(21, totalBound - totalObtainable, "fragments with no award path (BUG-117)");
     }
 

@@ -6715,12 +6715,25 @@ namespace WorldServer.World.Objects
 
                 if (region.AddObject(this, zoneID))
                 {
+                    // The address field is a redirect: it tells the client which world server to
+                    // reconnect to. Retail sharded regions across machines and really did send a
+                    // routable address here -- a captured region change carries ports 21057/45249
+                    // and IP 54.246.162.225. This emulator runs every region in one process on one
+                    // port, so there is nothing to redirect to, and "0.0.0.0" is the no-redirect
+                    // form that keeps the client on its current connection.
+                    //
+                    // This previously sent "127.0.0.1", which pointed the client at 127.0.0.1:38699
+                    // where nothing listens -- the world port is 10300 - so every cross-region
+                    // teleport dropped the player to the character select screen. The login path in
+                    // CharacterHandlers.F_REQUEST_WORLD_ENTER and the toolkit's reference
+                    // implementation (libs/protocolservices/Server Packet Protocol/F_WORLD_ENTER.cs)
+                    // both write "0.0.0.0"; only this copy diverged.
                     PacketOut Out = new PacketOut((byte)Opcodes.F_WORLD_ENTER, 64);
                     Out.WriteUInt16(ProtocolConstants.WORLD_ENTER_HEADER);
                     Out.Fill(0, 20);
                     Out.WriteString("38699", 5);
                     Out.WriteString("38700", 5);
-                    Out.WriteString("127.0.0.1", 20);
+                    Out.WriteString("0.0.0.0", 20);
                     SendPacket(Out);
 
                     SetOffset((ushort)(worldX >> 12), (ushort)(worldY >> 12), false);

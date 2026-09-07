@@ -1,5 +1,16 @@
 # Tome tactic fragments: the complete Tome of Knowledge unlock list
 
+> **Each threshold unlocks a separately named tactic, not a rank of one tactic.** The Giant line's
+> 5 / 10 / 15 give **Sky Titan's Bulwark**, **Sky Titan's Favor** and **Sky Titan's Strength** -
+> three distinct abilities, each bought from a Librarian and slotted on its own. There are 27
+> named tactics across the nine lines. The client's own fragment tooltip states it: "Collect more
+> Giant Tactic Fragments to unlock higher and more powerful ranks of the Tome Tactic... the Tactic
+> name will turn white in the list below and will be available for purchase from a Librarian in
+> the Capital City."
+>
+> An unreachable threshold therefore costs a **specific named ability**, which is how this document
+> and `Test-TomeTactics.ps1` now report it.
+
 Every Tome of Knowledge entry that grants a bestiary tome tactic fragment, which line it
 feeds, and whether anything in the world can actually award it.
 
@@ -23,7 +34,7 @@ Regenerate with `tools/validation/Test-TomeTactics.ps1`, which pins these counts
 
 ## Summary
 
-| ACID | Line | Fragments bound | Awardable | Thresholds (t1/t2/t3) | Highest tier reachable |
+| ACID | Line | Fragments bound | Awardable | Thresholds | Tactics earnable |
 |---:|:---|---:|---:|:---|:---|
 | 330 | Daemonic | 24 | 23 | 7 / 15 / 22 | tier 3 |
 | 331 | Beastial | 32 | 23 | 10 / 20 / 30 | tier 2 **<-** |
@@ -37,9 +48,20 @@ Regenerate with `tools/validation/Test-TomeTactics.ps1`, which pins these counts
 
 **138 fragments bound, 117 awardable, 21 with no award path at all** (BUG-117).
 
-The Man line is the worst case: it reaches tier 1 and nothing further, because 3 awardable
-fragments fall short of its tier-2 threshold of 4. It is also short two fragments before that,
-since the client grants 8 across species that include two with no `tok_bestiary` row here.
+**Five of the 27 named tactics cannot be earned at all:**
+
+| Tactic | Line | Fragments needed | Earnable |
+|:---|:---|---:|---:|
+| Harrier's Ken | Beastial | 30 | 23 |
+| Sky Titan's Strength | Giant | 15 | 13 |
+| Boon of Tenacity | Man | 4 | 3 |
+| Boon of Persistence | Man | 6 | 3 |
+| Cunning Stratagem | Skaven | 3 | 2 |
+
+The Man line is the worst case: only **Boon of the Impalpable** can be earned, and both
+**Boon of Tenacity** and **Boon of Persistence** are out of reach - 3 earnable fragments against
+thresholds of 4 and 6. It is short two fragments before that as well, since the client grants 8
+across species that include two with no `tok_bestiary` row here.
 
 ## Fragments by line
 
@@ -243,3 +265,49 @@ Tier 1 at 4 fragments, tier 2 at 8, tier 3 at 12. 22 bound, 21 awardable.
 | 4427 | Giant Scarab 1000 | You have killed 1,000 Giant Scarabs | 625 | bestiary kill |
 | 4432 | Tomb Swarm 1000 | You have killed 1,000 Tomb Swarm | 626 | bestiary kill |
 | 4437 | Carrion 1000 | You have killed 1,000 Carrion | 627 | bestiary kill |
+
+## What each of the 27 tactics actually does
+
+Read from `mythic_bin_ability.MythicComponentData` for entries 15100-15126 — the client's own
+component list, not inferred. Component operations are named from `ComponentOperationType`, and
+the `BONUS_TYPE_ADJUST` targets from the bonus-type enum in `Common/Database/GameData.cs`:
+**41 = ActionPointCost, 42 = CriticalHitRate, 54 = AggroRadius, 58 = XpReceived**.
+
+Effects are cumulative down a line: the second tactic carries the first's components plus its own,
+and the third carries all of them. That is how the client data is built, so a player who owns all
+three has three separately slottable abilities of increasing breadth, not three copies of one.
+
+| Line | Tactic | Components |
+|:---|:---|:---|
+| Daemonic | Aethyric Pandemonium | +5% damage |
+| | Aethyric Ward | +5% damage, −5% damage taken |
+| | Aethyric Insight | + morale regen +25% |
+| Beastial | Harrier's Savagery | **aggro radius −50%** |
+| | Harrier's Pelt | + −5% damage taken |
+| | Harrier's Ken | + XP received +50% |
+| Giant | Sky Titan's Bulwark | +5 defensive stat |
+| | Sky Titan's Favor | + crit rate +5 |
+| | Sky Titan's Strength | + morale regen +25% |
+| Greenskin | Outmaneuver the Dim | **aggro radius −50%** |
+| | Outmaneuver the Cunning | + action point cost −10 |
+| | Outmaneuver the Clever | + morale regen +25% |
+| Chaos | Favour the Daemonic | +5 defensive stat |
+| | Favour of the Gods | + −5% damage taken |
+| | Favour of the Mad | + cooldowns −2000ms |
+| Mythical | Apotheosis of Flesh | +5% damage |
+| | Apotheosis of Spirit | + action point cost −10 |
+| | Apotheosis of Mind | + cooldowns −2000ms |
+| Man | Boon of the Impalpable | **aggro radius −50%** |
+| | Boon of Tenacity | + action point cost −10 |
+| | Boon of Persistence | + XP received +50% |
+| Skaven | Cunning Evasion | +5 defensive stat |
+| | Cunning Assault | + crit rate +5 |
+| | Cunning Stratagem | + XP received +50% |
+| Undead | Benediction of Morr | +5% damage |
+| | Benediction of Winters | + −5% damage taken |
+| | Benediction of the Dead | + cooldowns −2000ms |
+
+The three aggro-radius tactics are the ones that change enemy AI behaviour: `BONUS_TYPE_ADJUST`
+on bonus type 54 at −50, which is the −50% the server implements as a 0.5 multiplier in
+`TomeTacticService`. Morale and cooldown components sit behind an `EVENT_LISTENER(3)` gate and
+carry a 10-second duration, which is why they need sustained-engagement state (BUG-118).
