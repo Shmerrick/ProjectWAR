@@ -466,6 +466,9 @@ namespace WorldServer.World.Interfaces
 
             CharMgr.Database.AddObject(Tok);
 
+            // Bestiary entries marked with the client's fragment icon advance a tome tactic line.
+            AwardTomeTacticFragment(Entry);
+
             // Completing any one of a ward fragment's tasks awards that fragment. Resolved at
             // the top of this method so the already-held case is handled there too.
             if (isWardFragmentTask)
@@ -480,6 +483,267 @@ namespace WorldServer.World.Interfaces
             if (TokService.TryGetLowerWardTaskForFragment(Entry, out lowerWardTaskEntry))
                 AddTok(lowerWardTaskEntry, false, announce);
         }
+        /// <summary>
+        /// Advances the tome tactic fragment counter this Tome entry feeds, and marks any tactic
+        /// tier whose threshold the new total reaches as unlocked.
+        ///
+        /// Called for every Tome entry awarded; entries that are not fragments return immediately,
+        /// so callers do not need to know which are bound. The tier unlock goes through AddTok, so
+        /// the Section 26 row is stored, announced and XP-awarded exactly like any other entry.
+        /// That cannot recurse: Section 26 entries are not fragments, so they return at the guard.
+        /// </summary>
+        private void AwardTomeTacticFragment(ushort tokEntry)
+        {
+            ushort acId;
+            if (!TomeTacticService.TryGetFragmentLine(tokEntry, out acId))
+                return;
+
+            Tome_Tactic_Line line;
+            if (!TomeTacticService.TryGetLine(acId, out line))
+            {
+                Log.Error("TomeTactic", "Tome entry " + tokEntry + " is bound to tactic counter "
+                    + acId + " but no such line is loaded; fragment not counted.");
+                return;
+            }
+
+            Character_action_counter counter;
+            if (_actionCounters.TryGetValue(acId, out counter))
+            {
+                counter.Count++;
+                counter.Dirty = true;
+                CharMgr.Database.SaveObject(counter);
+            }
+            else
+            {
+                counter = new Character_action_counter
+                {
+                    CharacterId = GetPlayer().CharacterId,
+                    AcId = acId,
+                    Count = 1
+                };
+
+                _actionCounters.Add(acId, counter);
+                CharMgr.Database.AddObject(counter);
+            }
+
+            SendActionCounterUpdate(acId, counter.Count);
+
+            // Tiers ascend, and a player can cross more than one at once only if thresholds were
+            // mis-seeded, but award every tier the total now satisfies so a gap cannot strand one.
+            for (int tier = 1; tier <= 3; tier++)
+            {
+                if (counter.Count < line.ThresholdForTier(tier))
+                    break;
+
+                ushort tierTok = line.TokEntryForTier(tier);
+                if (tierTok != 0 && !HasTok(tierTok))
+                    AddTok(tierTok);
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds every tome tactic fragment counter from the Tome entries this character
+        /// actually holds, awards any tier the resulting totals already satisfy, and pushes the
+        /// counters to the client.
+        ///
+        /// Needed in two cases. Characters who unlocked bestiary entries before tome tactics
+        /// existed hold the fragments but have no counters, so without this their progress would
+        /// only start from the next fragment earned. And the .alltoks bulk grant deliberately
+        /// bypasses AddTok, so nothing would advance the counters there either.
+        ///
+        /// Idempotent: the counter is derived from held entries, so re-running produces the same
+        /// totals. It only ever raises a counter -- a value already at or above the derived total
+        /// is left alone rather than clawed back, since a fragment could legitimately have been
+        /// counted from a source this does not know about.
+        /// </summary>
+        /// <returns>The number of line counters changed.</returns>
+        public int RecomputeTomeTacticCounters()
+        {
+            if (!_loaded)
+                return 0;
+
+            int changed = 0;
+
+            foreach (Tome_Tactic_Line line in TomeTacticService.GetLines())
+            {
+                IList<ushort> fragments = TomeTacticService.GetFragmentsForLine(line.AcId);
+
+                uint held = 0;
+                for (int i = 0; i < fragments.Count; ++i)
+                    if (HasTok(fragments[i]))
+                        ++held;
+
+                Character_action_counter counter;
+                if (_actionCounters.TryGetValue(line.AcId, out counter))
+                {
+                    if (counter.Count >= held)
+                        continue;
+
+                    counter.Count = held;
+                    counter.Dirty = true;
+                    CharMgr.Database.SaveObject(counter);
+                }
+                else
+                {
+                    if (held == 0)
+                        continue;
+
+                    counter = new Character_action_counter
+                    {
+                        CharacterId = GetPlayer().CharacterId,
+                        AcId = line.AcId,
+                        Count = held
+                    };
+
+                    _actionCounters.Add(line.AcId, counter);
+                    CharMgr.Database.AddObject(counter);
+                }
+
+                ++changed;
+                SendActionCounterUpdate(line.AcId, counter.Count);
+
+                for (int tier = 1; tier <= 3; tier++)
+                {
+                    if (counter.Count < line.ThresholdForTier(tier))
+                        break;
+
+                    ushort tierTok = line.TokEntryForTier(tier);
+                    if (tierTok != 0 && !HasTok(tierTok))
+                        AddTok(tierTok);
+                }
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Pushes every tome tactic line counter so the Tome's fragment pages show real progress.
+        /// </summary>
+        public void SendTomeTacticCounters()
+        {
+            if (!_loaded)
+                return;
+
+            foreach (Tome_Tactic_Line line in TomeTacticService.GetLines())
+                SendActionCounterUpdate(line.AcId, GetActionCounter(line.AcId));
+        }
+
+        /// <summary>How many bulk-granted Tome rows to accumulate before forcing a save.</summary>
+        private const int BulkGrantFlushSize = 500;
+
+        /// <summary>
+        /// Pushes this character's real action counters to the client: every bestiary species
+        /// counter, the total-kills counter, and every ward task counter.
+        ///
+        /// Replaces the old .tokbestiary behaviour, which sent SendActionCounterUpdate(i, i) for
+        /// i in 1..999 -- telling the client counter 5 was 5 and counter 700 was 700, persisting
+        /// nothing and corrupting the displayed progress of every bestiary, ward and tome tactic
+        /// counter at once.
+        /// </summary>
+        /// <returns>The number of counters pushed.</returns>
+        public int ResendActionCounters()
+        {
+            if (!_loaded)
+                return 0;
+
+            int sent = 0;
+
+            foreach (Character_tok_kills kills in _tokKillCount.Values)
+            {
+                if (kills == null || kills.NPCEntry == 0)
+                    continue;
+
+                SendActionCounterUpdate(kills.NPCEntry, kills.Count);
+                sent++;
+            }
+
+            foreach (Ward_Fragment_Task task in WardTaskService.GetWardTasks())
+            {
+                SendActionCounterUpdate(task.AcId, GetActionCounter(task.AcId));
+                sent++;
+            }
+
+            foreach (Tome_Tactic_Line line in TomeTacticService.GetLines())
+            {
+                SendActionCounterUpdate(line.AcId, GetActionCounter(line.AcId));
+                sent++;
+            }
+
+            return sent;
+        }
+
+        /// <summary>
+        /// Developer bulk award behind .alltoks. Deliberately does not route through AddTok.
+        /// That path, driven over the ~12,000 rows of tok_infos, sent one F_TOK_ENTRY_UPDATE per
+        /// entry, re-materialised Info.Toks on every call (an O(n) rebuild inside an O(n) loop,
+        /// roughly 72M list operations), awarded XP ~12,000 times, and left every insert to the
+        /// save pump, which batches all dirty objects into a single unbounded transaction.
+        ///
+        /// Item and token rewards are intentionally skipped: a developer revealing the Tome does
+        /// not want 49 Bestial Tokens and every item reward materialising in their bags.
+        /// </summary>
+        /// <returns>The number of Tome entries newly granted.</returns>
+        public int GrantAllToks()
+        {
+            if (!_loaded)
+            {
+                Log.Error("ToKSystem", "Tried to bulk-grant Toks when the system wasn't loaded.");
+                return 0;
+            }
+
+            if (TokService._Toks == null)
+                return 0;
+
+            Player player = GetPlayer();
+            byte realm = player.Info.Realm;
+            uint characterId = player.CharacterId;
+
+            int granted = 0;
+            int sinceFlush = 0;
+
+            foreach (Tok_Info info in TokService._Toks.Values)
+            {
+                if (info == null || _tokUnlocks.ContainsKey(info.Entry))
+                    continue;
+
+                if (info.Realm != 0 && info.Realm != realm)
+                    continue;
+
+                Character_tok tok = new Character_tok
+                {
+                    TokEntry = info.Entry,
+                    CharacterId = characterId,
+                    Count = 1
+                };
+
+                _tokUnlocks.Add(info.Entry, tok);
+                TrackWardFragment(info.Entry);
+                CharMgr.Database.AddObject(tok);
+                granted++;
+
+                if (++sinceFlush >= BulkGrantFlushSize)
+                {
+                    CharMgr.Database.ForceSave();
+                    sinceFlush = 0;
+                }
+            }
+
+            if (sinceFlush > 0)
+                CharMgr.Database.ForceSave();
+
+            // Once, rather than once per entry.
+            player.Info.Toks = _tokUnlocks.Values.ToList();
+
+            // Bypassing AddTok also bypassed the fragment logic, so the tactic counters would sit
+            // at 0 while every tactic showed as unlocked. Derive them from what was just granted.
+            RecomputeTomeTacticCounters();
+
+            // One bitmap packet instead of ~12,000 individual entry updates.
+            SendAllToks();
+
+            return granted;
+        }
+
         public void SendAllToks()
         {
 
@@ -599,6 +863,15 @@ namespace WorldServer.World.Interfaces
             if (TB == null)
                 return;
 
+            // Bestiary_ID is the client's per-species action counter id, not the creature subtype
+            // (migration 54). It was NULL for every row until then, which the ORM read back as 0:
+            // every species shared bucket 0, the client's per-species counter never moved, and the
+            // milestone ladder below ran off one global kill count. Subtype 68 "Hammerer" has no
+            // client species and so legitimately has no counter -- counting it would put us back
+            // in the shared bucket, so it is skipped rather than written to counter 0.
+            if (TB.Bestiary_ID == 0)
+                return;
+
             Character_tok_kills kills;
             if (_tokKillCount.TryGetValue(TB.Bestiary_ID, out kills))
             {
@@ -625,15 +898,17 @@ namespace WorldServer.World.Interfaces
 
             SendActionCounterUpdate(TB.Bestiary_ID, kill);
 
-            // total kill counter
-
-            if (_tokKillCount.TryGetValue(495, out kills))
+            // Total kill counter. Load() seeds 495, but a character whose seeding failed would
+            // previously leave "kills" null here and NRE on the send below, killing the whole
+            // kill-credit path for that character.
+            Character_tok_kills totalKills;
+            if (_tokKillCount.TryGetValue(495, out totalKills) && totalKills != null)
             {
-                kills.Count++;
-                kills.Dirty = true;
-                CharMgr.Database.SaveObject(kills);
+                totalKills.Count++;
+                totalKills.Dirty = true;
+                CharMgr.Database.SaveObject(totalKills);
+                SendActionCounterUpdate(495, totalKills.Count);
             }
-            SendActionCounterUpdate(495, kills.Count);
 
             string tok;
 
@@ -652,16 +927,26 @@ namespace WorldServer.World.Interfaces
             else
                 return;
 
-            string[] tmp = tok.Split(';');
-            if (tmp.Length > 0)
+            // A milestone cell holds one or more tok entries, e.g. "3007;10501". String.Split never
+            // returns an empty array, so the old else branch was dead, and UInt16.Parse threw on any
+            // malformed or empty cell -- aborting kill credit mid-award for every later kill of that
+            // species. Parse defensively and log the bad cell instead (AGENTS.md rule 4).
+            foreach (string st in tok.Split(';'))
             {
-                foreach (string st in tmp)
+                string entryText = st.Trim();
+                if (entryText.Length == 0)
+                    continue;
+
+                ushort tokEntry;
+                if (!ushort.TryParse(entryText, out tokEntry))
                 {
-                    AddTok(UInt16.Parse(st));
+                    Log.Error("TokInterface", "Bestiary species " + type + " milestone " + kill
+                        + " has unparsable tok entry '" + entryText + "'; skipped.");
+                    continue;
                 }
+
+                AddTok(tokEntry);
             }
-            else
-                AddTok(UInt16.Parse(tok));
         }
 
         public void CheckTokKills(ushort type, uint count)

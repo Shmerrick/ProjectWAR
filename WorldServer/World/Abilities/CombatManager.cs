@@ -8,6 +8,7 @@ using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
+using WorldServer.Services.World;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities
@@ -429,6 +430,18 @@ namespace WorldServer.World.Abilities
 
             int offensiveStat, defensiveStat;
 
+            // Sky Titan's Bulwark line, Favour the Daemonic line and Cunning Evasion line: +5%
+            // chance to defend against their line's creature types. Added to each defensive stat
+            // below rather than as a separate roll, so it keeps the normal block/parry/evade/
+            // disrupt event the client expects.
+            short tomeDefendBonus = TomeTacticService.PlayerHasEffect(target as Player,
+                TomeTacticService.TomeTacticEffect.DefendChance, TomeTacticService.GetCreatureType(caster))
+                ? (short)TomeTacticService.DefendChanceBonus
+                : (short)0;
+
+            if (tomeDefendBonus > 0)
+                (target as Player)?.TacInterface?.CountTomeTacticEffect(TomeTacticService.TomeTacticEffect.DefendChance);
+
             #region GetStat
             switch (damageInfo.StatUsed)
             {
@@ -462,7 +475,7 @@ namespace WorldServer.World.Abilities
                 if (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info?.Type == 5)
                 {
 
-                    double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
+                    double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, damageInfo, (short)(target.StsInterface.GetTotalStat(Stats.Block) + tomeDefendBonus), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
                     if (StaticRandom.Instance.Next(100) <= block)
                     {
                         target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
@@ -485,7 +498,7 @@ namespace WorldServer.World.Abilities
                 case 1: // Parry
                     {
                         //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
-                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, (short)(target.StsInterface.GetTotalStat(Stats.Parry) + tomeDefendBonus), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
 
                         if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                         {
@@ -502,7 +515,7 @@ namespace WorldServer.World.Abilities
                 case 8: // Evade
                     {
                         //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
-                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, (short)(target.StsInterface.GetTotalStat(Stats.Evade) + tomeDefendBonus), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
 
                         if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                         {
@@ -519,7 +532,7 @@ namespace WorldServer.World.Abilities
                 case 9: // Disrupt
                     {
                         //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
-                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, (short)(target.StsInterface.GetTotalStat(Stats.Disrupt) + tomeDefendBonus), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
 
                         if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
                         {
@@ -563,6 +576,11 @@ namespace WorldServer.World.Abilities
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
+
+            // Tome tactics are conditional on the other party's bestiary creature type, which
+            // neither ModifyDamageOut nor ModifyDamageIn is given, so they are applied here where
+            // both sides are in scope.
+            TomeTacticService.ApplyDamageModifiers(caster, target, damageInfo);
 
             Creature creature = target.GetCreature();
             if (creature != null)
@@ -1117,6 +1135,11 @@ namespace WorldServer.World.Abilities
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
+
+            // Tome tactics are conditional on the other party's bestiary creature type, which
+            // neither ModifyDamageOut nor ModifyDamageIn is given, so they are applied here where
+            // both sides are in scope.
+            TomeTacticService.ApplyDamageModifiers(caster, target, damageInfo);
 
             Creature creature = target.GetCreature();
             if (creature != null)
@@ -2311,6 +2334,15 @@ namespace WorldServer.World.Abilities
 
             // Add from stats
             chanceToBeCrit += damageInfo.CriticalHitRate + caster.StsInterface.GetTotalStat(Stats.CriticalHitRate) - target.StsInterface.GetTotalStat(Stats.CriticalHitRateReduction);
+
+            // Sky Titan's Favor / Strength and Cunning Assault / Stratagem: +5% crit against their
+            // line's creature types.
+            if (TomeTacticService.PlayerHasEffect(caster as Player, TomeTacticService.TomeTacticEffect.CritChance,
+                    TomeTacticService.GetCreatureType(target)))
+                {
+                chanceToBeCrit += (int)TomeTacticService.CritChanceBonus;
+                (caster as Player)?.TacInterface?.CountTomeTacticEffect(TomeTacticService.TomeTacticEffect.CritChance);
+                }
 
             switch (damageInfo.StatUsed)
             {

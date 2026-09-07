@@ -661,6 +661,12 @@ namespace WorldServer.World.Objects
                 // Ward fragment task counters, so the Tome shows real progress rather than 0/N.
                 TokInterface.SendWardTaskCounters();
 
+                // Same for the nine tome tactic fragment counters, after deriving them from the
+                // bestiary entries this character already holds. Without the backfill, anyone who
+                // unlocked bestiary entries before tome tactics existed would show 0 fragments.
+                TokInterface.RecomputeTomeTacticCounters();
+                TokInterface.SendTomeTacticCounters();
+
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
                 GldInterface.Load(Guild.Guild.GetGuildFromLeader(Info.CharacterId));
@@ -950,6 +956,11 @@ namespace WorldServer.World.Objects
                 AbtInterface.SendAbilityLevels();
                 AbtInterface.ReloadMastery();
                 AbtInterface.SendMasteryPointsUpdate();
+
+                // Tome tactic advance data belongs in this login burst, next to the mastery
+                // categories: the client builds its advance table once here and the tome training
+                // window only reads that cache.
+                AbtInterface.SendTomeTacticAdvances();
                 TacInterface.HandleTactics(_Value.GetTactics());
                 TacInterface.SendTactics();
 
@@ -2281,7 +2292,6 @@ namespace WorldServer.World.Objects
                 if ((Convert.ToInt64(lockouts[i].Split(':')[1])) < TCPManager.GetTimeStamp())
                 {
                     _Value.RemoveLockout(lockouts[i]);
-                    InstanceService._InstanceLockouts.Remove(lockouts[i]);
                     lockouts.RemoveAt(i);
                     i--;
                 }

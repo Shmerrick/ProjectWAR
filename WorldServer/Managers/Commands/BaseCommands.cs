@@ -1940,22 +1940,103 @@ namespace WorldServer.Managers.Commands
         #region Toks
         public static bool AllTok(Player plr, ref List<string> values)
         {
+            // Was: AddTok(i) for i in 1..11998 -- one packet, one O(n) Info.Toks rebuild and one
+            // XP award per entry across all ~12,000 tok_infos rows, with every insert left to the
+            // save pump's single unbounded transaction. The bounded bulk path replaces it, and it
+            // also reaches entry 11999, which the old ushort bound excluded.
+            int granted = plr.TokInterface.GrantAllToks();
 
-            for (ushort i = 1; i < 11999; i++)
+            plr.SendClientMessage("Granted " + granted + " Tome entries.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            return true;
+        }
+
+        /// <summary>
+        /// Reports which tome tactic effects are active against the current target, and why.
+        ///
+        /// Every tome tactic is conditional on the target's bestiary creature type matching the
+        /// tactic's own line, and none of the effects have any UI feedback -- a 5% damage change is
+        /// inside normal variance on a single hit. This makes the match visible directly instead of
+        /// having to infer it from combat numbers.
+        /// </summary>
+        public static bool TomeTacticInfo(Player plr, ref List<string> values)
+        {
+            Unit target = plr.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
+
+            if (target == null)
             {
-                plr.TokInterface.AddTok(i);
+                plr.SendClientMessage("No enemy target selected.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                return true;
             }
 
+            byte creatureType = TomeTacticService.GetCreatureType(target);
+
+            plr.SendClientMessage("Target: " + target.Name + " (creature type " + creatureType + ")",
+                ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+            if (creatureType == 0)
+            {
+                plr.SendClientMessage("  No bestiary creature type: tome tactics never apply (players, pets and untyped creatures).",
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                return true;
+            }
+
+            Tome_Tactic_Line line;
+            if (TomeTacticService.TryGetLineForCreatureType(creatureType, out line))
+                plr.SendClientMessage("  Belongs to the " + line.Name + " line (counter " + line.AcId + ").",
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            else
+                plr.SendClientMessage("  This creature type belongs to no tactic line.",
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+            IList<ushort> slotted = plr.TacInterface.GetActiveTactics();
+            plr.SendClientMessage("  Slotted tactics: " + (slotted.Count == 0 ? "none" : string.Join(", ", slotted)),
+                ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+            int active = 0;
+            foreach (TomeTacticService.TomeTacticEffect effect in Enum.GetValues(typeof(TomeTacticService.TomeTacticEffect)))
+            {
+                if (!TomeTacticService.PlayerHasEffect(plr, effect, creatureType))
+                    continue;
+
+                ++active;
+                plr.SendClientMessage("  ACTIVE: " + effect + " (" + TomeTacticService.DescribeEffect(effect)
+                    + ") -- applied " + plr.TacInterface.GetTomeTacticEffectCount(effect) + " time(s) since login",
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            }
+
+            if (active == 0)
+            {
+                plr.SendClientMessage("  No tome tactic effects apply to this target.",
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                return true;
+            }
+
+            // The aggro reduction is otherwise only observable by walking at things and guessing,
+            // so state the actual distances the AI scan will use for this creature.
+            if (TomeTacticService.PlayerHasEffect(plr, TomeTacticService.TomeTacticEffect.AggroRange, creatureType))
+            {
+                float normal = AIInterface.MaxAggroRange + target.Level / 1.5f;
+                plr.SendClientMessage("  Aggro range for this creature: " + normal.ToString("0.0")
+                    + " normally, " + (normal * TomeTacticService.AggroRangeMultiplier).ToString("0.0")
+                    + " with your tactic. Current distance: " + plr.GetDistanceToObject(target, true).ToString("0.0"),
+                    ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            }
+
+            plr.SendClientMessage("  Counts are cumulative since login; compare against the control creature "
+                + "(creature type 0) to confirm an effect is conditional.",
+                ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
             return true;
         }
 
         public static bool AllTokBestiary(Player plr, ref List<string> values)
         {
-            for (int i = 1; i < 1000; i++)
-            {
-                plr.TokInterface.SendActionCounterUpdate((ushort)i, (uint)i);
-            }
+            // Was: SendActionCounterUpdate(i, i) for i in 1..999, which told the client every
+            // counter's value was its own id and persisted nothing, corrupting the displayed
+            // bestiary, ward and tome tactic progress. Now resends the character's real counters.
+            int sent = plr.TokInterface.ResendActionCounters();
+
+            plr.SendClientMessage("Resent " + sent + " action counters.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             return true;
         }
         #endregion

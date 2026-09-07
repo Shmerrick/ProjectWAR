@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Common;
 using FrameWork;
+using WorldServer.Services.World;
 using WorldServer.NetWork;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -86,20 +87,136 @@ namespace WorldServer.World.Interfaces
             return maxAllowedTactics;
         }
 
+        /// <summary>Renown tactic slots, granted at RR90 and RR100.</summary>
+        private const int MaxRenownTactics = 2;
+
+        /// <summary>Tome tactic slots. One, matching Player.GetTomeTacticSlots and live 1.4.8.</summary>
+        private const int MaxTomeTactics = 1;
+
+        /// <summary>
+        /// Filters a requested tactic list down to what the player can actually slot, honouring
+        /// the three separate pools the client draws: career, renown and tome.
+        ///
+        /// Tome tactics are now classified by identity (the 27 Category 16 abilities behind
+        /// TomeTacticService). Previously anything that was not a renown tactic fell through to
+        /// "career, else tome", so a fifth *career* tactic silently occupied the tome slot and a
+        /// real tome tactic competed with career tactics for career slots.
+        /// </summary>
+        /// <param name="requested">Tactics the client asked to slot, in order.</param>
+        /// <param name="sendTacticUpdate">Set when something was rejected, so the caller resyncs.</param>
+        private List<ushort> SelectSlottableTactics(List<ushort> requested, ref bool sendTacticUpdate)
+        {
+            int maxCareer = GetMaxAllowedTactics();
+
+            int careerCount = 0;
+            int renownCount = 0;
+            int tomeCount = 0;
+
+            List<ushort> valid = new List<ushort>();
+
+            foreach (ushort tactic in requested)
+            {
+                if (tactic == 0 || valid.Contains(tactic))
+                    continue;
+
+                int used;
+                int limit;
+
+                if (AbilityMgr.RenownTacticEntries.Contains(tactic))
+                {
+                    used = renownCount;
+                    limit = MaxRenownTactics;
+                }
+                else if (TomeTacticService.IsTomeTactic(tactic))
+                {
+                    used = tomeCount;
+                    limit = MaxTomeTactics;
+                }
+                else
+                {
+                    used = careerCount;
+                    limit = maxCareer;
+                }
+
+                if (used >= limit)
+                {
+                    sendTacticUpdate = true;
+                    continue;
+                }
+
+                valid.Add(tactic);
+
+                if (AbilityMgr.RenownTacticEntries.Contains(tactic))
+                    renownCount++;
+                else if (TomeTacticService.IsTomeTactic(tactic))
+                    tomeCount++;
+                else
+                    careerCount++;
+            }
+
+            return valid;
+        }
+
+        /// <summary>
+        /// True when a slotted tome tactic lets this player approach a monster of the given
+        /// creature type more closely before it aggroes.
+        ///
+        /// Called from the NPC aggro scan, which runs on the 50ms region tick for every enemy in
+        /// range, so this indexes rather than enumerating and allocates nothing.
+        /// </summary>
+        /// <summary>
+        /// The tactic entries currently slotted. Exposed read-only for the tome tactic effect
+        /// checks, which run on combat paths and must not allocate.
+        /// </summary>
+        public IList<ushort> GetActiveTactics()
+        {
+            return _activeTactics;
+        }
+
+        /// <summary>
+        /// How many times each tome tactic effect has actually been applied to this character since
+        /// login.
+        ///
+        /// None of these effects has any client feedback -- a 5% damage change or a defend bonus is
+        /// invisible against normal variance -- so without a tally there is no way to distinguish
+        /// "working" from "never fired". Incremented at each combat hook and reported by
+        /// .tometactic. An int array indexed by the enum: no allocation on the combat path.
+        /// </summary>
+        private readonly int[] _tomeTacticEffectsApplied =
+            new int[System.Enum.GetValues(typeof(TomeTacticService.TomeTacticEffect)).Length];
+
+        public void CountTomeTacticEffect(TomeTacticService.TomeTacticEffect effect)
+        {
+            int index = (int)effect;
+            if (index >= 0 && index < _tomeTacticEffectsApplied.Length)
+                ++_tomeTacticEffectsApplied[index];
+        }
+
+        public int GetTomeTacticEffectCount(TomeTacticService.TomeTacticEffect effect)
+        {
+            int index = (int)effect;
+            return index >= 0 && index < _tomeTacticEffectsApplied.Length ? _tomeTacticEffectsApplied[index] : 0;
+        }
+
+        public bool ReducesAggroRangeFor(byte creatureType)
+        {
+            for (int i = 0; i < _activeTactics.Count; ++i)
+                if (TomeTacticService.ReducesAggroRange(_activeTactics[i], creatureType))
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Restores the saved tactic set. Currently unreferenced -- the login path is
+        /// Player.OnLoad calling HandleTactics(_Value.GetTactics()) directly -- but kept in step
+        /// with it: this used to read only Tactic1-4, so wiring it up would have silently dropped
+        /// everything in slots 5-8, which is exactly where the two renown tactics and the single
+        /// tome tactic live once the four career slots are full.
+        /// </summary>
         public void LoadTactics()
         {
-            var list = new List<ushort>();
-
-            if (_myPlayer._Value.Tactic1 != 0 && !list.Contains(_myPlayer._Value.Tactic1))
-                list.Add(_myPlayer._Value.Tactic1);
-            if (_myPlayer._Value.Tactic2 != 0 && !list.Contains(_myPlayer._Value.Tactic2))
-                list.Add(_myPlayer._Value.Tactic2);
-            if (_myPlayer._Value.Tactic3 != 0 && !list.Contains(_myPlayer._Value.Tactic3))
-                list.Add(_myPlayer._Value.Tactic3);
-            if (_myPlayer._Value.Tactic4 != 0 && !list.Contains(_myPlayer._Value.Tactic4))
-                list.Add(_myPlayer._Value.Tactic4);
-
-            HandleTactics(list);
+            HandleTactics(_myPlayer._Value.GetTactics());
         }
 
         public void ReloadTactics()
@@ -124,44 +241,7 @@ namespace WorldServer.World.Interfaces
             if (_myPlayer._Value.Tactic8 != 0 && !tacList.Contains(_myPlayer._Value.Tactic8))
                 tacList.Add(_myPlayer._Value.Tactic8);
 
-            int maxAllowedTactics = GetMaxAllowedTactics();
-            int maxRenown = 2;
-            int maxTome = 1;
-
-            int careerCount = 0;
-            int renownCount = 0;
-            int tomeCount = 0;
-
-            List<ushort> validTactics = new List<ushort>();
-            foreach (ushort tactic in tacList)
-            {
-                if (tactic == 0 || validTactics.Contains(tactic)) continue;
-
-                if (AbilityMgr.RenownTacticEntries.Contains(tactic))
-                {
-                    if (renownCount < maxRenown)
-                    {
-                        validTactics.Add(tactic);
-                        renownCount++;
-                    }
-                    else sendTacticUpdate = true;
-                }
-                else
-                {
-                    if (careerCount < maxAllowedTactics)
-                    {
-                        validTactics.Add(tactic);
-                        careerCount++;
-                    }
-                    else if (tomeCount < maxTome)
-                    {
-                        validTactics.Add(tactic);
-                        tomeCount++;
-                    }
-                    else sendTacticUpdate = true;
-                }
-            }
-            tacList = validTactics;
+            tacList = SelectSlottableTactics(tacList, ref sendTacticUpdate);
 
             foreach (NewBuff buff in _activeBuffs)
             {
@@ -279,44 +359,7 @@ namespace WorldServer.World.Interfaces
             for (byte i = 1; i <= 8; i++)
                 _myPlayer._Value.SetTactic(i, 0);
 
-            int maxAllowedTactics = GetMaxAllowedTactics();
-            int maxRenown = 2;
-            int maxTome = 1;
-
-            int careerCount = 0;
-            int renownCount = 0;
-            int tomeCount = 0;
-
-            List<ushort> validTactics = new List<ushort>();
-            foreach (ushort tactic in tacList)
-            {
-                if (tactic == 0 || validTactics.Contains(tactic)) continue;
-
-                if (AbilityMgr.RenownTacticEntries.Contains(tactic))
-                {
-                    if (renownCount < maxRenown)
-                    {
-                        validTactics.Add(tactic);
-                        renownCount++;
-                    }
-                    else sendTacticUpdate = true;
-                }
-                else
-                {
-                    if (careerCount < maxAllowedTactics)
-                    {
-                        validTactics.Add(tactic);
-                        careerCount++;
-                    }
-                    else if (tomeCount < maxTome)
-                    {
-                        validTactics.Add(tactic);
-                        tomeCount++;
-                    }
-                    else sendTacticUpdate = true;
-                }
-            }
-            tacList = validTactics;
+            tacList = SelectSlottableTactics(tacList, ref sendTacticUpdate);
 
             foreach (var buff in _activeBuffs)
             {

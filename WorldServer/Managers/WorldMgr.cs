@@ -708,6 +708,16 @@ namespace WorldServer.Managers
             if (Program.Config.XpRate > 0)
                 XP *= (uint)Program.Config.XpRate;
 
+            // Harrier's Ken, Boon of Persistence and Cunning Stratagem: +50% experience from their
+            // line's creature types. Applied to the base award so it flows through both the solo
+            // and priority-group paths below.
+            if (TomeTacticService.PlayerHasEffect(plr, TomeTacticService.TomeTacticEffect.Experience,
+                    TomeTacticService.GetCreatureType(victim)))
+            {
+                XP += (uint)(XP * TomeTacticService.ExperienceBonus);
+                plr.TacInterface?.CountTomeTacticEffect(TomeTacticService.TomeTacticEffect.Experience);
+            }
+
             return XP;
         }
 

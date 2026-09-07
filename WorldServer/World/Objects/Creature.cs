@@ -35,7 +35,12 @@ namespace WorldServer.World.Objects
         {
         }
 
-        public Creature(Creature_spawn spawn) : this()
+        public Creature(Creature_spawn spawn) : this(spawn, null)
+        {
+        }
+
+        // A companion may override its size without mutating the shared prototype.
+        protected Creature(Creature_spawn spawn, byte? scaleOverride) : this()
         {
             if (spawn == null)
                 throw new ArgumentNullException("NULL spawn passed to Creature.");
@@ -47,7 +52,7 @@ namespace WorldServer.World.Objects
             if (spawn.Proto.Invulnerable == 1)
                 IsInvulnerable = true;
 
-            Scale = (byte)StaticRandom.Instance.Next(Spawn.Proto.MinScale, Spawn.Proto.MaxScale);
+            Scale = scaleOverride ?? (byte)StaticRandom.Instance.Next(Spawn.Proto.MinScale, Spawn.Proto.MaxScale);
 
             if (spawn.Proto.BaseRadiusUnits > 0)
                 BaseRadius = spawn.Proto.BaseRadiusUnits * (Scale / 50f) / UNITS_TO_FEET;
@@ -514,6 +519,15 @@ namespace WorldServer.World.Objects
 
         public override void SendInteract(Player player, InteractMenu menu)
         {
+            // The City Librarian's purchase flow reuses the career trainer's menu numbers, which
+            // were themselves never confirmed against a live client -- and interactionbase.lua
+            // keeps the chosen training type client-side, so the packet does not name it. Log what
+            // the client actually sends for this one rare NPC title rather than guessing.
+            if (Spawn?.Proto != null && Spawn.Proto.TitleId == CreatureTitle.TomeTacticLibrarian)
+                Log.Info("TomeTacticLibrarian", player.Name + " interact: Menu=" + menu.Menu
+                    + " Page=" + menu.Page + " Num=" + menu.Num + " Count=" + menu.Count
+                    + " InteractType=" + InteractType + " TrainerType=" + Spawn.Proto.InteractTrainerType);
+
             player.QtsInterface.HandleEvent(Objective_Type.QUEST_SPEAK_TO, Spawn.Entry, 1);
 
             if (!IsDead)
@@ -530,6 +544,17 @@ namespace WorldServer.World.Objects
                 {
                     case 7:
                         {
+                            // Selecting a trainer option sends Menu=7 (confirmed from a live
+                            // client: "Bigboy interact: Menu=7 ... TrainerType=16"). The rest of
+                            // this case handles the tradeskill trainers; the City Librarian answers
+                            // with its tome tactic list. Num/Page/Count are all 0 here, so the
+                            // purchase itself arrives separately on F_BUY_CAREER_PACKAGE.
+                            if (Spawn.Proto.TitleId == CreatureTitle.TomeTacticLibrarian)
+                            {
+                                SendTomeTacticList(player);
+                                break;
+                            }
+
                             switch (Spawn.Proto.TitleId)
                             {
                                 case CreatureTitle.Apothecary:
@@ -881,7 +906,11 @@ namespace WorldServer.World.Objects
 
                         if (InteractType == InteractType.INTERACTTYPE_TRAINER)
                         {
-                            if (Spawn.Proto.TitleId == CreatureTitle.CareerTrainer || Spawn.Proto.TitleId == CreatureTitle.RenownTrainer || Spawn.Proto.TitleId == CreatureTitle.Trainer || player.Level <= Constants.MaxTierLevel[Region.GetTier() - 1])
+                            // TomeTacticLibrarian is listed explicitly: it otherwise only received
+                            // the trainer option through the level fallback below, which happens to
+                            // hold in the capitals (tier 4, MaxTierLevel 40) but would silently
+                            // drop the option anywhere the tier or level cap differed.
+                            if (Spawn.Proto.TitleId == CreatureTitle.CareerTrainer || Spawn.Proto.TitleId == CreatureTitle.RenownTrainer || Spawn.Proto.TitleId == CreatureTitle.Trainer || Spawn.Proto.TitleId == CreatureTitle.TomeTacticLibrarian || player.Level <= Constants.MaxTierLevel[Region.GetTier() - 1])
                                 menuItems += 1; // Trainer
 
                             // Theese were previously in there, nice to keep them unless theres info in creature_texts
@@ -1339,18 +1368,63 @@ namespace WorldServer.World.Objects
         /// </summary>
         private void SendCareerTrainerAbilityList(Player player)
         {
-            List<WorldServer.World.Abilities.Components.AbilityInfo> purchasable =
-                player.AbtInterface.GetPurchasableCareerAbilities();
+            SendPurchasableAbilityList(
+                player,
+                player.AbtInterface.GetPurchasableCareerAbilities(),
+                1,
+                "Career Trainer",
+                "You have already learned all abilities available to you at your current level.");
+        }
 
+        /// <summary>
+        /// Opens the City Librarian's tome tactic window.
+        ///
+        /// The advance data itself is sent at login (AbilityInterface.SendTomeTacticAdvances);
+        /// resent here to keep the client's cache fresh, as live does.
+        ///
+        /// The window is then opened by the "show training" response below. interactiontraining.lua
+        /// only shows any training UI on SystemData.Events.INTERACT_SHOW_TRAINING, which the client
+        /// raises from this packet -- so without it the window can never appear no matter how
+        /// correct the advance data is. Verified in the official capture corpus: the live server
+        /// answers the client's F_INTERACT with F_INTERACT_RESPONSE "05 29 tt 00 00", where tt is
+        /// the trainer type (08 in the renown training capture, 06 for a career trainer, so 16
+        /// here). See docs/handoffs/2026-09-06-tome-tactics.md.
+        /// </summary>
+        private void SendTomeTacticList(Player player)
+        {
+            player.AbtInterface.SendTomeTacticAdvances();
+            SendShowTraining(player);
+        }
+
+        /// <summary>
+        /// Tells the client to open the training UI for this trainer's type. Live layout:
+        /// F_INTERACT_RESPONSE, type 5, constant 0x29, trainer type, then two zero bytes.
+        /// </summary>
+        private void SendShowTraining(Player player)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 8);
+            Out.WriteByte(5);                                  // show training
+            Out.WriteByte(0x29);
+            Out.WriteByte(Spawn.Proto.InteractTrainerType);    // 16 for the tome librarian
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            player.SendPacket(Out);
+        }
+
+        private void SendPurchasableAbilityList(
+            Player player,
+            List<WorldServer.World.Abilities.Components.AbilityInfo> purchasable,
+            byte categoryId,
+            string categoryName,
+            string emptyMessage)
+        {
             if (purchasable == null || purchasable.Count == 0)
             {
-                player.SendClientMessage(
-                    "You have already learned all abilities available to you at your current level.",
-                    ChatLogFilters.CHATLOGFILTERS_SAY);
+                player.SendClientMessage(emptyMessage, ChatLogFilters.CHATLOGFILTERS_SAY);
                 return;
             }
 
-            const byte CAT = 1; // CategoryID 1 = core career trainer abilities
+            byte CAT = categoryId;
 
             // F_CAREER_CATEGORY: mirrors mastery category header exactly
             // Mastery uses: cat(7), 1, 0, totalPoints, availPoints, 0,0,0, respecCost(uint32),
@@ -1367,7 +1441,7 @@ namespace WorldServer.World.Objects
             cat.WriteByte(0);
             cat.WriteByte(0x75);
             cat.WriteByte(0x30);
-            cat.WritePascalString("Career Trainer");
+            cat.WritePascalString(categoryName);
             cat.WriteByte(0);
             cat.WriteByte((byte)purchasable.Count);   // package list count
             cat.WriteByte(0);

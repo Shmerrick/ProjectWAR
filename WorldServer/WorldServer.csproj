@@ -376,6 +376,7 @@
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\HelpTipService.cs" />
     <Compile Include="Services\World\TokService.cs" />
+    <Compile Include="Services\World\TomeTacticService.cs" />
     <Compile Include="Services\World\WardTaskService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
     <Compile Include="Services\World\WaypointService.cs" />

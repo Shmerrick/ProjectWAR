@@ -4,6 +4,9 @@ using FrameWork;
 using GameData;
 using System;
 using System.Collections.Generic;
+using Common;
+using WorldServer.Managers;
+using WorldServer.Services.World;
 using SystemData;
 using WorldServer.NetWork;
 using WorldServer.World.Abilities.Buffs;
@@ -119,9 +122,76 @@ namespace WorldServer.World.Abilities
                 }
             }
 
+            LoadPurchasedTomeTactics();
+
             SyncRenownMasteryTactics();
             SyncRenownSilentBonuses();
 
+        }
+
+        /// <summary>
+        /// Restores the tome tactics this character bought from a City Librarian. Unlike career and
+        /// mastery abilities, they cannot be rederived from career and level, so without this the
+        /// purchase would silently vanish at the next login.
+        /// </summary>
+        private void LoadPurchasedTomeTactics()
+        {
+            if (_playerOwner == null)
+                return;
+
+            int restored = 0;
+
+            IList<Characters_tome_tactic> stored =
+                CharMgr.Database.SelectObjects<Characters_tome_tactic>("CharacterId=" + _playerOwner.CharacterId);
+
+            if (stored == null)
+                return;
+
+            foreach (Characters_tome_tactic row in stored)
+            {
+                if (row == null)
+                    continue;
+
+                // _abilities and _abilitySet must be tested separately, as SyncRenownMasteryTactics
+                // below already does. LoadCareerAbilities reassigns _abilities to a fresh career
+                // list every time it runs, but _abilitySet is readonly and is never cleared, so on
+                // a second pass a set-only check sees the entry as present and skips re-adding it
+                // to the rebuilt list. That silently dropped every purchased tactic from the
+                // ability packet while still reporting them as owned.
+                bool inList = _abilities.Exists(ab => ab.Entry == row.TacticEntry);
+                bool inSet = _abilitySet.Contains(row.TacticEntry);
+
+                if (inList && inSet)
+                    continue;
+
+                // Guard against a stale row for an entry that is no longer a tome tactic, which
+                // would otherwise put an arbitrary ability into the player's list.
+                if (!TomeTacticService.IsTomeTactic(row.TacticEntry))
+                {
+                    Log.Error("TomeTactic", "Character " + _playerOwner.CharacterId + " has a stored tome tactic "
+                        + row.TacticEntry + " that is not a tome tactic; ignored.");
+                    continue;
+                }
+
+                AbilityInfo info = AbilityMgr.GetAbilityInfo(row.TacticEntry);
+                if (info == null)
+                {
+                    Log.Error("TomeTactic", "Stored tome tactic " + row.TacticEntry + " has no ability info; ignored.");
+                    continue;
+                }
+
+                if (!inList)
+                    _abilities.Add(info);
+
+                if (!inSet)
+                    _abilitySet.Add(row.TacticEntry);
+
+                ++restored;
+            }
+
+            if (restored > 0)
+                Log.Info("TomeTactic", "Restored " + restored + " purchased tome tactic(s) for "
+                    + _playerOwner.Name + ".");
         }
 
         private static byte GetRequiredRenownForTactic(ushort tacticEntry, byte minimumRenown)
@@ -292,13 +362,22 @@ namespace WorldServer.World.Abilities
             Out.WriteByte((byte)_abilities.Count);
             Out.WriteUInt16(0x300);
 
+            int tomeTacticsSent = 0;
+
             foreach (var abInfo in _abilities/*.Where(IsValidAbility)*/) // Could cause invalid length under debolster conditions
             {
                 Out.WriteUInt16(abInfo.Entry);
                 Out.WriteByte(GetMasteryLevelFor(abInfo.ConstantInfo.MasteryTree));
+
+                if (TomeTacticService.IsTomeTactic(abInfo.Entry))
+                    ++tomeTacticsSent;
             }
 
             GetPlayer().SendPacket(Out);
+
+            Log.Info("TomeTactic", "SendAbilityLevels: " + _abilities.Count + " abilities to "
+                + GetPlayer().Name + ", of which " + tomeTacticsSent + " are tome tactics"
+                + (_abilities.Count > 255 ? " (COUNT EXCEEDS THE PACKET'S BYTE FIELD)" : string.Empty));
         }
 
         public void SendTest(ushort newEnt)
@@ -449,6 +528,179 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
+        /// <summary>
+        /// Tome tactics this player has earned but not yet bought, for the City Librarian's list.
+        ///
+        /// A tier is earned once its Section 26 Tome entry is held, which TokInterface awards when
+        /// the line's fragment counter reaches the tier threshold. Live 1.4.8 gated the librarian's
+        /// list the same way: the client's HasTomeUnlock checks the tactic is unlocked and that
+        /// fragment progress has reached its requirement before letting it be selected.
+        /// </summary>
+        public List<AbilityInfo> GetPurchasableTomeTactics()
+        {
+            List<AbilityInfo> purchasable = new List<AbilityInfo>();
+
+            if (!HasPlayer() || _playerOwner.TokInterface == null)
+                return purchasable;
+
+            foreach (Tome_Tactic_Line line in TomeTacticService.GetLines())
+            {
+                for (int tier = 1; tier <= 3; tier++)
+                {
+                    ushort tactic = line.TacticForTier(tier);
+                    ushort tokEntry = line.TokEntryForTier(tier);
+
+                    if (tactic == 0 || tokEntry == 0 || _abilitySet.Contains(tactic))
+                        continue;
+
+                    if (!_playerOwner.TokInterface.HasTok(tokEntry))
+                        continue;
+
+                    AbilityInfo info = AbilityMgr.GetAbilityInfo(tactic);
+                    if (info != null)
+                        purchasable.Add(info);
+                }
+            }
+
+            purchasable.Sort((a, b) => a.Entry.CompareTo(b.Entry));
+            return purchasable;
+        }
+
+        /// <summary>
+        /// Sends the tome tactic advance data: one F_CAREER_CATEGORY header for category 16 and an
+        /// F_CAREER_PACKAGE_INFO for each of the 27 tactics.
+        ///
+        /// Must be sent at login. The client builds its advance table once from the character setup
+        /// burst -- in the official capture the first F_CAREER_CATEGORY run lands immediately after
+        /// S_PLAYER_INITTED, F_QUEST_LIST and F_EXPERIENCE_TABLE -- and the tome training window
+        /// only reads that cache through GameData.Player.GetAdvanceData(). Sending it in response
+        /// to clicking the librarian was too late: the table was empty, so the window had nothing
+        /// to open with.
+        ///
+        /// All 27 go out regardless of what the player has earned, exactly as live does; the client
+        /// greys out the ones whose fragment counter is short via its own HasTomeUnlock check.
+        ///
+        /// Byte layout transcribed from WAR-RE-Toolkit/libs/protocolservices/Packet Logs,
+        /// "Inevitable City Shaman 40 94 Defense", which carries the live server's own category-16
+        /// exchange for these same 27 tactics. Offsets below are payload-relative.
+        /// </summary>
+        public void SendTomeTacticAdvances()
+        {
+            if (!HasPlayer())
+                return;
+
+            List<AbilityInfo> tactics = TomeTacticService.GetOrderedTactics();
+            if (tactics.Count == 0)
+            {
+                Log.Error("TomeTactic", "No tome tactic advances to send for " + _playerOwner.Name
+                    + "; the librarian window will have nothing to open with.");
+                return;
+            }
+
+            const byte CAT = (byte)CareerCategory.CAREERCATEGORY_TOME_CC_A;
+
+            PacketOut cat = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 128);
+            cat.WriteByte(CAT);                              // +0  category
+            cat.WriteByte(1);                                // +1
+            cat.WriteByte(0);                                // +2
+            cat.WriteByte(0);                                // +3  live sends 0, not a count
+            cat.WriteByte(0);                                // +4
+            cat.Fill(0, 3);                                  // +5..7
+            cat.WriteUInt32(0xE290);                         // +8..11
+            cat.WriteByte(0);                                // +12
+            cat.WriteByte(1);                                // +13
+            cat.WriteByte(0x4F);                             // +14
+            cat.WriteByte(0xF0);                             // +15
+            cat.WritePascalString("Tome Tactic CC A");       // +16
+            cat.WriteByte(0);
+            cat.WriteByte((byte)tactics.Count);
+            cat.WriteByte(0);
+            for (int i = 1; i <= tactics.Count; i++)
+            {
+                cat.WriteByte((byte)i);
+                cat.WriteByte(0);
+            }
+            cat.Fill(0, 2);
+            _playerOwner.SendPacket(cat);
+
+            for (int i = 0; i < tactics.Count; i++)
+            {
+                AbilityInfo ab = tactics[i];
+                Tome_Tactic_Line_Lookup lookup = TomeTacticService.GetPackageInfo(ab.Entry);
+
+                PacketOut pkg = new PacketOut((byte)Opcodes.F_CAREER_PACKAGE_INFO, 128);
+                pkg.WriteByte(CAT);                          // +0
+                pkg.WriteByte(1);                            // +1
+                pkg.WriteByte(0);                            // +2
+                pkg.WriteByte((byte)(i + 1));                // +3  package index, echoed on purchase
+                pkg.Fill(0, 10);                             // +4..13
+                pkg.WriteUInt16(lookup.TokEntry);            // +14 Section 26 unlock the client gates on
+                pkg.Fill(0, 8);                              // +16..23
+                pkg.WriteByte(1);                            // +24
+                pkg.WriteByte(0);                            // +25
+                pkg.WriteByte(0);                            // +26
+                pkg.WriteUInt16(lookup.AdvanceId);           // +27 sequential advance id, 809 + package
+                pkg.WriteByte(2);                            // +29
+                pkg.Fill(0, 2);                              // +30..31
+                pkg.WriteUInt16(ab.Entry);                   // +32 the tactic ability
+                pkg.WriteByte(0);                            // +34
+                pkg.WriteByte(1);                            // +35
+                pkg.WriteUInt16(ab.ConstantInfo != null ? ab.ConstantInfo.EffectID : (ushort)0); // +36
+                pkg.WriteByte(2);                            // +38
+                pkg.Fill(0, 7);                              // +39..45
+                pkg.WriteByte(1);                            // +46
+                pkg.WriteByte(2);                            // +47
+                pkg.Fill(0, 4);                              // +48..51
+                pkg.WritePascalString(ab.Name ?? "");        // +52
+                pkg.WriteByte(0);                            // prerequisite count
+                pkg.Fill(0, 4);
+
+                _playerOwner.SendPacket(pkg);
+            }
+
+            Log.Info("TomeTactic", "Sent " + tactics.Count + " tome tactic advances (category "
+                + CAT + ") to " + _playerOwner.Name + "; first=" + tactics[0].Entry
+                + " last=" + tactics[tactics.Count - 1].Entry);
+        }
+
+        /// <summary>Grants a tome tactic the player has earned, charging its cash cost.</summary>
+        public bool PurchaseTomeTactic(ushort abilityEntry)
+        {
+            if (!HasPlayer() || _abilitySet.Contains(abilityEntry))
+                return false;
+
+            AbilityInfo abInfo = GetPurchasableTomeTactics().Find(ab => ab.Entry == abilityEntry);
+            if (abInfo == null)
+                return false;
+
+            uint cost = abInfo.ConstantInfo?.CashCost ?? 0;
+            if (cost > 0 && !_playerOwner.RemoveMoney(cost))
+            {
+                _playerOwner.SendClientMessage(
+                    "You cannot afford this tactic.",
+                    ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return false;
+            }
+
+            _abilities.Add(abInfo);
+            _abilitySet.Add(abilityEntry);
+
+            // Persist it: a tome tactic is not rederivable from career and level, so this row is
+            // the only record that the purchase happened.
+            CharMgr.Database.AddObject(new Characters_tome_tactic
+            {
+                CharacterId = _playerOwner.CharacterId,
+                TacticEntry = abilityEntry
+            });
+
+            SendAbilityLevels();
+
+            // The tactics window is driven by the ability list, so resend it and let the client
+            // redraw its tome slot with the newly owned tactic available.
+            _playerOwner.TacInterface?.SendTactics();
+            return true;
+        }
+
         #endregion Events
 
         #region Validation
@@ -515,6 +767,12 @@ namespace WorldServer.World.Abilities
 
             // Renown mastery tactics are rank-granted and do not require a tree slot unlock.
             if (Array.IndexOf(RenownMasteryTactics, tacticEntry) >= 0)
+                return _abilitySet.Contains(tacticEntry);
+
+            // Tome tactics carry no mastery tree, so without this they would fall into the
+            // "MasteryTree == 0 means always valid" case below and every player could slot all 27
+            // regardless of fragments or purchase. They are earned, so they must have been granted.
+            if (TomeTacticService.IsTomeTactic(tacticEntry))
                 return _abilitySet.Contains(tacticEntry);
 
             if (constInfo.MasteryTree == 0)
@@ -1363,6 +1621,31 @@ namespace WorldServer.World.Abilities
             byte resource = packet.GetUint8();
             byte unk1 = packet.GetUint8();
             byte tree = packet.GetUint8();
+
+            // Tome tactics. The client's tome training window buys through the same
+            // BuyCareerPackage(tier, category, packageID) call as every other trainer, echoing the
+            // category the server advertised in F_CAREER_CATEGORY. This must be tested before the
+            // renown fallback below, which otherwise swallows every non-mastery category and
+            // answers "This ability is not implemented."
+            if (resource == (byte)CareerCategory.CAREERCATEGORY_TOME_CC_A ||
+                resource == (byte)CareerCategory.CAREERCATEGORY_TOME_CC_B)
+            {
+                // The package index is the position in the full 27-tactic list the librarian
+                // advertises, not a position in this player's earned subset: live sends every
+                // tactic and lets the client grey out the ones you have not unlocked, so the index
+                // is the same for every character.
+                ushort tacticEntry;
+
+                if (!TomeTacticService.TryGetTacticByPackageIndex(tree, out tacticEntry) ||
+                    !abInterface.PurchaseTomeTactic(tacticEntry))
+                {
+                    cclient.Plr.SendClientMessage(
+                        "You cannot purchase this tactic.",
+                        ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                }
+
+                return;
+            }
 
             if (resource != 7) // renown training
             {

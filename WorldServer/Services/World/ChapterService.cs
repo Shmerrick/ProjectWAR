@@ -17,23 +17,53 @@ namespace WorldServer.Services.World
             Log.Debug("WorldMgr", "Loading Chapter_Infos...");
 
             _Chapters = Database.MapAllObjects<uint, Chapter_Info>("Entry");
+            _chaptersByInfluence = BuildInfluenceIndex(_Chapters.Values);
+
+            Log.Success("LoadChapter_Infos", "Loaded " + _Chapters.Count + " Chapter_Infos");
+        }
+
+        internal static Dictionary<uint, Chapter_Info> BuildInfluenceIndex(IEnumerable<Chapter_Info> chapters)
+        {
             var byInfluence = new Dictionary<uint, Chapter_Info>();
-            foreach (Chapter_Info chapter in _Chapters.Values)
+            foreach (Chapter_Info chapter in chapters)
             {
                 if (chapter.InfluenceEntry == 0)
                     continue;
 
                 if (byInfluence.TryGetValue(chapter.InfluenceEntry, out Chapter_Info existing))
                 {
-                    Log.Notice("Chapter_Info", "Shared influence " + chapter.InfluenceEntry + " on chapters " +
-                        existing.Entry + " and " + chapter.Entry + "; retaining the first chapter.");
+                    // Client zone001/zone007 influenceids.csv share tracks 47/56;
+                    // a track is not a unique chapter or geographical area.
+                    if (ConflictingThreshold(existing.Tier1InfluenceCount, chapter.Tier1InfluenceCount) ||
+                        ConflictingThreshold(existing.Tier2InfluenceCount, chapter.Tier2InfluenceCount) ||
+                        ConflictingThreshold(existing.Tier3InfluenceCount, chapter.Tier3InfluenceCount))
+                        Log.Error("Chapter_Info", "Conflicting reward thresholds for influence " + chapter.InfluenceEntry +
+                            " on chapters " + existing.Entry + " and " + chapter.Entry + ".");
+
+                    // Select an existing reward definition, never a zero-cap map
+                    // placeholder just because the database returned it first.
+                    int existingQuality = InfluenceDefinitionQuality(existing);
+                    int chapterQuality = InfluenceDefinitionQuality(chapter);
+                    if (chapterQuality > existingQuality || (chapterQuality == existingQuality && chapter.Entry < existing.Entry))
+                        byInfluence[chapter.InfluenceEntry] = chapter;
                     continue;
                 }
                 byInfluence.Add(chapter.InfluenceEntry, chapter);
             }
-            _chaptersByInfluence = byInfluence;
+            return byInfluence;
+        }
 
-            Log.Success("LoadChapter_Infos", "Loaded " + _Chapters.Count + " Chapter_Infos");
+        private static bool ConflictingThreshold(uint first, uint second)
+        {
+            return first != 0 && second != 0 && first != second;
+        }
+
+        private static int InfluenceDefinitionQuality(Chapter_Info chapter)
+        {
+            bool complete = chapter.Tier1InfluenceCount > 0 &&
+                chapter.Tier2InfluenceCount >= chapter.Tier1InfluenceCount &&
+                chapter.Tier3InfluenceCount >= chapter.Tier2InfluenceCount;
+            return (complete ? 2 : 0) + (chapter.CreatureEntry != 0 ? 1 : 0);
         }
         public static Chapter_Info GetChapter(uint Entry)
         {
@@ -90,7 +120,10 @@ namespace WorldServer.Services.World
                         " (missing=" + missingDestro + "). Influence cannot be awarded on the missing tracks (BUG-038).");
                 }
             }
-            Log.Notice("Zone_Area", "Influence reference validation: " + invalidAreas + " area rows with missing tracks.");
+            if (invalidAreas != 0)
+                Log.Notice("Zone_Area", "Influence reference validation: " + invalidAreas + " area rows with missing tracks.");
+            else
+                Log.Success("Zone_Area", "All area influence references resolve.");
         }
 
         public static Dictionary<uint, List<Chapter_Reward>> _Chapters_Reward;
