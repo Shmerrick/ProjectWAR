@@ -68,46 +68,70 @@ This is what migrations `02`, `10`, `12`, `34`, `38` and `46` have been doing by
 reconstructs one public quest's objects from packet captures and toolkit StaticObject data.
 That work is re-deriving, one quest at a time, data that is sitting in git history.
 
-## Recovery: proven, with 10 rows restored
+## Recovery: done
 
-Migration 72 restores the Pillage and Plunder wagons and the Thanquol's Incursion portal, and
-exists mainly to establish the method for the other 25,157 rows. Both objects work now.
+Migrations 72 and 73 restore **all 25,167 deleted rows** and the 2,611 prototypes they need.
+`gameobject_spawns` is back to 26,316 rows from 1,146, and every spawned entry now resolves to a
+prototype.
 
-The method, in order:
+| | Before | After |
+|:---|---:|---:|
+| gameobject_spawns | 1,146 | **26,316** |
+| gameobject_protos | 210 | **2,779** |
+| spawned entries with no prototype | 110 | **0** |
+| PQ USE_GO/KILL_GO objectives with no prototype | 232 | **72** |
+| pquest_spawns Type-2 entries with no prototype | 110 | **47** |
+| zones containing game objects | few | 107 |
 
-1. **Take the original rows from git**, verbatim, including their Guids -- which are all still
-   unused, because the deletion removed rows and added none:
+### How the rows were recovered
 
-   ```
-   git cat-file blob a4995e92:Database/war_world.7z > old_world.7z
-   ```
+Verbatim from git, never reconstructed. Each row keeps its original Guid; the deletion removed
+rows and added none, so nothing collides:
 
-   Preserve every column as stored, including the opaque `Unks` payloads and the inconsistent
-   NULL-versus-empty-string conventions between zones. Do not normalise anything.
+```
+git cat-file blob a4995e92:Database/war_world.7z > old_world.7z
+```
 
-2. **Recover the prototype name from a capture, matched by the spawn's DisplayID.** This is the
-   only field the spawn row does not carry (10 of 25,167 deleted rows have an `AlternativeName`).
-   It works: DisplayID 211 resolves to "Weapon Wagon" in the Nordland captures, which is the same
-   zone as five of those spawns and matches the objective "Destroy Wagons"; DisplayID 9290
-   resolves to "Thanquol's Incursion" in all three Thanquol captures.
+Opaque `Unks` payloads and the inconsistent NULL-versus-empty-string conventions between zones are
+preserved exactly.
 
-3. **Take the remaining prototype fields from the destructible objects already in the database**
-   -- Nursery Slime (100515) and Siphoning Contraption (100517). The client-side "attackable" bit
-   lives per spawn in `Unks`, not on the prototype, so restored rows already declare it.
+### How the names were recovered, and why DisplayID is not enough
 
-### Scale of what is left
+The pre-deletion dump has no `gameobject_protos` table, so prototypes had to be derived, and the
+name is the one field a spawn row does not carry.
 
-25,157 rows across **2,611 distinct Entry values**. Every one needs a prototype, and the names are
-the work: only objects that appear in a capture can be named from one. 236 of those entries have
-deleted rows that disagree on DisplayID, so they cannot take a single prototype DisplayID blindly
--- though `GameObject.SendMeTo` writes the **spawn's** DisplayID to the client, not the
-prototype's, so that affects naming rather than rendering.
+**DisplayID is a model, not an identity.** 405 of the 811 DisplayIDs seen across the capture corpus
+are shared by more than one named object -- 211 is *Weapon Wagon*, *Empire Wagon* and *Order Parts
+Wagon*; 166 is *Nursery Slime* and *Cesspool*; 9290 is *Excavated Skaven Device*, *Thanquol's
+Incursion* and *Gutter Runner*. Naming by dominant DisplayID would be wrong at scale, and it
+produced exactly one such error before this was understood: migration 72 named 2000560 "Weapon
+Wagon", which migration 73 corrects to "Empire Wagon".
 
-`GameObjectService.BuildFallbackProto` already synthesises a prototype from a spawn row for doors,
-and is the natural basis for a bulk pass. What it cannot supply is a real name.
+So names are matched by **position**. All 1,027 official captures were scanned for
+`F_CREATE_STATIC` (opcode **0x71**), yielding **257,185 placed objects** with model, coordinates
+and name. A deleted row is identified only when a captured object has the same model at the same
+coordinates. Captures record world coordinates directly for ordinary zones --
+`GetClientWorldPosition` shifts only inside instanced copies -- so the comparison is exact.
 
-**Do not bulk-insert prototypes with invented names.** A wrong name is visible in the client
-tooltip on every one of these objects.
+That matched 11,798 rows outright and named **1,791 of 2,609 prototypes**, covering 76.8% of the
+restored rows. Only 4 prototypes had a dominant name below 80% confidence.
+
+### The 818 prototypes with no name
+
+Objects that appear in no capture are inserted with an **empty name**, never an invented one. The
+object exists, spawns and functions; the client simply shows no tooltip text. They are listed in
+`docs/gameobject-unnamed-entries.txt` with their DisplayID and row count.
+
+Guessing here would put fabricated text on objects throughout the world, which is the failure mode
+this project exists to undo. The toolkit's `apps/warprotoextract` and the client are the remaining
+candidate sources.
+
+### Ordering note
+
+These migrations must be applied **in numeric order**. Migration 68 deletes and re-inserts public
+quest 911's objectives, so re-running it alone drops the `NoStageTimer` values migration 69 sets.
+Applying 68 through 73 in sequence is stable and re-runnable; the chain was applied twice end to
+end to confirm it.
 
 ## Tooling note
 
