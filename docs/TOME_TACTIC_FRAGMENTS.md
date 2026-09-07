@@ -46,17 +46,31 @@ Regenerate with `tools/validation/Test-TomeTactics.ps1`, which pins these counts
 | 337 | Skaven | 3 | 2 | 1 / 2 / 3 | tier 2 **<-** |
 | 338 | Undead | 22 | 21 | 4 / 8 / 12 | tier 3 |
 
-**138 fragments bound, 117 awardable, 21 with no award path at all** (BUG-117).
+**138 fragments bound, 118 awardable, 20 with no award path at all** (BUG-117).
 
-**Five of the 27 named tactics cannot be earned at all:**
+**Four of the 27 named tactics cannot be earned at all:**
 
 | Tactic | Line | Fragments needed | Earnable |
 |:---|:---|---:|---:|
 | Harrier's Ken | Beastial | 30 | 23 |
 | Sky Titan's Strength | Giant | 15 | 13 |
-| Boon of Tenacity | Man | 4 | 3 |
-| Boon of Persistence | Man | 6 | 3 |
+| Boon of Persistence | Man | 6 | 4 |
 | Cunning Stratagem | Skaven | 3 | 2 |
+
+### Two different failures, not one
+
+The Tome entries are **not missing**. Every orphaned fragment has a `tok_infos` row with a proper
+name and unlock text. The problem is that nothing in the world awards them:
+
+* **20 are one-off completion tasks** - "You have completed: Indigestion" (Stone Troll, Giant
+  line), "Avoid a Gory End" (Boar, Beastial), "What a Rat's Nest" (Skaven). No creature
+  `TokUnlock`, no item `TokUnlock`, and no bestiary kill milestone references them, so no player
+  action can trigger one. These need their task data restored.
+* **1 was a wiring bug, now fixed.** Entry 4354, "You have killed 1,000 Living Armors", is a kill
+  milestone that the Metal Construct bestiary row never pointed at: a completion task sits at 4352
+  in the middle of that species' kill sequence, and the row had absorbed it, shifting `Kill100` and
+  `Kill1000` down one slot. Migration 71 corrects it, which also stops 100 and 1,000 kills awarding
+  the wrong entries. A check across all 131 counted species found this was the only one affected.
 
 The Man line is the worst case: only **Boon of the Impalpable** can be earned, and both
 **Boon of Tenacity** and **Boon of Persistence** are out of reach - 3 earnable fragments against

@@ -314,14 +314,16 @@ internal static class TomeTacticChecks
         // lines cannot reach tier 3 and one of those four -- Man -- cannot even reach tier 2.
         // Pinned at the known counts so this cannot silently worsen, and so fixing BUG-117 trips
         // the check and forces these numbers to be updated.
-        Equal(1, tier2Dead, "lines whose SECOND tactic is unobtainable (BUG-117)");
+        // Migration 71 fixed the Metal Construct kill tiers, which restored the fourth Man-line
+        // fragment and with it Boon of Tenacity, so every line's SECOND tactic is now reachable.
+        Equal(0, tier2Dead, "lines whose SECOND tactic is unobtainable (BUG-117)");
         Equal(4, tier3Dead, "lines whose THIRD tactic is unobtainable (BUG-117)");
 
         // The figure that actually matters: each threshold is a separate, uniquely named tactic,
-        // so five distinct abilities cannot be earned at all -- Harrier's Ken, Sky Titan's
-        // Strength, Boon of Tenacity, Boon of Persistence and Cunning Stratagem.
-        Equal(5, unobtainableTactics, "named tactics that cannot be earned (BUG-117)");
-        Equal(21, totalBound - totalObtainable, "fragments with no award path (BUG-117)");
+        // so four distinct abilities cannot be earned at all -- Harrier's Ken, Sky Titan's
+        // Strength, Boon of Persistence and Cunning Stratagem.
+        Equal(4, unobtainableTactics, "named tactics that cannot be earned (BUG-117)");
+        Equal(20, totalBound - totalObtainable, "fragments with no award path (BUG-117)");
     }
 
     private static void CheckCreatureTypes()
