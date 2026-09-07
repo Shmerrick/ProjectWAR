@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FrameWork;
+using GameData;
 
 namespace WorldServer.Services.World
 {
@@ -143,6 +144,39 @@ namespace WorldServer.Services.World
                     }
                 }
             };
+
+        /// <summary>
+        /// The "Controlled &lt;form&gt;" ability for a realm, or 0 if there is none.
+        ///
+        /// This is what actually performs the transformation. Each of these eight abilities carries
+        /// a component with operation 51 -- career ability-set replacement, described by the client
+        /// itself as "Normal career abilities have been replaced with those of the Aspect's" -- and
+        /// all eight resolve to effect 4860, "Skaven PaM - FORM OF... A SKAVEN!". Applying one as a
+        /// buff hands the client the ability entry; the client then swaps the action bar out of its
+        /// own data, and reverts when the buff is removed.
+        ///
+        /// Granting the form's abilities cannot do this on its own: F_CHARACTER_INFO subcode 1 is
+        /// cumulative, so it adds actions but never replaces or removes them.
+        /// </summary>
+        public static ushort GetControlAbility(SkavenForm form, Realms realm)
+        {
+            bool order = realm == Realms.REALMS_REALM_ORDER;
+
+            switch (form)
+            {
+                case SkavenForm.WarlockEngineer: return order ? (ushort)24857 : (ushort)24861;
+                case SkavenForm.GutterRunner:    return order ? (ushort)24858 : (ushort)24862;
+                case SkavenForm.RatOgre:         return order ? (ushort)24859 : (ushort)24863;
+                case SkavenForm.PackMaster:      return order ? (ushort)24860 : (ushort)24864;
+                default: return 0;
+            }
+        }
+
+        /// <summary>Every control ability, for clearing whichever one is applied.</summary>
+        public static readonly ushort[] AllControlAbilities =
+        {
+            24857, 24858, 24859, 24860, 24861, 24862, 24863, 24864
+        };
 
         /// <summary>Prototype of the Excavated Skaven Device, where a form is taken.</summary>
         public const uint DeviceEntry = 98811;

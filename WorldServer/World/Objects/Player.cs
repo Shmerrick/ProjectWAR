@@ -4273,11 +4273,26 @@ namespace WorldServer.World.Objects
             SkavenForm = form;
             AbtInterface.SetGrantedAbilities(definition.Abilities);
 
+            // The control ability is what actually swaps the action bar. Its op-51 component tells
+            // the client to replace the career action set with this form's, and the client does
+            // that from its own data; the granted list above only supplies the contents. Removing
+            // the buff is what reverts the bar, which is why ending a form must clear it.
+            ushort control = SkavenFormService.GetControlAbility(form, Realm);
+            if (control != 0)
+            {
+                BuffInfo controlBuff = AbilityMgr.GetBuffInfo(control, this, this);
+                if (controlBuff != null)
+                    BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, controlBuff));
+                else
+                    Log.Error("SkavenForm", "Control ability " + control + " has no buff info; the "
+                        + "action bar will not swap. Apply Database/75_skaven_control_ability_buffs.sql.");
+            }
+
             SendClientMessage("You take control of a " + definition.MenuText.Replace("Control a ", "") + ".",
                 ChatLogFilters.CHATLOGFILTERS_EMOTE);
 
             Log.Info("SkavenForm", Name + " took the " + form + " form ("
-                + definition.Abilities.Length + " abilities granted).");
+                + definition.Abilities.Length + " abilities granted, control ability " + control + ").");
             return true;
         }
 
@@ -4289,6 +4304,13 @@ namespace WorldServer.World.Objects
 
             SkavenFormService.SkavenForm previous = SkavenForm;
             SkavenForm = SkavenFormService.SkavenForm.None;
+
+            // Clear every control ability, not just this form's. Switching straight from one form
+            // to another applies a second buff before the first is gone, and a stale one would keep
+            // the client's bar swapped to the wrong set.
+            foreach (ushort control in SkavenFormService.AllControlAbilities)
+                BuffInterface.RemoveBuffByEntry(control);
+
             AbtInterface.SetGrantedAbilities(null);
 
             SendClientMessage("You lose control of the Skaven.", ChatLogFilters.CHATLOGFILTERS_EMOTE);

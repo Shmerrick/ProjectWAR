@@ -625,6 +625,36 @@ Migration 74 also adds a **third device beside the Reikwald test range**, marked
 scaffolding rather than retail data, because both real placements need a rank-40 character and an
 active campaign to reach.
 
+### The action bar is swapped by a buff, not by the ability list
+
+Two faults in the first attempt, both from the same wrong assumption: that granting the form's
+abilities was the whole transformation.
+
+**F_CHARACTER_INFO subcode 1 is cumulative.** The "play as a gutter runner" capture shows the
+list growing 23 -> 30 as the kit is added and never shrinking or being replaced. So it can add
+actions, but it cannot swap a bar and it cannot take actions away. Granting alone therefore left
+the player's own abilities in place and left the granted ones behind on death or on ending a form.
+
+**The swap is the control ability's job.** Operation 51 is career ability-set replacement -- the
+client's own words, "Normal career abilities have been replaced with those of the Aspect's" -- and
+each of the eight "Controlled &lt;form&gt;" abilities carries an op-51 component, all resolving to
+effect 4860, "Skaven PaM - FORM OF... A SKAVEN!". The client performs the swap out of its own
+ability data when that ability is applied, and reverts when it is removed. The server only has to
+apply and remove it.
+
+Migration 75 adds the eight as buffs, in **both** buff tables, because the server reads only
+`mythic_src_buff_infos` and writing one is invisible at runtime (BUG-120). `AbilityMgr.GetBuffInfo`
+needs only a buff row, not an ability row, so nothing else is required. `PersistsOnDeath` is 0, so
+the form cannot survive the death the accept text bounds it at.
+
+`ApplySkavenForm` now queues the control buff for the player's realm alongside the granted kit, and
+`RemoveSkavenForm` clears **every** control ability rather than just the current form's -- switching
+straight from one form to another applies the second buff before the first is gone, and a stale one
+would leave the client's bar swapped to the wrong set.
+
+`FriendlyEffectID` is left NULL rather than set to 4860: that column is a tinyint holding a small
+visual-effect index, not an effects.csv id.
+
 ### What is NOT implemented
 
 * **No visual transformation.** The player keeps their own appearance. `F_GRAPHICAL_REVISION` was
@@ -632,10 +662,12 @@ active campaign to reach.
   `Chickenize` works through an `ObjectEffectState` and there is no Skaven state in that enum; and
   player appearance is career- and equipment-driven rather than a settable model. The packet that
   actually performs the swap is not identified in any capture examined, so it is not guessed at.
-* **Career abilities are not replaced.** Retail swapped the action set outright -- op 51 is
-  "career ability-set replacement" -- and also disabled inventory and character screens. Here the
-  form's abilities are *added* alongside the player's own. The packets that disable those screens
-  are not decoded.
+* **Inventory and character screens are not disabled.** Retail closed both while a form was held;
+  the packets that do it are not decoded from any capture examined.
+* **Stale entries may linger in the client's ability list.** The bar itself is governed by the
+  control buff, so ending a form reverts it, but because the list packet is add-only the client may
+  keep showing the form's entries in its full ability list until a relog. No removal opcode exists
+  in the protocol as mapped.
 * **The form abilities do not function.** They populate the action bar and the client draws them
   correctly from its own data, but 24802, 24805, 24806 and the rest have no row in either server
   ability table, so casting one does nothing server-side. Restoring those ability rows is separate
