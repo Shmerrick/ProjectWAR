@@ -170,6 +170,36 @@ internal static class ThanquolEncounterChecks
                     throw new InvalidOperationException(boss.Name + " has no spawn in zone " + ZoneId + "; stages II/IV/V would be uncompletable.");
             }
 
+            // Gold-bag rewards (migration 70). PQType 2 is required for a bag to roll at all, and
+            // is the type that does not read PQDifficult -- which must stay 0 so the difficulty
+            // byte serialises as the captured 0xFF.
+            Expect(info.PQType, (byte)2, "pquest_info.PQType (gold bag requires a bag-rolling type)");
+
+            long goldRows = (long)new MySqlCommand(
+                "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND Bag=5 AND PQType=2", connection).ExecuteScalar();
+            if (goldRows == 0)
+                throw new InvalidOperationException("No gold-bag loot for public quest 911. Apply Database/70_thanquol_gold_bag_rewards.sql.");
+
+            long wrongBag = (long)new MySqlCommand(
+                "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND (Bag<>5 OR PQType<>2 OR PQTier<>4)", connection).ExecuteScalar();
+            Expect(wrongBag, 0L, "public quest 911 loot rows outside the gold bag");
+
+            // Currency items (crests, insignias, exchange bags) carry Career 0 and must not be
+            // chest rewards; a Career-0 row would also never match the career bitmask filter.
+            long currency = (long)new MySqlCommand(
+                "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND Career=0", connection).ExecuteScalar();
+            Expect(currency, 0L, "currency items wrongly added to the reward chest");
+
+            // Every career must resolve to at least one candidate, or that career wins an empty bag.
+            for (int careerLine = 1; careerLine <= 24; ++careerLine)
+            {
+                long forCareer = (long)new MySqlCommand(
+                    "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND Bag=5 AND (Career & "
+                    + (1 << (careerLine - 1)) + ")<>0", connection).ExecuteScalar();
+                if (forCareer == 0)
+                    throw new InvalidOperationException("Career line " + careerLine + " has no gold-bag reward and would win an empty bag.");
+            }
+
             // Stage ordering and timer plumbing, through the real PublicQuest constructor.
             GameObjectService.GameObjectProtos = new Dictionary<uint, GameObject_proto> { { contraption.Entry, contraption } };
             Zone_Info zoneInfo = Read<Zone_Info>(connection, "SELECT * FROM zone_infos WHERE ZoneId=" + ZoneId).Single();
@@ -191,6 +221,7 @@ internal static class ThanquolEncounterChecks
             Console.WriteLine("PASS: both contraption stages stage all four captured Siphoning Contraption positions.");
             Console.WriteLine("PASS: Skeetk, Throt and Thanquol are present in zone " + ZoneId + ".");
             Console.WriteLine("PASS: stages I-V run with no fail timer, Setup runs on its captured 300s timer.");
+            Console.WriteLine("PASS: " + goldRows + " gold-bag rewards bound to the quest, every career line covered, no currency items.");
             Console.WriteLine("These are data checks against the official captures; they do not run AI, networking or an in-client public quest.");
         }
     }

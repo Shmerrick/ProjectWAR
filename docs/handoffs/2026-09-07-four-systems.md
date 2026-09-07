@@ -183,10 +183,13 @@ PQ's stage packets alone were never going to be the whole feature.
 wrapper is entirely absent here. Migrations 68 and 69 build the public quest correctly and remain
 valid; they are simply not sufficient on their own.
 
-Supporting, and consistent with a two-sided battle: zone 410's only two `zone_jumps` sit at
-opposite corners of the map (86390,88292 and 78460,78210, roughly 8,000 units apart on both
-axes), which is the shape of two realm entry points rather than one dungeon door. That reading is
-a candidate, not established - neither capture shows a player arriving through either jump.
+**Both realms enter through their own pre-stage area, and fight from there.** Zone 410's two
+`zone_jumps` are those two staging points: 86390,88292 and 78460,78210, at opposite corners of the
+map and roughly 8,000 units apart on both axes. Each realm arrives in its own area, then the two
+sides contest the objectives with the 500-point bar tracking who is ahead. This is first-hand
+account from someone who played it on live, which outranks the captures for a question like this -
+the captures happen not to include a player arriving through either jump, and absence there is not
+evidence.
 
 ### Rewards
 
