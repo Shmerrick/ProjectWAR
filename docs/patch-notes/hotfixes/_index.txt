@@ -1,0 +1,22 @@
+2011-04-19	About Gromril Crossing	2011-04-19-about-gromril-crossing.md
+2011-07-18	Hot Fix Notes - 07/18	2011-07-18-hot-fix-notes-0718.md
+2011-09-14	Hot Fix Notes - 09/14	2011-09-14-hot-fix-notes-0914.md
+2011-09-16	Hot Fix Notes - 09/16	2011-09-16-hot-fix-notes-0916.md
+2011-09-20	Hot Fix Notes - 09/20	2011-09-20-hot-fix-notes-0920.md
+2012-02-01	City Siege Hot Fix - 02/01	2012-02-01-city-siege-hot-fix-0201.md
+2012-02-01	Hot Fix - 02/01	2012-02-01-hot-fix-0201.md
+2012-02-02	Additional Fixes - 02/02	2012-02-02-additional-fixes-0202.md
+2012-02-06	Hot Fix - 02/06	2012-02-06-hot-fix-0206.md
+2012-02-07	Hot Fix - 02/07	2012-02-07-hot-fix-0207.md
+2012-02-13	Hot Fix - 02/13	2012-02-13-hot-fix-0213.md
+2012-02-29	Hot Fix - 02/29	2012-02-29-hot-fix-0229.md
+2012-03-07	Hot Fix Notes - 03/07	2012-03-07-hot-fix-notes-0307.md
+2012-03-14	Hot Fix Notes - 03/14	2012-03-14-hot-fix-notes-0314.md
+2012-06-05	Hot Fix - 06/05	2012-06-05-hot-fix-0605.md
+2012-06-06	Hot Fix - 06/06	2012-06-06-hot-fix-0606.md
+2012-06-07	Hot Fix - 06/07	2012-06-07-hot-fix-0607.md
+2012-06-08	Hot Fix - 06/08	2012-06-08-hot-fix-0608.md
+2012-06-12	Hot Fix - 06/12	2012-06-12-hot-fix-0612.md
+2012-07-03	Hot Fix - 07/03	2012-07-03-hot-fix-0703.md
+2012-07-12	Hot Fix - 07/12	2012-07-12-hot-fix-0712.md
+2012-11-02	Hot Fix Notes - 11/01	2012-11-02-hot-fix-notes-1101.md

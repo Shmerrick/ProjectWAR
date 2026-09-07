@@ -1,0 +1,8 @@
+2008-12-19	PATCHES!	2008-12-19-patches.md
+2011-06-14	College of Corruption Test on PTS - 06/16	2011-06-14-college-corruption-test-pts-0616.md
+2011-09-07	Version 1.4.4 Comes to PTS	2011-09-07-version-144-comes-pts.md
+2012-01-11	Version 1.4.5 Comes to PTS	2012-01-11-version-145-comes-pts.md
+2012-05-16	Version 1.4.6 Comes to PTS - 05/17	2012-05-16-version-146-comes-pts-0517.md
+2012-10-04	Patch 1.4.7 Comes to PTS	2012-10-04-patch-147-comes-pts.md
+2012-10-09	Patch 1.4.7 Arrives on PTS	2012-10-09-patch-147-arrives-pts.md
+2012-11-20	Patch 1.4.8 Arrives on PTS	2012-11-20-patch-148-arrives-pts.md
