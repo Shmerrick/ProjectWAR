@@ -162,6 +162,15 @@ Current scripts, oldest first:
 | `34_restore_holmsteinn_supply_prototype.sql` | Restores the missing model-10 supply prototype used by 43 existing Holmsteinn Revisited placements, from official `PQ_T1CHAOS_EASY_holmsteinn revisited_CH2` static-object packets |
 | `35_restore_bastion_kaarn_and_path_chest.sql` | Restores Kaarn's scale and Path of Fury's chest position from `bastion_stairs.txt.gz` packets 71889 and 46264, with atlas initialization 18276 |
 | `51_archive_deleted_bastion_creature_placements.sql` | After the intervening numbered updates, preserves the 24 disabled creature_spawns records deleted by migration 46 in an archive, verbatim from the untouched base dump; adds no live spawns and reports affected empty PQ objectives |
+| `52_restore_peaceful_city_influence_semantics.sql` | Corrects 42 peaceful-capital area bindings to no influence, as explicitly defined by the stock client's alerttextwindow.lua:528-533 and publicquesttrackerwindow.lua:819-823 |
+| `53_archive_invalid_nonretail_taxi_rows.sql` | Archives the five BUG-010 taxi rows whose destination falls outside its own zone into `zone_taxis_unresolved`, so a later repair keeps the original coordinates; changes no live routing |
+
+For the WorldServer diagnostic repairs, apply migrations 52 and 53 before starting
+the updated build, then run `tools/validation/Test-WorldDiagnosticData.ps1`. Both
+scripts are re-runnable and have been applied and verified on the local Release
+database. See
+the [diagnostic handoff](docs/handoffs/2026-09-06-worldserver-diagnostics.md) for
+client/capture evidence and the verified startup with zero errors and warnings.
 
 For the September 6 review fixes, apply migration 51 before starting the updated server,
 then run `tools/validation/Test-ArchiveRecovery.ps1`. It has already been applied twice and

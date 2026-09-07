@@ -2346,7 +2346,17 @@ namespace ClientDataMatrix.Services
                         + "command 327/328 → constant value 1; "
                         + "command 332 → career line or mastery IDs (6–59 range); "
                         + "command 173 → 0 (arg is in Value[2]); "
-                        + "command 87/88/101 → small enum or 0. "
+                        + "command 87/88/101 → small enum or 0; "
+                        + "command 304 → an ability ID, naming the ability whose persistent state the command acts on. "
+                        + "Command 304 has ten rows and every one of them resolves: \"Tear Down\" (24854) carries four of them "
+                        + "targeting the deployable Warp-Energy Condenser and Accumulator abilities (24809, 24810, 24818, 24819) "
+                        + "alongside two DISPEL_BUFF components, and \"Detonate\" (24828) targets \"Sabotage\" (24826) - the "
+                        + "ability that planted the charge it detonates. \"Sabotage\" and \"Bolster Down\" (24945) each target "
+                        + "themselves, and the eight Skaven Play-as-Monster controls (24857-24864) share component 26669, which "
+                        + "targets \"Play-As-Monster Master Client Controller\" (27950) - the same ability those controls also "
+                        + "APPLY_ABILITY through component 26660. Teardown of the named ability's persistent object fits every "
+                        + "row except that last pair, where apply-and-304 on one ability is more consistent with rebinding or "
+                        + "clearing a prior controller before installing this one. Not yet separated. "
                         + "Retail field name unresolved. "
                         + (string.IsNullOrWhiteSpace(scV1Dominant) ? string.Empty : "Observed: " + scV1Dominant + ".")
                 };
@@ -3165,17 +3175,28 @@ namespace ClientDataMatrix.Services
             if (operationId != 51 || observations == null || observations.Count == 0)
                 return false;
 
-            // Unknown op 51 Value[0]: 39 non-zero, 38 distinct — high-range ID reference (17643–30030).
+            // Op 51 replaces the actor's career action set. Component 26389 carries the only
+            // self-describing text in the whole operation, and it states the behaviour outright:
+            // "Manifesting an Aspect of Fire. Normal career abilities have been replaced with
+            // those of the Aspect's." (Londos War_AbilityComponentBin, Operation=51.) The other
+            // 38 rows are the Skaven Play-as-Monster controls and two further form families.
             if (string.Equals(fieldKey, "Value[0]", StringComparison.OrdinalIgnoreCase))
             {
                 string op51V0Dominant = BuildDominantRawValueSummary(observations, 10);
                 inference = new FieldObservationInference
                 {
-                    SemanticSummary = "Unknown op 51 Value[0] — high-range ID reference (39 non-zero records, 38 distinct values: 17643–30030).",
+                    SemanticSummary = "Op 51 Value[0] — replacement action-set reference (39 non-zero records, 38 distinct values: 17643–30030).",
                     Confidence = SemanticConfidence.Inferred,
-                    Notes = "Value[0] has 38 distinct values with near-unique ID density (38/39 distinct per record), indicating a direct entity or asset ID reference. "
-                        + "ID range 17643–30030 is consistent with creature, ability, or resource IDs. "
-                        + "Operation 51 has no confirmed retail name. "
+                    Notes = "Operation 51 replaces the actor's career action set; component 26389's own description says so "
+                        + "(\"Normal career abilities have been replaced with those of the Aspect's\"). Value[0] is the reference to "
+                        + "the replacement set. Its domain is NOT abilityexport.bin ability IDs, despite the numeric overlap: "
+                        + "components 26661-26668 use 20760-20767, which land inside a developer block in abilitynames.txt "
+                        + "(\"; TEST Skaven - Grey Seer\" plus its seven spells), and the Order Warlock Engineer control resolves "
+                        + "to the Grey Seer header. Components 26900-26923 use 30030-30069, past the end of abilitynames.txt at "
+                        + "29000. Components 27992 and 27993 share Value[0]=17643 while differing in Value[3], so Value[0] and "
+                        + "Value[3] are independent fields, not one derived from the other. "
+                        + "Ruled out for the paired Value[3]: careerlines_m.txt (0-24), careernames_m.txt (rejected as a career "
+                        + "identity by the domain ledger), Londos Career (IDs 130-154) and Londos CareerType (20-27, 60-67, 100-107). "
                         + (string.IsNullOrWhiteSpace(op51V0Dominant) ? string.Empty : "Observed: " + op51V0Dominant + ".")
                 };
                 return true;
@@ -3186,10 +3207,13 @@ namespace ClientDataMatrix.Services
             {
                 inference = new FieldObservationInference
                 {
-                    SemanticSummary = "Unknown op 51 FlagsRaw — single-bit activation flag (32 non-zero records; single value = 4 = bit2).",
+                    SemanticSummary = "Op 51 FlagsRaw — single-bit flag set on the indefinite form families (32 non-zero records; single value = 4 = bit2).",
                     Confidence = SemanticConfidence.Inferred,
                     Notes = "FlagsRaw has exactly one non-zero value (4=bit2) across all op-51 records where it appears. "
-                        + "Functions as a binary bit-flag. Operation 51 has no confirmed retail name. Retail bit name unresolved."
+                        + "Bit2 implies Duration 0: all 32 records carrying it are untimed, and both timed records (component "
+                        + "1597 at 30000 ms and 26389 at 120000 ms) leave it clear. The implication does not reverse - "
+                        + "components 26941-26943 and 27992/27993 are untimed with the bit clear - so bit2 distinguishes a "
+                        + "subset of the untimed forms rather than simply meaning \"no timer\". Retail bit name unresolved."
                 };
                 return true;
             }
@@ -3200,11 +3224,15 @@ namespace ClientDataMatrix.Services
                 string op51V2Dominant = BuildDominantRawValueSummary(observations, 4);
                 inference = new FieldObservationInference
                 {
-                    SemanticSummary = "Unknown op 51 Value[2] — small sequential enum (30 non-zero records, 4 distinct values: 1, 2, 3, 4).",
+                    SemanticSummary = "Op 51 Value[2] — form slot within the replacement set (30 non-zero records, 4 distinct values: 1, 2, 3, 4).",
                     Confidence = SemanticConfidence.Inferred,
-                    Notes = "Value[2] has exactly 4 distinct sequential values (1, 2, 3, 4). "
-                        + "Sequential without gaps suggests an enum selector (e.g., mode, tier, or sub-type). "
-                        + "Operation 51 has no confirmed retail name. "
+                    Notes = "Value[2] selects which form of a set is being applied, and it is realm-invariant. The Skaven "
+                        + "Play-as-Monster controls prove it: abilityexport.bin gives 24857-24860 (Order Controlled Warlock "
+                        + "Engineer / Gutter Runner / Rat Ogre / Pack Master) components 26661-26664 and 24861-24864 (the "
+                        + "Destruction four) components 26665-26668, and the (Value[2], Value[3]) pairs repeat exactly across "
+                        + "the two realm blocks: Gutter Runner (0, 41), Warlock Engineer (1, 42), Rat Ogre (2, 40), Pack Master "
+                        + "(3, 39). Components 26900-26923 repeat the same shape as six further groups cycling 1, 2, 3, 4. "
+                        + "Value[2] is therefore a slot index inside a set, not a global identity. "
                         + (string.IsNullOrWhiteSpace(op51V2Dominant) ? string.Empty : "Observed: " + op51V2Dominant + ".")
                 };
                 return true;
@@ -3216,11 +3244,16 @@ namespace ClientDataMatrix.Services
                 string op51V3Dominant = BuildDominantRawValueSummary(observations, 10);
                 inference = new FieldObservationInference
                 {
-                    SemanticSummary = "Unknown op 51 Value[3] — index or ordinal reference (38 non-zero records, 34 distinct values: 13–58).",
+                    SemanticSummary = "Op 51 Value[3] — form identity paired one-to-one with Value[2] (38 non-zero records, 34 distinct values: 13–91).",
                     Confidence = SemanticConfidence.Inferred,
-                    Notes = "Value[3] has 34 distinct values in the range 13–58. "
-                        + "High distinct-value ratio (34/38) and compact integer range suggest an index, slot reference, or sequential ordinal. "
-                        + "Operation 51 has no confirmed retail name. "
+                    Notes = "Value[3] identifies the specific form and is realm-invariant: the Skaven controls pair it with "
+                        + "Value[2] as (0, 41), (1, 42), (2, 40), (3, 39) in both the Order and Destruction blocks. Within the "
+                        + "26900-26923 family Value[0] minus Value[3] is a constant 29981, and within 26941-26943 it is a "
+                        + "constant 30929, so the two fields are allocated in step there; components 27992 and 27993 break that "
+                        + "by sharing Value[0]=17643 with Value[3] of 13 and 14, which is what shows the fields are independent. "
+                        + "Domain unresolved, but four candidates are excluded by range: careerlines_m.txt is 0-24, Londos Career "
+                        + "is 130-154, Londos CareerType is 20-27/60-67/100-107, and careernames_m.txt is rejected as a career "
+                        + "identity by this tool's own domain ledger. Londos AbilityLine contains 41 and 42 but neither 39 nor 40. "
                         + (string.IsNullOrWhiteSpace(op51V3Dominant) ? string.Empty : "Observed: " + op51V3Dominant + ".")
                 };
                 return true;
