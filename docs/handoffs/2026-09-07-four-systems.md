@@ -159,6 +159,72 @@ across all three:
 Setup is the only timed stage (captured 300 total / 193 remaining). All five numbered
 stages send a stage total *and* remaining of zero.
 
+### Correction: the Incursion is a SCENARIO that runs the public quest inside it
+
+The section above treats zone 410 as a public quest and nothing more. That is incomplete, and
+the shape matters for how the rest is built. Both full-run captures carry
+**F_SCENARIO_INFO (0xC3)**, and one of them carries **5,579 F_SCENARIO_PLAYER_INFO (0xC9)**
+packets. Decoded against `ScenarioMgr.BuildScenarioInfo`, the scenario packet is identical in
+both:
+
+| Field | Value |
+| --- | --- |
+| ScenarioId | **2304** |
+| Max score | **500** |
+| Order score / Destruction score | 0 / 0 (both captures start early) |
+| In progress | 1 |
+
+So Thanquol's Incursion is a **realm-versus-realm scenario keyed 2304**, with public quest 911
+running inside it. Two realms fight for the same objectives and are scored against each other to
+500 - that pair of scores is the progress bar the client shows centre-screen, and it is why the
+PQ's stage packets alone were never going to be the whole feature.
+
+`scenario_infos` has **no row 2304**, and nothing at all between 2280 and 2330, so the scenario
+wrapper is entirely absent here. Migrations 68 and 69 build the public quest correctly and remain
+valid; they are simply not sufficient on their own.
+
+Supporting, and consistent with a two-sided battle: zone 410's only two `zone_jumps` sit at
+opposite corners of the map (86390,88292 and 78460,78210, roughly 8,000 units apart on both
+axes), which is the shape of two realm entry points rather than one dungeon door. That reading is
+a candidate, not established - neither capture shows a player arriving through either jump.
+
+### Rewards
+
+The 1.4.0 reward sets are already in the database and were never wired up:
+
+| Set | Items | Rank |
+| --- | ---: | ---: |
+| Doomflayer | 185 | up to 40 |
+| Warpforged | 153 | up to 40 |
+
+Neither appears in `pquest_loot`, `loot_group_items` or `gameobject_loots`, and `pquest_loot` has
+no rows for PQ 911, so nothing drops them. The three boss tokens are also present and correct -
+86329 Skeetk's Warpstone Supply, 86330 Throt's Warpstone Shard, 86331 Thanquol's Warpstone Supply -
+all `Type` 21, carrying exactly the descriptions the captures show.
+
+### How a player reaches it, and what is missing here
+
+From the 1.4.0 notes plus the item text, the live chain is:
+
+1. Skaven tunnels **appear randomly during contested Tier 4 zone battles**. Entry to the Incursion
+   is restricted to **Renown Rank 65+**, and both realms may enter.
+2. The three bosses drop the Warpstone tokens. Each names what it coerces: Skeetk's a Warlock
+   Engineer, Throt's a **Rat Ogre or Packmaster**, Thanquol's a Gutter Runner - which is why three
+   tokens produce the four-option menu.
+3. The token is spent *outside* the dungeon: "at any **Excavated Skaven Device** within a contested
+   tier four RvR lake, to do your bidding. This item will **decay in real time**." That device is
+   the object the `CONTROL A ...` captures interact with, entry 11637, and it explains why those
+   captures are in Praag rather than in zone 410.
+4. Separately, repelling the Incursion unlocks Play as Skaven for everyone in the lake 15 minutes
+   later.
+
+Absent from this database: scenario 2304, the Excavated Skaven Device prototype 11637, any
+entrance to zone 410 (portal 99891 is hardcoded in `GameObject.cs:259` but has no prototype and no
+spawn), and every loot binding. Zone 410 also has no `zone_areas` row and no client overlay, so
+`CurrentPQArea` is 0 there; PQ 911's `PQAreaId` is 0 too, so the membership gate matches and a
+teleported player is not evicted. For testing the stages only,
+`.teleport map 410 83240 83275 8510` lands on the boss pad.
+
 ### Three protocol corrections that fell out of the decode
 
 The emulator's `F_OBJECTIVE_INFO` writer was wrong for **every** public quest, not just

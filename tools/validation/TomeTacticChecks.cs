@@ -247,12 +247,13 @@ internal static class TomeTacticChecks
             + "   ORDER BY CAST(SUBSTRING_INDEX(tb2.Kill1,';',1) AS UNSIGNED) DESC LIMIT 1)"
             + " GROUP BY f.AcId";
 
-        string sql = "SELECT l.Name, l.Threshold1, l.Threshold3, COUNT(*) bound, o.n"
+        string sql = "SELECT l.Name, l.Threshold1, l.Threshold2, l.Threshold3, COUNT(*) bound, o.n"
             + " FROM (" + obtainable + ") o JOIN tome_tactic_lines l ON l.AcId = o.AcId"
             + " JOIN tome_tactic_fragments f2 ON f2.AcId = o.AcId"
-            + " GROUP BY l.AcId, l.Name, l.Threshold1, l.Threshold3, o.n ORDER BY l.AcId";
+            + " GROUP BY l.AcId, l.Name, l.Threshold1, l.Threshold2, l.Threshold3, o.n ORDER BY l.AcId";
 
         int tier1Dead = 0;
+        int tier2Dead = 0;
         int tier3Dead = 0;
         int totalBound = 0;
         int totalObtainable = 0;
@@ -267,15 +268,25 @@ internal static class TomeTacticChecks
                 {
                     string name = reader.GetString(0);
                     int t1 = reader.GetInt32(1);
-                    int t3 = reader.GetInt32(2);
-                    int bound = reader.GetInt32(3);
-                    int have = reader.GetInt32(4);
+                    int t2 = reader.GetInt32(2);
+                    int t3 = reader.GetInt32(3);
+                    int bound = reader.GetInt32(4);
+                    int have = reader.GetInt32(5);
 
                     totalBound += bound;
                     totalObtainable += have;
 
-                    if (have < t1) { tier1Dead++; Console.WriteLine("  " + name + ": tier 1 UNOBTAINABLE (" + have + "/" + t1 + ")"); }
-                    else if (have < t3) { tier3Dead++; Console.WriteLine("  " + name + ": tier 3 unobtainable (" + have + " obtainable of " + bound + " bound, needs " + t3 + ")"); }
+                    // Every tier is tested. An earlier revision compared only tiers 1 and 3, which
+                    // hid the Man line reaching tier 1 and nothing further.
+                    int highest = have >= t3 ? 3 : have >= t2 ? 2 : have >= t1 ? 1 : 0;
+                    if (have < t1) tier1Dead++;
+                    if (have < t2) tier2Dead++;
+                    if (have < t3) tier3Dead++;
+
+                    if (highest < 3)
+                        Console.WriteLine("  " + name + ": reaches tier " + highest + " only ("
+                            + have + " obtainable of " + bound + " bound; tiers need "
+                            + t1 + "/" + t2 + "/" + t3 + ")");
                 }
             }
         }
@@ -283,9 +294,11 @@ internal static class TomeTacticChecks
         // Tier 1 must be reachable on every line, or the line is entirely dead content.
         Equal(0, tier1Dead, "lines whose FIRST tier is unobtainable");
 
-        // Four lines currently cannot reach tier 3: some of their fragments sit on Tome entries
-        // that nothing in the world awards. Pinned at the known counts so this cannot silently
-        // worsen, and so fixing BUG-117 trips the check and forces these numbers to be updated.
+        // BUG-117. Some fragments sit on Tome entries that nothing in the world awards, so four
+        // lines cannot reach tier 3 and one of those four -- Man -- cannot even reach tier 2.
+        // Pinned at the known counts so this cannot silently worsen, and so fixing BUG-117 trips
+        // the check and forces these numbers to be updated.
+        Equal(1, tier2Dead, "lines whose SECOND tier is unobtainable (BUG-117)");
         Equal(4, tier3Dead, "lines whose final tier is unobtainable (BUG-117)");
         Equal(21, totalBound - totalObtainable, "fragments with no award path (BUG-117)");
     }
