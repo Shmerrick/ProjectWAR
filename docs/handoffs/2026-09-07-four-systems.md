@@ -655,6 +655,44 @@ would leave the client's bar swapped to the wrong set.
 `FriendlyEffectID` is left NULL rather than set to 4860: that column is a tinyint holding a small
 visual-effect index, not an effects.csv id.
 
+### Confirmed on the wire: the control ability is applied as a buff
+
+The buff approach was reasoned from the op-51 component rather than observed, which left the
+whole design resting on an assumption. It is now confirmed directly.
+
+`NewBuff` writes a buff's entry with `WriteUInt16R`, i.e. **little-endian**. An earlier search for
+these ids in F_INIT_EFFECTS used big-endian and therefore found nothing but coincidental matches.
+Decoding the packet properly - `01 01`, u16, u16 target OID, u16 buff id, then the entry as a
+reversed u16 - each capture carries exactly one control ability, applied to the player as a buff:
+
+| Capture | Buff entry | Ability |
+| --- | ---: | --- |
+| CONTROL A WARLOCK ENGINEER | 24861 | Destruction Controlled Warlock Engineer |
+| CONTROL A GUTTER RUNNER | 24862 | Destruction Controlled Gutter Runner |
+| CONTROL A RAT OGRE | 24863 | Destruction Controlled Rat Ogre |
+| play as a gutter runner | 24862 | Destruction Controlled Gutter Runner |
+
+All four are in the Destruction block, which fits: every capture is a Disciple of Khaine. Each
+matches the form its capture is named for, so the realm-and-form mapping in
+`SkavenFormService.GetControlAbility` is confirmed against the wire rather than inferred from the
+ability names alone.
+
+The same decode shows the form's own abilities appearing as buffs during play - 24802 Stored
+Warp-Energy, 24825 Gutter Run, 24852 Spy, 24830 Frenzy - which is those abilities being cast, not
+part of the transformation.
+
+### Negative finding: there is no separate bar-swap packet
+
+F_CHARACTER_INFO subcode **0x0B** looked like a candidate, appearing in every capture and, in the
+Warlock Engineer log, immediately before the ability grants. It is not. In
+`play as a gutter runner` its eight occurrences sit at packet 36667 onwards, thousands of packets
+after the transformation at 112-126, arriving in bursts with a payload that increments (96 -> 97).
+It is a counter of some kind, unrelated to forms.
+
+So the transformation on the wire is exactly two things: **the control ability applied as a buff**,
+and **the form's abilities appended to the action list**. Nothing else instructs the client to
+swap bars, which is consistent with op 51 being interpreted client-side from the buff.
+
 ### What is NOT implemented
 
 * **No visual transformation.** The player keeps their own appearance. `F_GRAPHICAL_REVISION` was
