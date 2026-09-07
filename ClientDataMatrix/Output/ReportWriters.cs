@@ -269,6 +269,22 @@ namespace ClientDataMatrix.Output
                     FormatByteOffset(row.ByteOffset)
                 });
 
+            AppendTable(builder, "Ability Chain (behaviour reached through components)",
+                report.AbilityChain ?? new List<AbilityChainEntry>(),
+                new[] { "Depth", "AbilityId", "Name", "From", "ViaComponent", "Operation", "Field", "Components", "Note" },
+                row => new[]
+                {
+                    row.Depth.ToString(CultureInfo.InvariantCulture),
+                    row.AbilityId.ToString(CultureInfo.InvariantCulture),
+                    NullToEmpty(row.Name),
+                    NullToEmpty(row.ArrivedFrom),
+                    NullToEmpty(row.Via),
+                    NullToEmpty(row.Operation),
+                    NullToEmpty(row.Field),
+                    NullToEmpty(row.ComponentIds),
+                    row.Revisited ? "already listed; not expanded again" : NullToEmpty(row.Basis)
+                });
+
             AppendTable(builder, "Inferred Requirement Links", report.RequirementReferences ?? new List<RequirementReferenceRecord>(),
                 new[] { "SourceKind", "SourceId", "SourceLabel", "Field", "RequirementId", "Confidence", "Path", "Location", "Notes" },
                 row => new[]

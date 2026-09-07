@@ -183,7 +183,8 @@ namespace ClientDataMatrix.Services
                 RequirementReferences = requirementReferences,
                 PregameRows = pregameRows,
                 RelatedEffectIds = relatedEffectIds.OrderBy(x => x).ToList(),
-                RelatedComponentIds = relatedComponentIds.OrderBy(x => x).ToList()
+                RelatedComponentIds = relatedComponentIds.OrderBy(x => x).ToList(),
+                AbilityChain = BuildAbilityChain(abilityId)
             };
         }
 
@@ -1218,6 +1219,45 @@ namespace ClientDataMatrix.Services
                 return graph.AddNode("component", reference.SourceId.ToString(CultureInfo.InvariantCulture), "Component " + reference.SourceId.ToString(CultureInfo.InvariantCulture));
             return graph.AddNode("requirement", reference.SourceId.ToString(CultureInfo.InvariantCulture), "Requirement " + reference.SourceId.ToString(CultureInfo.InvariantCulture));
         }
+        private const int AbilityChainMaxDepth = 4;
+
+        /// <summary>
+        /// Resolves the ability-to-ability chain reachable through component references.
+        ///
+        /// An ability's behaviour is often not in the ability itself: a component can apply,
+        /// grant or act on another ability, which has components of its own. Every other view
+        /// in this tool stops at the first link.
+        /// </summary>
+        private List<AbilityChainEntry> BuildAbilityChain(ushort abilityId)
+        {
+            var catalog = new AbilityChainCatalog(_dataset);
+            List<AbilityChainCatalog.ChainNode> nodes = catalog.BuildChain(abilityId, AbilityChainMaxDepth);
+            var entries = new List<AbilityChainEntry>();
+
+            foreach (AbilityChainCatalog.ChainNode node in nodes)
+            {
+                if (node.Depth == 0)
+                    continue;
+
+                AbilityChainCatalog.AbilityReference reference = node.ArrivedBy;
+                entries.Add(new AbilityChainEntry
+                {
+                    Depth = node.Depth,
+                    AbilityId = node.AbilityId,
+                    Name = node.Name,
+                    ArrivedFrom = reference == null ? string.Empty : reference.FromAbility.ToString(CultureInfo.InvariantCulture),
+                    Via = reference == null ? string.Empty : reference.ViaComponent.ToString(CultureInfo.InvariantCulture),
+                    Operation = reference == null ? string.Empty : reference.OperationName,
+                    Field = reference == null ? string.Empty : reference.Field,
+                    Basis = reference == null ? string.Empty : reference.Basis,
+                    ComponentIds = string.Join(", ", node.ComponentIds.Select(id => id.ToString(CultureInfo.InvariantCulture))),
+                    Revisited = node.Revisited
+                });
+            }
+
+            return entries;
+        }
+
 
         private GraphNode AddRowNode(AnalysisGraph graph, SourceRowBase row)
         {

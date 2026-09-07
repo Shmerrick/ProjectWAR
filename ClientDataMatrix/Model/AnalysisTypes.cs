@@ -353,6 +353,21 @@ namespace ClientDataMatrix.Model
         }
     }
 
+    /// <summary>One ability reached by following component references from the subject ability.</summary>
+    public sealed class AbilityChainEntry
+    {
+        public int Depth { get; set; }
+        public ushort AbilityId { get; set; }
+        public string Name { get; set; }
+        public string ArrivedFrom { get; set; }
+        public string Via { get; set; }
+        public string Operation { get; set; }
+        public string Field { get; set; }
+        public string Basis { get; set; }
+        public string ComponentIds { get; set; }
+        public bool Revisited { get; set; }
+    }
+
     public sealed class AbilityAnalysisResult
     {
         public ushort AbilityId { get; set; }
@@ -372,6 +387,12 @@ namespace ClientDataMatrix.Model
         public List<ushort> RelatedComponentIds { get; set; }
         public List<BinaryAbilityRecord> BinaryAbilityRows { get; set; }
         public List<BinaryComponentRecord> BinaryComponentRows { get; set; }
+
+        /// <summary>
+        /// The ability-to-ability chain reachable from this ability through its components.
+        /// Empty for an ability whose behaviour is entirely its own.
+        /// </summary>
+        public List<AbilityChainEntry> AbilityChain { get; set; }
         public List<BinaryRequirementRecord> BinaryRequirementRows { get; set; }
         public List<RequirementReferenceRecord> RequirementReferences { get; set; }
     }

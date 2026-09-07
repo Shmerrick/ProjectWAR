@@ -165,6 +165,47 @@ The last-resort override ledger lives at:
 
 This file is optional and starts empty. It should only be used when extracted-client evidence is absent. If you add a row sourced from toolkit SQL, decompile, or packet material, mark it with `Confidence=Londo`.
 
+## Ability chains: behaviour that lives in another ability
+
+**Read this before concluding an ability "does nothing".** An ability is frequently not where its
+behaviour is. A component can apply, grant or act on ANOTHER ability, and that ability has
+components of its own, so reading a single ability's row shows only the first link.
+
+Worked example. "Order Controlled Warlock Engineer" (24857) has four components and no visible
+effect. Its chain is one line long and explains the whole thing:
+
+```
+Depth 1  27950  Play-As-Monster Master Client Controller
+         from 24857 via component 26660, APPLY_ABILITY, Value[0]
+```
+
+The behaviour is in 27950. "Detonate" (24828) goes two deep: it acts on "Sabotage" (24826), which
+in turn applies "Bbbbrrrrrttt!" (24827).
+
+`doctor ability <id>` now resolves this automatically and prints an **Ability Chain** table,
+breadth-first to depth 4. A revisited ability is listed once and not expanded again, so a cycle
+terminates. The graph export gains the same links, so `<id>.edges.csv` is walkable rather than
+stopping at the subject.
+
+### Which values are followed, and why not more
+
+A component value is only an integer, and the numeric ranges overlap badly -- operation 51's
+`Value[0]` looks exactly like an ability id and provably is not. Following an arbitrary value would
+manufacture links that do not exist, so only slots whose meaning is established are traversed:
+
+| Operation | Slot | Basis |
+|:---|:---|:---|
+| 23 APPLY_ABILITY | `Value[0]` | Applies the ability named there |
+| 28 GRANTED_ABILITY | `Value[0]` | Grants the ability named there |
+| 36 SERVER_COMMAND, **command 304 only** | `Value[1]` | Command 304 names the ability whose persistent state it acts on |
+
+A reference is also dropped unless the target resolves to a real ability, so a numeric coincidence
+cannot invent a link. Operations not in that table have their values left unread.
+
+Extending it is the natural way to grow this: add a row to `AbilityReferenceSlots` in
+`Services/AbilityChainCatalog.cs` **only** once an operation's slot is established, and record the
+evidence in the `Basis` string, which is printed in the report so a reader can judge it.
+
 ## CLI Usage
 
 The CLI commands still work, although this is now a Windows GUI executable and console capture can be less predictable from automation:
