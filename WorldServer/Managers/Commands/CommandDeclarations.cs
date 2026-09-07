@@ -406,6 +406,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("revive", Revive, null, EGmLevel.GM, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.GM, 0, "Grants the ability to fly (byte enableFlight)"),
 
+            new GmCommandHandler("skavenform", SkavenFormCommand, null, EGmLevel.GM, 0, "Take or end a Skaven monster form (gutterrunner|engineer|ratogre|off)"),
+
             new GmCommandHandler("announce", Announce, null, EGmLevel.GM, 1, "Sends a global message (string Message). SoundID can be specified .announce sound <id> <message>"),
             new GmCommandHandler("shroud", Shroud, null, EGmLevel.GM, 0, "Causes you to become invisible to other players."),
             new GmCommandHandler("invincible", InvincibleMe, null, EGmLevel.GM, 0, "Toggles invulnerability on the current target."),

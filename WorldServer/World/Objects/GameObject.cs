@@ -252,6 +252,16 @@ namespace WorldServer.World.Objects
 
                 TryLoot(player, menu);
 
+                // Play as Skaven. Interacting with an Excavated Skaven Device lists the monster
+                // forms; interacting again with an option selected takes that form. Retail routed
+                // the selection through quests 53055-53058, which this database does not have, so
+                // the interact menu's own option index is used instead. See SkavenFormService.
+                if (Spawn.Entry == SkavenFormService.DeviceEntry)
+                {
+                    HandleSkavenDevice(player, menu);
+                    return;
+                }
+
                 switch (Spawn.Entry)
                 {
                     case 242:
@@ -602,6 +612,66 @@ namespace WorldServer.World.Objects
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_GO, Spawn.Entry, 1);
             PublicQuest pq = killer.QtsInterface.PublicQuest;
             pq?.HandleEvent(killer, Objective_Type.QUEST_KILL_GO, Spawn.Entry, 1, 100);
+        }
+
+        /// <summary>
+        /// Excavated Skaven Device: offers the four monster forms and applies the chosen one.
+        ///
+        /// The option text and ordering are verbatim from the captured F_INTERACT_RESPONSE at a
+        /// device in Praag. Retail answered a selection with a quest offer and waited for F_QUEST
+        /// carrying the option's id (53055-53058); those quests do not exist in this database, so
+        /// the form is applied directly from the menu index instead. That is a deliberate
+        /// deviation, recorded in the handoff, not an attempt to reproduce the retail flow.
+        /// </summary>
+        private void HandleSkavenDevice(Player player, InteractMenu menu)
+        {
+            if (player.IsControllingSkaven)
+            {
+                player.RemoveSkavenForm();
+                return;
+            }
+
+            SkavenFormService.FormDefinition chosen = SkavenFormService.FromMenuIndex(menu.Num);
+
+            if (chosen != null && menu.Menu != 0)
+            {
+                if (!chosen.KitIsEvidenced)
+                {
+                    // Pack Master is offered by the live menu but no capture shows one being
+                    // played, so its ability set is unknown and must not be invented.
+                    player.SendClientMessage(
+                        "The Packmaster form is not yet restored: no capture records its abilities.",
+                        ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return;
+                }
+
+                player.ApplySkavenForm(chosen.Form);
+                return;
+            }
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 128);
+            Out.WriteByte(0);
+            Out.WriteUInt16(Oid);
+            Out.WriteUInt16(0);
+            Out.WriteByte(0);
+
+            byte count = 0;
+            foreach (SkavenFormService.FormDefinition form in SkavenFormService.AllForms)
+                ++count;
+            Out.WriteByte(count);
+
+            byte index = 0;
+            foreach (SkavenFormService.FormDefinition form in SkavenFormService.AllForms)
+            {
+                Out.WriteByte(index++);
+                Out.WriteUInt16(form.LiveMenuId);
+                Out.WriteByte(8);
+                Out.WriteByte(1);
+                Out.WritePascalString(form.MenuText);
+            }
+
+            Out.WriteByte(0);
+            player.SendPacket(Out);
         }
 
         #region Teleport

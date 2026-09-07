@@ -49,6 +49,41 @@ namespace WorldServer.World.Abilities
         ///<summary>The set of abilities that are actually castable by this player.</summary>
         private readonly HashSet<ushort> _abilitySet = new HashSet<ushort>();
 
+        /// <summary>
+        /// Abilities granted outside the career list, currently only by a Skaven monster form.
+        /// They are appended to the F_CHARACTER_INFO action list but never enter
+        /// <see cref="_abilities"/> or <see cref="_abilitySet"/>, because they have no row in
+        /// either server ability table and so cannot be resolved to an AbilityInfo. The client
+        /// renders them from its own data. LoadCareerAbilities rebuilds _abilities from scratch,
+        /// so keeping these separate also means a reload cannot silently drop or duplicate them.
+        /// </summary>
+        private readonly List<ushort> _grantedAbilities = new List<ushort>();
+
+        /// <summary>
+        /// Replaces the granted-ability set and re-sends the action list. Passing null or an empty
+        /// array clears it, which is what ending a monster form does.
+        /// </summary>
+        public void SetGrantedAbilities(IEnumerable<ushort> abilities)
+        {
+            _grantedAbilities.Clear();
+
+            if (abilities != null)
+            {
+                foreach (ushort entry in abilities)
+                {
+                    if (entry != 0 && !_grantedAbilities.Contains(entry))
+                        _grantedAbilities.Add(entry);
+                }
+            }
+
+            SendAbilityLevels();
+        }
+
+        public bool HasGrantedAbility(ushort entry)
+        {
+            return _grantedAbilities.Contains(entry);
+        }
+
         private readonly ushort[] _morales = new ushort[4];
 
         private AbilityProcessor _abilityProcessor;
@@ -357,9 +392,16 @@ namespace WorldServer.World.Abilities
             if (!HasPlayer())
                 return;
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 4 + _abilities.Count * 3);
+            // Granted abilities are carried alongside the career list rather than inside it. A
+            // Skaven monster form's abilities have no row in either server ability table -- the
+            // client renders them from its own data -- so they cannot be resolved to an
+            // AbilityInfo, and forcing them through _abilities would need one.
+            int grantedCount = _grantedAbilities.Count;
+            int total = _abilities.Count + grantedCount;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 4 + total * 3);
             Out.WriteByte(1); // Action
-            Out.WriteByte((byte)_abilities.Count);
+            Out.WriteByte((byte)total);
             Out.WriteUInt16(0x300);
 
             int tomeTacticsSent = 0;
@@ -371,6 +413,12 @@ namespace WorldServer.World.Abilities
 
                 if (TomeTacticService.IsTomeTactic(abInfo.Entry))
                     ++tomeTacticsSent;
+            }
+
+            for (int i = 0; i < grantedCount; ++i)
+            {
+                Out.WriteUInt16(_grantedAbilities[i]);
+                Out.WriteByte(0);
             }
 
             GetPlayer().SendPacket(Out);

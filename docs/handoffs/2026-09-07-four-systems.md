@@ -582,3 +582,70 @@ sweep).
 
 Recorded in ClientDataMatrix's SERVER_COMMAND Value[1] schema entry, alongside the command
 codes the tool already documented (32, 50, 327/328, 332, 173, 87/88/101).
+
+## Play as Skaven: implemented, with the parts that are not
+
+A working monster-form system, built from the decoded evidence above. What exists and what does
+not is worth being precise about, because the retail feature is larger than this.
+
+### What works
+
+* **`SkavenFormService`** holds the four forms with the ability kits read off the wire. Gutter
+  Runner, Warlock Engineer and Rat Ogre carry their captured sets; **Pack Master is deliberately
+  empty**, because no capture shows one being played and its kit would have to be guessed.
+  Selecting it returns a message saying so rather than granting an invented set.
+* **`Player.ApplySkavenForm` / `RemoveSkavenForm`** hold the session. The form ends on **death**
+  (the accept text bounds it at "until its death"), on **region change**, and on re-interacting
+  with a device.
+* **The ability grant reuses the packet the captures show.** `AbilityInterface.SendAbilityLevels`
+  already wrote F_CHARACTER_INFO subcode 1 in exactly the captured layout, including the `0x300`
+  header. Form abilities are carried in a new `_grantedAbilities` list appended to that packet
+  rather than pushed through `_abilities`: they have **no row in either server ability table**, so
+  they cannot resolve to an `AbilityInfo`. The client renders them from its own data. Keeping them
+  separate also means `LoadCareerAbilities`, which rebuilds `_abilities` wholesale, cannot drop or
+  duplicate them.
+* **Interacting with an Excavated Skaven Device** (prototype 98811) lists the four forms using the
+  captured option text and ids, and takes the chosen one.
+* **`.skavenform <gutterrunner|engineer|ratogre|off>`** applies a form anywhere, so the system can
+  be tested without reaching a Tier 4 lake.
+
+### The devices were invisible, and why
+
+Migration 73 restored both devices verbatim, and both carry **ZoneId 100 (Norsca)** in the
+pre-deletion dump. Their coordinates do not fit Norsca -- they resolve to local (149271, 817757)
+and (624598, 12195), far outside the 0-65535 a zone spans -- so neither was ever sent to a client.
+
+Each coordinate pair fits exactly one Tier 4 zone: **Dragonwake (205)** and **Praag (105)**. Both
+are contested Tier 4 RvR lakes, which is precisely where the boss tokens say the devices stand,
+and Praag is the zone the `CONTROL A ...` captures were recorded in. The coordinates are right and
+the ZoneId is wrong; migration 74 corrects only the ZoneId. The error is inherited, present at
+a4995e92 as well.
+
+Migration 74 also adds a **third device beside the Reikwald test range**, marked clearly as test
+scaffolding rather than retail data, because both real placements need a rank-40 character and an
+active campaign to reach.
+
+### What is NOT implemented
+
+* **No visual transformation.** The player keeps their own appearance. `F_GRAPHICAL_REVISION` was
+  decoded and is only a four-byte refresh counter (oid plus revision 1 or 3), not a model swap;
+  `Chickenize` works through an `ObjectEffectState` and there is no Skaven state in that enum; and
+  player appearance is career- and equipment-driven rather than a settable model. The packet that
+  actually performs the swap is not identified in any capture examined, so it is not guessed at.
+* **Career abilities are not replaced.** Retail swapped the action set outright -- op 51 is
+  "career ability-set replacement" -- and also disabled inventory and character screens. Here the
+  form's abilities are *added* alongside the player's own. The packets that disable those screens
+  are not decoded.
+* **The form abilities do not function.** They populate the action bar and the client draws them
+  correctly from its own data, but 24802, 24805, 24806 and the rest have no row in either server
+  ability table, so casting one does nothing server-side. Restoring those ability rows is separate
+  work.
+* **Selection does not go through quests.** Retail answered a menu choice with a quest offer and
+  waited for `F_QUEST` carrying id 53055-53058; those quests do not exist here, so the form is
+  applied straight from the menu index. A deliberate deviation.
+* **No acquisition gating.** Retail required repelling Thanquol's Incursion, a 15-minute delay, a
+  Warpstone token from a boss, and a capped first-come-first-serve slot count per lake. None of
+  that is enforced: any player may take a form at any device.
+
+So this is the transformation and its action set, not the retail feature. It is enough to test
+whether the mechanism works.

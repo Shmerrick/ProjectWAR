@@ -397,6 +397,66 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        /// <summary>
+        /// .skavenform &lt;gutterrunner|engineer|ratogre|off&gt;
+        ///
+        /// Applies or ends a Skaven monster form directly, so the system can be exercised without
+        /// standing at an Excavated Skaven Device. The devices themselves work too; this exists
+        /// because only two of them are placed in the world, both in Tier 4 lakes.
+        /// </summary>
+        public static bool SkavenFormCommand(Player plr, ref List<string> values)
+        {
+            string arg = values.Count > 0 ? values[0].ToLowerInvariant() : string.Empty;
+
+            if (arg == "off" || arg == "none" || arg == "0")
+            {
+                if (!plr.IsControllingSkaven)
+                {
+                    plr.SendClientMessage("You are not controlling a Skaven.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+
+                plr.RemoveSkavenForm();
+                return true;
+            }
+
+            SkavenFormService.SkavenForm form;
+            switch (arg)
+            {
+                case "gutterrunner":
+                case "gutter":
+                case "1":
+                    form = SkavenFormService.SkavenForm.GutterRunner;
+                    break;
+                case "engineer":
+                case "warlockengineer":
+                case "2":
+                    form = SkavenFormService.SkavenForm.WarlockEngineer;
+                    break;
+                case "ratogre":
+                case "ogre":
+                case "3":
+                    form = SkavenFormService.SkavenForm.RatOgre;
+                    break;
+                case "packmaster":
+                case "4":
+                    plr.SendClientMessage(
+                        "The Packmaster form is not yet restored: no capture records its abilities.",
+                        ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                default:
+                    plr.SendClientMessage(
+                        "Usage: .skavenform <gutterrunner|engineer|ratogre|off>",
+                        ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+            }
+
+            if (!plr.ApplySkavenForm(form))
+                plr.SendClientMessage("That Skaven form could not be applied.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+
+            return true;
+        }
+
         public static bool SetFlightState(Player plr, ref List<string> values)
         {
             ushort npcupdateflag = 0;

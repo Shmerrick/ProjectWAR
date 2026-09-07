@@ -4237,6 +4237,66 @@ namespace WorldServer.World.Objects
             SendPacket(Out);
         }
 
+        #region Skaven monster form
+
+        /// <summary>
+        /// The Skaven monster form this player is currently controlling, or None.
+        /// See <see cref="SkavenFormService"/> and docs/patch-notes/1.4.0.md.
+        /// </summary>
+        public SkavenFormService.SkavenForm SkavenForm { get; private set; }
+
+        public bool IsControllingSkaven
+        {
+            get { return SkavenForm != SkavenFormService.SkavenForm.None; }
+        }
+
+        /// <summary>
+        /// Takes control of a Skaven monster form: the player gains that form's action set until
+        /// the form ends. The 1.4.0 notes bound a form at "until its death", so
+        /// <see cref="SetDeath"/> ends it, as do logout and a region change.
+        ///
+        /// The player's own career abilities are left in place. Retail replaced them outright and
+        /// also disabled inventory and character screens; neither is reproduced here, because the
+        /// packets that do it are not decoded from any capture and would have to be guessed. The
+        /// visual transformation is likewise absent for the same reason -- see the handoff.
+        /// </summary>
+        public bool ApplySkavenForm(SkavenFormService.SkavenForm form)
+        {
+            SkavenFormService.FormDefinition definition = SkavenFormService.GetForm(form);
+
+            if (definition == null || !definition.KitIsEvidenced || definition.Abilities == null)
+                return false;
+
+            if (IsControllingSkaven)
+                RemoveSkavenForm();
+
+            SkavenForm = form;
+            AbtInterface.SetGrantedAbilities(definition.Abilities);
+
+            SendClientMessage("You take control of a " + definition.MenuText.Replace("Control a ", "") + ".",
+                ChatLogFilters.CHATLOGFILTERS_EMOTE);
+
+            Log.Info("SkavenForm", Name + " took the " + form + " form ("
+                + definition.Abilities.Length + " abilities granted).");
+            return true;
+        }
+
+        /// <summary>Ends the current monster form and restores the player's own action set.</summary>
+        public void RemoveSkavenForm()
+        {
+            if (!IsControllingSkaven)
+                return;
+
+            SkavenFormService.SkavenForm previous = SkavenForm;
+            SkavenForm = SkavenFormService.SkavenForm.None;
+            AbtInterface.SetGrantedAbilities(null);
+
+            SendClientMessage("You lose control of the Skaven.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+            Log.Info("SkavenForm", Name + " left the " + previous + " form.");
+        }
+
+        #endregion
+
         protected override void SetDeath(Unit killer)
         {
             DeathLogger.Debug($"Victim : {Name} killed by {killer.Name} in {killer.Region?.RegionName}");
@@ -4247,6 +4307,11 @@ namespace WorldServer.World.Objects
 
             SendPlayerDeath();
             deathTime = TCPManager.GetTimeStampMS();
+
+            // "Accept this quest to control a Warlock Engineer until its death." -- the form is
+            // bound to the monster's life, so dying in one ends it.
+            if (IsControllingSkaven)
+                RemoveSkavenForm();
 
             TokInterface.FireHelpTips(HelpTipTrigger.Death);
 
@@ -6748,6 +6813,10 @@ namespace WorldServer.World.Objects
 
         private void OnRegionChanged(RegionMgr oldRegion)
         {
+            // A monster form belongs to the lake it was taken in.
+            if (IsControllingSkaven)
+                RemoveSkavenForm();
+
             // Purge buff appearance
             BuffInterface?.RemoveAllBuffs();
             //BuffInterface?.Update(TCPManager.GetTimeStampMS());
