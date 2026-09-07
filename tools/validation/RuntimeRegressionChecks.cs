@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Color = System.Drawing.Color;
+using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -220,6 +221,18 @@ internal static class RuntimeRegressionChecks
 
     private static void CheckInfluence()
     {
+        var buildIndex = typeof(ChapterService).GetMethod("BuildInfluenceIndex", BindingFlags.Static | BindingFlags.NonPublic);
+        var mapOnly = new Chapter_Info { Entry = 1, InfluenceEntry = 47 };
+        var rewards = new Chapter_Info { Entry = 141, InfluenceEntry = 47, CreatureEntry = 66173,
+            Tier1InfluenceCount = 3520, Tier2InfluenceCount = 7040, Tier3InfluenceCount = 10560 };
+        var sharedArea = new Chapter_Info { Entry = 161, InfluenceEntry = 47, CreatureEntry = 66173,
+            Tier1InfluenceCount = 3520, Tier2InfluenceCount = 7040, Tier3InfluenceCount = 10560 };
+        foreach (var rows in new[] { new[] { mapOnly, rewards, sharedArea }, new[] { sharedArea, rewards, mapOnly } })
+        {
+            var index = (Dictionary<uint, Chapter_Info>)buildIndex.Invoke(null, new object[] { rows });
+            Assert(index.Count == 1 && ReferenceEquals(index[47], rewards), "Shared tracks select existing complete rewards independent of database row order");
+            Assert(mapOnly.Tier3InfluenceCount == 0, "Index must not invent or fill placeholder thresholds");
+        }
         var chapter = new Chapter_Info { Entry = 2, InfluenceEntry = 128, CreatureEntry = 1,
             Tier1InfluenceCount = 8120, Tier2InfluenceCount = 32940, Tier3InfluenceCount = 75150 };
         typeof(ChapterService).GetField("_chaptersByInfluence", BindingFlags.Static | BindingFlags.NonPublic)
@@ -282,8 +295,11 @@ internal static class RuntimeRegressionChecks
         Assert(BitConverter.ToString(areaPacket, 3) == "00-1F-11-02-01-01-00-00-00-00",
             "Gunbad area activation: official INSTANCE_GUNBAD_PART1 packet 381");
 
+        // PQType 1 matches the real pquest_info row; the post-name field below is driven from
+        // it, because the Thanquol's Incursion captures send 0 there where Gunbad sends 2 and
+        // PQType is what separates the two sets.
         var pqInfo = new PQuest_Info { Entry = 513, Name = "A Taint from Below", ZoneId = 60,
-            Type = 0, ChapterId = 65, PQDifficult = 3, Objectives = new List<PQuest_Objective>() };
+            Type = 0, ChapterId = 65, PQType = 1, PQDifficult = 3, Objectives = new List<PQuest_Objective>() };
         pqInfo.Objectives.Add(new PQuest_Objective { Guid = 2298, StageName = "Stage I", Type = 2,
             ObjectId = "36554", Objective = "Oozespawn Nurgling", Description = "test", Count = 24 });
         var pq = new PublicQuest(pqInfo);
@@ -293,15 +309,22 @@ internal static class RuntimeRegressionChecks
         byte[] pqPacket = client.Packets[0];
         Assert(pqPacket[8] == 0 && pqPacket[13 + pqInfo.Name.Length] == 2,
             "Dungeon PQ realm remains 0, independent post-name field is 2");
-        Assert(pqPacket[pqPacket.Length - 5] == 65, "PQ trailer uses Destruction Gunbad influence, not hardcoded 72");
-        Assert(ReadUInt32(pqPacket, pqPacket.Length - 17) == 0 && ReadUInt32(pqPacket, pqPacket.Length - 13) == 0,
+        // Trailer, from INSTANCE_GUNBAD_PART1 F_OBJECTIVE_INFO: uint16 0, the short stage
+        // label as a pascal string, then the influence id as a uint32 and two zero bytes.
+        // The influence used to be written as a lone byte two positions earlier, with the
+        // stage label missing entirely.
+        Assert(pqPacket[pqPacket.Length - 14] == "Stage I".Length &&
+               Encoding.ASCII.GetString(pqPacket, pqPacket.Length - 13, 7) == "Stage I",
+            "PQ trailer carries the short stage label the client shows above the objectives");
+        Assert(ReadUInt32(pqPacket, pqPacket.Length - 6) == 65, "PQ trailer uses Destruction Gunbad influence, not hardcoded 72");
+        Assert(ReadUInt32(pqPacket, pqPacket.Length - 24) == 0 && ReadUInt32(pqPacket, pqPacket.Length - 20) == 0,
             "Untimed first stage must not serialize a wrapped negative timestamp");
         int difficultyOffset = 13 + pqInfo.Name.Length + 7 + 7 + "Oozespawn Nurgling".Length;
         Assert(pqPacket[difficultyOffset] == 255, "Official Gunbad PQ difficulty sentinel");
         player.Realm = Realms.REALMS_REALM_ORDER;
         client.Packets.Clear();
         pq.SendCurrentStage(player);
-        Assert(client.Packets[0][pqPacket.Length - 5] == 64, "Order Gunbad PQ uses Order influence");
+        Assert(ReadUInt32(client.Packets[0], pqPacket.Length - 6) == 64, "Order Gunbad PQ uses Order influence");
 
         // Exercise a real counter update, with no DB award/contribution for a synthetic event.
         pq.Stage.Objectives[0].Objective.Type = (byte)Objective_Type.QUEST_SCRIPTED_EVENT;

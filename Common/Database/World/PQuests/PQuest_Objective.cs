@@ -20,6 +20,15 @@ namespace Common
         [DataElement(Varchar = 255, AllowDbNull = false)]
         public string StageName { get; set; }
 
+        /// <summary>
+        /// Long stage title shown in the client's public-quest tracker header, e.g.
+        /// "Destroy Siphoning Contraptions". F_OBJECTIVE_INFO carries this and the short
+        /// <see cref="StageName"/> label ("Stage I") as two separate strings. Empty falls back
+        /// to StageName, which is how every row that predates the column behaves.
+        /// </summary>
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string StageTitle { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public ushort StageId { get; set; }
 
@@ -34,6 +43,17 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public ushort Time { get; set; }
+
+        /// <summary>
+        /// Suppresses the stage countdown and the stage fail timer entirely. Time = 0 cannot
+        /// express this: 2748 of the 2766 objective rows leave Time at zero and rely on
+        /// <c>PublicQuest.TIME_EACH_STAGE</c> as their timeout, so zero means "unset", not
+        /// "none". The Thanquol's Incursion captures send a stage total and remaining of zero
+        /// for all five numbered stages, which this reproduces without disturbing the default
+        /// every other public quest depends on.
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public byte NoStageTimer { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public string Description { get; set; }
@@ -55,6 +75,15 @@ namespace Common
 
         [DataElement(Varchar = 255, AllowDbNull = true)]
         public string ObjectId6 { get; set; }
+
+        /// <summary>
+        /// Ephemeral objective id the live 1.4.8 server sent in F_OBJECTIVE_INFO and
+        /// F_OBJECTIVE_UPDATE. It is not the creature or gameobject entry: the Gunbad captures
+        /// send 870/871 for public quest 181, whose ObjectId column holds creature 15106.
+        /// Zero keeps the legacy behaviour of sending ObjectId.
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public uint ClientObjectiveId { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public uint TokCompleted { get; set; }

@@ -1,5 +1,37 @@
 # Validation tools
 
+`./tools/validation/Test-WorldDiagnosticData.ps1` verifies migrations 52 and 53 against
+the Release database using read-only queries: no missing area influence references,
+42 peaceful-city areas without influence, zero city PQ fallbacks, all eight original
+columns of the five archived taxi records, and that live routing still matches them
+verbatim. This does not establish that the taxi destinations work.
+
+`./tools/validation/Test-ItemLoaders.ps1` compares the reflected reference mapper with
+the active compiled mapper using both Release item tables. It measures elapsed load
+time and verifies every mapped property and persistence flag on all 88,727 items in
+each table. It is SELECT-only and starts no ORM save thread. The slower reference
+mapper may emit an expected slow-query warning in the test's own log.
+
+`./tools/validation/Test-DatabaseNulls.ps1` tests the built MySQL writer against
+session-local temporary tables in the configured Release database, including a copy
+of the actual `lotd_resource_tracker` schema. Strict-mode INSERT/UPDATE checks cover
+NULL and populated dates, nullable reads, optional numbers/booleans, empty strings,
+required-string compatibility and escaping. It registers no ORM tables, starts no
+services and changes no persistent rows. See the
+[WorldServer diagnostic handoff](../../docs/handoffs/2026-09-06-worldserver-diagnostics.md).
+
+`./tools/validation/Test-TomeTactics.ps1` verifies the bestiary kill counter repair
+(migration 54) and the tome tactic data set (migrations 55-57) against the Release
+database. It resolves each new `DataObject` through the real ORM binder and selects
+exactly the bound columns, so a property with no column — or a NULL behind a
+non-nullable value type, which is the bug that killed every bestiary counter — fails
+here rather than as a `LoadingFunction` exception at boot. It then checks the data
+against the 1.4.8 client files it came from: 136 distinct species counters with no
+collisions, nine tactic lines with ascending thresholds, 138 fragments with the
+client's per-line totals, every line's final tier reachable, 31 unambiguous creature
+type bindings, and the 27 ability, Tome and buff rows. Included are the values read
+off the live client's own Greenskin fragment tooltip (2 / 3 / 5). SELECT-only.
+
 For the normal Gunbad/Bastion completion gate and planned custom difficulty work:
 
 ```powershell
@@ -52,6 +84,18 @@ This SELECT-only check uses the Release database to construct the actual first-s
 for Holmsteinn Revisited and Destruction of the Weak. It checks deferred startup and duplicate
 prevention, with no region thread, AI tick or character writes. It does not test client visibility.
 
+```powershell
+./tools/validation/Test-ThanquolEncounter.ps1
+```
+
+This SELECT-only check verifies that Thanquol's Incursion (public quest 911, zone 410) still
+matches the three official full-run captures it was decoded from: the Setup stage plus five
+numbered stages in order, their tracker titles, objective texts, counts, object ids and
+timers, all four Siphoning Contraption positions on both contraption stages, the 100517
+prototype, and that Skeetk, Throt and Thanquol are spawned in the zone. It drives the real
+`PublicQuest` constructor but starts no region, AI or networking, and is not an in-client test
+of the encounter. See the [handoff](../../docs/handoffs/2026-09-07-four-systems.md).
+
 `Read-OfficialPackets.ps1 -CapturePath <gzip log> -OpcodePattern <regex>` decodes the toolkit's
 text capture format without writing files. `Index` is the 1-based ordinal across both directions;
 `Bytes` includes the frame header (three bytes for server packets). See the
@@ -73,6 +117,13 @@ the script never changes them. Source details and current measurements are in
 
 Passing these tools is not an end-to-end game test. After migrations/build changes, use
 ServerLauncher to start the stack and retest the affected gameplay in the client.
+
+`Read-TaxiCaptureEvidence.ps1` scans the official gzip packet corpus for BUG-010's
+five destination IDs in flight menus and for candidate travel arrivals. It writes
+`ProjectWAR-taxi-capture-evidence.csv` to the temporary directory; use `-OutputPath`
+to choose another report location. It never connects to the database. Findings and
+the limits of interpreting scenario/siege coordinates as flight arrivals are recorded
+in [the taxi evidence handoff](../../docs/handoffs/2026-09-06-taxi-evidence.md).
 
 The September 6 review adds ordinary-creature PQ checks to the runtime suite: subtype-zero
 targets, multiple contributors to one quest, independent realm quests, unmatched/cross-zone

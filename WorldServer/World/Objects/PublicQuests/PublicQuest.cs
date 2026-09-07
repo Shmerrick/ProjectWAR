@@ -68,9 +68,11 @@ namespace WorldServer.World.Objects.PublicQuests
                     {
                         StageId = obj.StageId,
                         StageName = obj.StageName,
+                        StageTitle = string.IsNullOrEmpty(obj.StageTitle) ? obj.StageName : obj.StageTitle,
                         Number = Stages.Count,
                         Description = obj.Description,
-                        Time = obj.Time
+                        Time = obj.Time,
+                        NoTimer = obj.NoStageTimer != 0
                     };
                     Stages.Add(stage);
                 }
@@ -130,6 +132,21 @@ namespace WorldServer.World.Objects.PublicQuests
             */
         }
 
+        /// <summary>
+        /// The id the client correlates F_OBJECTIVE_INFO and F_OBJECTIVE_UPDATE on. The live
+        /// server allocated it per objective row, independently of the creature or gameobject
+        /// entry: Gunbad public quest 181 sends 870/871 while its ObjectId column holds
+        /// creature 15106. Rows without a captured id keep sending ObjectId, which is
+        /// self-consistent across both packets and so still correlates correctly.
+        /// </summary>
+        private static uint GetClientObjectiveId(PQuest_Objective objective)
+        {
+            if (objective.ClientObjectiveId != 0)
+                return objective.ClientObjectiveId;
+
+            return uint.TryParse(objective.ObjectId, out uint objectId) ? objectId : 0u;
+        }
+
         public void SendCurrentStage(Player player)
         {
             player.QtsInterface.UpdateObjects();
@@ -163,12 +180,21 @@ namespace WorldServer.World.Objects.PublicQuests
                 Out.WritePascalString(Info.Name);
                 // INSTANCE_GUNBAD_PART1 F_OBJECTIVE_INFO (A Taint from Below): this
                 // field is 2 even though the realm field above is 0. It is not a realm.
-                Out.WriteByte(2);
-                Out.WriteUInt32(UInt32.Parse(Stage.Objectives.First().Objective.ObjectId));
-                Out.WriteByte(0);
-                Out.WriteByte((byte)Stage.Objectives.Count);
+                // INSTANCE_GUNBAD_PART1 sends 2 here for every stage of every Gunbad public
+                // quest; the Thanquol's Incursion captures send 0 for all six of theirs. The
+                // two sets differ in pquest_info.PQType (1 for Gunbad, 0 for the instance), so
+                // drive it from that rather than from a literal.
+                Out.WriteByte((byte)(Info.PQType > 0 ? 2 : 0));
+                Out.WriteUInt32(GetClientObjectiveId(Stage.Objectives.First().Objective));
+
+                // A stage that publishes no objective rows to the client - the 300s "Setup"
+                // stage that opens Thanquol's Incursion is the only captured example - sends 2
+                // here and an objective count of zero. Every stage with objectives sends 0.
+                bool publishObjectives = Stage.Objectives.First().Objective.Type != (byte)Objective_Type.QUEST_SCRIPTED_EVENT;
+                Out.WriteByte((byte)(publishObjectives ? 0 : 2));
+                Out.WriteByte(publishObjectives ? (byte)Stage.Objectives.Count : (byte)0);
                 byte i = 0;
-                foreach (PQuestObjective obj in Stage.Objectives)
+                foreach (PQuestObjective obj in publishObjectives ? Stage.Objectives : Enumerable.Empty<PQuestObjective>())
                 {
                     Out.WriteByte(i);
                     Out.WriteUInt16((ushort)obj.Objective.Count);  // kill count
@@ -181,18 +207,34 @@ namespace WorldServer.World.Objects.PublicQuests
                 Out.WriteByte(Info.ZoneId == 60 ? (byte)0xFF :
                     (byte)(Info.PQDifficult > 0 ? (Info.PQDifficult - 1) : 0 - 1));
                 Out.WriteByte(0);
-                Out.WritePascalString(Stage.StageName);
+                Out.WritePascalString(string.IsNullOrEmpty(Stage.StageTitle) ? Stage.StageName : Stage.StageTitle);
                 Out.WriteByte(0);
                 Out.WritePascalString(Stage.Objectives.First().Objective.Description);
                 // Captures carry total and remaining seconds as uint32s. An untimed first
                 // stage has zero for both, not a negative timestamp cast to ~2 billion seconds.
-                Out.WriteUInt32(Stage.Number == 0 ? 0u : (uint)(Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
-                Out.WriteUInt32(Stage.Number == 0 ? 0u : (uint)Math.Max(0, _stageTimeEnd - TCPManager.GetTimeStamp()));
-                Out.WriteUInt32(0);
-                // Gunbad capture: 0x41; Chaos chapter 2 captures: 0x43.
-                uint influenceId = GetInfluenceId(player);
-                Out.WriteByte(influenceId <= byte.MaxValue ? (byte)influenceId : (byte)0);
-                Out.WriteUInt32(0);
+                // An untimed stage sends zero for both. Stage 0 was previously forced to zero
+                // because it is normally untimed, but Thanquol's Incursion opens on a 300s
+                // Setup stage that counts down (captured 300 total / 193 remaining), so honour
+                // an explicit Stage.Time even on the first stage - and honour NoTimer, which
+                // is how its five numbered stages send zero without touching the 540s default
+                // that every other public quest relies on.
+                bool timed = !Stage.NoTimer && (Stage.Time > 0 || Stage.Number != 0);
+                Out.WriteUInt32(!timed ? 0u : (uint)(Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
+                Out.WriteUInt32(!timed ? 0u : (uint)Math.Max(0, _stageTimeEnd - TCPManager.GetTimeStamp()));
+
+                // Tail, byte-for-byte from the captures. This used to be written as
+                // uint32(0) + byte(influence) + uint32(0), which is the right length but puts
+                // the influence id two bytes early and omits the short stage label entirely:
+                //   INSTANCE_GUNBAD_PART1  00 00 | 00 | 00 00 00 41 | 00 00
+                //   emitted (before)       00 00 00 00 | 41 | 00 00 00 00
+                // Gunbad's 0x41 is chapter_infos influence 65, which pquest_info.ChapterId
+                // already carries for all five of its public quests, so the value was right
+                // and only its position and width were wrong.
+                Out.WriteUInt16(0);
+                Out.WritePascalString(Stage.StageName);
+                Out.WriteUInt32(GetInfluenceId(player));
+                Out.WriteByte(0);
+                Out.WriteByte(0);
                 player.SendPacket(Out);
 
 
@@ -389,6 +431,8 @@ namespace WorldServer.World.Objects.PublicQuests
                         Stage = sStage;
                         Stage.Reset();
                         _started = true;
+                        _stageTimeEnd = TCPManager.GetTimeStamp() + (Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE);
+                        ScheduleScriptedStageAdvance();
                         foreach (uint Plr in ActivePlayers)
                         {
                             Player targPlayer = Player.GetPlayer(Plr);
@@ -584,7 +628,7 @@ namespace WorldServer.World.Objects.PublicQuests
                             // Matches the post-name objective-list kind in F_OBJECTIVE_INFO.
                             // Official Path of Fury F_OBJECTIVE_UPDATE #1170: 01 02, not realm 0.
                             Out.WriteByte(2);
-                            Out.WriteUInt32(UInt32.Parse(Stage.Objectives.First().Objective.ObjectId)); //ephermal id, sent in main packet for PQ_INFO
+                            Out.WriteUInt32(GetClientObjectiveId(Stage.Objectives.First().Objective)); //ephermal id, sent in main packet for PQ_INFO
                             Out.WriteByte(objid); //index of objective to update
                             Out.WriteUInt16((ushort)obj.Count); // new total
                             targPlayer.SendPacket(Out);
@@ -735,6 +779,7 @@ namespace WorldServer.World.Objects.PublicQuests
             Stage.Cleanup();
             int nextStageId = Stage.Number + 1;
             EvtInterface.RemoveEvent(Failed);
+            EvtInterface.RemoveEvent(AdvanceScriptedStage);
 
             foreach (PQuestStage sStage in Stages)
             {
@@ -744,9 +789,12 @@ namespace WorldServer.World.Objects.PublicQuests
                     Stage.Reset();
                     _stageTimeEnd = TCPManager.GetTimeStamp() + ((Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE));
                     byte objectiveType = sStage.Objectives.First().Objective.Type;
-                    if (objectiveType != (byte)Objective_Type.QUEST_PROTECT_UNIT &&
+                    if (!Stage.NoTimer &&
+                        objectiveType != (byte)Objective_Type.QUEST_PROTECT_UNIT &&
                         objectiveType != (byte)Objective_Type.QUEST_SCRIPTED_EVENT)
                         EvtInterface.AddEvent(Failed, (Stage.Time > 0 ? Stage.Time : TIME_EACH_STAGE) * 1000, 1);
+                    else
+                        ScheduleScriptedStageAdvance();
 
                     foreach (uint Plr in ActivePlayers)
                     {
@@ -765,11 +813,46 @@ namespace WorldServer.World.Objects.PublicQuests
             End();
         }
 
+        /// <summary>
+        /// A scripted-event stage has no kill or click target, so nothing would ever complete
+        /// it. Where the row carries a timer - the 300s "Setup" stage that opens Thanquol's
+        /// Incursion is the captured example - the timer is what advances it. Without a timer
+        /// the stage still waits on an external HandleEvent, as it did before.
+        /// </summary>
+        private void ScheduleScriptedStageAdvance()
+        {
+            if (Stage == null || Stage.Time == 0)
+                return;
+
+            if (Stage.Objectives.Count == 0 ||
+                Stage.Objectives.First().Objective.Type != (byte)Objective_Type.QUEST_SCRIPTED_EVENT)
+                return;
+
+            EvtInterface.RemoveEvent(AdvanceScriptedStage);
+            EvtInterface.AddEvent(AdvanceScriptedStage, Stage.Time * 1000, 1);
+        }
+
+        private void AdvanceScriptedStage()
+        {
+            if (!_started || _ended || Stage == null)
+                return;
+
+            if (Stage.Objectives.Count == 0 ||
+                Stage.Objectives.First().Objective.Type != (byte)Objective_Type.QUEST_SCRIPTED_EVENT)
+                return;
+
+            foreach (PQuestObjective objective in Stage.Objectives)
+                objective.Count = objective.Objective.Count;
+
+            NextStage();
+        }
+
         public bool IsDungeon()
         {
             switch (ZoneId)
             {
-                case 60:
+                case 60:  // Mount Gunbad
+                case 410: // Thanquol's Incursion
 
                     return true;
             }
