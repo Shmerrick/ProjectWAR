@@ -285,6 +285,11 @@ namespace WorldServer.World.AI
         /// Call only from AiInterface</notes>
         public virtual bool EndCombat()
         {
+            CancelPendingNpcCast();
+            _unit.EvtInterface.RemoveEvent(StartDelayedCast);
+            _unit.EvtInterface.RemoveEvent(DelayedChase);
+            _unit.EvtInterface.RemoveEvent(SetOldTarget);
+            CurTarget = null;
             AI.Debugger?.SendClientMessage("[MR]: Ending combat.");
             Combat.SetTarget(null, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
@@ -391,7 +396,7 @@ namespace WorldServer.World.AI
 
         public virtual void TryUseAbilities()
         {
-            if (_unit.AbtInterface.NPCAbilities == null)
+            if (_pendingNpcCast != null || _unit.AbtInterface.NPCAbilities == null)
                 return;
 
             if (Combat.IsFighting && Combat.CurrentTarget != null && _unit.AbtInterface.CanCastCooldown(0) && TCPManager.GetTimeStampMS() > NextTryCastTime)
@@ -399,8 +404,6 @@ namespace WorldServer.World.AI
                 long curTimeMs = TCPManager.GetTimeStampMS();
 
                 float rangeFactor = _unit.StsInterface.GetStatPercentageModifier(Stats.Range);
-
-                uint AllowPercentAbilityCycle = 0;
 
                 if (CurTarget != null)
                 {
@@ -432,9 +435,6 @@ namespace WorldServer.World.AI
 
                     if (ability.ActivateAtHealthPercent != 0)
                     {
-                        // This checks if we can add new ability to ability cycle
-                        if (ability.AbilityCycle == 1 && _unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100 )
-                            AllowPercentAbilityCycle = 1;
 
                         // This checks if we can reset the ability if NPC healed - if it's still on cooldwon, we do not refresh it
                         if (ability.AbilityCycle == 0 && ability.AbilityUsed == 1 && (_unit.Health > (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
@@ -447,14 +447,9 @@ namespace WorldServer.World.AI
                             if (ability.RandomTarget == 1)
                                 SetRandomTarget();
 
-                            // This list of parameters is passed to the function that delays the cast by 1000 ms
-                            var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
-
                             if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
-                            _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-							OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
-                            ability.AbilityUsed = 1;
-                            continue;
+                            QueueNpcCast(ability);
+							break;
                         }
                     }
 
@@ -467,7 +462,7 @@ namespace WorldServer.World.AI
 
                         if ((ability.Range == 0 || _unit.IsInCastRange(Combat.CurrentTarget, Math.Max(5 + ExtraRange, (uint)(ability.Range * rangeFactor)))))
                         {
-                            if (ability.ActivateAtHealthPercent == 0 || AllowPercentAbilityCycle == 1)
+                            if (ability.IsHealthCycleActive(_unit.Health, _unit.TotalHealth))
                             {
                                 if (!_unit.LOSHit(Combat.CurrentTarget))
 									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
@@ -477,14 +472,10 @@ namespace WorldServer.World.AI
                                     if (ability.RandomTarget == 1)
                                         SetRandomTarget();
 
-                                    // This list of parameters is passed to the function that delays the cast by 1000 ms
-                                    var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
-
                                     if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name), ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-                                    _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
+                                    QueueNpcCast(ability);
 
                                     //_unit.AbtInterface.StartCast(_unit, ability.Entry, 1);
-                                    ability.CooldownEnd = curTimeMs + ability.Cooldown * 1000;
                                 }
 
                                 break;
@@ -576,33 +567,110 @@ namespace WorldServer.World.AI
         Random random = new Random();
         public Unit CurTarget;
 
-        public void StartDelayedCast(object creature)
+        private sealed class PendingNpcCast
         {
-            var Params = (List<object>)creature;
+            public NPCAbility Ability;
+            public Unit Target;
+        }
 
-            Unit _unit = Params[0] as Unit;
-            ushort Ability = (ushort)Params[1];
+        private PendingNpcCast _pendingNpcCast;
+        protected bool HasPendingNpcCast => _pendingNpcCast != null;
 
-            // This is used by random ability cast
-            if (_unit != null && !_unit.IsDead)
+        protected void QueueNpcCast(NPCAbility ability)
+        {
+            if (_pendingNpcCast != null)
+                return;
+            var pending = new PendingNpcCast { Ability = ability, Target = Combat.CurrentTarget };
+            _pendingNpcCast = pending;
+            _unit.EvtInterface.AddEvent(ExecutePendingNpcCast, 1000, 1, pending);
+        }
+
+        protected void CancelPendingNpcCast()
+        {
+            _pendingNpcCast = null;
+            _unit.EvtInterface.RemoveEvent(ExecutePendingNpcCast);
+        }
+
+        private void ExecutePendingNpcCast(object state)
+        {
+            var pending = state as PendingNpcCast;
+            if (pending == null || !ReferenceEquals(pending, _pendingNpcCast))
+                return;
+            try
             {
-                _unit.AbtInterface.StartCast(_unit, Ability, 1);
+                NPCAbility ability = pending.Ability;
+                Unit target = pending.Target;
+                if (_unit.IsDead || _unit.PendingDisposal || _unit.IsDisposed || !Combat.IsFighting ||
+                    target == null || target.IsDead || target.PendingDisposal || target.IsDisposed ||
+                    !ReferenceEquals(target, Combat.CurrentTarget) || ability.Active == 0)
+                    return;
+                if (ability.ActivateAtHealthPercent != 0 &&
+                    _unit.Health >= (ulong)_unit.TotalHealth * ability.ActivateAtHealthPercent / 100)
+                    return;
+                if (ability.DisableAtHealthPercent != 0 &&
+                    (ulong)_unit.Health + 1 < (ulong)_unit.TotalHealth * ability.DisableAtHealthPercent / 100)
+                    return;
+                if (!TryStartNpcCast(ability.Entry) || !ReferenceEquals(pending, _pendingNpcCast))
+                    return;
 
-                if (!(_unit is Pet))
+                long now = TCPManager.GetTimeStampMS();
+                ability.CooldownEnd = now + ability.Cooldown * 1000L;
+                if (ability.ActivateAtHealthPercent != 0 && ability.AbilityCycle == 0)
                 {
-                    _unit.MvtInterface.StopMove();
-                    AbilityInfo AbiInfo = AbilityMgr.GetAbilityInfo(Ability);
-                    if (!AbiInfo.CanCastWhileMoving)
-                        _unit.EvtInterface.AddEvent(DelayedChase, AbiInfo.CastTime + 100, 1);
-                    else
-                        Chase(_unit.CbtInterface.GetCurrentTarget(), true);
+                    ability.AbilityUsed = 1;
+                    OneshotPercentCast = ability.CooldownEnd;
+                }
+            }
+            finally
+            {
+                if (ReferenceEquals(pending, _pendingNpcCast))
+                {
+                    _pendingNpcCast = null;
+                    // Failed attempts retry at a bounded rate, without consuming the ability.
+                    NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
                 }
             }
         }
 
+        public void StartDelayedCast(object creature)
+        {
+            var parameters = creature as List<object>;
+            if (parameters == null || parameters.Count < 2 || !(parameters[1] is ushort))
+                return;
+
+            Unit caster = parameters[0] as Unit;
+            if (caster == null || !ReferenceEquals(caster, _unit) || caster.IsDead || caster.PendingDisposal || caster.IsDisposed)
+                return;
+
+            ushort ability = (ushort)parameters[1];
+            TryStartNpcCast(ability);
+        }
+
+        protected virtual bool TryStartNpcCast(ushort ability)
+        {
+            Unit caster = _unit;
+            AbilityInfo info = AbilityMgr.GetAbilityInfo(ability);
+            if (info == null || !caster.AbtInterface.StartCast(caster, ability, 1))
+                return false;
+
+            if (caster is Pet)
+                return true;
+
+            caster.MvtInterface.StopMove();
+            if (!info.CanCastWhileMoving)
+                caster.EvtInterface.AddEvent(DelayedChase, info.CastTime + 100, 1);
+            else
+                DelayedChase();
+            return true;
+        }
+
         public void DelayedChase()
         {
-            Chase(_unit.CbtInterface.GetCurrentTarget(), true);
+            if (_unit == null || _unit.IsDead || _unit.PendingDisposal || _unit.IsDisposed)
+                return;
+            Unit target = _unit.CbtInterface.GetCurrentTarget();
+            if (target != null && !target.IsDead && !target.PendingDisposal && !target.IsDisposed)
+                Chase(target, true);
         }
 
         #endregion

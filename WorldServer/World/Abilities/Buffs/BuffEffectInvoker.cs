@@ -3335,24 +3335,33 @@ namespace WorldServer.World.Abilities.Buffs
 
         private static bool SummonVanityPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-            Player myPlayer = (Player)hostBuff.Target;
+            Player myPlayer = hostBuff.Target as Player;
+            if (myPlayer == null)
+                return false;
 
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
+                    if (myPlayer.IsDead || myPlayer.PendingDisposal || myPlayer.Region == null || myPlayer.Zone == null)
+                    {
+                        hostBuff.BuffHasExpired = true;
+                        return false;
+                    }
                     if (!myPlayer.CbtInterface.IsPvp)
                     {
+                        if (myPlayer.Companion != null && myPlayer.Companion.IsSummonedBy(hostBuff) &&
+                            !myPlayer.Companion.PendingDisposal && !myPlayer.Companion.IsDisposed)
+                            return true;
                         Creature_proto proto = CreatureService.GetCreatureProto((uint)cmd.PrimaryValue);
                         Creature_spawn spawn = new Creature_spawn();
 
                         if (proto == null)
                         {
                             Log.Error("SummonVanityPet", "No proto at " + cmd.PrimaryValue);
-                            return true;
+                            hostBuff.BuffHasExpired = true;
+                            return false;
                         }
 
-                        proto.MinScale = 50;
-                        proto.MaxScale = 50;
                         spawn.BuildFromProto(proto);
                         spawn.WorldO = myPlayer._Value.WorldO;
                         spawn.WorldY = myPlayer._Value.WorldY;
@@ -3361,25 +3370,29 @@ namespace WorldServer.World.Abilities.Buffs
                         spawn.ZoneId = myPlayer.Zone.ZoneId;
                         spawn.Icone = 18;
                         spawn.WaypointType = 0;
-                        spawn.Proto.MinLevel = spawn.Proto.MaxLevel = myPlayer.EffectiveLevel;
+                        spawn.Level = myPlayer.EffectiveLevel;
 
-                        Pet vanityPet = new Pet(0, spawn, myPlayer, 3, false, false);
+                        Pet vanityPet = new Pet(0, spawn, myPlayer, 3, false, false, hostBuff);
 
-                        vanityPet.IsVanity = true;
-                        myPlayer.Region.AddObject(vanityPet, spawn.ZoneId);
+                        if (!myPlayer.Region.AddObject(vanityPet, spawn.ZoneId))
+                        {
+                            vanityPet.Destroy();
+                            return false;
+                        }
+                        myPlayer.Companion?.RemoveVanityPet();
                         myPlayer.Companion = vanityPet;
                     }
                     else
                     {
-                        hostBuff.Caster.AbtInterface.Cancel(true);
-                        myPlayer.BuffInterface.RemoveBuffByEntry(hostBuff.Entry);
+                        hostBuff.BuffHasExpired = true;
                         myPlayer.SendClientMessage("You cannot summon vanity pet when you are flagged for RvR.", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                     }
                     return true;
+                case BUFF_END:
                 case BUFF_REMOVE:
                     if (myPlayer.Companion != null && myPlayer.Companion.IsVanity)
                     {
-                        myPlayer.Companion.RemoveVanityPet();
+                        myPlayer.Companion.RemoveVanityPet(hostBuff);
                     }
                     return true;
                 default:

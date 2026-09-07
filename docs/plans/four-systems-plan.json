@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "implementation_in_progress",
+  "implementationAuthorized": true,
+  "scope": ["npc_abilities", "item_pets", "thanquol", "playable_skaven"],
+  "tasks": [
+    {"id":"foundation","system":"shared","kind":"audit","dependsOn":[],"deliverable":"Refresh scoped baseline, selected source families, evidence identities and changed-file boundaries","acceptance":"SELECT-only audit and reproducible source references"},
+    {"id":"npc_evidence","system":"npc_abilities","kind":"evidence","dependsOn":["foundation"],"deliverable":"One NPC and boss pilot: actual brain wiring and supported action/phase definitions","acceptance":"Attributed capture records and client action dependencies; no guessed timers"},
+    {"id":"npc_engine","system":"npc_abilities","kind":"code","dependsOn":["npc_evidence"],"deliverable":"Only casting/scheduling fixes required by the pilot's live engine","acceptance":"Clock, phase, target, reset, cast-failure and concurrent-instance checks"},
+    {"id":"npc_pilot","system":"npc_abilities","kind":"data","dependsOn":["npc_engine","npc_evidence"],"deliverable":"Verified NPC and boss definitions with guarded migrations","acceptance":"Applied twice, selected loader checks and actual client combat"},
+    {"id":"npc_expansion","system":"npc_abilities","kind":"expansion","dependsOn":["npc_pilot"],"deliverable":"Additional encounters in individually evidenced batches","acceptance":"Repeat pilot evidence/data/gameplay gates per batch; keep gaps explicit"},
+    {"id":"pet_evidence","system":"item_pets","kind":"evidence","dependsOn":["foundation"],"deliverable":"Authentic item/action/buff/prototype/acquisition chain","acceptance":"Verify direct and indirect links; no item creation by count subtraction"},
+    {"id":"pet_engine","system":"item_pets","kind":"code","dependsOn":["foundation"],"deliverable":"Isolated prototype state and source-bound vanity lifecycle","acceptance":"Two owners, replacement, stale callbacks, expiry, death, RvR and career-pet coexistence"},
+    {"id":"pet_pilot","system":"item_pets","kind":"data","dependsOn":["pet_engine","pet_evidence"],"deliverable":"One evidenced acquisition-to-summon-to-dismiss loop","acceptance":"Both table families verified, client loop and unchanged shared prototype"},
+    {"id":"pet_expansion","system":"item_pets","kind":"expansion","dependsOn":["pet_pilot"],"deliverable":"Restore additional source-backed item pet content","acceptance":"Each restored link has identity, model and acquisition evidence"},
+    {"id":"thanquol_evidence","system":"thanquol","kind":"evidence","dependsOn":["foundation"],"deliverable":"Decode both-realm admission, PQ stages, populations, rewards and lifetime","acceptance":"Do not infer capacity from map recommendation or triplicate meaning from counts"},
+    {"id":"thanquol_contract","system":"thanquol","kind":"design_gate","dependsOn":["thanquol_evidence"],"deliverable":"Evidence-backed zone-410 session/admission/transport contract","acceptance":"All mandatory realm, instance, capacity, coordinate and reentry decisions supported"},
+    {"id":"thanquol_transport","system":"thanquol","kind":"code","dependsOn":["thanquol_contract"],"deliverable":"Scoped admission and instance transport implementation","acceptance":"Both entrances, coordinate checks, reservation races and existing dungeon regressions"},
+    {"id":"thanquol_encounter","system":"thanquol","kind":"data","dependsOn":["thanquol_transport","thanquol_evidence","npc_pilot"],"deliverable":"One owned population, captured encounters, PQ progression and rewards","acceptance":"Applied twice; no duplicate population; wipe/reset/reward-once tests"},
+    {"id":"thanquol_live","system":"thanquol","kind":"client_gate","dependsOn":["thanquol_encounter"],"deliverable":"Complete both-realm encounter run and recovery retest","acceptance":"Entry, progression, completion, rewards, exit, death, reconnect and independent copies"},
+    {"id":"skaven_evidence","system":"playable_skaven","kind":"evidence","dependsOn":["foundation"],"deliverable":"Control protocol, component semantics, form skills and acquisition rules","acceptance":"Resolve necessary operation-51 behavior and wrapper/action/identity domains"},
+    {"id":"skaven_contract","system":"playable_skaven","kind":"design_gate","dependsOn":["skaven_evidence"],"deliverable":"Reversible form-session and controller ownership contract","acceptance":"Explicit source, realm, slot ownership, termination and restart policies"},
+    {"id":"skaven_session","system":"playable_skaven","kind":"code","dependsOn":["skaven_contract"],"deliverable":"One form with temporary grants and complete teardown","acceptance":"Acquisition rollback, stale callbacks, repeated teardown and permanent-state preservation"},
+    {"id":"skaven_forms","system":"playable_skaven","kind":"data","dependsOn":["skaven_session","skaven_evidence"],"deliverable":"Four forms in both realms plus evidenced acquisition and control actions","acceptance":"Both selected source paths, role limits, command ownership and full action behavior"},
+    {"id":"skaven_live","system":"playable_skaven","kind":"client_gate","dependsOn":["skaven_forms"],"deliverable":"All forms usable and reversible through normal acquisition","acceptance":"Action bars, visuals, combat, control, death, logout and normal-character regressions"}
+  ],
+  "formLifecycle": {
+    "states": ["Normal", "Acquiring", "Active", "Releasing"],
+    "transitions": [
+      {"from":"Normal","event":"request","to":"Acquiring"},
+      {"from":"Acquiring","event":"success","to":"Active"},
+      {"from":"Acquiring","event":"failure","to":"Releasing"},
+      {"from":"Acquiring","event":"terminate","to":"Releasing"},
+      {"from":"Active","event":"terminate","to":"Releasing"},
+      {"from":"Releasing","event":"terminate","to":"Releasing"},
+      {"from":"Releasing","event":"cleanup_complete","to":"Normal"},
+      {"from":"Normal","event":"terminate","to":"Normal"}
+    ],
+    "terminationCandidates": ["death", "logout", "disallowed_zone", "source_loss", "manual_release"],
+    "invariants": [
+      "Normal has no session-owned grants or reservations",
+      "One active form session per player",
+      "Only matching session generations may change state",
+      "Cleanup removes only session-owned resources and is idempotent",
+      "Permanent career, purchases, equipment and Tome progression are not overwritten"
+    ],
+    "note": "Abstract design model, not runtime implementation or established retail termination policy. Exact conditions remain an evidence gate."
+  }
+}

@@ -91,6 +91,12 @@ namespace WorldServer.Services.World
                 case CreatureTitle.ApprenticeRenownTrainer:
                     proto.InteractTrainerType = 8;
                     break;
+                case CreatureTitle.TomeTacticLibrarian:
+                    // InteractTrainerType.Tome. Without it the interact option carries trainType 0
+                    // and interactionbase.lua has no label for it, so the tome training entry does
+                    // not appear even once the interact type is TRAINER.
+                    proto.InteractTrainerType = (byte)InteractTrainerType.Tome;
+                    break;
             }
 
             List<byte> states = proto.States != null ? new List<byte>(proto.States) : new List<byte>();

@@ -82,6 +82,7 @@ namespace FrameWork
 
         protected object ConvertFromDatabaseFormat(Type type, object val)
         {
+            type = Nullable.GetUnderlyingType(type) ?? type;
             if (type == typeof (bool))
                 return Convert.ToBoolean(Convert.ToInt32(val));
 
@@ -235,9 +236,7 @@ namespace FrameWork
 
                     val = ConvertToDatabaseFormat(val, dateFormat);
 
-                    values.Append('\'');
-                    values.Append(val);
-                    values.Append('\'');
+                    AppendColumnValue(values, val, bindInfo);
                 }
             }
 
@@ -318,9 +317,7 @@ namespace FrameWork
                     val = ConvertToDatabaseFormat(val, dateFormat);
 
                     _opBuilder.Append("`" + bind.Member.Name + "` = ");
-                    _opBuilder.Append('\'');
-                    _opBuilder.Append(val);
-                    _opBuilder.Append('\'');
+                    AppendColumnValue(_opBuilder, val, bind);
                 }
             }
 
@@ -331,6 +328,18 @@ namespace FrameWork
             _opBuilder.Append(_whereBuilder);
 
            return _opBuilder.ToString();
+        }
+
+        private static void AppendColumnValue(StringBuilder builder, object value, BindingInfo binding)
+        {
+            // A Nullable<T> member with no value is SQL NULL, not the invalid datetime/numeric
+            // literal ''. Every other member keeps the legacy empty-string handling: DataElement
+            // defaults AllowDbNull to true, so keying off it would turn a null string or array
+            // into NULL in the many base-dump columns declared NOT NULL.
+            if (binding.IsNullableValueType && (value == null || value == DBNull.Value))
+                builder.Append("NULL");
+            else
+                builder.Append('\'').Append(value).Append('\'');
         }
 
         /// <summary>
@@ -1496,7 +1505,7 @@ namespace FrameWork
                         if (!bind.HasRelation && bind.MySqlBinder != null && !mySqlReader.IsDBNull(field))
                         {
                             // Value type
-                            if (((PropertyInfo)bind.Member).PropertyType.IsValueType && !((PropertyInfo)bind.Member).PropertyType.IsEnum)
+                            if (bind.IsScalarValueType)
                             {
                                 bind.MySqlBinder.Assign(currentObject, mySqlReader, field);
                                 if (i == keyIndex)
@@ -1504,7 +1513,7 @@ namespace FrameWork
                             }
                             else
                             {
-                                object obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, mySqlReader.GetValue(field));
+                                object obj = ConvertFromDatabaseFormat(bind.MemberType, mySqlReader.GetValue(field));
                                 bind.MySqlBinder.AssignObject(currentObject, obj);
                                 if (i == keyIndex)
                                     key = (TKey)Convert.ChangeType(obj, typeof(TKey));

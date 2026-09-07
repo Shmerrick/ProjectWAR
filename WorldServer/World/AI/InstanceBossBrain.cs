@@ -1,4 +1,4 @@
-﻿using FrameWork;
+using FrameWork;
 using GameData;
 using System;
 using System.Collections.Generic;
@@ -80,7 +80,7 @@ namespace WorldServer.World.AI
 
 		public override void TryUseAbilities()
 		{
-			if (_unit.AbtInterface.NPCAbilities == null)
+			if (HasPendingNpcCast || _unit.AbtInterface.NPCAbilities == null)
 				return;
 
 			if (Combat.IsFighting && Combat.CurrentTarget != null && _unit.AbtInterface.CanCastCooldown(0) && TCPManager.GetTimeStampMS() > NextTryCastTime)
@@ -88,8 +88,6 @@ namespace WorldServer.World.AI
 				long curTimeMs = TCPManager.GetTimeStampMS();
 
 				float rangeFactor = _unit.StsInterface.GetStatPercentageModifier(Stats.Range);
-
-				uint AllowPercentAbilityCycle = 0;
 
 				if (CurTarget != null)
 				{
@@ -116,9 +114,6 @@ namespace WorldServer.World.AI
 
 					if (ability.ActivateAtHealthPercent != 0)
 					{
-						// This checks if we can add new ability to ability cycle
-						if (ability.AbilityCycle == 1 && _unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100)
-							AllowPercentAbilityCycle = 1;
 
 						// This checks if we can reset the ability if NPC healed - if it's still on cooldwon, we do not refresh it
 						if (ability.AbilityCycle == 0 && ability.AbilityUsed == 1 && (_unit.Health > (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
@@ -131,14 +126,9 @@ namespace WorldServer.World.AI
                             if (ability.RandomTarget == 1)
                                 SetRandomTarget();
 
-                            // This list of parameters is passed to the function that delays the cast by 1000 ms
-                            var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
-
                             if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
-                            _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-                            OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
-                            ability.AbilityUsed = 1;
-                            continue;
+                            QueueNpcCast(ability);
+                            break;
                         }
 					}
 
@@ -150,7 +140,7 @@ namespace WorldServer.World.AI
 						
 						if ((ability.Range == 0 || _unit.IsInCastRange(Combat.CurrentTarget, Math.Max(5 + ExtraRange, (uint)(ability.Range * rangeFactor)))))
 						{
-							if (ability.ActivateAtHealthPercent == 0 || AllowPercentAbilityCycle == 1)
+							if (ability.IsHealthCycleActive(_unit.Health, _unit.TotalHealth))
 							{
 								if (!_unit.LOSHit(Combat.CurrentTarget))
 									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
@@ -160,13 +150,8 @@ namespace WorldServer.World.AI
                                     if (ability.RandomTarget == 1)
                                         SetRandomTarget();
 
-                                    // This list of parameters is passed to the function that delays the cast by 1000 ms
-                                    var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
-
 									if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name), ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-									_unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-									
-									ability.CooldownEnd = curTimeMs + ability.Cooldown * 1000;
+									QueueNpcCast(ability);
 								}
 
 								break;

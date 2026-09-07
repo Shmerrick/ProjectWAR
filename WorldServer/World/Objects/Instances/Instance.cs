@@ -326,20 +326,14 @@ namespace WorldServer.World.Objects.Instances
 					InstanceID = nextLockoutId,
 					Bosseskilled = mergedBossesKilled
 				};
-				InstanceService._InstanceLockouts[Lockout.InstanceID] = Lockout;
 				Lockout.Dirty = true;
 				WorldMgr.Database.AddObject(Lockout);
 			}
 			else // instance has got already lockouts
 			{
-                string oldLockoutId = Lockout.InstanceID;
                 Lockout.InstanceID = nextLockoutId;
                 Lockout.Bosseskilled = mergedBossesKilled;
 
-                if (!string.IsNullOrEmpty(oldLockoutId) && oldLockoutId != Lockout.InstanceID)
-                    InstanceService._InstanceLockouts.Remove(oldLockoutId);
-
-                InstanceService._InstanceLockouts[Lockout.InstanceID] = Lockout;
                 Lockout.Dirty = true;
                 if (!Lockout.IsValid && string.IsNullOrEmpty(Lockout.ObjectId))
                     WorldMgr.Database.AddObject(Lockout);

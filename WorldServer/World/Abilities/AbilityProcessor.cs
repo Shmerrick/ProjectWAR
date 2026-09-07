@@ -1010,7 +1010,7 @@ namespace WorldServer.World.Abilities
             if (myResult == AbilityResult.ABILITYRESULT_OK && _caster.ItmInterface != null)
                 myResult = _caster.ItmInterface.WeaponCheck(AbInfo.ConstantInfo.WeaponNeeded);
 
-            if (AbInfo.ApCost > 0 && _caster is Player && !_caster.ConsumeActionPoints(AbInfo.ApCost))
+            if (AbInfo.ApCost > 0 && _caster is Player && !_caster.ConsumeActionPoints(TomeTacticApCost(AbInfo)))
                 myResult = AbilityResult.ABILITYRESULT_AP;
 
             if (myResult != AbilityResult.ABILITYRESULT_OK)
@@ -1151,9 +1151,28 @@ namespace WorldServer.World.Abilities
 
         #region Cast At Pos
 
+        /// <summary>
+        /// Action point cost after tome tactics. Outmaneuver the Cunning/Clever, Boon of Tenacity/
+        /// Persistence and Apotheosis of Spirit/Mind cut it by 10% against their line's creature
+        /// types. Returns the unmodified cost when no tactic applies or there is no such target.
+        /// </summary>
+        private ushort TomeTacticApCost(AbilityInfo abInfo)
+        {
+            if (abInfo.ApCost == 0 || !(_caster is Player))
+                return abInfo.ApCost;
+
+            if (!TomeTacticService.PlayerHasEffect((Player)_caster, TomeTacticService.TomeTacticEffect.ActionPointCost,
+                    TomeTacticService.GetCreatureType(abInfo.Target)))
+                return abInfo.ApCost;
+
+            ((Player)_caster).TacInterface?.CountTomeTacticEffect(TomeTacticService.TomeTacticEffect.ActionPointCost);
+
+            return (ushort)(abInfo.ApCost * (1f - TomeTacticService.ActionPointCostReduction));
+        }
+
         private bool AllowCastAtPos()
         {
-            if (AbInfo.ApCost > 0 && !_caster.ConsumeActionPoints(AbInfo.ApCost))
+            if (AbInfo.ApCost > 0 && !_caster.ConsumeActionPoints(TomeTacticApCost(AbInfo)))
             {
                 CancelCast(0);
                 return false;

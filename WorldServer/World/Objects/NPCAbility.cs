@@ -19,6 +19,20 @@
         public byte TargetFocus;
         public long CooldownEnd;
 
+        public NPCAbility CreateInstance()
+        {
+            // Definitions are cached; timers and one-shot state belong to one creature.
+            return new NPCAbility(Entry, Range, Cooldown, AutoUse, Text, TimeStart,
+                ActivateAtHealthPercent, AbilityCycle, Active, ActivateOnCombatStart,
+                RandomTarget, TargetFocus, DisableAtHealthPercent, MinRange);
+        }
+
+        public bool IsHealthCycleActive(uint health, uint totalHealth)
+        {
+            return ActivateAtHealthPercent == 0 ||
+                (AbilityCycle == 1 && health < (ulong)totalHealth * ActivateAtHealthPercent / 100);
+        }
+
         public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
         {
             Entry = entry;

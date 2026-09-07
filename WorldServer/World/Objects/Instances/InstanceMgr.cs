@@ -317,7 +317,7 @@ namespace WorldServer.World.Objects.Instances
             if (parts.Length < 3 || !int.TryParse(parts[1], out int expires) || expires <= TCPManager.GetTimeStamp())
                 return null;
 
-            // Character records include :boss:boss; the world dictionary key does not.
+            // Character records include :boss:boss; the world reset identifier does not.
             // Use this character's own progress, not another group's same-day record.
             var bosses = new SortedSet<uint>();
             for (int i = 2; i < parts.Length; ++i)

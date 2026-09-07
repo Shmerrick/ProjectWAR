@@ -105,6 +105,13 @@ namespace WorldServer.World.Objects
                 case CreatureTitle.RenownTrainer:
                 case CreatureTitle.ApprenticeCareerTrainer:
                 case CreatureTitle.ApprenticeRenownTrainer:
+                // The City Librarian sells tome tactics through the client's tome *training*
+                // window, not a store: interactionbase.lua offers "Tome Training" only for an
+                // option of type TRAINER carrying trainType InteractTrainerType.TOME. Grouping it
+                // with the merchant titles below made the client render a shop, so the tome
+                // training window never opened and its purchase menu numbers were never sent.
+                // The trophy, accessory and token librarians really are merchants and stay below.
+                case CreatureTitle.TomeTacticLibrarian:
                     type = InteractType.INTERACTTYPE_TRAINER;
                     break;
 
@@ -160,7 +167,6 @@ namespace WorldServer.World.Objects
                 case CreatureTitle.RenownArmorQuartermaster:
                 case CreatureTitle.RenownWeaponQuartermaster:
                 case CreatureTitle.CommoditiesQuartermaster:
-                case CreatureTitle.TomeTacticLibrarian:
                 case CreatureTitle.TomeTrophyLibrarian:
                 case CreatureTitle.EliteRenownGearMerchant:
                 case CreatureTitle.UpgradeMerchant:

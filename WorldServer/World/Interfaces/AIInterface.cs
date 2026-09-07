@@ -494,9 +494,32 @@ namespace WorldServer.World.Interfaces
                     if (!CombatInterface.CanAttack(unitOwner, enemy))
                         continue;
 
+                    // Tome tactics of the Beastial, Greenskin and Man lines let a player approach
+                    // monsters of their creature type more closely before being noticed. The live
+                    // tooltip is explicit that this is PvE only ("closer to a Greenskin mob (not a
+                    // player)"), which holds here because the reduction is keyed on the aggroing
+                    // unit being a Creature with a bestiary creature type. Resolved per enemy
+                    // rather than once for the loop, since it depends on who is being looked at.
+                    float aggroRange = maxRange;
+
+                    if (player?.TacInterface != null)
+                    {
+                        // Pet derives from Creature and carries its prototype's creature type, so
+                        // without excluding it a player's own pet would have its aggro range
+                        // halved by an enemy's tome tactic -- a PvE effect leaking into PvP.
+                        Creature aggroSource = unitOwner is Pet ? null : unitOwner as Creature;
+
+                        if (aggroSource?.Spawn?.Proto != null &&
+                            player.TacInterface.ReducesAggroRangeFor(aggroSource.Spawn.Proto.CreatureType))
+                        {
+                            aggroRange *= TomeTacticService.AggroRangeMultiplier;
+                            player.TacInterface.CountTomeTacticEffect(TomeTacticService.TomeTacticEffect.AggroRange);
+                        }
+                    }
+
                     float dist = _Owner.GetDistanceToObject(enemy, true);
 
-                    if (dist > maxRange)
+                    if (dist > aggroRange)
                         continue;
 
                     if (unitOwner != null)

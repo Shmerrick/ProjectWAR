@@ -1266,10 +1266,16 @@ namespace FrameWork
             public DataElement DataElementAttribute;
             public MySqlExpressionDataBinder MySqlBinder;
             public bool PrimaryKey;
+            public readonly Type MemberType;
+            public readonly bool IsScalarValueType;
+            public readonly bool IsNullableValueType;
 
             public BindingInfo(DataObject assignObject, MemberInfo member, bool primaryKey, bool hasRelation, bool readOnly, DataElement attrib)
             {
                 Member = member;
+                MemberType = member is PropertyInfo property ? property.PropertyType : ((FieldInfo)member).FieldType;
+                IsNullableValueType = Nullable.GetUnderlyingType(MemberType) != null;
+                IsScalarValueType = MemberType.IsValueType && !MemberType.IsEnum;
 
                 // Used for the compiled expression method for assigning to properties and fields.
                 MySqlBinder = (MySqlExpressionDataBinder)typeof(MySqlExpressionDataBinder).GetMethod("GetFor").MakeGenericMethod(assignObject.GetType()).Invoke(null, new object[] { member });

@@ -894,9 +894,13 @@ namespace WorldServer.World.Abilities
 
         public static List<NPCAbility> GetCreatureAbilities(uint entry)
         {
-            if (CreatureAbilities.ContainsKey(entry))
-                return CreatureAbilities[entry];
-            return null;
+            if (!CreatureAbilities.TryGetValue(entry, out List<NPCAbility> definitions))
+                return null;
+
+            var abilities = new List<NPCAbility>(definitions.Count);
+            foreach (NPCAbility definition in definitions)
+                abilities.Add(definition.CreateInstance());
+            return abilities;
         }
 
         #endregion Creature Abilities

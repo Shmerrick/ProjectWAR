@@ -53,9 +53,18 @@ namespace WorldServer.World.Objects
         private bool _ignoreZ;
 
         public bool IsVanity = false;
+        private NewBuff _vanitySource;
 
-        public Pet(ushort petId, Creature_spawn spawn, Player owner, byte aiMode, bool isStationary, bool isCombative) : base (spawn)
+        public Pet(ushort petId, Creature_spawn spawn, Player owner, byte aiMode, bool isStationary, bool isCombative)
+            : this(petId, spawn, owner, aiMode, isStationary, isCombative, null)
         {
+        }
+
+        public Pet(ushort petId, Creature_spawn spawn, Player owner, byte aiMode, bool isStationary, bool isCombative, NewBuff vanitySource)
+            : base(spawn, vanitySource != null ? (byte?)50 : null)
+        {
+            _vanitySource = vanitySource;
+            IsVanity = vanitySource != null;
             PetId = petId;
             Owner = owner;
             IsStationary = isStationary;
@@ -88,19 +97,45 @@ namespace WorldServer.World.Objects
 
         public void RemoveVanityPet()
         {
-            Owner.Companion.Dismiss(null, null);
-            Owner.Companion = null;
+            if (IsVanity)
+                Destroy();
+        }
 
-            NewBuff vanityPet = Owner.BuffInterface.GetBuff(15188,null);
-            if (vanityPet != null)
-                Owner.BuffInterface.RemoveBuffByEntry(15188);
-            vanityPet = Owner.BuffInterface.GetBuff(15190, null);
-            if (vanityPet != null)
-                Owner.BuffInterface.RemoveBuffByEntry(15188);
+        public void RemoveVanityPet(NewBuff source)
+        {
+            // An expired prior summon must not remove its replacement.
+            if (IsSummonedBy(source))
+                RemoveVanityPet();
+        }
+
+        public bool IsSummonedBy(NewBuff source)
+        {
+            return IsVanity && source != null && ReferenceEquals(_vanitySource, source);
+        }
+
+        private void ReleaseVanitySource()
+        {
+            if (!IsVanity)
+                return;
+
+            NewBuff source = _vanitySource;
+            _vanitySource = null;
+            if (ReferenceEquals(Owner.Companion, this))
+                Owner.Companion = null;
+            // Let the owner's buff update perform removal; no recursive buff callbacks.
+            if (source != null)
+                source.BuffHasExpired = true;
         }
 
         public override void OnLoad()
         {
+            if (IsVanity && (PendingDisposal || _vanitySource == null || _vanitySource.BuffHasExpired ||
+                !ReferenceEquals(Owner.Companion, this) || Owner.IsDead || Owner.PendingDisposal ||
+                Region == null || !ReferenceEquals(Region, Owner.Region) || Owner.CbtInterface.IsPvp))
+            {
+                Destroy();
+                return;
+            }
             base.OnLoad();
 
             if (!IsStationary)
@@ -109,7 +144,8 @@ namespace WorldServer.World.Objects
                 Owner.EvtInterface.AddEventNotify(EventName.OnLeaveCombat, Recall);
             }
 
-            Owner.EvtInterface.AddEventNotify(EventName.OnDealDamage, Attack);
+            if (!IsVanity)
+                Owner.EvtInterface.AddEventNotify(EventName.OnDealDamage, Attack);
             Owner.EvtInterface.AddEventNotify(EventName.OnDie, Dismiss);
             Owner.EvtInterface.AddEventNotify(EventName.OnRemoveFromWorld, Dismiss);
 
@@ -406,6 +442,7 @@ namespace WorldServer.World.Objects
 
         public override void Destroy()
         {
+            ReleaseVanitySource();
             if (!PendingDisposal)
             {
                 PendingDisposal = true;
@@ -426,7 +463,8 @@ namespace WorldServer.World.Objects
             if (IsDisposed)
                 return;
 
-            AbtInterface.NPCAbilities.Clear();
+            ReleaseVanitySource();
+            AbtInterface.NPCAbilities?.Clear();
 
             // Remove any owner events before disposing
             Owner.EvtInterface.RemoveEventNotify(EventName.OnDealDamage, Attack);
