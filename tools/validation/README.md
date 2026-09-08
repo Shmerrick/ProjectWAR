@@ -142,3 +142,20 @@ corrected empty-objective count with derived-table fixtures containing an affect
 objective, an affected populated objective and an unrelated empty objective. The archival
 source is the untouched `Database/war_world.7z` creature_spawns records, reproduced in migration
 51; these are preserved emulator data, not newly established retail placements.
+
+After applying `Database/76_realign_mythic_src_ability_identity.sql`, run:
+
+```powershell
+./tools/validation/Test-AbilityAlignment.ps1
+```
+
+SELECT-only. `AbilityMgr` loads `mythic_src_abilities`, not `abilities`, whenever
+`UseMythicActionCoverageTables` is true — the shipped value — and that table carried another
+ability's `Name`, `EffectID` and `IconId` on 1,007 of the entries it shares with `abilities`.
+`EffectID` goes straight into the cast packets, so those rows told the client to play the wrong
+visual. The check asserts the two server tables agree on identity and mechanics for every shared
+entry, that no `mythic_src`-only row is mislabelled against the client, that no loaded ability lacks
+a row in `mythic_bin_ability`, and that client-name agreement has not fallen below the 6,012
+migration 76 left it at. It does not verify what a cast actually looks like in the client.
+Background and the remaining coverage gap are in
+[`docs/ABILITY_TABLE_ALIGNMENT.md`](../../docs/ABILITY_TABLE_ALIGNMENT.md).
