@@ -133,6 +133,14 @@ namespace ClientDataMatrix.Services
             if (table.Degraded)
                 parts.Add("**degraded read** -- malformed XML, elements counted textually");
 
+            // Say when a key is not clean. A file counted as joinable despite a few repeated or
+            // missing ids should show that, so nobody treats the join as exact.
+            if (table.DuplicateKeys > 0)
+                parts.Add(table.DuplicateKeys + " repeated id" + (table.DuplicateKeys == 1 ? "" : "s"));
+
+            if (table.UnkeyedRows > 0)
+                parts.Add(table.UnkeyedRows + " row" + (table.UnkeyedRows == 1 ? "" : "s") + " with no id");
+
             if (table.Rows.Count == 0)
                 parts.Add("empty");
 

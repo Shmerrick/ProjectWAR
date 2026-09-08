@@ -10,10 +10,10 @@ Root: `C:\Users\Admin\Downloads\myps`
 | Files discovered | 8206 |
 | Read successfully | 8206 |
 | Failed to read | 0 |
-| Data rows | 5,409,896 |
-| Joinable (unique integer key) | 4,582 |
+| Data rows | 5,404,861 |
+| Joinable (unique integer key) | 4,593 |
 | Global reference tables searched for links | 168 |
-| Candidate links | 1,154 |
+| Candidate links | 1,965 |
 
 A file with a unique integer first column can be joined against; one without cannot,
 and that is stated per file below rather than left to be discovered.
@@ -380,72 +380,72 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `abilities` | HeaderedCsv | 5,222 | 20 | no | 2 header rows; 223 comment rows dropped; columns: ID, name, Description, Notes, Icon, Icon |
+| `abilities` | HeaderedCsv | 5,218 | 20 | yes | 2 header rows; 223 comment rows dropped; 1 repeated id; 8 rows with no id; columns: ID, name, Description, Notes, Icon, Icon |
 | `abilityline_to_bufftype` | HeaderedCsv | 8 | 6 | yes | 1 header row; columns: Line Id, Type name, Client-side enumeration value, Buff Frame Red, Buff Frame Green, Buff Frame Blue |
 | `actor` | PlainText | 262 | 1 | no | columns: Line |
 | `anim_abilities` | HeaderedCsv | 1,103 | 18 | no | 2 header rows; 19 comment rows dropped; columns: ID, name, Description, ;, Anim, Motion Description |
-| `anim_archery` | HeaderedCsv | 45 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
+| `anim_archery` | HeaderedCsv | 44 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
 | `anim_armory` | HeaderedCsv | 0 | 13 | no | 382 header rows; empty; columns: Pistol/Pistol, 37901, 38000 |
-| `anim_bone_lookup` | HeaderedCsv | 202 | 10 | no | 3 header rows; 8 comment rows dropped; columns: DEFAULT, DEFAULT, Bip01 R Foot, Bip01 Spine2, Bone_Jaw, Bone_R_Wing0_1 |
-| `anim_core` | HeaderedCsv | 331 | 256 | no | 2 header rows; 7 comment rows dropped; columns: ID, Name, RootL90, RootL45, RootR45, RootR90 |
-| `anim_coregg` | HeaderedCsv | 285 | 256 | no | 2 header rows; 7 comment rows dropped; columns: ID, Name, RootL90, RootL45, RootR45, RootR90 |
-| `anim_db` | HeaderedCsv | 41,482 | 253 | no | 2 header rows; columns: ID, Desc, Name, Priority, Precache, Motion |
+| `anim_bone_lookup` | HeaderedCsv | 199 | 10 | no | 3 header rows; 8 comment rows dropped; columns: DEFAULT, DEFAULT, Bip01 R Foot, Bip01 Spine2, Bone_Jaw, Bone_R_Wing0_1 |
+| `anim_core` | HeaderedCsv | 323 | 256 | no | 2 header rows; 7 comment rows dropped; columns: ID, Name, RootL90, RootL45, RootR45, RootR90 |
+| `anim_coregg` | HeaderedCsv | 278 | 256 | no | 2 header rows; 7 comment rows dropped; columns: ID, Name, RootL90, RootL45, RootR45, RootR90 |
+| `anim_db` | HeaderedCsv | 41,384 | 253 | yes | 2 header rows; 50 repeated ids; 325 rows with no id; columns: ID, Desc, Name, Priority, Precache, Motion |
 | `anim_greataxe` | HeaderedCsv | 43 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
-| `anim_grip_archery` | HeaderedCsv | 331 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_dagger` | HeaderedCsv | 328 | 256 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_daggerfetish` | HeaderedCsv | 330 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_dualdagger` | HeaderedCsv | 329 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_dualwield` | HeaderedCsv | 329 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_greataxe` | HeaderedCsv | 330 | 256 | no | 2 header rows; 1 comment row dropped; columns: ID, Name, _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow |
-| `anim_grip_greatsword` | HeaderedCsv | 330 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_handweaponfetish` | HeaderedCsv | 319 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_handweaponpistol` | HeaderedCsv | 329 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_handweapons` | HeaderedCsv | 330 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_handweaponshield` | HeaderedCsv | 329 | 356 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_pistol` | HeaderedCsv | 331 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_pole` | HeaderedCsv | 330 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_rifle` | HeaderedCsv | 331 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_spear` | HeaderedCsv | 340 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_spearshield` | HeaderedCsv | 340 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_staff` | HeaderedCsv | 330 | 291 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_thrown` | HeaderedCsv | 332 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_thrust` | HeaderedCsv | 49 | 122 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_grip_unarmed` | HeaderedCsv | 706 | 257 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_archery` | HeaderedCsv | 190 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_dagger` | HeaderedCsv | 197 | 256 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_daggerfetish` | HeaderedCsv | 180 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_dualdagger` | HeaderedCsv | 178 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_dualwield` | HeaderedCsv | 198 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_greataxe` | HeaderedCsv | 201 | 256 | no | 2 header rows; 1 comment row dropped; columns: ID, Name, _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow |
+| `anim_grip_greatsword` | HeaderedCsv | 182 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_handweaponfetish` | HeaderedCsv | 171 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_handweaponpistol` | HeaderedCsv | 177 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_handweapons` | HeaderedCsv | 191 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_handweaponshield` | HeaderedCsv | 199 | 356 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_pistol` | HeaderedCsv | 190 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_pole` | HeaderedCsv | 180 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_rifle` | HeaderedCsv | 204 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_spear` | HeaderedCsv | 183 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_spearshield` | HeaderedCsv | 184 | 256 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_staff` | HeaderedCsv | 184 | 291 | no | 2 header rows; 1 comment row dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_thrown` | HeaderedCsv | 177 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_thrust` | HeaderedCsv | 47 | 122 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_grip_unarmed` | HeaderedCsv | 250 | 257 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_handweapons` | HeaderedCsv | 47 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
 | `anim_interacts` | HeaderedCsv | 66 | 43 | yes | 3 header rows; columns: Replace with String Variables, Replace with String Variables, Replace with String Variables, Replace with String Variables |
 | `anim_list` | HeaderedCsv | 0 | 2 | no | 33 header rows; empty; columns: kor, anim_korea.csv |
 | `anim_matrix` | HeaderedCsv | 5 | 35 | no | 46 header rows; columns: 43 |
 | `anim_motion_events` | HeaderedCsv | 0 | 15 | no | 334 header rows; empty; columns: misc, we_f_flourish, 5, 3736 |
 | `anim_mounts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
-| `anim_mount_fly` | HeaderedCsv | 90 | 256 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
-| `anim_mount_greataxe` | HeaderedCsv | 226 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_mount_handweapon` | HeaderedCsv | 227 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_mount_spear` | HeaderedCsv | 263 | 256 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_mount_unarmed` | HeaderedCsv | 237 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_mount_unarmedsdf` | HeaderedCsv | 211 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_mount_fly` | HeaderedCsv | 83 | 256 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
+| `anim_mount_greataxe` | HeaderedCsv | 224 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_mount_handweapon` | HeaderedCsv | 225 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_mount_spear` | HeaderedCsv | 213 | 256 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_mount_unarmed` | HeaderedCsv | 235 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_mount_unarmedsdf` | HeaderedCsv | 209 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_movetypes` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `anim_override` | HeaderedCsv | 0 | 3 | no | 97 header rows; empty; columns: Salute, t, 175 |
 | `anim_persistentstates` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
-| `anim_pose` | HeaderedCsv | 559 | 256 | no | 3 header rows; columns: #, Items Wielded, Ready, Walk, Back, Run |
-| `anim_prop` | HeaderedCsv | 163 | 256 | no | 2 header rows; columns: _Strings, Mus_Str_Draw, Mus_Str_Holster, Mus_Str_Ready, Mus_Str_Slow, Mus_Str_Walk |
-| `anim_prop2` | HeaderedCsv | 192 | 256 | no | 2 header rows; columns: _Bucket, job_bucket_Draw, job_bucket_Holster, job_bucket_Ready, job_bucket_Slow, job_bucket_Walk |
-| `anim_rifle` | HeaderedCsv | 44 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
+| `anim_pose` | HeaderedCsv | 375 | 256 | no | 3 header rows; columns: #, Items Wielded, Ready, Walk, Back, Run |
+| `anim_prop` | HeaderedCsv | 82 | 256 | no | 2 header rows; columns: _Strings, Mus_Str_Draw, Mus_Str_Holster, Mus_Str_Ready, Mus_Str_Slow, Mus_Str_Walk |
+| `anim_prop2` | HeaderedCsv | 100 | 256 | no | 2 header rows; columns: _Bucket, job_bucket_Draw, job_bucket_Holster, job_bucket_Ready, job_bucket_Slow, job_bucket_Walk |
+| `anim_rifle` | HeaderedCsv | 43 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
 | `anim_scriptedstates` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `anim_scripts` | HeaderedCsv | 1,123 | 16 | yes | 1 header row; columns: Id, Desc, Period Min, Period Max, Iterations, Delay |
 | `anim_script_elements` | HeaderedCsv | 1,343 | 8 | no | 1 header row; columns: Id, Desc, Anim, Chance, col4, col5 |
-| `anim_statedef` | HeaderedCsv | 6,939 | 256 | no | 2 header rows; 3 comment rows dropped; columns: ID, Name, Time?, CSV, Anim ID, State Phase |
+| `anim_statedef` | HeaderedCsv | 6,551 | 256 | yes | 2 header rows; 3 comment rows dropped; 1 repeated id; 29 rows with no id; columns: ID, Name, Time?, CSV, Anim ID, State Phase |
 | `anim_statedef_lookup` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
-| `anim_swim_unarmed` | HeaderedCsv | 169 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
+| `anim_swim_unarmed` | HeaderedCsv | 153 | 256 | no | 2 header rows; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `bannerposts` | HeaderedCsv | 4 | 8 | yes | 2 header rows; columns: Order, Destruction |
 | `camerashakedefs` | HeaderedCsv | 10 | 8 | no | 1 header row; 9 comment rows dropped; columns: ID, Frequency, Magnitude X, Magnitude Y, Magnitude Z, Duration |
 | `cityzonesjumppoints` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Safe City ID, Terrain Zone Jump ID, City Capture Jump ID, Teir 4 Zone Before City Capture ID |
-| `effectdef` | HeaderedCsv | 3,867 | 29 | no | 2 header rows; 6 comment rows dropped; columns: ID, Name, NIF, Node, Duration, Rate |
-| `effectlists` | HeaderedCsv | 3,530 | 15 | no | 2 header rows; 563 comment rows dropped; columns: ID, Name, ID 1, ID 2, ID 3, ID 4 |
+| `effectdef` | HeaderedCsv | 3,862 | 29 | yes | 2 header rows; 6 comment rows dropped; 4 rows with no id; columns: ID, Name, NIF, Node, Duration, Rate |
+| `effectlists` | HeaderedCsv | 3,527 | 15 | yes | 2 header rows; 563 comment rows dropped; 2 repeated ids; 1 row with no id; columns: ID, Name, ID 1, ID 2, ID 3, ID 4 |
 | `effectmisc` | HeaderedCsv | 2 | 3 | yes | 2 header rows; columns: Id, (Skipped), Id |
-| `effectnifs` | HeaderedCsv | 3,660 | 10 | no | 2 header rows; 2 comment rows dropped; columns: ID, Description, Filename, EFX System |
-| `effectproj` | HeaderedCsv | 26 | 21 | no | 2 header rows; 3 comment rows dropped; columns: Id, Desc, Auto Arc, Horz Units Min, Horz Units Max, Horz Dir |
-| `effects` | HeaderedCsv | 4,493 | 130 | no | 2 header rows; 268 comment rows dropped; columns: ID, Name, Effect, Effect, Effect, Main |
-| `effectvfx` | HeaderedCsv | 4,585 | 41 | no | 1 header row; 127 comment rows dropped; columns: Effect Id, Vfx Id, Type, Id, Description: |
+| `effectnifs` | HeaderedCsv | 3,643 | 10 | yes | 2 header rows; 2 comment rows dropped; columns: ID, Description, Filename, EFX System |
+| `effectproj` | HeaderedCsv | 25 | 21 | yes | 2 header rows; 3 comment rows dropped; columns: Id, Desc, Auto Arc, Horz Units Min, Horz Units Max, Horz Dir |
+| `effects` | HeaderedCsv | 4,454 | 130 | yes | 2 header rows; 268 comment rows dropped; 2 repeated ids; 9 rows with no id; columns: ID, Name, Effect, Effect, Effect, Main |
+| `effectvfx` | HeaderedCsv | 3,610 | 41 | no | 1 header row; 127 comment rows dropped; columns: Effect Id, Vfx Id, Type, Id, Description: |
 | `emotedata` | HeaderedCsv | 208 | 17 | yes | 2 header rows; columns: Id, StringTable Id, Emote, Anim Id, StringTable Id, StringTable Id |
 | `flageffects` | HeaderedCsv | 10 | 5 | yes | 2 header rows; columns: ID, Desc, StartList, DurationList, EndList |
 | `flypath` | HeaderedCsv | 168 | 64 | yes | 1 header row; columns: id, name, format, time, static mount, mount id |
@@ -466,7 +466,7 @@ small column in the game. Every file is still inventoried below.
 | `map_keepicons` | HeaderedCsv | 1 | 16 | yes | 1 header row; columns: Type Num, O-Safe, D-Safe, O-Under Attack, D-Under Attack, Rank 1 |
 | `map_objectiveicons` | HeaderedCsv | 1 | 27 | yes | 1 header row; columns: Type Num, Unknown State Icon, Neutral Icon, Order Icon, Destruction Icon, Neutral Contested Icon |
 | `map_pqicons` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Type Num, Active Threshold, Inactive Icon, Active Icon |
-| `monnifs` | HeaderedCsv | 1,308 | 17 | no | 2 header rows; columns: ID, Name, Name, Set, Run, Walk |
+| `monnifs` | HeaderedCsv | 1,308 | 17 | yes | 2 header rows; 2 repeated ids; 8 rows with no id; columns: ID, Name, Name, Set, Run, Walk |
 | `monsterdifficultymask` | HeaderedCsv | 4 | 3 | yes | 1 header row; columns: Monster Difficulty ID, Difficulty Description, Skull Count |
 | `monsters` | HeaderedCsv | 1,317 | 20 | yes | 2 header rows; columns: ID, name, #, Scale, Tall, Set |
 | `nodedata` | HeaderedCsv | 16 | 3 | yes | 1 header row; columns: ID, description, name |
@@ -486,7 +486,7 @@ small column in the game. Every file is still inventoried below.
 | `siegeweaponsweetspotfiredefs` | HeaderedCsv | 2 | 12 | yes | 2 header rows; columns: ID, String, Img, R, G, B |
 | `stateeffects` | HeaderedCsv | 121 | 6 | yes | 2 header rows; columns: ID, Name, StartList, DurationList, EndList, IMA Swap |
 | `stepeffects` | HeaderedCsv | 2 | 5 | yes | 1 header row; columns: ID, Left Step Nif, Left Step Offset, Right Step Nif, Right Step Offset |
-| `tintpalette_equipment` | HeaderedCsv | 362 | 19 | no | 2 header rows; columns: Red, Green, Blue, Intensity, Red, Green |
+| `tintpalette_equipment` | HeaderedCsv | 362 | 19 | yes | 2 header rows; 1 row with no id; columns: Red, Green, Blue, Intensity, Red, Green |
 | `tradeskilldata` | HeaderedCsv | 7 | 3 | yes | 1 header row; columns: TradeSkill ID, TradeSkill Name, Icon Num |
 | `weaponeffects` | HeaderedCsv | 0 | 3 | no | 250 header rows; empty |
 | `zoneglyphs` | HeaderedCsv | 6 | 3 | yes | 2 header rows; columns: #, #, # |
@@ -10345,7 +10345,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `entry` | HeaderedCsv | 2,000 | 12 | yes | 1 header row; columns: #ID, SubType#, RT 1, RId 1, RT 2, RId 2 |
-| `subtypes` | HeaderedCsv | 124 | 3 | no | 1 header row; columns: # Sub Type ID #, Type ID #, Image |
+| `subtypes` | HeaderedCsv | 117 | 3 | yes | 1 header row; columns: # Sub Type ID #, Type ID #, Image |
 | `types` | HeaderedCsv | 11 | 1 | yes | 1 header row; columns: Type ID # |
 
 ## interface/interfacecore/tome/bestiary

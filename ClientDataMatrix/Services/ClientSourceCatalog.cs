@@ -88,6 +88,12 @@ namespace ClientDataMatrix.Services
             /// <summary>Populated when <see cref="HasUniqueIntegerKey"/>; the distinct key values.</summary>
             public HashSet<long> Keys = new HashSet<long>();
 
+            /// <summary>How many rows repeat an id already seen. Zero for a strict key.</summary>
+            public int DuplicateKeys;
+
+            /// <summary>How many rows carry no parseable id in column 0.</summary>
+            public int UnkeyedRows;
+
             public string Error;
 
             /// <summary>True when the file could only be read partially -- malformed XML.</summary>
@@ -121,6 +127,11 @@ namespace ClientDataMatrix.Services
         /// </summary>
         private static readonly HashSet<string> DataExtensions =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".csv", ".xml", ".txt", ".lua", ".ini", ".dat" };
+
+        /// <summary>
+        /// How many of a table's rows may repeat an id before column 0 stops counting as its key.
+        /// </summary>
+        private const double MaxDuplicateKeyRate = 0.01d;
 
         public List<ClientSource> Discover()
         {
@@ -327,8 +338,15 @@ namespace ClientDataMatrix.Services
 
                 if (!isDataRow)
                 {
-                    // A non-numeric row once the data has started is not a header; keep it rather
-                    // than silently dropping content nobody has characterised.
+                    // A row of nothing but separators is a spacer left by whatever spreadsheet
+                    // produced the file, and carries no content. anim_db.csv has 423 of them
+                    // scattered through 41,000 rows; keeping them made its id column fail to parse
+                    // and cost the file its key, and with it every link into the animation data.
+                    if (IsBlankRow(cells))
+                        continue;
+
+                    // A non-numeric row with content once the data has started is not a header.
+                    // Keep it rather than silently dropping something nobody has characterised.
                     table.Rows.Add(cells.ToArray());
                     continue;
                 }
@@ -341,6 +359,18 @@ namespace ClientDataMatrix.Services
                 table.Columns.AddRange(lastHeader.Select(c => c.Trim()));
 
             EnsureColumnCount(table);
+        }
+
+        /// <summary>True when every cell in the row is empty or whitespace.</summary>
+        private static bool IsBlankRow(List<string> cells)
+        {
+            for (int i = 0; i < cells.Count; ++i)
+            {
+                if (!string.IsNullOrWhiteSpace(cells[i]))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -493,21 +523,48 @@ namespace ClientDataMatrix.Services
                 return;
 
             var keys = new HashSet<long>();
+            int duplicates = 0;
+            int unkeyed = 0;
 
             foreach (string[] row in table.Rows)
             {
                 if (row.Length == 0)
-                    return;
+                {
+                    ++unkeyed;
+                    continue;
+                }
 
                 long key;
                 if (!long.TryParse(row[0].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out key))
-                    return;
+                {
+                    // A row with no id at all. anim_db.csv has 325 of them among 41,000 -- section
+                    // labels sitting in the name column ",Dwarf Male Core,,," and partial rows with
+                    // timings but no id. Spreadsheet leavings, not records.
+                    ++unkeyed;
+                    continue;
+                }
 
                 if (!keys.Add(key))
-                    return; // Duplicated, so not a key.
+                    ++duplicates;
             }
 
+            // A few repeated ids do not stop a column being the key. anim_db.csv has 41,009 distinct
+            // ids and 41 that repeat; refusing it outright -- which an earlier version did, bailing
+            // on the first duplicate -- discarded a 41,000-row reference table over a tenth of a
+            // percent of its rows, and with it every link into the client's animation data.
+            //
+            // The tolerance is deliberately small. A column where ids repeat freely is a category or
+            // a foreign key, not an identity, and treating one as joinable would invent links.
+            if (keys.Count == 0)
+                return;
+
+            double impureRate = (double)(duplicates + unkeyed) / table.Rows.Count;
+            if (impureRate > MaxDuplicateKeyRate)
+                return;
+
             table.HasUniqueIntegerKey = true;
+            table.DuplicateKeys = duplicates;
+            table.UnkeyedRows = unkeyed;
             table.Keys = keys;
         }
 
