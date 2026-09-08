@@ -425,3 +425,45 @@ is what filled `mythic_src_abilities` with another ability's names and effect id
   they are the client stating its expectations, so they belong in the inventory.
 - The sweep tolerates a live extraction: directories that vanish or lock mid-walk are skipped rather
   than aborting, and a report taken while `warmyptool` is still running is a snapshot of that moment.
+
+### How the animation data is actually keyed
+
+Worth recording, because it was got wrong once. Animations are **not** referenced by name, and the
+lookup is not expensive.
+
+- `anim_db.csv` holds 41,009 animations, each with an integer id and a name (`Root_L90`,
+  `Or_Un_Cor_Ready-lo`).
+- `anim_core.csv` is a matrix: one row per race or skeleton, one column per animation slot, and
+  every value is an **anim_db integer id**. Orc's `Cor_Ready-lo` slot is 603, which is
+  `Or_Un_Cor_Ready-lo`.
+- `anim_statedef.csv` stores each state's motions as repeating **(CSV, Anim ID, State Phase)**
+  triples. The `CSV` cell is a short tag — `core`, `Un`, `St` — and `anim_list.csv` maps those tags
+  to file names (`Un` → `anim_grip_unarmed.csv`).
+
+So a reference is a **qualified integer**: "id 150 in the core table". The only strings are about
+thirty table selectors, resolved once through `anim_list.csv` into whichever file to look in — not a
+string compare per lookup. It is a compact and cheap scheme, not a costly one.
+
+That shape is also why link detection struggles here: `anim_statedef.Anim ID` does not point at one
+table, it points at whichever of thirty tables the neighbouring `CSV` cell names. A column whose
+target varies row by row cannot score against any single table, so **qualified references are
+invisible to this analysis** and need to be read deliberately.
+
+`anim_core` is the opposite case and shows the tool working: its `Cor_Ready-lo` column resolves 160
+of 160 into `anim_db`, and the samples settle it instantly — `603 = Or_Un_Cor_Ready-lo`,
+`1003 = Go_Un_Cor_Ready-lo`, animation names ending in the column's own name.
+
+### The markdown is capped; the CSV is not
+
+`client-data-links.md` shows the first 400 candidates. That cap was hiding true links — `anim_core`'s
+columns sat below it because ordering by column size favours large noisy columns, so the readable
+report showed `itemdata.icon` resolving 94.7% into `anim_db` (nonsense; icons are not animations)
+while the genuine animation references fell off the bottom.
+
+`client-data-links.csv` carries every candidate with the same columns, uncapped. Filter it by the
+file you care about rather than scrolling the markdown:
+
+```powershell
+Import-Csv docs\data-matrix\client-sources\client-data-links.csv |
+  Where-Object { $_.ToTable -like '*anim_db*' -and [double]$_.ResolveRate -eq 1 }
+```

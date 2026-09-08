@@ -50,6 +50,14 @@ namespace ClientDataMatrix.Services
             File.WriteAllText(Path.Combine(directory, "client-data-links.md"),
                 BuildLinks(links), new UTF8Encoding(false));
 
+            // Every candidate, uncapped and machine-readable. The markdown shows the first
+            // MaxLinkRows so it stays readable, and that cap was hiding true links: anim_core's
+            // Cor_Ready-lo column resolves 160 of 160 into anim_db, a perfect reference, and sat
+            // below the cut because ordering by column size favours the big noisy ones. A report
+            // that shows false positives and hides real ones is worse than no report.
+            File.WriteAllText(Path.Combine(directory, "client-data-links.csv"),
+                BuildLinksCsv(links), new UTF8Encoding(false));
+
             return directory;
         }
 
@@ -156,6 +164,41 @@ namespace ClientDataMatrix.Services
             }
 
             return parts.Count == 0 ? "" : string.Join("; ", parts);
+        }
+
+        /// <summary>
+        /// Every candidate as CSV, so the set can be filtered and sorted rather than only read.
+        /// Ask it for the links into one file and the real references stop being buried by the
+        /// coincidental ones.
+        /// </summary>
+        private static string BuildLinksCsv(List<ClientLinkAnalyzer.LinkCandidate> links)
+        {
+            var text = new StringBuilder();
+            text.AppendLine("FromTable,FromColumn,FromColumnIndex,ToTable,DistinctValues,Resolved,ResolveRate,TargetDensity,Samples");
+
+            foreach (ClientLinkAnalyzer.LinkCandidate link in links)
+            {
+                text.AppendLine(string.Join(",",
+                    Csv(link.FromTable),
+                    Csv(link.FromColumn),
+                    link.FromColumnIndex.ToString(CultureInfo.InvariantCulture),
+                    Csv(link.ToTable),
+                    link.DistinctValues.ToString(CultureInfo.InvariantCulture),
+                    link.Resolved.ToString(CultureInfo.InvariantCulture),
+                    link.ResolveRate.ToString("0.0000", CultureInfo.InvariantCulture),
+                    link.TargetDensity.ToString("0.0000", CultureInfo.InvariantCulture),
+                    Csv(string.Join("; ", link.Samples))));
+            }
+
+            return text.ToString();
+        }
+
+        private static string Csv(string value)
+        {
+            if (value == null)
+                return "\"\"";
+
+            return "\"" + value.Replace("\"", "\"\"").Replace("\r", " ").Replace("\n", " ") + "\"";
         }
 
         private static string BuildLinks(List<ClientLinkAnalyzer.LinkCandidate> links)
