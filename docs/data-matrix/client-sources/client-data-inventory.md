@@ -10,10 +10,10 @@ Root: `C:\Users\Admin\Downloads\myps`
 | Files discovered | 8206 |
 | Read successfully | 8206 |
 | Failed to read | 0 |
-| Data rows | 5,404,861 |
-| Joinable (unique integer key) | 4,593 |
+| Data rows | 5,497,743 |
+| Joinable (unique integer key) | 4,573 |
 | Global reference tables searched for links | 168 |
-| Candidate links | 1,965 |
+| Candidate links | 2,058 |
 
 A file with a unique integer first column can be joined against; one without cannot,
 and that is stated per file below rather than left to be discovered.
@@ -502,13 +502,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilitydesc` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
-| `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `abilityeffect` | IndexedStringTable | 1,001 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
 | `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
 | `bindableactions` | PlainText | 224 | 1 | no | columns: Line |
-| `bindlocations` | IndexedStringTable | 194 | 2 | yes | columns: Id, Text |
+| `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
@@ -520,12 +520,12 @@ small column in the game. Every file is still inventoried below.
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `default` | PlainText | 1,981 | 1 | no | columns: Line |
-| `dyenames` | IndexedStringTable | 304 | 2 | yes | columns: Id, Text |
+| `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
 | `hardcoded` | PlainText | 1,690 | 1 | no | columns: Line |
-| `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
-| `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
@@ -536,7 +536,7 @@ small column in the game. Every file is still inventoried below.
 | `mapsystem` | PlainText | 167 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 168 | 2 | yes | columns: Id, Text |
-| `objectivenames` | IndexedStringTable | 948 | 2 | yes | columns: Id, Text |
+| `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
@@ -545,7 +545,7 @@ small column in the game. Every file is still inventoried below.
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
-| `scenarionames` | IndexedStringTable | 57 | 2 | yes | columns: Id, Text |
+| `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
@@ -554,7 +554,7 @@ small column in the game. Every file is still inventoried below.
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+| `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
 | `training` | PlainText | 32 | 1 | no | columns: Line |
 | `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `urls` | PlainText | 5 | 1 | no | columns: Line |
@@ -948,22 +948,22 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `unlock_event_descs` | IndexedStringTable | 9,364 | 2 | yes | columns: Id, Text |
+| `unlock_event_descs` | IndexedStringTable | 11,995 | 2 | yes | columns: Id, Text |
 
 ## data/strings/english/tome/achievements
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
-| `entry_descs` | IndexedStringTable | 227 | 2 | yes | columns: Id, Text |
-| `entry_names` | IndexedStringTable | 941 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 1,997 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
 | `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
-| `subtype_descs` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
-| `subtype_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
 | `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
 
 ## data/strings/english/tome/bestiary
@@ -979,7 +979,7 @@ small column in the game. Every file is still inventoried below.
 | `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
-| `species_reward_desc_05` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
@@ -1049,7 +1049,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
 | `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
 
 ## data/strings/english/tome/loadingscreens
@@ -1065,7 +1065,7 @@ small column in the game. Every file is still inventoried below.
 | `patch140` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `tips` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
 | `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
-| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 301 | 2 | yes | columns: Id, Text |
 
 ## data/strings/english/tome/noteworthypersons
 
@@ -1114,28 +1114,28 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
 | `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
-| `entries_names_f` | IndexedStringTable | 1,018 | 2 | yes | columns: Id, Text |
-| `entries_names_m` | IndexedStringTable | 1,018 | 2 | yes | columns: Id, Text |
+| `entries_names_f` | IndexedStringTable | 1,298 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,298 | 2 | yes | columns: Id, Text |
 | `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 
 ## data/strings/english/tome/warjournal
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 636 | 2 | yes | columns: Id, Text |
-| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
-| `activity_task_01_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_02_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_03_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_04_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_05_names` | IndexedStringTable | 503 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_06_names` | IndexedStringTable | 501 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
@@ -1143,12 +1143,12 @@ small column in the game. Every file is still inventoried below.
 | `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `entries_location_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_names` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_npc_names` | IndexedStringTable | 655 | 2 | yes | columns: Id, Text |
-| `entries_short_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
 | `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
@@ -1195,7 +1195,7 @@ small column in the game. Every file is still inventoried below.
 | `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone110_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
@@ -1235,13 +1235,13 @@ small column in the game. Every file is still inventoried below.
 | `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone204_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone210_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
@@ -1712,7 +1712,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
@@ -2532,7 +2532,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
@@ -2748,7 +2748,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
 | `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
-| `entries_names` | IndexedStringTable | 346 | 2 | yes | columns: Id, Text |
+| `entries_names` | PlainText | 504 | 1 | no | columns: Line |
 | `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
 | `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
 | `entries_text` | IndexedStringTable | 176 | 2 | yes | columns: Id, Text |
@@ -3159,7 +3159,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 
 ## data/strings/italian/tome/cards
@@ -3934,17 +3934,17 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `zone001_area_names` | IndexedStringTable | 86 | 2 | yes | columns: Id, Text |
-| `zone002_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
-| `zone003_area_names` | IndexedStringTable | 56 | 2 | yes | columns: Id, Text |
+| `zone001_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone002_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone003_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone004_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
-| `zone005_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
-| `zone006_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
-| `zone007_area_names` | IndexedStringTable | 76 | 2 | yes | columns: Id, Text |
-| `zone008_area_names` | IndexedStringTable | 87 | 2 | yes | columns: Id, Text |
-| `zone009_area_names` | IndexedStringTable | 68 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone006_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone007_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone008_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone009_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone010_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
-| `zone011_area_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone026_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
 | `zone027_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
 | `zone030_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
@@ -3957,16 +3957,16 @@ small column in the game. Every file is still inventoried below.
 | `zone043_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
 | `zone060_area_names` | IndexedStringTable | 109 | 2 | yes | columns: Id, Text |
 | `zone100_area_names` | IndexedStringTable | 97 | 2 | yes | columns: Id, Text |
-| `zone101_area_names` | IndexedStringTable | 75 | 2 | yes | columns: Id, Text |
-| `zone102_area_names` | IndexedStringTable | 81 | 2 | yes | columns: Id, Text |
-| `zone103_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone102_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone103_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone104_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
-| `zone105_area_names` | IndexedStringTable | 82 | 2 | yes | columns: Id, Text |
-| `zone106_area_names` | IndexedStringTable | 57 | 2 | yes | columns: Id, Text |
-| `zone107_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
-| `zone108_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
-| `zone109_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
-| `zone110_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone106_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone107_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone108_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone109_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone110_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
 | `zone120_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
 | `zone130_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
 | `zone132_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
@@ -3980,8 +3980,8 @@ small column in the game. Every file is still inventoried below.
 | `zone155_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
 | `zone156_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
 | `zone160_area_names` | IndexedStringTable | 113 | 2 | yes | columns: Id, Text |
-| `zone161_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
-| `zone162_area_names` | IndexedStringTable | 77 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone162_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone167_area_names` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
 | `zone168_area_names` | IndexedStringTable | 98 | 2 | yes | columns: Id, Text |
 | `zone169_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
@@ -3997,33 +3997,33 @@ small column in the game. Every file is still inventoried below.
 | `zone191_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
 | `zone195_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
 | `zone196_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
-| `zone200_area_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `zone201_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
-| `zone202_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
-| `zone203_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
-| `zone204_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
-| `zone205_area_names` | IndexedStringTable | 77 | 2 | yes | columns: Id, Text |
-| `zone206_area_names` | IndexedStringTable | 84 | 2 | yes | columns: Id, Text |
-| `zone207_area_names` | IndexedStringTable | 90 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone201_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone202_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone203_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone204_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone206_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone207_area_names` | PlainText | 121 | 1 | no | columns: Line |
 | `zone208_area_names` | IndexedStringTable | 99 | 2 | yes | columns: Id, Text |
-| `zone209_area_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
-| `zone210_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | PlainText | 121 | 1 | no | columns: Line |
+| `zone210_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
 | `zone220_area_names` | IndexedStringTable | 106 | 2 | yes | columns: Id, Text |
 | `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
-| `zone_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
+| `zone_names` | PlainText | 300 | 1 | no | columns: Line |
 
 ## data/strings/korean
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilitydesc` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
-| `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `abilityeffect` | IndexedStringTable | 1,001 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
-| `bindlocations` | IndexedStringTable | 192 | 2 | yes | columns: Id, Text |
+| `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
@@ -4035,12 +4035,12 @@ small column in the game. Every file is still inventoried below.
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `default` | PlainText | 1,937 | 1 | no | columns: Line |
-| `dyenames` | IndexedStringTable | 252 | 2 | yes | columns: Id, Text |
+| `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 791 | 2 | yes | columns: Id, Text |
 | `hardcoded` | PlainText | 1,612 | 1 | no | columns: Line |
-| `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
-| `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
@@ -4049,7 +4049,7 @@ small column in the game. Every file is still inventoried below.
 | `mappointtypes` | PlainText | 56 | 1 | no | columns: Line |
 | `mapsystem` | PlainText | 147 | 1 | no | columns: Line |
 | `npctitles` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
-| `objectivenames` | IndexedStringTable | 932 | 2 | yes | columns: Id, Text |
+| `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
@@ -4058,7 +4058,7 @@ small column in the game. Every file is still inventoried below.
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
-| `scenarionames` | IndexedStringTable | 54 | 2 | yes | columns: Id, Text |
+| `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
@@ -4067,7 +4067,7 @@ small column in the game. Every file is still inventoried below.
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+| `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
 | `training` | PlainText | 24 | 1 | no | columns: Line |
 | `urls` | PlainText | 5 | 1 | no | columns: Line |
 | `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
@@ -4469,22 +4469,22 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `unlock_event_descs` | IndexedStringTable | 8,907 | 2 | yes | columns: Id, Text |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
 
 ## data/strings/korean/tome/achievements
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
-| `entry_descs` | IndexedStringTable | 227 | 2 | yes | columns: Id, Text |
-| `entry_names` | IndexedStringTable | 922 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
 | `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
-| `subtype_descs` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
-| `subtype_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
 | `type_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 
 ## data/strings/korean/tome/bestiary
@@ -4500,22 +4500,22 @@ small column in the game. Every file is still inventoried below.
 | `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
-| `species_reward_desc_05` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_reward_desc_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
 | `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
-| `species_reward_task_02` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
-| `species_reward_task_03` | IndexedStringTable | 140 | 2 | yes | columns: Id, Text |
-| `species_reward_task_04` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
-| `species_reward_task_05` | IndexedStringTable | 141 | 2 | yes | columns: Id, Text |
-| `species_reward_task_06` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
-| `species_reward_task_07` | IndexedStringTable | 111 | 2 | yes | columns: Id, Text |
-| `species_reward_task_08` | IndexedStringTable | 84 | 2 | yes | columns: Id, Text |
-| `species_reward_task_09` | IndexedStringTable | 85 | 2 | yes | columns: Id, Text |
-| `species_reward_task_10` | IndexedStringTable | 86 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
@@ -4570,7 +4570,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
 | `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
 
 ## data/strings/korean/tome/liveevent
@@ -4618,7 +4618,7 @@ small column in the game. Every file is still inventoried below.
 | `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
 | `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
-| `zone_descs` | IndexedStringTable | 299 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
 
 ## data/strings/korean/tome/noteworthypersons
 
@@ -4653,26 +4653,26 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
 | `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
-| `entries_names_f` | IndexedStringTable | 1,020 | 2 | yes | columns: Id, Text |
-| `entries_names_m` | IndexedStringTable | 1,020 | 2 | yes | columns: Id, Text |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
 | `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 
 ## data/strings/korean/tome/warjournal
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 636 | 2 | yes | columns: Id, Text |
-| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
-| `activity_task_01_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_02_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_03_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_04_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_05_names` | IndexedStringTable | 503 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
@@ -4682,12 +4682,12 @@ small column in the game. Every file is still inventoried below.
 | `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `entries_location_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_names` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_npc_names` | IndexedStringTable | 655 | 2 | yes | columns: Id, Text |
-| `entries_short_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
 | `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
@@ -4720,7 +4720,7 @@ small column in the game. Every file is still inventoried below.
 | `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone060_area_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
@@ -4731,7 +4731,7 @@ small column in the game. Every file is still inventoried below.
 | `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone110_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
@@ -4769,13 +4769,13 @@ small column in the game. Every file is still inventoried below.
 | `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone204_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone210_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
@@ -5242,7 +5242,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
@@ -6081,7 +6081,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
@@ -6658,7 +6658,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
 | `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 
 ## data/strings/spanish/tome/bestiary
@@ -6829,7 +6829,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `abilityeffect` | IndexedStringTable | 1,001 | 2 | yes | columns: Id, Text |
 | `abilitytooltipmarkup` | PlainText | 57 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
@@ -6947,77 +6947,77 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone002
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone003
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 45 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 45 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone004
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone005
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone006
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone007
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone008
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone009
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone010
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone011
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone013
@@ -7031,238 +7031,238 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone027
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone030
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone031
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
 
 ## data/strings/s_chinese/maps/zone044
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone100
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone101
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone102
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone103
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone104
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone105
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone106
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone107
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone108
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone109
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone110
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone120
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone132
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone161
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone162
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone167
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone168
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone200
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone201
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone202
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone203
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone204
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone205
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone206
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone207
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone208
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone209
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone210
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_descs` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/maps/zone220
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `map_point_descs` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `map_point_descs` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 
 ## data/strings/s_chinese/pregame
@@ -7569,31 +7569,31 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `abilitydesc` | IndexedStringTable | 13,467 | 2 | yes | columns: Id, Text |
-| `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `abilitydesc` | IndexedStringTable | 25,983 | 2 | yes | columns: Id, Text |
+| `abilityeffect` | IndexedStringTable | 1,001 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
-| `bindlocations` | IndexedStringTable | 198 | 2 | yes | columns: Id, Text |
+| `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
 | `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
-| `componenteffects` | IndexedStringTable | 25,997 | 2 | yes | columns: Id, Text |
+| `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `default` | PlainText | 1,937 | 1 | no | columns: Line |
-| `dyenames` | IndexedStringTable | 252 | 2 | yes | columns: Id, Text |
+| `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 791 | 2 | yes | columns: Id, Text |
 | `hardcoded` | PlainText | 1,605 | 1 | no | columns: Line |
-| `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
-| `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
-| `keepnames` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
@@ -7602,14 +7602,14 @@ small column in the game. Every file is still inventoried below.
 | `mapsystem` | PlainText | 147 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
-| `objectivenames` | IndexedStringTable | 939 | 2 | yes | columns: Id, Text |
-| `packageinfo` | IndexedStringTable | 208 | 2 | yes | columns: Id, Text |
+| `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
+| `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
 | `patch` | PlainText | 70 | 1 | no | columns: Line |
 | `pregame` | PlainText | 258 | 1 | no | columns: Line |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
-| `scenarionames` | IndexedStringTable | 54 | 2 | yes | columns: Id, Text |
+| `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
@@ -7617,7 +7617,7 @@ small column in the game. Every file is still inventoried below.
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+| `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
 | `training` | PlainText | 24 | 1 | no | columns: Line |
 | `urls` | PlainText | 5 | 1 | no | columns: Line |
 | `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
@@ -8030,21 +8030,21 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `unlock_event_descs` | IndexedStringTable | 9,346 | 2 | yes | columns: Id, Text |
+| `unlock_event_descs` | IndexedStringTable | 11,996 | 2 | yes | columns: Id, Text |
 
 ## data/strings/t_chinese/tome/achievements
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `entry_descs` | IndexedStringTable | 217 | 2 | yes | columns: Id, Text |
-| `entry_names` | IndexedStringTable | 926 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 901 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
 | `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
 | `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
-| `subtype_descs` | IndexedStringTable | 101 | 2 | yes | columns: Id, Text |
-| `subtype_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
 | `type_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
 
 ## data/strings/t_chinese/tome/bestiary
@@ -8130,7 +8130,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
 | `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
 
 ## data/strings/t_chinese/tome/liveevent
@@ -8184,7 +8184,7 @@ small column in the game. Every file is still inventoried below.
 | `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
 | `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
-| `zone_descs` | IndexedStringTable | 299 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
 
 ## data/strings/t_chinese/tome/noteworthypersons
 
@@ -8218,41 +8218,41 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
 | `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
-| `entries_names_f` | IndexedStringTable | 1,017 | 2 | yes | columns: Id, Text |
-| `entries_names_m` | IndexedStringTable | 1,017 | 2 | yes | columns: Id, Text |
+| `entries_names_f` | IndexedStringTable | 1,298 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,298 | 2 | yes | columns: Id, Text |
 | `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 
 ## data/strings/t_chinese/tome/warjournal
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `activities_names` | IndexedStringTable | 634 | 2 | yes | columns: Id, Text |
-| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
 | `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 | `activity_task_01_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_01_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_02_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_02_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_03_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_03_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_04_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_05_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_05_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `activity_task_09_names` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
 | `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
-| `entries_location_text` | IndexedStringTable | 649 | 2 | yes | columns: Id, Text |
-| `entries_names` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
 | `entries_npc_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
-| `entries_short_titles` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
-| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
-| `entries_titles` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
 | `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 | `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 
@@ -8260,81 +8260,81 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `zone001_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone002_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone003_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone004_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
-| `zone005_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone006_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone007_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone008_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone009_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone010_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
-| `zone011_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone026_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone027_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
-| `zone030_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone034_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone036_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone037_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone038_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone039_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone041_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone043_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone060_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
-| `zone100_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
-| `zone101_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone102_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone103_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone104_area_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
-| `zone105_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone107_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone108_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone109_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone110_area_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
-| `zone120_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone130_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone132_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone135_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone136_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone138_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone139_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone152_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
-| `zone153_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
-| `zone154_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
-| `zone155_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone156_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone160_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone161_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone167_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
-| `zone168_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
-| `zone169_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
-| `zone172_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
-| `zone173_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone175_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone176_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone177_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
-| `zone178_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
-| `zone190_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone191_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone195_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone196_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
-| `zone200_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
-| `zone201_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
-| `zone202_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone203_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone204_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
-| `zone205_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
-| `zone206_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
-| `zone207_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
-| `zone208_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
-| `zone209_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
-| `zone210_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
-| `zone220_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
 | `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 | `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
 | `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
@@ -10454,16 +10454,16 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `017a3e1f0c4e674b` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ������G41�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y? @?    ����           0   .      1   9   2       3      4    5       6    7      8       9    :    ;    q                                ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           0   .      1   :   2       3      4    5       6    7      8       9    :    ;    r         !    #  $  %  &  '  (  )  *  +  ,  ������Gq�F:}Ɩ�>hC}?����`x�@�=e�Y�WP�Fh�=��y?  �?    ����           0   .      1   ;   2       3      4    5       6    7      8       9    :    ;    s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?8���qF��EH>Wx?ff&?    ����           0   .      1   <   2       ?   @   3      4    5       6    7      8       9    :    ;    t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ����syGH��Fõ�  �?              �?              �?ff&?    ����           0   .      1   =   2       ?   @   3   .   4    5       6    7      8       9    :    ;    u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ����<� G���F�e�2IS?h�?    h��2IS?              �?  �?    ����           0   .      1   @   2       3   :   4    5       6    7      8       9    :    ;    v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ����� G+N�F)y�  �?              �?              �?  �?    ����           0   .      1   A   2       3   9   4    5       6    7      8       9    :    ;    w      h  i  j  k  l  m  n  o  p  q  r  s  t  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           0   .      1   B   2       3   :   4    5       6    7      8       9    :    ;    x      v  w  x  y  z  {  /  }  ~    �  �  �  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           0   .      1   C   2       3   :   4    5       6    7      8       9    :    ;    y      �  �  �  �  �  �  �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           0   .      1   D   2       3   9   4    5       6    7      8       9    :    ;    z      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           0   .      1   E   2       3   9   4    5       6    7      8       9    :    ;    {      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?F��>    F����zp?  �?    ����           0   .      1   J   2       3   E   4    5       6    7      8       9    :    ;    /      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           0   .      1   Q   2       ?   @   3   /   4    5       6    7      8       9    :    ;    }      �  �  ����              �?              �?              �?  �?    ����           ~               �  �  �  �  �  ����              �?              �?              �?  �?    ����        �          �   .      �         2   0�         1�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����n�#G�i�FW��  �?              �?              �?  �?    ����        �   Ɣ@�r׾                |
-| `0b146c65cd257a90` | HeaderedCsv | 0 | 1 | no | 139 header rows; empty; columns: �F?	� �eH��L=C��2�?V��>    ����           0   .      1   l   2    3       4   o   5       6    7    8    9    :      ;       <    n          ����              �?              �?              �?  �?    ����           o         p                  ����              �?              �?              �?  �?    ����           q   .      r         2   0q         1s   @                                                                                                                                                                                                                                                                   t       u         ����              �?              �?              �?  �?    ����        u         1   0v        ����OX1G�'�FR�  �?              �?              �?  �?    ����        w   v@�?�F�                |
-| `1d7d66a7ed1ab05d` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: �  �?              �?              �?  �?    ����           7   5      8    9    :       ;    <    =    >      ?       @   q   A       B   r   C    w          ����              �?              �?              �?  �?    ����           x         y                  ����              �?              �?              �?  �?    ����           z   5      {         2   0z         1/   @                                                                                                                                                                                                                                                                   }       ~        ����              �?              �?              �?  �?    ����        ~         1   0        ����uG�4�F/B�  �?              �?              �?  �?    ����        �   U��>RJ�                |
-| `5011978e6606c855` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: �  �?              �?              �?  �?    ����           8   6      9    :   r   ;       <    =   q   >       ?    @      A       B    C    D    E    y      G  H  ����              �?              �?              �?  �?    ����           z         {      J  K  L  M  N  O  ����              �?              �?              �?  �?    ����           /   6      }         2   0/         1~   @                                                                                                                                                                                                                                                                          �      Q  ����              �?              �?              �?  �?    ����        �         1   0�      S  ����uG�4�F/B�  �?              �?              �?  �?    ����        �   U��>RJ�                |
-| `5ac50af82487f2f9` | HeaderedCsv | 0 | 10 | no | 122 header rows; empty; columns:    :   ;      <      :   ;   <   =   >   ?   @   A   B   C   D   E   F   G   H   I   �����&Gp�Fo�  �?              �?              �?  �?    ����        =    >    ?    @      A    B                  C    D    E   F   X      G   ;      H       I       J       K      L      K   L   ����              �?              �?              �?  �?    ����                 M   N      N   O   P   Q   R   ����              �?              �?              �?  �?    ����        O       P         1Q         2   0   P   R   @                                                                                                                                                                                                                                                                   S       ����              �?              �?              �?  �?    ����   T   X       T       ����              �?              �?              �?  �?    ����   U       U      V   W   ����              �?              �?              �?  �?    ����        V                  W         44087.00, 30909.00, -8215.00, 0   39070.00, 32876.00, -7917.00 |
-| `8531586ea9f6ddaa` | HeaderedCsv | 0 | 1 | no | 156 header rows; empty; columns: �  �?              �?              �?  �?    ����        9    :   q   ;       <                  =    >    ?    @      A       B    C       D   7      E    F   q   G       {      {  /  ����              �?              �?              �?  �?    ����                 /   }      ~    �  �  �  ����              �?              �?              �?  �?    ����        ~          @                                                                                                                                                                                                                                                                   �         1   �   �         2   0�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����q�(GK�F3��  �?              �?              �?  �?    ����        �   ��@&�{�                |
-| `abc2f4da48e1fbbc` | HeaderedCsv | 0 | 1 | no | 162 header rows; empty; columns:       �����C2G�@G���3�#6?    #6��3�              �?  �?    ����        9   G   :       ;    6      <    =   ~   >          ?   @    A      B       C    D                  E    F    G    �                                      ����/�1G8�G�`Ɗ5;ۉj�    ۉj?�5;              �?  �?    ����        9   G   :       ;    6      <    =      >          ?   @    A      B       C    D                  E    F    G    �           !    #  $  %  &  '  (  )  *  +  ,  -  .  ����D�7G��F��Ƽ@�>�+`�    �+`?�@�>              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  ����\�6G9��F��L��>R�g?    S�g�K��>              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  ������7G�F�� ]=���    ��? ]=              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      R  S  T  U  V  W  X  Y  Z  [  \  ]  ^  _  `  a  ����zU6G5��F�/�P�%�Ρ/?    Ρ/�P�%�              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  �����]5G ;�F̏��My?��l>    ��l�My?              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      t  u  ����              �?              �?              �?  �?    ����                 �   �      w  x  y  z  {  ����              �?              �?              �?  �?    ����        �         1�       �   @                                                                                                                                                                                                                                                                      �   �         2   0�      }  ����              �?              �?              �?  �?    ����        �         1   0�        �����N6Gb. G�Y�  �?              �?              �?  �?    ����        �   ؁�>��3�                |
+| `017a3e1f0c4e674b` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ÿÿÿÿÄðG41õF’ÆÙ<?Tå, ?’—½˜Â+¿‘Ù5?dÏY¾;mË½ÔìJ>–¡y? @?    ÿÿÿÿ           0   .      1   9   2       3      4    5       6    7      8       9    :    ;    q                                ÿÿÿÿI÷GŒ6õFŽÆÙ<?Tå, ?’—½˜Â+¿‘Ù5?dÏY¾;mË½ÔìJ>–¡y?®‡?    ÿÿÿÿ           0   .      1   :   2       3      4    5       6    7      8       9    :    ;    r         !    #  $  %  &  '  (  )  *  +  ,  ÿÿÿÿ¸ÚGqõF:}Æ–÷>hC}?”—½¨`x¿@í=eÏY¾WP¾Fhµ=”¡y?  €?    ÿÿÿÿ           0   .      1   ;   2       3      4    5       6    7      8       9    :    ;    s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ÿÿÿÿJDGíFH±Æƒ(?¨6¿):{>ÇP=?^<,?8–°¼qF¾ÀEH>Wx?ff&?    ÿÿÿÿ           0   .      1   <   2       ?   @   3      4    5       6    7      8       9    :    ;    t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ÿÿÿÿsyGH›áFÃµÆ  €?              €?              €?ff&?    ÿÿÿÿ           0   .      1   =   2       ?   @   3   .   4    5       6    7      8       9    :    ;    u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ÿÿÿÿ<¤ G¨îçFßeÆ2IS?hŒ?    hŒ¿2IS?              €?  €?    ÿÿÿÿ           0   .      1   @   2       3   :   4    5       6    7      8       9    :    ;    v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ÿÿÿÿÌ G+NèF)yÆ  €?              €?              €?  €?    ÿÿÿÿ           0   .      1   A   2       3   9   4    5       6    7      8       9    :    ;    w      h  i  j  k  l  m  n  o  p  q  r  s  t  ÿÿÿÿµ+ GKCèF½ˆÆ€w¿>Ö‚>    >Ö‚¾€w¿              €?  €?    ÿÿÿÿ           0   .      1   B   2       3   :   4    5       6    7      8       9    :    ;    x      v  w  x  y  z  {  /  }  ~    €    ‚  ÿÿÿÿÌ”GÂEäFUÆ0é?ÿ;P?    ÿ;P¿0é?              €?  €?    ÿÿÿÿ           0   .      1   C   2       3   :   4    5       6    7      8       9    :    ;    y      „  …  †  ‡  ˆ  ‰  Š  ‹  Œ    Ž      ÿÿÿÿ›:G›«âF ÷Æã3ï¼ä¿   €ä?ã3ï¼           €  €?  €?    ÿÿÿÿ           0   .      1   D   2       3   9   4    5       6    7      8       9    :    ;    z      ’  “  ”  •  –  —  ˜  ™  š  ›  œ    ž  ÿÿÿÿP¢#GüNíFx3Æß.>oF/?    oF/¿ß.>              €?  €?    ÿÿÿÿ           0   .      1   E   2       3   9   4    5       6    7      8       9    :    ;    {         ¡  ¢  £  ¤  ¥  ¦  §  ¨  ©  ª  «  ¬  ÿÿÿÿ¬y*G Z Gî9Æ  €?            ¼zp?F¯>    F¯¾¼zp?  €?    ÿÿÿÿ           0   .      1   J   2       3   E   4    5       6    7      8       9    :    ;    /      ®  ¯  °  ±  ²  ³  ´  µ  ¶  ·  ¸  ¹  º  »  ÿÿÿÿqŒ5GÈõFqÆù–ø=l~¿   €l~?ù–ø=           €  €?ff&?    ÿÿÿÿ           0   .      1   Q   2       ?   @   3   /   4    5       6    7      8       9    :    ;    }      ½  ¾  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           ~               À  Á  Â  Ã  Ä  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        €             .      ‚         2   0         1ƒ      Æ  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        ƒ         1   0„      È  ÿÿÿÿnï#G‘iðFW¶Æ  €?              €?              €?  €?    ÿÿÿÿ        …   Æ”@­r×¾                |
+| `0b146c65cd257a90` | HeaderedCsv | 0 | 1 | no | 139 header rows; empty; columns: ðF?	Ð ¿eH½ò¶L=C–Œ2®?Váú>    ÿÿÿÿ           0   .      1   l   2    3       4   o   5       6    7    8    9    :      ;       <    n          ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           o         p                  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           q   .      r         2   0q         1s   @                                                                                                                                                                                                                                                                   t       u         ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        u         1   0v        ÿÿÿÿOX1GÚ'úFRÆ  €?              €?              €?  €?    ÿÿÿÿ        w   v@³?¯F¿                |
+| `1d7d66a7ed1ab05d` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: Æ  €?              €?              €?  €?    ÿÿÿÿ           7   5      8    9    :       ;    <    =    >      ?       @   q   A       B   r   C    w          ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           x         y                  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           z   5      {         2   0z         1/   @                                                                                                                                                                                                                                                                   }       ~        ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        ~         1   0        ÿÿÿÿuG×4úF/BÆ  €?              €?              €?  €?    ÿÿÿÿ        €   Uèå>RJ¿                |
+| `5011978e6606c855` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: Æ  €?              €?              €?  €?    ÿÿÿÿ           8   6      9    :   r   ;       <    =   q   >       ?    @      A       B    C    D    E    y      G  H  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           z         {      J  K  L  M  N  O  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           /   6      }         2   0/         1~   @                                                                                                                                                                                                                                                                          €      Q  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        €         1   0      S  ÿÿÿÿuG×4úF/BÆ  €?              €?              €?  €?    ÿÿÿÿ        ‚   Uèå>RJ¿                |
+| `5ac50af82487f2f9` | HeaderedCsv | 0 | 10 | no | 122 header rows; empty; columns:    :   ;      <      :   ;   <   =   >   ?   @   A   B   C   D   E   F   G   H   I   ÿÿÿÿî&GpðFoÆ  €?              €?              €?  €?    ÿÿÿÿ        =    >    ?    @      A    B                  C    D    E   F   X      G   ;      H       I       J       K      L      K   L   ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ                 M   N      N   O   P   Q   R   ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        O       P         1Q         2   0   P   R   @                                                                                                                                                                                                                                                                   S       ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ   T   X       T       ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ   U       U      V   W   ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        V                  W         44087.00, 30909.00, -8215.00, 0   39070.00, 32876.00, -7917.00 |
+| `8531586ea9f6ddaa` | HeaderedCsv | 0 | 1 | no | 156 header rows; empty; columns: Æ  €?              €?              €?  €?    ÿÿÿÿ        9    :   q   ;       <                  =    >    ?    @      A       B    C       D   7      E    F   q   G       {      {  /  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ                 /   }      ~    €    ‚  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        ~          @                                                                                                                                                                                                                                                                   €         1   €            2   0‚      „  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        ‚         1   0ƒ      †  ÿÿÿÿq“(GKöF3Æ  €?              €?              €?  €?    ÿÿÿÿ        „   ú¡@&Å{¾                |
+| `abc2f4da48e1fbbc` | HeaderedCsv | 0 | 1 | no | 162 header rows; empty; columns:       ÿÿÿÿ¿C2GÝ@G€Æå3¿#6?    #6¿å3¿              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =   ~   >          ?   @    A      B       C    D                  E    F    G    ƒ                                      ÿÿÿÿ/²1G8ÿG€`ÆŠ5Í¾Û‰j¿    Û‰j?Š5Í¾              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =      >          ?   @    A      B       C    D                  E    F    G    „           !    #  $  %  &  '  (  )  *  +  ,  -  .  ÿÿÿÿDñ7GÒöFæ×Æ¼@÷>´+`¿    ´+`?¼@÷>              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =   €   >          ?   @    A      B       C    D                  E    F    G    …      0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  ÿÿÿÿ\Î6G9õðFæŸÆLùØ>Ràg?    Sàg¿KùØ>              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =      >          ?   @    A      B       C    D                  E    F    G    †      A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  ÿÿÿÿ§¦7GêFæÆ ]=‰ ¿    ‰ ? ]=              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =   ‚   >          ?   @    A      B       C    D                  E    F    G    ‡      R  S  T  U  V  W  X  Y  Z  [  \  ]  ^  _  `  a  ÿÿÿÿzU6G5€åFæ/ÆPŽ%¾Î¡/?    Î¡/¿PŽ%¾              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =   ƒ   >          ?   @    A      B       C    D                  E    F    G    ˆ      c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  ÿÿÿÿ¥]5G ;âFÌÿÅMy?„Ÿl>    „Ÿl¾My?              €?  €?    ÿÿÿÿ        9   G   :       ;    6      <    =   „   >          ?   @    A      B       C    D                  E    F    G    ‰      t  u  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ                 Š   ‹      w  x  y  z  {  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        Œ         1       Ž   @                                                                                                                                                                                                                                                                      Œ            2   0      }  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ                 1   0‘        ÿÿÿÿ‚N6Gb. GËYÆ  €?              €?              €?  €?    ÿÿÿÿ        ’   Øÿ>¥3¿                |
 | `bfbc38959e76cac9` | HeaderedCsv | 11 | 4 | yes | 2 header rows; columns: movetype id, movetype name, offset in pose sheet (to 'blank' grip), number of rows (grip types) in pose sheet |
-| `c31a32d317692912` | HeaderedCsv | 0 | 2 | no | 103 header rows; empty; columns:                       ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           7   5      8       9   :   :    ;      <       =    >    ?    @      A    B       t                             !    ������Gq�F:}Ə�>iC}?����`x�@�=f�Y�XP�Hh�=��y?  �?    ����           7   5      8       9   ;   :    ;      <       =    >    ?    @      A    B       u      $  %  &  '  (  )  *  +  ,  -  .  /  0  1  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?8���qF��EH>Wx?ff&?    ����           7   5      8       9   <   F   G   :    ;      <       =    >    ?    @      A    B       v      3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  ����syGH��Fõ�  �?              �?              �?ff&?    ����           7   5      8       9   =   F   G   :    ;      <       =    >    ?    @   .   A    B       w      B  C  D  E  F  G  H  I  J  K  L  M  N  ����<� G���F�e�2IS?h�?    h��2IS?              �?  �?    ����           7   5      8       9   @   :    ;      <       =    >    ?    @   :   A    B       x      P  Q  R  S  T  U  V  W  X  Y  Z  [  \  ����� G+N�F)y�  �?              �?              �?  �?    ����           7   5      8       9   A   :    ;      <       =    >    ?    @   9   A    B       y      ^  _  `  a  b  c  d  e  f  g  h  i  j  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           7   5      8       9   B   :    ;      <       =    >    ?    @   :   A    B       z      l  m  n  o  p  q  r  s  t  u  v  w  x  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           7   5      8       9   C   :    ;      <       =    >    ?    @   :   A    B       {      z  {  /  }  ~    �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           7   5      8       9   D   :    ;      <       =    >    ?    @   9   A    B       /      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           7   5      8       9   E   :    ;      <       =    >    ?    @   9   A    B       }      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?G��>    G����zp?  �?    ����           7   5      8       9   J   :    ;      <       =    >    ?    @   E   A    B       ~      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           7   5      8       9   Q   F   G   :    ;      <       =    >    ?    @   /   A    B             �  �  ����              �?              �?              �?  �?    ����           �         �      �  �  �  �  �  �  ����              �?              �?              �?  �?    ����           �   5      �         2   0�   @                                                                                                                                                                                                                                                                   �       �         1�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����u�*G!p�F5N�  �?              �?              �?  �?    ����        �   _ �@+]��                |
-| `cce6db0a7e1127b4` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ������G41�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y? @?    ����           0   .      1    2       3      4   9   5       6       7    8    9    :    ;      q                                ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           0   .      1    2       3      4   :   5       6       7    8    9    :    ;      r         !    #  $  %  &  '  (  )  *  +  ,  ������Gq�F:}ƞ�>hC}?����`x�&@�=d�Y�VP�Hh�=��y?  �?    ����           0   .      1    2       3      4   ;   5       6       7    8    9    :    ;      s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?4���qF��EH>Wx?ff&?    ����           0   .      1    2       3      4   <   5       ?   @   6       7    8    9    :    ;      t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ����syGH��Fõ�  �?              �?              �?ff&?    ����           0   .      1    2       3   .   4   =   5       ?   @   6       7    8    9    :    ;      u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ����<� G���F�e�2IS?g�?    g��2IS?              �?  �?    ����           0   .      1    2       3   :   4   @   5       6       7    8    9    :    ;      v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ����� G+N�F)y�  �?              �?              �?  �?    ����           0   .      1    2       3   9   4   A   5       6       7    8    9    :    ;      w      h  i  j  k  l  m  n  o  p  q  r  s  t  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           0   .      1    2       3   :   4   B   5       6       7    8    9    :    ;      x      v  w  x  y  z  {  /  }  ~    �  �  �  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           0   .      1    2       3   :   4   C   5       6       7    8    9    :    ;      y      �  �  �  �  �  �  �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           0   .      1    2       3   9   4   D   5       6       7    8    9    :    ;      z      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           0   .      1    2       3   9   4   E   5       6       7    8    9    :    ;      {      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?G��>    G����zp?  �?    ����           0   .      1    2       3   E   4   J   5       6       7    8    9    :    ;      /      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           0   .      1    2       3   /   4   Q   5       ?   @   6       7    8    9    :    ;      }      �  �  ����              �?              �?              �?  �?    ����           ~               �  �  �  �  �  ����              �?              �?              �?  �?    ����           �   .      �         2   0�         1�       �      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����n�#G�i�FW��  �?              �?              �?  �?    ����        �   Ɣ@�r׾                |
+| `c31a32d317692912` | HeaderedCsv | 0 | 2 | no | 103 header rows; empty; columns:                       ÿÿÿÿI÷GŒ6õFŽÆÙ<?Tå, ?’—½˜Â+¿‘Ù5?dÏY¾;mË½ÔìJ>–¡y?®‡?    ÿÿÿÿ           7   5      8       9   :   :    ;      <       =    >    ?    @      A    B       t                             !    ÿÿÿÿ¸ÚGqõF:}Æ÷>iC}?˜—½©`x¿@í=fÏY¾XP¾Hhµ=”¡y?  €?    ÿÿÿÿ           7   5      8       9   ;   :    ;      <       =    >    ?    @      A    B       u      $  %  &  '  (  )  *  +  ,  -  .  /  0  1  ÿÿÿÿJDGíFH±Æƒ(?¨6¿):{>ÇP=?^<,?8–°¼qF¾ÀEH>Wx?ff&?    ÿÿÿÿ           7   5      8       9   <   F   G   :    ;      <       =    >    ?    @      A    B       v      3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  ÿÿÿÿsyGH›áFÃµÆ  €?              €?              €?ff&?    ÿÿÿÿ           7   5      8       9   =   F   G   :    ;      <       =    >    ?    @   .   A    B       w      B  C  D  E  F  G  H  I  J  K  L  M  N  ÿÿÿÿ<¤ G¨îçFßeÆ2IS?hŒ?    hŒ¿2IS?              €?  €?    ÿÿÿÿ           7   5      8       9   @   :    ;      <       =    >    ?    @   :   A    B       x      P  Q  R  S  T  U  V  W  X  Y  Z  [  \  ÿÿÿÿÌ G+NèF)yÆ  €?              €?              €?  €?    ÿÿÿÿ           7   5      8       9   A   :    ;      <       =    >    ?    @   9   A    B       y      ^  _  `  a  b  c  d  e  f  g  h  i  j  ÿÿÿÿµ+ GKCèF½ˆÆ€w¿>Ö‚>    >Ö‚¾€w¿              €?  €?    ÿÿÿÿ           7   5      8       9   B   :    ;      <       =    >    ?    @   :   A    B       z      l  m  n  o  p  q  r  s  t  u  v  w  x  ÿÿÿÿÌ”GÂEäFUÆ0é?ÿ;P?    ÿ;P¿0é?              €?  €?    ÿÿÿÿ           7   5      8       9   C   :    ;      <       =    >    ?    @   :   A    B       {      z  {  /  }  ~    €    ‚  ƒ  „  …  †  ÿÿÿÿ›:G›«âF ÷Æã3ï¼ä¿   €ä?ã3ï¼           €  €?  €?    ÿÿÿÿ           7   5      8       9   D   :    ;      <       =    >    ?    @   9   A    B       /      ˆ  ‰  Š  ‹  Œ    Ž      ‘  ’  “  ”  ÿÿÿÿP¢#GüNíFx3Æß.>oF/?    oF/¿ß.>              €?  €?    ÿÿÿÿ           7   5      8       9   E   :    ;      <       =    >    ?    @   9   A    B       }      –  —  ˜  ™  š  ›  œ    ž  Ÿ     ¡  ¢  ÿÿÿÿ¬y*G Z Gî9Æ  €?            ¼zp?G¯>    G¯¾¼zp?  €?    ÿÿÿÿ           7   5      8       9   J   :    ;      <       =    >    ?    @   E   A    B       ~      ¤  ¥  ¦  §  ¨  ©  ª  «  ¬  ­  ®  ¯  °  ±  ÿÿÿÿqŒ5GÈõFqÆù–ø=l~¿   €l~?ù–ø=           €  €?ff&?    ÿÿÿÿ           7   5      8       9   Q   F   G   :    ;      <       =    >    ?    @   /   A    B             ³  ´  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           €               ¶  ·  ¸  ¹  º  »  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           ‚   5      ƒ         2   0„   @                                                                                                                                                                                                                                                                   …       ‚         1†      ½  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        †         1   0‡      ¿  ÿÿÿÿuÊ*G!pïF5NÆ  €?              €?              €?  €?    ÿÿÿÿ        ˆ   _ Š@+]ª¼                |
+| `cce6db0a7e1127b4` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ÿÿÿÿÄðG41õF’ÆÙ<?Tå, ?’—½˜Â+¿‘Ù5?dÏY¾;mË½ÔìJ>–¡y? @?    ÿÿÿÿ           0   .      1    2       3      4   9   5       6       7    8    9    :    ;      q                                ÿÿÿÿI÷GŒ6õFŽÆÙ<?Tå, ?’—½˜Â+¿‘Ù5?dÏY¾;mË½ÔìJ>–¡y?®‡?    ÿÿÿÿ           0   .      1    2       3      4   :   5       6       7    8    9    :    ;      r         !    #  $  %  &  '  (  )  *  +  ,  ÿÿÿÿ¸ÚGqõF:}Æž÷>hC}?’—½¨`x¿&@í=dÏY¾VP¾Hhµ=”¡y?  €?    ÿÿÿÿ           0   .      1    2       3      4   ;   5       6       7    8    9    :    ;      s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ÿÿÿÿJDGíFH±Æƒ(?¨6¿):{>ÇP=?^<,?4–°¼qF¾ÀEH>Wx?ff&?    ÿÿÿÿ           0   .      1    2       3      4   <   5       ?   @   6       7    8    9    :    ;      t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ÿÿÿÿsyGH›áFÃµÆ  €?              €?              €?ff&?    ÿÿÿÿ           0   .      1    2       3   .   4   =   5       ?   @   6       7    8    9    :    ;      u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ÿÿÿÿ<¤ G¨îçFßeÆ2IS?gŒ?    gŒ¿2IS?              €?  €?    ÿÿÿÿ           0   .      1    2       3   :   4   @   5       6       7    8    9    :    ;      v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ÿÿÿÿÌ G+NèF)yÆ  €?              €?              €?  €?    ÿÿÿÿ           0   .      1    2       3   9   4   A   5       6       7    8    9    :    ;      w      h  i  j  k  l  m  n  o  p  q  r  s  t  ÿÿÿÿµ+ GKCèF½ˆÆ€w¿>Ö‚>    >Ö‚¾€w¿              €?  €?    ÿÿÿÿ           0   .      1    2       3   :   4   B   5       6       7    8    9    :    ;      x      v  w  x  y  z  {  /  }  ~    €    ‚  ÿÿÿÿÌ”GÂEäFUÆ0é?ÿ;P?    ÿ;P¿0é?              €?  €?    ÿÿÿÿ           0   .      1    2       3   :   4   C   5       6       7    8    9    :    ;      y      „  …  †  ‡  ˆ  ‰  Š  ‹  Œ    Ž      ÿÿÿÿ›:G›«âF ÷Æã3ï¼ä¿   €ä?ã3ï¼           €  €?  €?    ÿÿÿÿ           0   .      1    2       3   9   4   D   5       6       7    8    9    :    ;      z      ’  “  ”  •  –  —  ˜  ™  š  ›  œ    ž  ÿÿÿÿP¢#GüNíFx3Æß.>oF/?    oF/¿ß.>              €?  €?    ÿÿÿÿ           0   .      1    2       3   9   4   E   5       6       7    8    9    :    ;      {         ¡  ¢  £  ¤  ¥  ¦  §  ¨  ©  ª  «  ¬  ÿÿÿÿ¬y*G Z Gî9Æ  €?            ¼zp?G¯>    G¯¾¼zp?  €?    ÿÿÿÿ           0   .      1    2       3   E   4   J   5       6       7    8    9    :    ;      /      ®  ¯  °  ±  ²  ³  ´  µ  ¶  ·  ¸  ¹  º  »  ÿÿÿÿqŒ5GÈõFqÆù–ø=l~¿   €l~?ù–ø=           €  €?ff&?    ÿÿÿÿ           0   .      1    2       3   /   4   Q   5       ?   @   6       7    8    9    :    ;      }      ½  ¾  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           ~               À  Á  Â  Ã  Ä  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ           €   .               2   0€         1‚       ƒ      Æ  ÿÿÿÿ              €?              €?              €?  €?    ÿÿÿÿ        ƒ         1   0„      È  ÿÿÿÿnï#G‘iðFW¶Æ  €?              €?              €?  €?    ÿÿÿÿ        …   Æ”@­r×¾                |
 
 ## unknown_hashes/lua
 
@@ -10858,7 +10858,7 @@ small column in the game. Every file is still inventoried below.
 | `c5b1147b588aed9a` | PlainText | 2,582 | 1 | no | columns: Line |
 | `c5bf8f51c87f13cc` | PlainText | 3,171 | 1 | no | columns: Line |
 | `c5e23962782540cb` | PlainText | 35 | 1 | no | columns: Line |
-| `c61628cd2f5503e0` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `c61628cd2f5503e0` | PlainText | 8,096 | 1 | no | columns: Line |
 | `c64a45f7ed3d90ac` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
 | `c6b28678850ebf18` | PlainText | 3,380 | 1 | no | columns: Line |
 | `c7ad5985e9f40bb9` | PlainText | 2,654 | 1 | no | columns: Line |

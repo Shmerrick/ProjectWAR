@@ -94,6 +94,9 @@ namespace ClientDataMatrix.Services
             /// <summary>How many rows carry no parseable id in column 0.</summary>
             public int UnkeyedRows;
 
+            /// <summary>Non-empty lines seen while reading, for the string-table parse ratio.</summary>
+            public int NonEmptyLines;
+
             public string Error;
 
             /// <summary>True when the file could only be read partially -- malformed XML.</summary>
@@ -132,6 +135,12 @@ namespace ClientDataMatrix.Services
         /// How many of a table's rows may repeat an id before column 0 stops counting as its key.
         /// </summary>
         private const double MaxDuplicateKeyRate = 0.01d;
+
+        /// <summary>
+        /// Share of a .txt file's non-empty lines that must parse as an entry before it counts as a
+        /// string table rather than prose.
+        /// </summary>
+        private const double MinimumStringTableParseRate = 0.80d;
 
         public List<ClientSource> Discover()
         {
@@ -265,6 +274,7 @@ namespace ClientDataMatrix.Services
                         {
                             table.Rows.Clear();
                             table.Columns.Clear();
+                            table.NonEmptyLines = 0;
                             source.Format = SourceFormat.PlainText;
                             LoadPlainText(path, table);
                         }
@@ -385,33 +395,59 @@ namespace ClientDataMatrix.Services
 
             foreach (string line in ReadLines(path))
             {
-                if (string.IsNullOrEmpty(line))
+                string trimmed = line.TrimEnd('\r', '\n');
+                if (trimmed.Length == 0)
                     continue;
 
-                int tab = line.IndexOf('\t');
-                if (tab <= 0)
+                ++table.NonEmptyLines;
+
+                int tab = trimmed.IndexOf('\t');
+
+                // An entry whose text is empty may drop the tab entirely and be nothing but its id.
+                // scenarionames.txt is 2,208 entries of which 2,151 are written that way; requiring
+                // a tab discarded all of them and left the file looking like 57 rows, which then
+                // made it look like something other than a string table.
+                //
+                // An id with no text is still the client saying that id exists, which is exactly the
+                // kind of thing this tool is asked.
+                if (tab < 0)
+                {
+                    long bareId;
+                    if (long.TryParse(trimmed.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out bareId))
+                        table.Rows.Add(new[] { bareId.ToString(CultureInfo.InvariantCulture), string.Empty });
+
+                    continue;
+                }
+
+                if (tab == 0)
                     continue;
 
                 long id;
-                if (!long.TryParse(line.Substring(0, tab).Trim(), NumberStyles.Integer,
+                if (!long.TryParse(trimmed.Substring(0, tab).Trim(), NumberStyles.Integer,
                         CultureInfo.InvariantCulture, out id))
                     continue;
 
                 table.Rows.Add(new[]
                 {
                     id.ToString(CultureInfo.InvariantCulture),
-                    line.Substring(tab + 1).TrimEnd('\r', '\n')
+                    trimmed.Substring(tab + 1)
                 });
             }
         }
 
         /// <summary>
-        /// True when enough of the file parsed as "id{tab}text" to call it a keyed string table.
-        /// Files that are merely text share the .txt extension with the string tables.
+        /// True when the file is a keyed string table rather than prose that happens to end in .txt.
+        ///
+        /// Judged on the SHARE of lines that parsed, not on a count. "Two or more rows parsed" -- the
+        /// earlier test -- called an 8,054-line file a string table on the strength of two lines that
+        /// happened to start with a number, and 71 files were classified that way.
         /// </summary>
         private static bool LooksLikeStringTable(LoadedTable table)
         {
-            return table.Rows.Count >= 2;
+            if (table.Rows.Count < 2 || table.NonEmptyLines == 0)
+                return false;
+
+            return (double)table.Rows.Count / table.NonEmptyLines >= MinimumStringTableParseRate;
         }
 
         /// <summary>
@@ -446,10 +482,10 @@ namespace ClientDataMatrix.Services
             var counts = new Dictionary<string, int>(StringComparer.Ordinal);
             var attributes = new Dictionary<string, SortedSet<string>>(StringComparer.Ordinal);
 
-            string raw;
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var reader = new StreamReader(stream, Encoding.GetEncoding(1252), true))
-                raw = reader.ReadToEnd();
+            // Same encoding detection as every other reader here. This used to default to
+            // Windows-1252, which mangles a UTF-8 XML file that carries no byte order mark in the
+            // opposite direction.
+            string raw = ReadAllText(path);
 
             System.Xml.Linq.XDocument document;
             try
@@ -674,15 +710,56 @@ namespace ClientDataMatrix.Services
 
         private static string[] ReadLines(string path)
         {
-            string text;
+            return ReadAllText(path).Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+        }
 
-            // Detects UTF-16 from the byte order mark, which the string tables carry and the CSVs
-            // do not. Opened shared so a running client or an open spreadsheet cannot block a sweep.
+        /// <summary>
+        /// Reads a client text file with the right encoding.
+        ///
+        /// Three cases, and getting this wrong is silent. A byte order mark settles it outright, and
+        /// the string tables carry one. Without a mark, strict UTF-8 is tried: if the bytes are valid
+        /// UTF-8 they are UTF-8, and if they are not the file is Windows-1252, which is what a 2008
+        /// toolchain produced.
+        ///
+        /// 86 files in the extraction are non-UTF-8 with no mark, including nine in data/gamedata and
+        /// fifteen under data/strings. Reading them as UTF-8 -- which an earlier version did, passing
+        /// UTF8 as the fallback encoding -- replaces every accented character with U+FFFD, so a name
+        /// silently stops matching anything it is compared against. That is exactly the class of
+        /// failure this tool exists to catch, so it must not commit it.
+        /// </summary>
+        private static string ReadAllText(string path)
+        {
+            byte[] bytes;
+
+            // Opened shared so a running extraction or an open spreadsheet cannot block a sweep.
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var reader = new StreamReader(stream, Encoding.UTF8, true))
-                text = reader.ReadToEnd();
+            using (var memory = new MemoryStream())
+            {
+                stream.CopyTo(memory);
+                bytes = memory.ToArray();
+            }
 
-            return text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            if (bytes.Length >= 2)
+            {
+                if (bytes[0] == 0xFF && bytes[1] == 0xFE)
+                    return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2);
+
+                if (bytes[0] == 0xFE && bytes[1] == 0xFF)
+                    return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2);
+            }
+
+            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+                return new UTF8Encoding(false).GetString(bytes, 3, bytes.Length - 3);
+
+            try
+            {
+                // Throws rather than substituting, so invalid bytes are detected instead of hidden.
+                return new UTF8Encoding(false, true).GetString(bytes);
+            }
+            catch (DecoderFallbackException)
+            {
+                return Encoding.GetEncoding(1252).GetString(bytes);
+            }
         }
 
         private static List<string> SplitCsvLine(string line)

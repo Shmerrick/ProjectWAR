@@ -467,3 +467,32 @@ file you care about rather than scrolling the markdown:
 Import-Csv docs\data-matrix\client-sources\client-data-links.csv |
   Where-Object { $_.ToTable -like '*anim_db*' -and [double]$_.ResolveRate -eq 1 }
 ```
+
+### Reader correctness
+
+Four bugs were found by auditing the reader against the data rather than by testing the tool, and
+all four were silent — the report looked fine while being wrong.
+
+**Encoding.** The reader passed UTF-8 as the fallback encoding, so any file without a byte order
+mark that is not valid UTF-8 was decoded as UTF-8 and every accented character became U+FFFD.
+**86 files** are in that state, including nine in `data/gamedata` — `abilities.csv`, `anim_db.csv`,
+`effects.csv` and `pregame_chars.xml` among them. Ability 1152 is `Raven’s Bite` with U+2019, and it
+was being read as `Raven?s Bite`. A name that silently stops matching is exactly the failure this
+tool exists to catch. It now checks for a byte order mark, then tries **strict** UTF-8 — which throws
+rather than substituting — and falls back to Windows-1252, which is what a 2008 toolchain produced.
+
+**Bare-id string table entries.** An entry whose text is empty may omit the tab and be nothing but
+its id. `scenarionames.txt` is 2,208 entries of which **2,151** are written that way; requiring a tab
+discarded all of them and left the file reading as 57 rows. Recovering them added 92,882 rows across
+the extraction.
+
+**String-table classification.** The test was "two or more rows parsed", which called an 8,054-line
+file a string table on the strength of two lines that happened to start with a number. 71 files were
+misclassified. It is now the share of non-empty lines that parse, at 80%.
+
+**Blank rows and impure keys**, described above: spacer rows counted as data, and all-or-nothing key
+detection discarding a 41,000-row table over 375 imperfect rows out of 41,384.
+
+Two independent checks now agree end to end: row counts match an independent count using the same
+rules across all 103 gamedata CSVs, and the inventory's per-family tables list exactly the 8,206
+files the header claims.
