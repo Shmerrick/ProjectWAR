@@ -135,9 +135,25 @@ The open dependabot branch is cut from master and does not apply.
    It overlaps 2,617 of our 88,727 entries and agrees on 2,562 names. Migration 85 repaired four
    where ours began mid-word; the captures have since independently confirmed three of those four,
    which is the pattern to follow — use Londo to find candidates, the captures to settle them.
-   The other ~75,000 names arrived in the base `war_world.sql` from the pre-`RESTART` lineage with no
-   surviving provenance, and only 1,955 items are covered by captures, so most item names remain
-   unverified. Do not present one as verified without a capture behind it.
+   **`item_infos` is genuine server data, not a scrape — that much is now established structurally**,
+   even though its provenance is undocumented and only 1,955 items can be checked directly against
+   captures. Four things say so. Its rows are in *authoring* order, one armour set at a time grouped
+   by slot: 700000-700003 are `Klad`/`Beardmail`/`Vestments`/`Bulwark of Reprisal`, all SlotId 20,
+   whose ModelIds resolve to `DW_Armor_IB_01_Body`, `_HA_`, `_RP_`, `_EN_` — the same set across the
+   four Dwarf careers, with name, slot and client art agreeing independently. Only 50 of 88,727 rows
+   lack a ModelId. It contains developer work-in-progress that never shipped (`Helm a`, `Helm b`,
+   `shoulder b`-`g`, `test talisman 100`, `item creation`), which no community scrape could hold. And
+   where captures can check it, 97.1% of names already agree.
+
+   Compare the Londo dump, which *does* carry the scrape signature: its 7,092 rows above id 100M are
+   in alphabetical order (`Aggressor's Gutstrap`, `Andsplate of Conquest`, `Andsplate of Dominion`,
+   `Annihilator ...`) with sequential fabricated ids and `ModelID`/`SlotIndex`/`ItemTypeID` all zero.
+   Ours looks nothing like that.
+
+   The damage is bounded and worth fixing rather than fearing: 67 names begin with a lowercase letter,
+   which catches both the front-truncations (`rought Key`, `ry Shroud of Khutep`) and the hand-added
+   `unk1`-`unk32` placeholders, plus one row holding quest description text in the Name column
+   (196608, `ix this to the Butcher Gutbeater's Cauldron.`). See BUG-149.
 
    **Large parts of `item_infos` were generated from the client, so they cannot re-verify it.**
    WAR-RE-Toolkit's `generate_item_infos.py` built the table from `itemdata.csv` + `objects.csv`,
