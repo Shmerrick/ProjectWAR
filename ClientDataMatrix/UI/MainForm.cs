@@ -30,6 +30,7 @@ namespace ClientDataMatrix.UI
         private Button _openAbilityFolderButton;
         private TextBox _abilitySummaryTextBox;
         private TreeView _abilityTreeView;
+        private Timer _abilitySelectionDebounce;
         private PictureBox _abilityIconBox;
         private Label _abilityIconLabel;
         private ClientItemArtService _iconService;
@@ -282,7 +283,27 @@ namespace ClientDataMatrix.UI
             _abilityGrid.Columns.Add(CreateTextColumn("Name", "Name", 230));
             _abilityGrid.Columns.Add(CreateTextColumn("Effect", "EffectIdText", 80));
             _abilityGrid.Columns.Add(CreateTextColumn("Sources", "Sources", 100));
-            _abilityGrid.SelectionChanged += (sender, args) => { AbilityCatalogEntry selected = SelectedAbility(); if (selected != null) { _abilityIdTextBox.Text = selected.AbilityId.ToString(CultureInfo.InvariantCulture); ShowAbilityIcon(selected.AbilityId); } };
+            // Debounced: holding an arrow key down the grid raises SelectionChanged per row, and
+            // each analysis is real work. Settle for a moment, then show whatever row we landed on.
+            _abilitySelectionDebounce = new Timer { Interval = 250 };
+            _abilitySelectionDebounce.Tick += async (sender, args) =>
+            {
+                _abilitySelectionDebounce.Stop();
+                await ShowAbilityAsync(writeMarkdown: false, announceParseFailure: false);
+            };
+
+            _abilityGrid.SelectionChanged += (sender, args) =>
+            {
+                AbilityCatalogEntry selected = SelectedAbility();
+                if (selected == null)
+                    return;
+
+                _abilityIdTextBox.Text = selected.AbilityId.ToString(CultureInfo.InvariantCulture);
+                ShowAbilityIcon(selected.AbilityId);
+
+                _abilitySelectionDebounce.Stop();
+                _abilitySelectionDebounce.Start();
+            };
             _abilityGrid.CellDoubleClick += async (sender, args) => { if (args.RowIndex >= 0) await GenerateAbilityReportAsync(); };
 
             layout.Controls.Add(search, 0, 0);
@@ -303,6 +324,23 @@ namespace ClientDataMatrix.UI
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             actions.Controls.Add(new Label { Text = "Ability ID", AutoSize = true, Margin = new Padding(0, 8, 8, 0) });
             _abilityIdTextBox = new TextBox { Width = 110 };
+
+            // Typing an id and pressing Enter shows it, without needing to find it in the grid
+            // first. Enter is suppressed so the form does not also ding.
+            _abilityIdTextBox.KeyDown += async (sender, args) =>
+            {
+                if (args.KeyCode != Keys.Enter)
+                    return;
+
+                args.SuppressKeyPress = true;
+                ushort typed;
+                if (ushort.TryParse(_abilityIdTextBox.Text.Trim(), NumberStyles.Integer,
+                        CultureInfo.InvariantCulture, out typed))
+                    ShowAbilityIcon(typed);
+
+                await ShowAbilityAsync(writeMarkdown: false, announceParseFailure: true);
+            };
+
             actions.Controls.Add(_abilityIdTextBox);
             _generateAbilityButton = new Button { Text = "Generate Ability Report", AutoSize = true, Enabled = false };
             _generateAbilityButton.Click += async (sender, args) => await GenerateAbilityReportAsync();
@@ -1174,35 +1212,74 @@ namespace ClientDataMatrix.UI
 
         private async Task<bool> GenerateAbilityReportAsync()
         {
+            return await ShowAbilityAsync(writeMarkdown: true, announceParseFailure: true);
+        }
+
+        /// <summary>
+        /// Builds and displays the analysis for whichever ability is currently selected, and
+        /// optionally writes the markdown.
+        ///
+        /// WHY THE SPLIT. Displaying and writing used to be the same action, so the panes only ever
+        /// refreshed when the Generate button was pressed. Select a different ability afterwards and
+        /// the grid highlighted one ability while the tree, narrative, definitions and summary all
+        /// still described the previous one, with nothing on screen saying so -- the reported
+        /// symptom. Auto-generating on selection is not the fix either, because generating writes a
+        /// markdown file and arrow-keying down a 2,935-row grid would write a file per row. So:
+        /// selection displays, the button displays and writes.
+        /// </summary>
+        private async Task<bool> ShowAbilityAsync(bool writeMarkdown, bool announceParseFailure)
+        {
             if (_isBusy || _session == null)
                 return false;
 
             ushort abilityId;
             if (!TryGetSelectedAbilityId(out abilityId))
             {
-                MessageBox.Show(this, "Ability ID must be a valid unsigned 16-bit integer.", "ClientDataMatrix", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (announceParseFailure)
+                    MessageBox.Show(this, "Ability ID must be a valid unsigned 16-bit integer.", "ClientDataMatrix", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
             try
             {
-                SetBusy(true, "Generating ability report for " + abilityId.ToString(CultureInfo.InvariantCulture) + "...");
-                string outputRoot = ResolveOutputRoot();
+                SetBusy(true, (writeMarkdown ? "Generating ability report for " : "Loading ability ")
+                    + abilityId.ToString(CultureInfo.InvariantCulture) + "...");
+
                 AbilityAnalysisResult report = await Task.Run(() => _session.BuildAbilityAnalysis(abilityId));
-                _lastAbilityMarkdownPath = _session.WriteAbilityReport(outputRoot, report);
                 _lastAbilityReport = report;
-                _openAbilityMarkdownButton.Enabled = File.Exists(_lastAbilityMarkdownPath);
-                _openAbilityFolderButton.Enabled = Directory.Exists(Path.GetDirectoryName(_lastAbilityMarkdownPath));
+
+                if (writeMarkdown)
+                {
+                    _lastAbilityMarkdownPath = _session.WriteAbilityReport(ResolveOutputRoot(), report);
+                    _openAbilityMarkdownButton.Enabled = File.Exists(_lastAbilityMarkdownPath);
+                    _openAbilityFolderButton.Enabled = Directory.Exists(Path.GetDirectoryName(_lastAbilityMarkdownPath));
+                    AppendLog("Ability " + abilityId.ToString(CultureInfo.InvariantCulture)
+                        + " report written to " + _lastAbilityMarkdownPath + ".");
+                }
+                else
+                {
+                    // Nothing was written for this ability, so the Open buttons would open the
+                    // previous one's file. Disable them until Generate is pressed.
+                    _lastAbilityMarkdownPath = null;
+                    _openAbilityMarkdownButton.Enabled = false;
+                    _openAbilityFolderButton.Enabled = false;
+                }
+
                 PopulateAbilityPresentation(report, _lastAbilityMarkdownPath);
-                AppendLog("Ability " + abilityId.ToString(CultureInfo.InvariantCulture) + " report written to " + _lastAbilityMarkdownPath + ".");
-                SetBusy(false, "Ability report generated.");
+                SetBusy(false, writeMarkdown
+                    ? "Ability report generated."
+                    : "Showing ability " + abilityId.ToString(CultureInfo.InvariantCulture)
+                        + ". Press Generate Ability Report to write the markdown.");
                 return true;
             }
             catch (Exception ex)
             {
                 AppendLog("Ability report failed: " + ex.Message);
                 SetBusy(false, "Ability report failed.");
-                MessageBox.Show(this, ex.ToString(), "ClientDataMatrix Ability Report Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                if (announceParseFailure)
+                    MessageBox.Show(this, ex.ToString(), "ClientDataMatrix Ability Report Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return false;
             }
         }
@@ -2261,7 +2338,9 @@ namespace ClientDataMatrix.UI
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine(GetAbilityName(report) + " [" + report.AbilityId.ToString(CultureInfo.InvariantCulture) + "]");
-            builder.AppendLine("Markdown: " + markdownPath);
+            builder.AppendLine("Markdown: " + (string.IsNullOrEmpty(markdownPath)
+                ? "(not written -- press Generate Ability Report)"
+                : markdownPath));
             builder.AppendLine("Client rows: " + report.ClientAbilityRows.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("BIN rows: " + report.BinaryAbilityRows.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("Effect rows: " + report.ClientEffectRows.Count.ToString(CultureInfo.InvariantCulture));
