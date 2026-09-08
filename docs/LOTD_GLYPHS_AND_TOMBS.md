@@ -312,6 +312,63 @@ The evidence runs the other way:
 
 So `InvadableLairZones` is 179, 241, 242, 243, 244.
 
+
+### The Purge public quests
+
+Invading a tomb runs a public quest, and five already exist — one per invadable instance:
+
+| Entry | Name | Zone |
+| --- | --- | --- |
+| 595 | Purge the Tomb of the Stars | 241 |
+| 596 | Purge the Tomb of the Moon | 242 |
+| 597 | Purge the Tomb of the Sky | 243 |
+| 598 | Purge the Tomb of the Sun | 244 |
+| **599** | **Purge the Tomb of the Vulture Lord** | **179** |
+
+599 is the database's own confirmation that the Vulture Lord is invadable — it has a Purge quest
+like the four lairs.
+
+Each has a "Purge!" stage counting six enemy kills and a "Survive!" stage. The live tracker shows
+the full shape:
+
+```
+Conflict Within the Tomb - Purge (Normal)
+    Order Defenders Purged -            0/6
+                Order - Purge
+    Destruction Invaders Purged -       0/6
+                                     or 29:54
+            Outlast the Invaders
+```
+
+So both sides are tracked at once: the invaders purge six defenders, the defenders purge six
+invaders **or** outlast them for thirty minutes.
+
+`Database/81_lotd_purge_pquest_stages.sql` fixes what is unambiguous — the Tomb of the Sky was
+missing its "Survive!" stage entirely, and all five Survive stages now carry `Type = 12`
+(`QUEST_SCRIPTED_EVENT`) with `Time = 1800`. That is not new machinery: `ScheduleScriptedStageAdvance`
+already completes a scripted stage after `Time` seconds, and the tracker packet already sends
+`Stage.Time` as the countdown. Left at `Type 0` / `Time 0` the stage inherited the 540-second
+`TIME_EACH_STAGE` default — nine minutes where the client showed thirty.
+
+**The "Defenders Purged" objectives are deliberately left at `Type 0`.** `QUEST_KILL_PLAYERS` (5)
+looks like the obvious correction and is the wrong one: `PublicQuest.HandleEvent` has no
+`QUEST_KILL_PLAYERS` case, so type 5 would go from "manual, awaiting a driver" to "handled by
+nothing". Type 0 shares a branch with `QUEST_SCRIPTED_EVENT` and advances when something calls
+`HandleEvent` with the objective's own Guid — which is what an invasion kill handler will do. That
+handler does not exist yet.
+
+Three things are still missing and need evidence rather than a guess:
+
+- **The defender's counter.** The tracker shows "Destruction **Invaders** Purged" alongside "Order
+  **Defenders** Purged", so the names encode a role. This database has only "Defenders Purged" rows;
+  there is no "Invaders Purged" objective anywhere in it.
+- **The realm asymmetry.** 595 reads "Order Defenders Purged" while 596-599 read "Destruction
+  Defenders Purged", which would mean each tomb can only be invaded from one direction. Either realm
+  can hold the expedition, so that cannot be right — but whether live used one quest with two
+  objectives or a pair per tomb is not established.
+- **The name.** The tracker header reads "Conflict Within the Tomb - Purge (Normal)", not "Purge the
+  Tomb of the Stars".
+
 ### What implementing it would take
 
 1. ~~Give the tomb instances a realm and a way to find open enemy copies per zone.~~ **Done** —
@@ -321,7 +378,9 @@ So `InvadableLairZones` is 179, 241, 242, 243, 244.
    matching the client's.
 3. ~~Gate invasion on `LotdService.CanRealmAccessLotd` — only the holder may invade.~~ **Done**,
    inside `CanBeInvadedBy`.
-4. Implement the coward brand: applied on leaving an invaded instance with its defenders alive, and
+4. Drive the Purge public quest: an invasion kill must call `HandleEvent` with the objective Guid,
+   and the missing "Invaders Purged" objective has to be sourced.
+5. Implement the coward brand: applied on leaving an invaded instance with its defenders alive, and
    blocking further Land of the Dead instance entry while held.
 
 Note that (2) needs the packet layouts, which are not established, so this cannot be built from the
