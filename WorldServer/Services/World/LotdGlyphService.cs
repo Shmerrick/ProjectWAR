@@ -127,27 +127,27 @@ namespace WorldServer.Services.World
         }
 
         /// <summary>
-        /// Spends the entry cost and clears the player's glyph progress.
+        /// Spends the tomb's entry cost: only the glyphs that tomb charges, and nothing else.
         ///
-        /// "The entrance of the tomb would cost the glyphs that the player had earned from the PQs
-        /// and the players glyph progress would be reset" -- so this removes ALL ten of the player's
-        /// realm, not only the ones the tomb charged. Both readings were available; the reset is the
-        /// one the report describes, and it is also what makes the glyphs a repeatable currency
-        /// rather than a one-time unlock. If that turns out to be wrong, narrowing it to the cost
-        /// rows is a two-line change here.
+        /// An earlier version cleared all ten of the player's realm, reading "the players glyph
+        /// progress would be reset" as a full wipe. That is wrong and would be brutal -- a group
+        /// working through the Necropolis banks glyphs for several tombs at once, and wiping the lot
+        /// on the first door would throw away everything they had not spent yet. The glyphs are a
+        /// set of keys, and a door takes only its own.
         ///
         /// Returns how many glyphs were actually taken.
         /// </summary>
         public static int ConsumeGlyphs(Player player, ushort tombZoneId)
         {
-            if (player == null || !CostsByTomb.ContainsKey(tombZoneId))
+            List<LotdTombGlyphCost> costs;
+            if (player == null || !CostsByTomb.TryGetValue(tombZoneId, out costs))
                 return 0;
 
             int removed = 0;
 
-            for (byte index = 0; index < GlyphCount; ++index)
+            for (int i = 0; i < costs.Count; ++i)
             {
-                if (player.TokInterface.RemoveTok(GetGlyphEntry(index, player.Realm)))
+                if (player.TokInterface.RemoveTok(GetGlyphEntry(costs[i].GlyphIndex, player.Realm)))
                     ++removed;
             }
 

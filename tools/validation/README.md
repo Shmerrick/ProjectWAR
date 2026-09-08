@@ -164,3 +164,17 @@ Migration 77 extends that check: `EffectID` is now taken from the client as well
 asserts the agreement counts both migrations left (6,012 names, 8,349 `mythic_src` EffectIDs, 4,164
 in `abilities`) plus a tripwire on the count of `EffectID` values still matching
 `mythic_csv_abilities.AbilityId` — the join key that caused the corruption in the first place.
+
+After applying `Database/78_restore_order_lotd_pq_objectives.sql`, `79_lotd_tomb_glyph_costs.sql`
+and `80_lotd_tomb_glyph_costs_data.sql`, run:
+
+```powershell
+./tools/validation/Test-LotdGlyphs.ps1
+```
+
+SELECT-only. Asserts that all twenty Land of the Dead glyph entries have a public quest awarding
+them, that neither realm's quests award the other realm's glyphs, and that the four gated tombs
+spend all ten glyphs between them exactly as `interface/interfacecore/maps/zone191/mappoints.xml`
+assigns them — with the Tomb of the Vulture Lord left ungated, as the client has it. It cannot see
+BUG-134: 42 of the 46 quests still have no creatures, so most glyphs remain unearnable in play.
+Background in [`docs/LOTD_GLYPHS_AND_TOMBS.md`](../../docs/LOTD_GLYPHS_AND_TOMBS.md).

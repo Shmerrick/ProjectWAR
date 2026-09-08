@@ -5,8 +5,7 @@ which covers the expedition race and travel and says nothing about glyphs.
 
 **Summary: glyph acquisition is real and is recorded. Every glyph now has a source (migration 78),
 but almost none can be earned, because 42 of the 46 Land of the Dead public quests have no
-creatures. Tomb entry now checks, spends and resets glyphs — but charges nothing until the
-cost table is populated.**
+creatures. Tomb entry now requires and spends the right glyphs, taken from the client zone map.**
 
 ## Glyphs are Tome of Knowledge unlocks, not items
 
@@ -104,9 +103,8 @@ group, rank 30, guild rank 6 — with `LotdGlyphService`:
 2. **Spend** only after `InstanceMgr.ZoneIn` has actually accepted them. A lockout or a full
    instance would otherwise swallow the glyphs for a trip that never happened, and there is no way
    to give them back.
-3. **Reset** clears all ten of the player's realm, not only the ones the tomb charged — reading
-   "the players glyph progress would be reset" literally. Narrowing it to the charged glyphs is a
-   two-line change in `ConsumeGlyphs`.
+3. **Spend only the door's own glyphs.** A tomb takes the glyphs it charges and leaves the rest
+   of the player's progress alone, so a group can bank keys for several lairs at once.
 
 Removing a Tome entry is new. `TokInterface` was append-only — `Save` only ever calls `SaveObject`,
 so dropping an entry from memory alone would let it reload at the next login. `TokInterface.RemoveTok`
@@ -115,28 +113,61 @@ no capture shows a Tome entry being revoked, so sending `F_TOK_ENTRY_UPDATE` wit
 inference from the shape of `SendTok`. Server state is correct regardless, so a relog will show the
 truth even if the live update is ignored.
 
-### The costs are not populated, and the gate is inert until they are
+### The costs, from the client
 
-`lotd_tomb_glyph_costs` (migration 79) is created empty. **A tomb with no rows is not gated at all**
-and behaves exactly as it did before. Which glyphs each tomb charges is not in `zone_jumps`, not in
-any capture in the corpus, and has not been found in the client — locking five instances on a guess
-would be worse than leaving them open.
+`interface/interfacecore/maps/zone191/mappoints.xml` is the Necropolis of Zandri zone map, and it
+holds both halves of the system — exactly as the in-game tip promises: *"Lairs, the Glyphs they
+require for entry, and the Public Quests that award those Glyphs can all be found on the Land of the
+Dead zone map."* Each `<landmark>` tomb lists the glyphs it needs; each `<publicQuest>` lists the
+glyph it awards.
 
-Glyphs are stored by index, not by Tome entry, because each exists twice (7960-7969 Destruction,
-7970-7979 Order, same ten in the same order); the index is resolved to the player's realm at
-runtime, so one row covers both realms:
+The map's glyph numbers are its own, not Tome entries, but the public quests appear in **both** the
+map and `pquest_objectives`, so the two join on the PQ:
 
-| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Reed | Vulture | Scroll | Horse | Ankhra | Scarab | Vase | Riverbarge | Scorpion | Skull |
+| map # | Tome (Dest) | Glyph | Awarding PQs on the map |
+| --- | --- | --- | --- |
+| 1 | 7960 | Reed | Sedjhet Temple 556, Nikosi Temple 550 |
+| 2 | 7961 | Vulture | Aerie of Death 557, The Carrion Nest 551 |
+| 3 | 7963 | Horse | *(roaming — not on the map)* |
+| 4 | 7962 | Scroll | Obelisk of Judgment 558, The Quarry of Bone 552 |
+| 5 | 7964 | Ankhra | Forbidden Vaults 561, Tombs of the Bitter Wind 555 |
+| 6 | 7968 | Scorpion | *(roaming — not on the map)* |
+| 7 | 7965 | Scarab | Pit of Asaph 559, Pit of Kem Senef 554 |
+| 8 | 7966 | Vase | Hall of the Heavens 560, The Library of Zandri 553 |
+| 9 | 7967 | Riverbarge | The Quay of Seftu 562 |
+| 10 | 7969 | Skull | Temple of Ualatp 563 |
 
-```sql
--- e.g. the Tomb of the Sky costing Vulture and Horse
-INSERT INTO lotd_tomb_glyph_costs (TombZoneId, GlyphIndex, Count) VALUES (243, 1, 1), (243, 3, 1);
-```
+Two map numbers are left unexplained by the mapped PQs — 3 and 6 — and exactly two glyphs are left
+over on the Tome side: Horse and Scorpion. Those are the two awarded by the **roaming** public
+quests (Amsu's Charge, The Assault of Nekh Akhet, Ricci's Raiders), which have no map entry
+precisely because they roam. Ten for ten, none spare.
 
-Costs are cached at boot, so a restart is needed after changing them.
+The `<glyph>20</glyph>` on Temple of Ualatp is a typo for 10 in the client's own file: 10 is
+required by the Tomb of the Sun and awarded by nothing else, 20 is required by nothing, and
+Ualatp's `TokCompleted` is 7969 Skull — glyph 10's slot.
 
+Which gives, as `lotd_tomb_glyph_costs` (migration 80), stored 0-based:
+
+| Tomb | Zone | Glyphs |
+| --- | --- | --- |
+| Tomb of the Stars | 241 | Reed (0), Vulture (1), Horse (3) |
+| Tomb of the Sky | 243 | Scroll (2), Ankhra (4), Scorpion (8) |
+| Tomb of the Moon | 242 | Scarab (5), Vase (6) |
+| Tomb of the Sun | 244 | Riverbarge (7), Skull (9) |
+| Tomb of the Vulture Lord | 179 | **none** |
+
+All ten glyphs are spent across the four lairs, each by exactly one. The Vulture Lord's landmark
+carries no `<glyphs>` element at all, and live footage shows a player's tracker still holding every
+glyph inside it, so it is left ungated.
+
+### Only the door's own glyphs are taken
+
+`ConsumeGlyphs` removes the glyphs that tomb charges and nothing else. An earlier draft wiped all
+ten, reading "the players glyph progress would be reset" as a full wipe; that was wrong and would
+have been brutal, since a group working the Necropolis banks glyphs for several lairs at once and
+the first door would have thrown away everything not yet spent. The glyphs are a set of keys and a
+
+door takes only its own.
 ## Answering "would importing all the CSVs improve ability mapping?"
 
 No — and for `abilities.csv` specifically it would make things worse. That file is **already**
