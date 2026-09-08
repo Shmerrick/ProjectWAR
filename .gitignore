@@ -248,3 +248,7 @@ Database/_tmp_worlddump/
 .dotnet-cli/
 .dotnet-home/
 
+
+# Generated client index: 37 MB of derived data, rebuilt in ~15s by
+#   ClientDataMatrix export index --root <client> --output docs\data-matrix
+docs/data-matrix/client-sources/client-index.tsv

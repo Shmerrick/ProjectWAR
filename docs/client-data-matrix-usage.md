@@ -551,3 +551,47 @@ without the file it belongs to means nothing in this client.
 
 Neither command loads the ability dataset or runs link analysis, and tables are read one at a time
 and released, so a query costs a few hundred megabytes rather than holding 5.5 million rows.
+
+## `export index` — the one to use in practice
+
+`find` and `lookup` each re-walk and re-parse 8,499 files, about ten seconds a question. That is
+fine occasionally and wrong as a habit: the questions come in runs of twenty, and a tool costing a
+process start per question gets skipped in favour of guessing — which is how wrong names reach the
+database in the first place.
+
+```powershell
+.\bin\Release\ClientDataMatrix.exe export index --root C:\Users\Admin\Downloads\myps --output docs\data-matrix
+```
+
+Writes `docs/data-matrix/client-sources/client-index.tsv`: 37 MB, **833,273 rows**, every keyed row
+in the extraction as `relative/path{tab}id{tab}name`, English only. Takes about fifteen seconds
+once; afterwards a question is a grep:
+
+```bash
+LC_ALL=C grep $'\t8334\t' docs/data-matrix/client-sources/client-index.tsv          # ~70 ms
+LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' <index>              # one file
+LC_ALL=C grep -i 'myrmidon' <index> | head                                          # by name
+```
+
+Faster than a MySQL round trip, and no tool call. Use `grep $'\t<id>\t'` rather than `grep -P`,
+which fails outside unibyte and UTF-8 locales on this machine.
+
+**Why the path is the first column.** An id means nothing here without the file it belongs to. One
+grep for 8334 returns `objects.csv → tk_soultalisman_intelligence`, `anim_db.csv →
+DeM_dw_Atk_A-out`, `anim_statedef.csv → Work (chop wood)` and `abilitynames.txt → Dreadful Agony`.
+Four files, four meanings. And the pair that matters most:
+
+```
+data/strings/english/abilitynames.txt   692   Rampaging Siphon
+data/gamedata/abilities.csv             692   Hip Shot
+```
+
+That is the `mythic_src_abilities` corruption in two lines — an art-authoring sheet and the client's
+real ability ids, disagreeing at the same number. Seeing it costs 70 ms now.
+
+**English only**, deliberately: the client ships the same string tables in fourteen locales keyed
+identically, and including them tripled the file while burying the readable row under thirteen
+translations. A grep for one id was returning 47 rows of which 43 were the same sentence in other
+languages.
+
+The index is gitignored — it is derived data, and regenerating it is cheaper than carrying it.

@@ -93,6 +93,32 @@ The open dependabot branch is cut from master and does not apply.
 
    **`data/gamedata/objects.csv` is the client art table `item_infos.ModelId` indexes**, verified: 88,676 of the 88,677 items with a non-zero ModelId resolve to a row in it. Its `name` column often states what an item is -- `tk_soultalisman_intelligence`, `tk_soultalisman_wounds` -- so it is a cheap independent check on item data, and one of the few places the client names something our tables only imply. Note that one art entry backs many item rows (the tiers), so it identifies a kind of item, not one entry. See `docs/LOTD_GLYPHS_AND_TOMBS.md`.
 
+   **Check the client before the database, and make it cheap enough that you always do.** The world
+   database is not the authority and has been wrong in ways that cost whole sessions:
+   `mythic_src_abilities` carried another ability's names and effect ids because someone joined on
+   `data/gamedata/abilities.csv`, whose ID column agrees with the client's real ability ids on 13 of
+   3,115. Build the client index once per session and grep it afterwards -- 37 MB, 833,273 rows,
+   about 70 milliseconds a question, which is faster than a MySQL round trip and costs no tool call:
+
+   ```powershell
+   .\bin\Release\ClientDataMatrix.exe export index --root C:\Users\Admin\Downloads\myps --output docs\data-matrix
+   ```
+
+   ```bash
+   LC_ALL=C grep $'\t8334\t' docs/data-matrix/client-sources/client-index.tsv
+   LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
+   ```
+
+   Format is `relative/path{tab}id{tab}name`, English only, every keyed file in the extraction. The
+   path comes first because **the file an id belongs to is part of its meaning**: 8334 is
+   `tk_soultalisman_intelligence` in `objects.csv` and an ability called `Dreadful Agony` in
+   `abilitynames.txt`. Quoting an id without its file is the mistake that corrupted the ability
+   tables. `data/strings/english/abilitynames.txt` is the arbiter for ability names specifically --
+   it is what the client's UI renders from, and `mythic_bin_ability` reproduces it 12,865 of 12,934.
+   The index is gitignored and regenerable; `ClientDataMatrix find <text>` and `lookup <id>` answer
+   the same questions without one but re-parse 8,499 files each time, so they suit one-off questions
+   rather than runs of them. See `docs/client-data-matrix-usage.md`.
+
    **`docs/CROSS_REPO.md` is the full map** — data roots (including the extracted client tree at `C:\Users\Admin\Downloads\myps` and the 1,027-capture packet corpus), a question-to-repo routing table, the order of authority when sources disagree, and the two cross-repo contracts (the bot editor API, and the private ward-sigil client component). Read it rather than re-deriving any of that.
 
 ## Architecture

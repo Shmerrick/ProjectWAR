@@ -74,6 +74,7 @@
     <Compile Include="Services\AbilityChainCatalog.cs" />
     <Compile Include="Services\ClientSourceCatalog.cs" />
     <Compile Include="Services\ClientQueryService.cs" />
+    <Compile Include="Services\ClientIndexExporter.cs" />
     <Compile Include="Services\ClientLinkAnalyzer.cs" />
     <Compile Include="Services\ClientSourceReport.cs" />
     <Compile Include="Services\AbilityGraphBuilder.cs" />

@@ -80,6 +80,14 @@ namespace ClientDataMatrix
                     Console.WriteLine("Failed: " + failedPath);
                 return report.HasFailures ? 1 : 0;
             }
+            if (string.Equals(toolArguments.Command, "export_index", StringComparison.OrdinalIgnoreCase))
+            {
+                ConsoleManager.EnsureConsole();
+                string indexPath = ClientIndexExporter.Write(toolArguments.ExtractedRootPath, outputRoot);
+                Console.WriteLine("Client index written to " + indexPath);
+                return 0;
+            }
+
             // Queries read the client directly and want no ability dataset and no link analysis, so
             // they run before that load and stream tables one at a time.
             if (string.Equals(toolArguments.Command, "find", StringComparison.OrdinalIgnoreCase))
@@ -428,6 +436,14 @@ namespace ClientDataMatrix
             }
 
             if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "export", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(positionalArguments[1], "index", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedArguments.Command = "export_index";
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
                 && string.Equals(positionalArguments[0], "find", StringComparison.OrdinalIgnoreCase))
             {
                 parsedArguments.Command = "find";
@@ -562,6 +578,7 @@ namespace ClientDataMatrix
             Console.WriteLine("  ClientDataMatrix clean");
             Console.WriteLine("  ClientDataMatrix doctor ability <abilityId> [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix export graph ability <abilityId> [--root <path>] [--output <path>]");
+            Console.WriteLine("  ClientDataMatrix export index [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix find <text> [--limit <count>] [--root <path>]");
             Console.WriteLine("  ClientDataMatrix lookup <id> [--root <path>]");
             Console.WriteLine("  ClientDataMatrix report sources [--root <path>] [--output <path>]");
