@@ -102,6 +102,18 @@ namespace ClientDataMatrix.Services
             /// <summary>True when the file could only be read partially -- malformed XML.</summary>
             public bool Degraded;
 
+            /// <summary>
+            /// True when an XML file was read as real records rather than as a shape summary: some
+            /// element repeats often enough, carrying an id-like attribute, that the document is a
+            /// table. <see cref="Rows"/> then holds one row per element and can be keyed and
+            /// indexed like a CSV. When false, an XML table holds the old element/count/attribute
+            /// summary, which describes the file without letting you look anything up in it.
+            /// </summary>
+            public bool IsRecordTable;
+
+            /// <summary>The element name the records were taken from, when <see cref="IsRecordTable"/>.</summary>
+            public string RecordElement;
+
             public int ColumnCount
             {
                 get { return Columns.Count; }
@@ -503,12 +515,169 @@ namespace ClientDataMatrix.Services
         /// element name, with how many times it occurs and which attributes it carries. Enough to see
         /// what a file holds and decide whether it is worth reading properly.
         /// </summary>
+        /// <summary>
+        /// Reads an XML document as rows when it is really a table, and returns false when it is
+        /// not. The client's own code takes exactly this view: WorldServer's bot editor API walks
+        /// `/Interface/Assets/Icon` in icons.xml pulling `id` and `texture` off each element.
+        ///
+        /// A record group is one element name that repeats at least <see cref="MinimumXmlRecords"/>
+        /// times and carries an attribute usable as a key. The largest qualifying group wins, so one
+        /// file still yields one table like every other format here; UI layout files, where `id`
+        /// appears a handful of times on window elements, fall below the threshold and keep the old
+        /// element/count/attribute summary.
+        /// </summary>
+        private static bool TryLoadXmlRecords(System.Xml.Linq.XDocument document, LoadedTable table)
+        {
+            const int MinimumXmlRecords = 8;
+
+            var groups = new Dictionary<string, List<System.Xml.Linq.XElement>>(StringComparer.Ordinal);
+
+            foreach (System.Xml.Linq.XElement element in document.Descendants())
+            {
+                if (!element.HasAttributes)
+                    continue;
+
+                List<System.Xml.Linq.XElement> group;
+                if (!groups.TryGetValue(element.Name.LocalName, out group))
+                {
+                    group = new List<System.Xml.Linq.XElement>();
+                    groups.Add(element.Name.LocalName, group);
+                }
+
+                group.Add(element);
+            }
+
+            List<System.Xml.Linq.XElement> best = null;
+            string bestName = null;
+            string bestKey = null;
+
+            foreach (KeyValuePair<string, List<System.Xml.Linq.XElement>> pair in groups)
+            {
+                if (pair.Value.Count < MinimumXmlRecords)
+                    continue;
+
+                if (best != null && pair.Value.Count <= best.Count)
+                    continue;
+
+                string key = ChooseXmlKeyAttribute(pair.Value);
+                if (key == null)
+                    continue;
+
+                best = pair.Value;
+                bestName = pair.Key;
+                bestKey = key;
+            }
+
+            if (best == null)
+                return false;
+
+            // Columns after the key are ordered by how many readable values they actually carry, so
+            // the most informative attribute lands nearest the key. icons.xml is the case that makes
+            // this matter: `texture` is populated on all 5,260 rows and `name` on 931, and a reader
+            // asking what icon 293 is wants Itm_ge_TalismanHeart, not a blank.
+            var populated = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (System.Xml.Linq.XElement element in best)
+            {
+                foreach (System.Xml.Linq.XAttribute attribute in element.Attributes())
+                {
+                    string name = attribute.Name.LocalName;
+                    if (string.Equals(name, bestKey, StringComparison.Ordinal))
+                        continue;
+
+                    if (string.IsNullOrWhiteSpace(attribute.Value))
+                        continue;
+
+                    int seen;
+                    populated.TryGetValue(name, out seen);
+                    populated[name] = seen + 1;
+                }
+            }
+
+            List<string> columns = populated.Keys
+                .OrderByDescending(name => populated[name])
+                .ThenBy(name => name, StringComparer.Ordinal)
+                .ToList();
+
+            table.Columns.Add(bestKey);
+            foreach (string column in columns)
+                table.Columns.Add(column);
+
+            foreach (System.Xml.Linq.XElement element in best)
+            {
+                var row = new string[columns.Count + 1];
+                System.Xml.Linq.XAttribute key = element.Attribute(bestKey);
+                string keyText = key == null ? string.Empty : key.Value.Trim();
+
+                // icons.xml writes its ids zero-padded to five digits -- id="00293". Left as text
+                // that defeats the one thing the index exists for, because a grep for 293 misses it
+                // and the miss looks like the client not having the icon. The key parsed as an
+                // integer above, so store the integer's own spelling; the client's padding is
+                // presentation, not identity, and WorldServer's own reader parses it away too.
+                long keyValue;
+                if (long.TryParse(keyText, NumberStyles.Integer, CultureInfo.InvariantCulture, out keyValue))
+                    keyText = keyValue.ToString(CultureInfo.InvariantCulture);
+
+                row[0] = keyText;
+
+                for (int i = 0; i < columns.Count; ++i)
+                {
+                    System.Xml.Linq.XAttribute attribute = element.Attribute(columns[i]);
+                    row[i + 1] = attribute == null ? string.Empty : attribute.Value.Trim();
+                }
+
+                table.Rows.Add(row);
+            }
+
+            table.IsRecordTable = true;
+            table.RecordElement = bestName;
+            table.NonEmptyLines = table.Rows.Count;
+            return true;
+        }
+
+        /// <summary>
+        /// The attribute to key an XML record group on: one literally named id when its values are
+        /// integers, otherwise the first attribute that is an integer on every element. Returns null
+        /// when nothing qualifies, which is how a group of styling elements declines to be a table.
+        /// </summary>
+        private static string ChooseXmlKeyAttribute(List<System.Xml.Linq.XElement> elements)
+        {
+            var candidates = new List<string>();
+
+            foreach (System.Xml.Linq.XAttribute attribute in elements[0].Attributes())
+            {
+                string name = attribute.Name.LocalName;
+                if (string.Equals(name, "id", StringComparison.OrdinalIgnoreCase))
+                    candidates.Insert(0, name);
+                else
+                    candidates.Add(name);
+            }
+
+            foreach (string candidate in candidates)
+            {
+                bool everyRowIsAnInteger = true;
+
+                foreach (System.Xml.Linq.XElement element in elements)
+                {
+                    System.Xml.Linq.XAttribute attribute = element.Attribute(candidate);
+                    long parsed;
+                    if (attribute == null
+                        || !long.TryParse(attribute.Value.Trim(), NumberStyles.Integer,
+                            CultureInfo.InvariantCulture, out parsed))
+                    {
+                        everyRowIsAnInteger = false;
+                        break;
+                    }
+                }
+
+                if (everyRowIsAnInteger)
+                    return candidate;
+            }
+
+            return null;
+        }
+
         private static void LoadXmlShape(string path, LoadedTable table)
         {
-            table.Columns.Add("Element");
-            table.Columns.Add("Count");
-            table.Columns.Add("Attributes");
-
             var counts = new Dictionary<string, int>(StringComparer.Ordinal);
             var attributes = new Dictionary<string, SortedSet<string>>(StringComparer.Ordinal);
 
@@ -544,6 +713,19 @@ namespace ClientDataMatrix.Services
                     return;
                 }
             }
+
+            // Records first. An XML file that repeats one element with an id attribute is a table
+            // wearing angle brackets, and summarising it instead of reading it is how
+            // interface/default/eatemplate_icons/source/icons.xml -- 5,260 icons, each with an id, a
+            // texture filename and sometimes a name -- stayed invisible to this tool while we were
+            // asserting the client had no such list. Same for the per-zone mappoints.xml files,
+            // whose warcamps and landmarks carry the client's own `iname`.
+            if (TryLoadXmlRecords(document, table))
+                return;
+
+            table.Columns.Add("Element");
+            table.Columns.Add("Count");
+            table.Columns.Add("Attributes");
 
             foreach (System.Xml.Linq.XElement element in document.Descendants())
             {
@@ -582,7 +764,9 @@ namespace ClientDataMatrix.Services
         /// </summary>
         private static void IndexKeys(LoadedTable table)
         {
-            if (table.Source.Format == SourceFormat.Xml
+            // Record-shaped XML is exempt: its column 0 is a real id attribute and keying it is the
+            // whole point of reading it as records.
+            if ((table.Source.Format == SourceFormat.Xml && !table.IsRecordTable)
                 || table.Source.Format == SourceFormat.PlainText
                 || table.Source.Format == SourceFormat.Binary
                 || table.Rows.Count == 0)
@@ -657,6 +841,12 @@ namespace ClientDataMatrix.Services
         /// </summary>
         private static void ScanElementsTextually(string raw, LoadedTable table)
         {
+            // These headers used to be added by LoadXmlShape before it knew what it was reading.
+            // They belong to the summary shape, so each producer of that shape now declares them.
+            table.Columns.Add("Element");
+            table.Columns.Add("Count");
+            table.Columns.Add("Attributes");
+
             var counts = new Dictionary<string, int>(StringComparer.Ordinal);
 
             for (int i = 0; i < raw.Length - 1; ++i)

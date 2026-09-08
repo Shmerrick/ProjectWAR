@@ -100,8 +100,7 @@ namespace ClientDataMatrix.Services
             foreach (ClientSourceCatalog.ClientSource source in catalog.Discover())
             {
                 if (source.Format == ClientSourceCatalog.SourceFormat.Binary
-                    || source.Format == ClientSourceCatalog.SourceFormat.PlainText
-                    || source.Format == ClientSourceCatalog.SourceFormat.Xml)
+                    || source.Format == ClientSourceCatalog.SourceFormat.PlainText)
                     continue;
 
                 ClientSourceCatalog.LoadedTable table = catalog.Load(source);

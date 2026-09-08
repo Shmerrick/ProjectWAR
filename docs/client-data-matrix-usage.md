@@ -570,8 +570,8 @@ database in the first place.
 .\bin\Release\ClientDataMatrix.exe export index
 ```
 
-Writes `docs/data-matrix/client-sources/client-index.tsv`: 53 MB, **778,863 rows**, every keyed row
-in the extraction as `relative/path{tab}id{tab}field{tab}value`, English only. Takes about six seconds
+Writes `docs/data-matrix/client-sources/client-index.tsv`: 54 MB, **784,857 rows**, every keyed row
+in the extraction as `relative/path{tab}id{tab}field{tab}value`, English only. Takes about fifteen seconds
 once; afterwards a question is a grep:
 
 ```bash
@@ -611,12 +611,37 @@ Take the wording from that header when naming things on our side. `unlockmapping
 text column `Description (also set on the server)` — that is Mythic telling us what the field is
 for, and it outranks whatever we would have called it.
 
+**XML is indexed too, where it is record-shaped.** An XML file that repeats one element carrying an
+integer id attribute is a table wearing angle brackets, and summarising it — which is all this tool
+did until it was caught — hid real content. The case that exposed it:
+`interface/default/eatemplate_icons/source/icons.xml`, the client's icon list, 5,260 entries of
+`<Icon id="00293" texture="Textures/Itm_ge_TalismanHeart.dds" name="..."/>`. Also now reachable are
+the per-zone `interface/interfacecore/maps/zone*/mappoints.xml` files, whose warcamps and landmarks
+carry the client's own `iname` ("Enclave of the Withered Hand", "Doomfist Crater").
+
+Columns after the key are ordered by how many readable values they carry, so the most informative
+attribute lands nearest the key — in `icons.xml` that is `texture` (populated on all 5,260) rather
+than `name` (931). Ids are normalised to their integer spelling, because `id="00293"` left as text
+defeats the one thing the index is for: a grep for `293` would miss it, and the miss reads as the
+client not having the icon. UI layout files, where `id` appears on a handful of window elements,
+fall below the record threshold and keep the old element/count/attribute summary.
+
 **Item display names are not in the client.** A grep for `Myrmidon` returns nothing, and that is the
 correct answer rather than a gap in the index: `data/strings/english/` has no `itemnames.txt`, and
-`objects.csv` carries art names (`tk_soultalisman_intelligence`), not display names. Item names are
-server data, so `item_infos.Name` has no client arbiter the way `abilitynames.txt` is one for
-abilities. Check item *identity* against `objects.csv` via `ModelId`; do not expect to confirm an
-item's name from the client.
+`objects.csv` carries art names (`tk_soultalisman_intelligence`), not display names. `icons.xml`
+does not fill this gap — its populated `name` values are UI asset names (`career_archmage`,
+`Ability Frame`), and its id space is the UI icon space. `itemdata.csv.icon` does not index it
+cleanly: only 2,516 of 12,523 armour items land on an armour texture, and "Greataxe of Chaotic
+Torsion" resolves to `Or_TM_shield10`. `WorldServer/API/BotEditorHttpServer.cs` performs exactly
+this join to serve item icons, so that route inherits the same weakness.
+
+**Do not use `itemdata.csv` to validate `item_infos`.** WAR-RE-Toolkit's `generate_item_infos.py`
+*built* `item_infos` from `itemdata.csv` + `objects.csv` — `Entry`, `Name`, `Type`, `SlotId` and
+`ModelId` (the last "set to icon ID as approximation"), per its `docs/reference/databaseimports.md`.
+So the 86%/89% agreement between `itemdata.csv`'s `type`/`slot` and our `Type`/`SlotId` across the
+7,947 shared entries is circular. The 941 disagreements are post-import drift and are worth reading
+one at a time, but the agreements are not evidence of anything. The general rule: a client file is
+an arbiter only for columns that were not imported from it.
 
 **English only**, deliberately: the client ships the same string tables in fourteen locales keyed
 identically, and including them tripled the file while burying the readable row under thirteen

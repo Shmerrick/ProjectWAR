@@ -97,7 +97,7 @@ The open dependabot branch is cut from master and does not apply.
    database is not the authority and has been wrong in ways that cost whole sessions:
    `mythic_src_abilities` carried another ability's names and effect ids because someone joined on
    `data/gamedata/abilities.csv`, whose ID column agrees with the client's real ability ids on 13 of
-   3,115. Build the client index once per session and grep it afterwards -- 53 MB, 778,863 rows,
+   3,115. Build the client index once per session and grep it afterwards -- 54 MB, 784,857 rows,
    about 70 milliseconds a question, which is faster than a MySQL round trip and costs no tool call:
 
    ```powershell
@@ -109,8 +109,24 @@ The open dependabot branch is cut from master and does not apply.
    LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
    ```
 
+   **Large parts of `item_infos` were generated from the client, so they cannot re-verify it.**
+   WAR-RE-Toolkit's `generate_item_infos.py` built the table from `itemdata.csv` + `objects.csv`,
+   expanding it from 18 rows to ~65,601 and populating `Entry`, `Name`, `Type`, `SlotId` and
+   `ModelId` (the last "set to icon ID as approximation") — see its `docs/reference/databaseimports.md`
+   and `CHECKPOINT.md`. So `itemdata.csv` agreeing with `Type`/`SlotId` on 86%/89% of the 7,947
+   shared entries is **circular, not corroboration**; the disagreements are later drift, and the
+   agreements prove nothing. Combat stats, `Career` and `Race` were never populated and are 0.
+   Treat a client file as an arbiter only where the column was not imported from it.
+
    Format is `relative/path{tab}id{tab}field{tab}value`, English only, every keyed file in the
-   extraction that has a readable column. `field` is the client's own header for the value beside it
+   extraction that has a readable column — **including record-shaped XML**, which was skipped
+   entirely until it was noticed that this hid `interface/default/eatemplate_icons/source/icons.xml`,
+   the client's 5,260-entry icon list (`id`, `texture`, sometimes `name`), and the per-zone
+   `interface/interfacecore/maps/zone*/mappoints.xml` warcamp and landmark names. XML ids are
+   normalised, so `icons.xml` `id="00293"` is greppable as `293`. Note that `WorldServer/API/BotEditorHttpServer.cs`
+   already parses `icons.xml` and `itemdata.csv` for the item-icon route; the icon id space in
+   `itemdata.csv` does **not** index `icons.xml` cleanly (only 2,516 of 12,523 armour items land on
+   an armour texture), so do not treat that join as identifying an item. `field` is the client's own header for the value beside it
    -- `name`, `Textual Name`, `Desc`, `type`, and in `unlockmapping.csv` the wonderfully explicit
    `Description (also set on the server)`. Prefer that wording to ours when naming a column: matching
    Mythic's vocabulary is most of why we read the client. The

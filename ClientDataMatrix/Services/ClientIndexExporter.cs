@@ -51,9 +51,13 @@ namespace ClientDataMatrix.Services
             {
                 foreach (ClientSourceCatalog.ClientSource source in catalog.Discover())
                 {
+                    // XML is no longer skipped by format. It used to be, and that hid the client's
+                    // own icon list -- icons.xml, 5,260 <Icon id texture name> records -- while we
+                    // were telling ourselves the client did not name items. Whether a given XML file
+                    // is a table is decided after loading, by HasUniqueIntegerKey, exactly as for a
+                    // CSV; layout files simply fail that test.
                     if (source.Format == ClientSourceCatalog.SourceFormat.Binary
-                        || source.Format == ClientSourceCatalog.SourceFormat.PlainText
-                        || source.Format == ClientSourceCatalog.SourceFormat.Xml)
+                        || source.Format == ClientSourceCatalog.SourceFormat.PlainText)
                         continue;
 
                     // English only. The client ships the same string tables in fourteen locales
