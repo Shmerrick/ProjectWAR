@@ -25,6 +25,10 @@ internal static class AbilityAlignmentChecks
     // A drop means something rewrote the table from a misaligned source again.
     private const long MinimumClientNameAgreement = 6012;
 
+    // Rows whose EffectID matches the client, measured after migration 77. EffectID goes into the
+    // cast packets, so this is the number that decides whether an ability plays its own visual.
+    private const long MinimumSrcEffectAgreement = 8349;
+    private const long MinimumAbilitiesEffectAgreement = 4164;
     private static int Main()
     {
         AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
@@ -90,13 +94,37 @@ internal static class AbilityAlignmentChecks
             long agreement = Scalar(
                 "SELECT COUNT(*) FROM mythic_src_abilities m JOIN mythic_bin_ability b ON b.ID = m.Entry"
                 + " WHERE b.Name <> '' AND m.Name = b.Name");
-            if (agreement < MinimumClientNameAgreement)
-                throw new Exception("mythic_src_abilities agrees with the client on only " + agreement
-                    + " names; migration 76 left it at " + MinimumClientNameAgreement
-                    + ". The table has been rewritten from a misaligned source.");
+            AtLeast(MinimumClientNameAgreement, agreement,
+                "mythic_src_abilities names agreeing with the client");
+
+            // EffectID is the visual the client plays for the ability. These were taken from the
+            // client by migration 77; the shortfall is the 67/57 rows where the server carries an
+            // effect the client record does not, which are deliberately left alone.
+            long srcEffects = Scalar(
+                "SELECT COUNT(*) FROM mythic_src_abilities m JOIN mythic_bin_ability b ON b.ID = m.Entry"
+                + " WHERE m.EffectID <=> b.EffectID");
+            AtLeast(MinimumSrcEffectAgreement, srcEffects,
+                "mythic_src_abilities EffectIDs agreeing with the client");
+
+            AtLeast(MinimumAbilitiesEffectAgreement, Scalar(
+                "SELECT COUNT(*) FROM abilities a JOIN mythic_bin_ability b ON b.ID = a.Entry"
+                + " WHERE a.EffectID <=> b.EffectID"),
+                "abilities EffectIDs agreeing with the client");
+
+            // The signature of the original corruption: values copied from mythic_csv_abilities
+            // (data/gamedata/abilities.csv), whose ID column is an authoring id space that agrees
+            // with the client's own name table on 13 ids out of 3,115. If these climb, something
+            // has joined on that key again.
+            AtMost(40, Scalar(
+                "SELECT COUNT(*) FROM mythic_src_abilities m JOIN mythic_csv_abilities c ON c.AbilityId = m.Entry"
+                + " JOIN mythic_bin_ability b ON b.ID = m.Entry"
+                + " WHERE COALESCE(b.EffectID, 0) = 0 AND m.EffectID <> 0 AND m.EffectID = m.Entry"
+                + " AND m.EffectID = c.EffectAbilityId"),
+                "rows carrying a CSV-derived EffectID the client does not have");
 
             Console.WriteLine("PASS: " + shared + " shared entries, identity and mechanics identical across both ability tables.");
-            Console.WriteLine("PASS: every loaded ability has a client row; " + agreement + " names match the client exactly.");
+            Console.WriteLine("PASS: every loaded ability has a client row; " + agreement + " names and "
+                + srcEffects + " EffectIDs match the client exactly.");
             Console.WriteLine("These are data checks. They do not verify that a cast plays the right visual in the client.");
         }
     }
@@ -111,5 +139,19 @@ internal static class AbilityAlignmentChecks
     {
         if (expected != actual)
             throw new Exception(what + ": expected " + expected + ", found " + actual + ".");
+    }
+
+    private static void AtLeast(long floor, long actual, string what)
+    {
+        if (actual < floor)
+            throw new Exception(what + ": " + actual + ", down from the " + floor
+                + " migrations 76 and 77 left. The table has been rewritten from a misaligned source.");
+    }
+
+    private static void AtMost(long ceiling, long actual, string what)
+    {
+        if (actual > ceiling)
+            throw new Exception(what + ": " + actual + ", above the " + ceiling
+                + " that remain as coincidence. Something has joined on mythic_csv_abilities.AbilityId again.");
     }
 }

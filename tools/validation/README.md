@@ -159,3 +159,8 @@ a row in `mythic_bin_ability`, and that client-name agreement has not fallen bel
 migration 76 left it at. It does not verify what a cast actually looks like in the client.
 Background and the remaining coverage gap are in
 [`docs/ABILITY_TABLE_ALIGNMENT.md`](../../docs/ABILITY_TABLE_ALIGNMENT.md).
+
+Migration 77 extends that check: `EffectID` is now taken from the client as well, and the tool
+asserts the agreement counts both migrations left (6,012 names, 8,349 `mythic_src` EffectIDs, 4,164
+in `abilities`) plus a tripwire on the count of `EffectID` values still matching
+`mythic_csv_abilities.AbilityId` — the join key that caused the corruption in the first place.
