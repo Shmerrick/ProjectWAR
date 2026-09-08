@@ -109,18 +109,27 @@ The open dependabot branch is cut from master and does not apply.
    LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
    ```
 
-   **Item names are server data, and the one independent record of them is the Londo dump.**
-   WorldServer writes the item name into the item packet itself (`World/Objects/Item.cs:512`,
+   **Item names have no arbiter at all — not the client, and not the Londo dump.** WorldServer
+   writes the item name into the item packet itself (`World/Objects/Item.cs:512`,
    `Out.WritePascalString(info.Name)`), so the client never holds them and no client file can
-   arbitrate `item_infos.Name` the way `abilitynames.txt` arbitrates ability names. The only
-   independent record we hold is `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2\War_Item.sql`
-   — a dump of Mythic's own server-side `Item` table (9,948 rows: `Name`, `Description`, `ModelID`,
-   `SlotIndex`, `ItemTypeID`, `DPS`, `Speed`, `CareerMask`, `RaceMask`, `Rarity`,
-   `TalismanSlotCount`, bind flags). Its sibling `War_ItemCSV.sql` is `objects.csv` under Mythic's
-   own name, which is what confirms `ModelID` points at an art table. It overlaps only 2,617 of our
-   88,727 entries and agrees on 2,562 names; migration 85 repaired four where ours had lost a
-   leading word. The other ~75,000 names arrived in the base `war_world.sql` from the pre-`RESTART`
-   emulator lineage and have no surviving provenance — treat them as unverified, not as truth.
+   arbitrate `item_infos.Name` the way `abilitynames.txt` arbitrates ability names.
+
+   The nearest thing to a second opinion is
+   `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2\War_Item.sql` (9,948
+   rows: `Name`, `Description`, `ModelID`, `SlotIndex`, `ItemTypeID`, `DPS`, `Speed`, `CareerMask`,
+   `RaceMask`, `Rarity`, `TalismanSlotCount`, bind flags). **It is another emulator's reconstruction,
+   not Mythic's database**, and nothing in the toolkit claims otherwise: its schema carries `Unk5`
+   through `Unk24` — placeholder names for fields whose meaning the author could not determine, which
+   the data's authors would never need — plus typos (`AllowAltApperance`, `IsTwhoHanded`), and the
+   dump was produced by MySQL 8.0.13, released five years after the live game shut down. Treat it as
+   corroboration between two reconstructions, never as ground truth; where it and we disagree,
+   neither side wins by default.
+
+   It overlaps 2,617 of our 88,727 entries and agrees on 2,562 names. Migration 85 repaired four
+   where ours began mid-word (`rought Key`, `of Geheb: Hondo`, `tched Axebelt of the Flesh`) — those
+   are self-evidently damaged in our copy whatever the other says. The other ~75,000 names arrived in
+   the base `war_world.sql` from the pre-`RESTART` lineage with no surviving provenance. Item names
+   are the weakest data we have; do not present one as verified.
 
    **Large parts of `item_infos` were generated from the client, so they cannot re-verify it.**
    WAR-RE-Toolkit's `generate_item_infos.py` built the table from `itemdata.csv` + `objects.csv`,
