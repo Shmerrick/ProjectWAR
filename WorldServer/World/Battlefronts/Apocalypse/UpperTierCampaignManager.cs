@@ -204,6 +204,48 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
+        /// The realm a zone locks to, taken from that zone's own battlefront.
+        ///
+        /// A locked zone's owner is a property of the zone, not of whichever battlefront happens to
+        /// be open: Chaos Wastes locks to Destruction and Reikland to Order no matter where the
+        /// campaign currently is. This used to read
+        /// <c>regionMgr.Campaign.BattleFrontManager.ActiveBattleFront</c> for every objective and
+        /// keep in the tier. There is one manager for all of Tier 4, so that is a single row shared
+        /// by all three pairings, and at boot it resolves to Praag (the only progression with
+        /// <c>LastOpenedZone = 1</c>), whose realm is 0. Every Tier 4 keep therefore came up
+        /// neutral, and the six that should be Destruction-held -- Zimmeron's Hold and Charon's
+        /// Citadel in Chaos Wastes, The Maw, Butchers Pass, and the Caledor and Black Crag pairs --
+        /// displayed as Order-controlled (BUG-130).
+        ///
+        /// Falls back to the active battlefront for a zone no progression row covers, which is how
+        /// the pre-existing behaviour handled every zone; nothing is lost by keeping it for those.
+        /// </summary>
+        private Realms GetLockingRealmForZone(ushort zoneId, bool forceDefaultRealm)
+        {
+            RVRProgression progression = null;
+
+            for (int i = 0; i < BattleFrontProgressions.Count; ++i)
+            {
+                if (BattleFrontProgressions[i].ZoneId == zoneId)
+                {
+                    progression = BattleFrontProgressions[i];
+                    break;
+                }
+            }
+
+            if (progression == null)
+            {
+                ProgressionLogger.Debug($"No battlefront progression covers zone {zoneId}; falling back to the active battlefront.");
+                progression = ActiveBattleFront;
+            }
+
+            if (progression == null)
+                return Realms.REALMS_REALM_NEUTRAL;
+
+            return (Realms)(forceDefaultRealm ? progression.DefaultRealmLock : progression.LastOwningRealm);
+        }
+
+        /// <summary>
         /// Lock Battlefronts across all the regions.
         /// </summary>
         public void LockBattleFrontsAllRegions(int tier, bool forceDefaultRealm = false)
@@ -235,30 +277,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
-                        if (forceDefaultRealm)
-                            objective.OwningRealm = (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
-                        else
-                        {
-                            objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
-                        }
+                        objective.OwningRealm = GetLockingRealmForZone(objective.ZoneId, forceDefaultRealm);
                         //objective.fsm.Fire(CampaignObjectiveStateMachine.Command.OnLockZone);
                         objective.LockBattleFront();
-                        ProgressionLogger.Debug($" Locking BattlefieldObjective to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {objective.Name} {objective.State} {objective.State}");
+                        ProgressionLogger.Debug($" Locking BattlefieldObjective to {objective.OwningRealm} {objective.Name} {objective.State} {objective.State}");
                     }
 
                     foreach (var keep in regionMgr.Campaign.Keeps)
                     {
-                        if (forceDefaultRealm)
-                            keep.PendingRealm =
-                                (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
-                        else
-                        {
-                            keep.PendingRealm =
-                                (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
-                        }
+                        keep.PendingRealm = GetLockingRealmForZone(keep.Info.ZoneId, forceDefaultRealm);
                         //keep.fsm.Fire(SM.Command.OnLockZone);
                         keep.SetKeepLocked();
-                        ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.KeepStatus} ");
+                        ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {keep.Realm} {keep.KeepStatus} ");
                     }
                 }
             }

@@ -1413,10 +1413,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         {
                             progression.LastOpenedZone = 1;
                             WorldMgr.UpperTierCampaignManager.ActiveBattleFront = progression;
-                            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_ORDER;
-                            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).SetKeepSafe();
-                            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_DESTRUCTION;
-                            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.DestroKeepId).SetKeepSafe();
+                            // The third line here used to name OrderKeepId again, so the Order keep
+                            // was flagged Destruction and the Destruction keep never had its realm
+                            // set at all (BUG-131). Each keep is also resolved once and null-checked
+                            // rather than looked up four times, which would throw if one is missing.
+                            SetResetKeepSafe(progression.OrderKeepId, Realms.REALMS_REALM_ORDER);
+                            SetResetKeepSafe(progression.DestroKeepId, Realms.REALMS_REALM_DESTRUCTION);
                             var objectives = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Objectives
                                 .Where(x => x.ZoneId == progression.ZoneId);
                             foreach (var battlefieldObjective in objectives)
@@ -1452,6 +1454,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
             // Logs the status of all battlefronts known to the Battlefront Manager.
             // BattleFrontManager.AuditBattleFronts(this.Tier);
+        }
+
+        /// <summary>
+        /// Hands one keep back to <paramref name="realm"/> and makes it safe, for the pairing reset.
+        /// Does nothing if the campaign has no keep with that id.
+        /// </summary>
+        private static void SetResetKeepSafe(int keepId, Realms realm)
+        {
+            Campaign campaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
+            if (campaign == null)
+                return;
+
+            BattleFrontKeep keep = campaign.Keeps.SingleOrDefault(x => x.Info.KeepId == keepId);
+            if (keep == null)
+            {
+                BattlefrontLogger.Warn($"Campaign reset: no keep with id {keepId}; cannot restore it to {realm}.");
+                return;
+            }
+
+            keep.Realm = realm;
+            keep.SetKeepSafe();
         }
 
         private void SendCampaignMovementMessage(RVRProgression nextBattleFront)

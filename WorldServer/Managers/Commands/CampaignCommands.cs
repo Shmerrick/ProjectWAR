@@ -453,6 +453,24 @@ namespace WorldServer.Managers.Commands
             WorldMgr.Database.ForceSave();
         }
 
+        /// <summary>
+        /// Hands one keep back to <paramref name="realm"/> and makes it safe. Does nothing if the
+        /// campaign has no keep with that id, rather than throwing out of the command.
+        /// </summary>
+        private static void ResetKeepToRealm(int keepId, Realms realm)
+        {
+            var campaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
+            if (campaign == null)
+                return;
+
+            var keep = campaign.Keeps.SingleOrDefault(x => x.Info.KeepId == keepId);
+            if (keep == null)
+                return;
+
+            keep.Realm = realm;
+            keep.SetKeepSafe();
+        }
+
         [CommandAttribute(EGmLevel.Developer, "Resets the World Campaign to default values")]
         public static void ResetAllCampaign(Player plr)
         {
@@ -472,10 +490,11 @@ namespace WorldServer.Managers.Commands
                     {
                         progression.LastOpenedZone = 1;
                         WorldMgr.UpperTierCampaignManager.ActiveBattleFront = progression;
-                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x=>x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_ORDER;
-                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).SetKeepSafe();
-                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_DESTRUCTION;
-                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.DestroKeepId).SetKeepSafe();
+                        // Same correction as Campaign.LockBattleFront's reset block: the third
+                        // lookup named OrderKeepId again, flagging the Order keep Destruction and
+                        // leaving the Destruction keep's realm unset (BUG-131).
+                        ResetKeepToRealm(progression.OrderKeepId, Realms.REALMS_REALM_ORDER);
+                        ResetKeepToRealm(progression.DestroKeepId, Realms.REALMS_REALM_DESTRUCTION);
                         var objectives = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Objectives
                             .Where(x => x.ZoneId == progression.ZoneId);
                         foreach (var battlefieldObjective in objectives)

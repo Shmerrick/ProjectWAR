@@ -123,6 +123,37 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
+        /// The realm a zone locks to, taken from that zone's own battlefront rather than from
+        /// whichever battlefront is currently open. Same correction as the Tier 4 manager; see
+        /// <see cref="UpperTierCampaignManager.GetLockingRealmForZone"/> for the full account
+        /// (BUG-130). Tier 1 has three pairings sharing one manager, so it had the same defect.
+        /// </summary>
+        private Realms GetLockingRealmForZone(ushort zoneId, bool forceDefaultRealm)
+        {
+            RVRProgression progression = null;
+
+            for (int i = 0; i < BattleFrontProgressions.Count; ++i)
+            {
+                if (BattleFrontProgressions[i].ZoneId == zoneId)
+                {
+                    progression = BattleFrontProgressions[i];
+                    break;
+                }
+            }
+
+            if (progression == null)
+            {
+                ProgressionLogger.Debug($"No battlefront progression covers zone {zoneId}; falling back to the active battlefront.");
+                progression = ActiveBattleFront;
+            }
+
+            if (progression == null)
+                return Realms.REALMS_REALM_NEUTRAL;
+
+            return (Realms)(forceDefaultRealm ? progression.DefaultRealmLock : progression.LastOwningRealm);
+        }
+
+        /// <summary>
         /// Lock battlefronts across all lower-tier regions.
         /// </summary>
         public void LockBattleFrontsAllRegions(int tier, bool forceDefaultRealm = false)
@@ -152,10 +183,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 					foreach (var objective in regionMgr.Campaign.Objectives)
 					{
-                        if (forceDefaultRealm)
-                            objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
-                        else
-                            objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        objective.OwningRealm = GetLockingRealmForZone(objective.ZoneId, forceDefaultRealm);
 
                         objective.LockBattleFront();
 				        ProgressionLogger.Debug($" Locking BattlefieldObjective to {objective.OwningRealm} {objective.Name} {objective.State} {objective.State}");
