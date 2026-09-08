@@ -6,6 +6,7 @@ using ClientDataMatrix.Output;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 
@@ -23,6 +24,9 @@ namespace ClientDataMatrix
             public string RemainingWorkMinimumPriorityBucket { get; set; }
             public string RemainingWorkSearchText { get; set; }
             public int? RemainingWorkTopCount { get; set; }
+            public string QueryText { get; set; }
+            public long QueryId { get; set; }
+            public int QueryLimit { get; set; }
             public bool ShowUsage { get; set; }
         }
 
@@ -76,6 +80,38 @@ namespace ClientDataMatrix
                     Console.WriteLine("Failed: " + failedPath);
                 return report.HasFailures ? 1 : 0;
             }
+            // Queries read the client directly and want no ability dataset and no link analysis, so
+            // they run before that load and stream tables one at a time.
+            if (string.Equals(toolArguments.Command, "find", StringComparison.OrdinalIgnoreCase))
+            {
+                ConsoleManager.EnsureConsole();
+                List<ClientQueryService.Match> hits =
+                    ClientQueryService.Find(toolArguments.ExtractedRootPath, toolArguments.QueryText,
+                        toolArguments.QueryLimit == 0 ? int.MaxValue : toolArguments.QueryLimit);
+
+                foreach (ClientQueryService.Match hit in hits)
+                    Console.WriteLine(hit.RelativePath + "  [" + hit.Location + "]  " + hit.Content);
+
+                Console.WriteLine(toolArguments.QueryLimit != 0 && hits.Count == toolArguments.QueryLimit
+                    ? hits.Count + " matches (limit reached; raise --limit for more)"
+                    : hits.Count + " match" + (hits.Count == 1 ? "" : "es"));
+                return 0;
+            }
+
+            if (string.Equals(toolArguments.Command, "lookup", StringComparison.OrdinalIgnoreCase))
+            {
+                ConsoleManager.EnsureConsole();
+                List<ClientQueryService.Match> rows =
+                    ClientQueryService.Lookup(toolArguments.ExtractedRootPath, toolArguments.QueryId);
+
+                foreach (ClientQueryService.Match row in rows)
+                    Console.WriteLine(row.RelativePath + "  [" + row.Location + "]  " + row.Content);
+
+                Console.WriteLine(rows.Count + " keyed file" + (rows.Count == 1 ? "" : "s") + " hold id "
+                    + toolArguments.QueryId.ToString(CultureInfo.InvariantCulture));
+                return 0;
+            }
+
 
             // Reads the client directly and needs none of the ability dataset, so it runs before
             // that load rather than paying for it.
@@ -274,7 +310,12 @@ namespace ClientDataMatrix
             List<string> positionalArguments = new List<string>();
             ToolArguments parsedArguments = new ToolArguments
             {
-                OutputRoot = Path.Combine("docs", "data-matrix")
+                OutputRoot = Path.Combine("docs", "data-matrix"),
+
+                // A search across 8,499 files can match thousands of rows. Capped by default so a
+                // careless term prints a screenful rather than a session's worth of scrollback;
+                // --limit 0 lifts it.
+                QueryLimit = 200
             };
 
             for (int index = 0; index < args.Length; ++index)
@@ -328,6 +369,14 @@ namespace ClientDataMatrix
                     continue;
                 }
 
+                if (string.Equals(currentArgument, "--limit", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index + 1 >= args.Length)
+                        throw new ArgumentException("Missing value for --limit.");
+                    parsedArguments.QueryLimit = ParseTopCount(args[++index]);
+                    continue;
+                }
+
                 if (string.Equals(currentArgument, "--top", StringComparison.OrdinalIgnoreCase))
                 {
                     if (index + 1 >= args.Length)
@@ -375,6 +424,27 @@ namespace ClientDataMatrix
             {
                 parsedArguments.Command = "export_graph_ability";
                 parsedArguments.AbilityId = ParseAbilityId(positionalArguments[3]);
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "find", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedArguments.Command = "find";
+                // Everything after the verb is the search text, so a phrase needs no quoting.
+                parsedArguments.QueryText = string.Join(" ", positionalArguments.Skip(1));
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "lookup", StringComparison.OrdinalIgnoreCase))
+            {
+                long id;
+                if (!long.TryParse(positionalArguments[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out id))
+                    throw new ArgumentException("lookup takes an integer id.");
+
+                parsedArguments.Command = "lookup";
+                parsedArguments.QueryId = id;
                 return parsedArguments;
             }
 
@@ -492,6 +562,8 @@ namespace ClientDataMatrix
             Console.WriteLine("  ClientDataMatrix clean");
             Console.WriteLine("  ClientDataMatrix doctor ability <abilityId> [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix export graph ability <abilityId> [--root <path>] [--output <path>]");
+            Console.WriteLine("  ClientDataMatrix find <text> [--limit <count>] [--root <path>]");
+            Console.WriteLine("  ClientDataMatrix lookup <id> [--root <path>]");
             Console.WriteLine("  ClientDataMatrix report sources [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix report conflicts [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix report coverage [--root <path>] [--output <path>]");

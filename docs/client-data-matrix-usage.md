@@ -517,3 +517,37 @@ despite sounding like manifests, at 41% and 37% printable with no readable struc
 extensionless files are NIF effects in `art/nifs/effects`.
 
 Coverage is now **8,499 of 8,499**, which matches the file count on disk exactly.
+
+## Asking the client a question: `find` and `lookup`
+
+The inventory and link documents are things to *read*. Every actual question during restoration has
+been one of two shapes, and both were still being done by hand with `grep` and a spreadsheet while
+this tool existed — which is the tool failing at its own purpose.
+
+```powershell
+.\bin\Release\ClientDataMatrix.exe find "Purged the Pyramid" --root C:\Users\Admin\Downloads\myps
+.\bin\Release\ClientDataMatrix.exe lookup 8334 --root C:\Users\Admin\Downloads\myps
+```
+
+**`find <text>`** searches every cell, column header and plain-text line in all 8,499 files,
+case-insensitively, and prints the file, the row, the column it matched and the row's content.
+Everything after the verb is the search text, so a phrase needs no quoting. Capped at 200 matches by
+default; `--limit 0` lifts it. Takes about ten seconds.
+
+**`lookup <id>`** shows every keyed file holding that id, and what the row says. This is the "what
+*is* 8334?" question that previously meant opening `objects.csv` and scrolling:
+
+```
+data/gamedata/anim_db.csv        [row 7788]  8334 | DeM_dw_Atk_A-out | ...
+data/gamedata/anim_statedef.csv  [row 3090]  8334 | Work (chop wood) | 0 | core | 6 | ...
+data/gamedata/objects.csv        [row 8334]  8334 | tk_soultalisman_intelligence |  | 30312
+data/strings/english/abilitynames.txt [row 8335]  8334 | Dreadful Agony^n
+```
+
+The point is not just the answer. **8334 means five different things in five files** — an animation,
+a work state, a talisman's art, an ability name, a component effect — and seeing that at once is the
+best defence against the mistake that put an art sheet's names into `mythic_src_abilities`. An id
+without the file it belongs to means nothing in this client.
+
+Neither command loads the ability dataset or runs link analysis, and tables are read one at a time
+and released, so a query costs a few hundred megabytes rather than holding 5.5 million rows.
