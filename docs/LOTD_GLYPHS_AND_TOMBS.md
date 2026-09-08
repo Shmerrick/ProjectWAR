@@ -196,6 +196,83 @@ last-resort path when a zone cannot supply a respawn at all. The difference is o
 logging: the fallback warns because it means something is missing, whereas sending the losing realm
 home is correct behaviour and logs at debug.
 
+
+## Instance invasion — not implemented
+
+> "A realm owning the LOTD can invade instances of the opposing realm."
+
+**None of this is wired.** The client carries the whole feature; the server has nothing that drives
+it.
+
+### What the client has
+
+`interface/default/ea_contestedinstanceselectionwindow/` is a complete UI mod — a "Contested
+Instance Selection" lobby offering **New Instance** or **Invade Instance**:
+
+```
+LABEL_CONTESTED_INSTANCE_LOBBY         Contested Instance Selection
+LABEL_CONTESTED_INSTANCE_INSTRUCTIONS  Would you like to start a new instance or invade an
+                                       enemy player instance?
+LABEL_CONTESTED_INSTANCE_INVADE        Invade Instance
+LABEL_CONTESTED_INSTANCE_NEW           New Instance
+```
+
+`contestedinstanceselectionwindow.lua` gives the exact contract:
+
+- **Server → client** raises `CONTESTED_SCENARIO_SELECT_INSTANCE`, handled as
+  `OnSelectInstance(zone, canInvade, canJoinAsWarband)`. So the packet carries the zone, a
+  can-invade flag (which greys the Invade button when false) and a can-join-as-warband flag.
+- **Client → server** sets `GameData.ContestedInstance.zone` and `.invade`, then broadcasts
+  `CONTESTED_INSTANCE_ENTER`; Cancel broadcasts `CONTESTED_INSTANCE_CANCEL`.
+- **The lobby auto-cancels after 60 seconds**, and the lua notes `AUTO_CANCEL_TIME` "Should match
+  value on server."
+
+And there is a penalty for entering an invasion and running away, in `componenteffects.txt`:
+
+> "You have left an instance you invaded without defeating it's defenders. You will be unable to
+> enter another Land of the Dead instance while branded a coward."
+
+with "You are a coward!" as the debuff text. So the design is: invade, and either beat the defenders
+or be locked out of Land of the Dead instances until the brand expires.
+
+### What the server has
+
+Nothing, and the tombs are the wrong shape for it:
+
+- **The tombs are group instances.** Their `zone_jumps` rows are `Type = 6` — one copy per group,
+  `instance_infos.LockoutTimer` 1440 (24h). A group instance has no realm; `Instance.Realm` is 0 for
+  all of them and is only used to tell a realm instance from a group one.
+- **A realm-instance model does exist** — jump `Type = 4`, one persistent uncapped copy per realm,
+  selected by `player.Realm` in `InstanceMgr.ZoneIn`. But only Mount Gunbad (zone 60) and Bastion
+  Stair (zone 160) use it, 13 rows in total. No tomb does.
+- **`Join_Instance` has no realm check at all**, in either direction. Nothing forbids cross-realm
+  entry and nothing enables it, because nothing knows which realm owns a copy.
+- **No "invade" concept anywhere in the server source.**
+- **The two opcodes that would carry it are declared and never used:** `F_INSTANCE_INFO` (0x94) and
+  `F_INSTANCE_SELECTED` (0xA2) appear in `Opcodes.cs` and `FrameWork/Utils/Utils.cs` and nowhere
+  else — no handler, no sender, not even an ack stub, so an incoming 0xA2 would hit the unknown
+  opcode path.
+
+That those two opcodes are the lobby's pair is **plausible but unconfirmed**. They are the right
+shape and they are the only unused instance opcodes, but neither appears in `INSTANCE_tombofstars`
+or `INSTANCE_tombofsky` — captures of actual tomb entries. That is consistent with the lobby only
+appearing when an enemy instance exists to invade, which those sessions may not have had, but it is
+not evidence. Confirming the pair needs a capture taken with a live enemy instance present.
+
+### What implementing it would take
+
+1. Give the tomb instances a realm — either move them to the Type-4 realm-instance model or add an
+   owning realm to group instances, and keep a registry of open enemy copies per zone.
+2. Send the lobby when a player of the expedition-holding realm uses a tomb portal and an enemy copy
+   exists, with `canInvade` set accordingly; handle the reply, with a 60-second server-side timeout
+   matching the client's.
+3. Gate invasion on `LotdService.CanRealmAccessLotd` — only the holder may invade.
+4. Implement the coward brand: applied on leaving an invaded instance with its defenders alive, and
+   blocking further Land of the Dead instance entry while held.
+
+Note that (2) needs the packet layouts, which are not established, so this cannot be built from the
+emulator source alone — see `CLAUDE.md` hard rule 3.
+
 ## Answering "would importing all the CSVs improve ability mapping?"
 
 No — and for `abilities.csv` specifically it would make things worse. That file is **already**
