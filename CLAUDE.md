@@ -91,6 +91,8 @@ The open dependabot branch is cut from master and does not apply.
 
    Before implementing anything protocol-, asset-, or data-structure-shaped, search `RE_FINDINGS/` and the toolkit `docs/` first and check the client for ground truth; say what you found there when explaining the change. Guessing at packet layouts and data structures is exactly how master's rejected commits drifted from the authentic sources of truth.
 
+   **`data/gamedata/objects.csv` is the client art table `item_infos.ModelId` indexes**, verified: 88,676 of the 88,677 items with a non-zero ModelId resolve to a row in it. Its `name` column often states what an item is -- `tk_soultalisman_intelligence`, `tk_soultalisman_wounds` -- so it is a cheap independent check on item data, and one of the few places the client names something our tables only imply. Note that one art entry backs many item rows (the tiers), so it identifies a kind of item, not one entry. See `docs/LOTD_GLYPHS_AND_TOMBS.md`.
+
    **`docs/CROSS_REPO.md` is the full map** — data roots (including the extracted client tree at `C:\Users\Admin\Downloads\myps` and the 1,027-capture packet corpus), a question-to-repo routing table, the order of authority when sources disagree, and the two cross-repo contracts (the bot editor API, and the private ward-sigil client component). Read it rather than re-deriving any of that.
 
 ## Architecture

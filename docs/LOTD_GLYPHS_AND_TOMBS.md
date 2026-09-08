@@ -584,6 +584,50 @@ inference, and it is the first thing an in-client test should check.
 
 
 
+
+### `ModelId` is a client object id, and it corroborates the data
+
+`item_infos.ModelId` points into **`data/gamedata/objects.csv`**, the client's art table
+(`ID, name, NIF, Icon, ...`). That is not a guess: of the 88,677 items carrying a non-zero
+`ModelId`, **88,676 resolve to a row there**. The single exception is `201827 Honorable Spellcrown`
+with `ModelId 33825`, outside the file's 1-9905 range — one genuinely bad value in the whole table.
+
+This matters because the soul talismans' art is named after the stat it carries — `objects.csv` rows
+8323-8348 are `tk_soultalisman_ballistic_skill`, `_intelligence`, `_strength`, `_wounds` and so on —
+so **the client names the stat independently of anything in our database**. Across 123 soul talisman
+items, every one of the eight base-stat art entries maps to exactly one stat id, and it is the stat
+the art is named after:
+
+| art | stat | our items |
+| --- | --- | --- |
+| `tk_soultalisman_strength` | 1 Strength | 13 |
+| `tk_soultalisman_willpower` | 3 Willpower | 15 |
+| `tk_soultalisman_toughness` | 4 Toughness | 16 |
+| `tk_soultalisman_wounds` | 5 Wounds | 18 |
+| `tk_soultalisman_initiative` | 6 Initiative | 14 |
+| `tk_soultalisman_weapon_skill` | 7 Weapon Skill | 16 |
+| `tk_soultalisman_ballistic_skill` | 8 Ballistic Skill | 14 |
+| `tk_soultalisman_intelligence` | 9 Intelligence | 17 |
+
+Zero contradictions. That is a **third independent confirmation** of the stat mapping, after the
+captured tooltips and the Massive twins — and it confirms the two that had to be inferred: Demon is
+Strength (art 8344) and Conquering is Wounds (art 8348).
+
+(Of the ten non-base-stat art entries, nine map to a single stat too. The exception,
+`tk_soultalisman_offensiveproc5`, backs the five Hierophant's Soul procs and the Tyrant King — one
+art for a tier of offensive procs, which is what it is for.)
+
+**So the database is not inventing this one.** What is genuinely confusing, and worth knowing:
+
+- The column is called `ModelId`, but for a talisman there is no model at all — `objects.csv` gives
+  these rows an empty NIF and only an icon. It is an *object* id, and only sometimes a model.
+- One art entry backs 13 to 18 of our item rows, because those are the tiers: `tk_soultalisman_intelligence`
+  is a single client object shared by Focused, Precise, Brilliant, Omnipotent, Soul of the Omnipotent
+  King and their Massive twins. "The item" in the client art sense is not one-to-one with an item
+  entry, and reading 8334 as *the* Omnipotent Myrmidon's Soul is the trap.
+
+`Test-LotdGlyphs.ps1` now asserts the art-to-stat agreement for all eight, so a future edit that
+puts the wrong stat on a soul fails against the client rather than passing quietly.
 ### Are +64 and +90 real?
 
 Yes, both, and neither came from this work — they predate it in the database. They are two different

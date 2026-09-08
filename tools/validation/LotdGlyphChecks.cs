@@ -142,6 +142,37 @@ internal static class LotdGlyphChecks
             Equal(0, Scalar("SELECT COUNT(*) FROM lotd_tomb_glyph_costs WHERE TombZoneId = 179"),
                 "cost rows on the Tomb of the Vulture Lord");
 
+            // The client's art table is an independent check on the stat mapping, and it agrees.
+            //
+            // item_infos.ModelId is an id into data/gamedata/objects.csv -- verified across the
+            // whole table, where 88,676 of 88,677 non-zero ModelIds resolve to an entry there. For
+            // the soul talismans that art is named after the stat it carries
+            // (tk_soultalisman_intelligence, _strength, _wounds, ...), so the client names the stat
+            // for us. All eight agree, including the two that had to be inferred from the Massive
+            // twins: Demon is Strength and Conquering is Wounds.
+            //
+            // Pairs are art object id -> stat id, from objects.csv rows 8323-8348.
+            int[][] soulArt =
+            {
+                new[] { 8344, 1 }, // tk_soultalisman_strength
+                new[] { 8347, 3 }, // tk_soultalisman_willpower
+                new[] { 8345, 4 }, // tk_soultalisman_toughness
+                new[] { 8348, 5 }, // tk_soultalisman_wounds
+                new[] { 8333, 6 }, // tk_soultalisman_initiative
+                new[] { 8346, 7 }, // tk_soultalisman_weapon_skill
+                new[] { 8323, 8 }, // tk_soultalisman_ballistic_skill
+                new[] { 8334, 9 }, // tk_soultalisman_intelligence
+            };
+
+            foreach (int[] pair in soulArt)
+            {
+                Equal(0, Scalar(
+                    "SELECT COUNT(*) FROM item_infos WHERE ModelId = " + pair[0]
+                    + " AND Stats <> '' AND SUBSTRING_INDEX(Stats, ':', 1) <> '0'"
+                    + " AND SUBSTRING_INDEX(Stats, ':', 1) <> '" + pair[1] + "'"),
+                    "items on soul art " + pair[0] + " carrying a stat other than " + pair[1]);
+            }
+
             // Talisman decay. Item.AddTalisman refuses anything whose Type is not 23
             // (ITEMTYPES_ENHANCEMENT), so a talisman typed anything else cannot be socketed at all
             // and fails silently. 305 rows carrying the talisman description were Type 0 or 31.
@@ -218,6 +249,7 @@ internal static class LotdGlyphChecks
             Console.WriteLine("PASS: both realms have a respawn point inside zone 191, so the expedition holder respawns there.");
             Console.WriteLine("PASS: 8 soul talismans intact in both item tables, 8 distinct stats, stocked by both archeologists for Golden Scarabs.");
             Console.WriteLine("PASS: every talisman-described item is Type 23 and socketable; all 16 souls carry the 8h decay.");
+            Console.WriteLine("PASS: soul talisman stats agree with the client art names in objects.csv, all eight.");
             Console.WriteLine("These are data checks. They do not cover the roaming public quests -- Amsu's Charge, The");
             Console.WriteLine("Assault of Nekh Akhet and Ricci's Raiders -- which carry PQAreaId 0 and so never activate,");
             Console.WriteLine("which is why the Horse and Scorpion glyphs cannot be earned (BUG-134).");
