@@ -211,6 +211,57 @@ namespace WorldServer.World.Interfaces
         }
 
         /// <summary>
+        /// Takes a Tome entry back off a character. Returns true if they held it.
+        ///
+        /// The Tome is otherwise append-only -- <see cref="Save"/> only ever calls SaveObject, so
+        /// dropping a row from <c>_tokUnlocks</c> alone would let it reload at the next login. The
+        /// database row is deleted here for that reason.
+        ///
+        /// Written for the Land of the Dead tombs, which charge glyphs at the door and reset the
+        /// player's glyph progress. Do not reach for it anywhere else without a reason: almost
+        /// everything in the Tome is a permanent record, and revoking one silently rewrites a
+        /// player's history. It deliberately does not touch ward fragments, tome tactic counters or
+        /// the bestiary, none of which are reversible, so it must not be pointed at an entry that
+        /// feeds them.
+        /// </summary>
+        public bool RemoveTok(ushort Entry)
+        {
+            Character_tok unlock;
+            if (!_tokUnlocks.TryGetValue(Entry, out unlock))
+                return false;
+
+            _tokUnlocks.Remove(Entry);
+
+            if (unlock != null)
+                CharMgr.Database.DeleteObject(unlock);
+
+            SendTokRemoved(Entry);
+            return true;
+        }
+
+        /// <summary>
+        /// Tells the client an entry is no longer held, by sending the ordinary Tome update with
+        /// its count set to zero.
+        ///
+        /// UNVERIFIED. No capture in the corpus shows a Tome entry being revoked, so the zero-count
+        /// reading of this field is inference from the shape of <see cref="SendTok"/>, not evidence.
+        /// The server-side state is correct either way -- the entry is gone from memory and from the
+        /// database, so a relog shows the truth. If the client turns out to ignore this, the fix is
+        /// here and nowhere else.
+        /// </summary>
+        private void SendTokRemoved(ushort Entry)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_TOK_ENTRY_UPDATE);
+            Out.WriteUInt32(1);
+            Out.WriteUInt16(Entry);
+            Out.WriteByte(0); // Count: held -> not held.
+            Out.WriteByte(0); // Do not print an unlock announcement for a removal.
+            Out.WriteByte(0);
+
+            GetPlayer().SendPacket(Out);
+        }
+
+        /// <summary>
         /// Returns the permanent fragments that satisfy the requested ward tier.
         /// A completed higher ward satisfies every lower tier.
         /// </summary>

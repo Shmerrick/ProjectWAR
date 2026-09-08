@@ -375,6 +375,7 @@
     <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\HelpTipService.cs" />
+    <Compile Include="Services\World\LotdGlyphService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\TomeTacticService.cs" />
     <Compile Include="Services\World\SkavenFormService.cs" />

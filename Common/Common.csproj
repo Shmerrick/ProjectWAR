@@ -192,6 +192,7 @@
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />
     <Compile Include="Database\World\Battlefront\RVRRewardKeepItems.cs" />
+    <Compile Include="Database\World\Chapters\LotdTombGlyphCost.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Info.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Reward.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo.cs" />

@@ -217,10 +217,31 @@ namespace WorldServer.NetWork.Handler
                 SendJumpFailed(cclient.Plr);
                 return;
             }
+            // Land of the Dead tombs charge glyphs at the door. The check runs before the instance
+            // is entered so a refusal costs nothing, and the glyphs are only spent once the player
+            // is actually inside -- ZoneIn can still fail on a lockout or a full instance, and
+            // taking the glyphs for a trip that did not happen would be unrecoverable.
+            // A tomb with no rows in lotd_tomb_glyph_costs is not gated and this is a no-op.
+            string missingGlyphs;
+            if (!LotdGlyphService.CanEnter(cclient.Plr, Jump.ZoneID, out missingGlyphs))
+            {
+                cclient.Plr.SendClientMessage("The seal will not yield. You are missing the "
+                    + missingGlyphs + " Glyph" + (missingGlyphs.IndexOf(',') >= 0 ? "s" : "") + ".",
+                    ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                cclient.Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_PLAYER_REGION_NOT_AVAILABLE);
+                SendJumpFailed(cclient.Plr);
+                return;
+            }
+
             if (Jump.Type >= 4 && Jump.Type <= 6)
             {
                 if (!WorldMgr.InstanceMgr.ZoneIn(cclient.Plr, Jump.Type, Jump))
+                {
                     SendJumpFailed(cclient.Plr);
+                    return;
+                }
+
+                LotdGlyphService.ConsumeGlyphs(cclient.Plr, Jump.ZoneID);
                 return;
             }
 
