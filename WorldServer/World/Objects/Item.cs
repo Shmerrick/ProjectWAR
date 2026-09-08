@@ -524,27 +524,30 @@ namespace WorldServer.World.Objects
                     }
                     else
                     {
-                        // The five bytes after a stat are a uint32 and a pad, and the uint32 is how
-                        // long the bonus lasts -- this is where the client's "Duration: 8h" on a
-                        // talisman tooltip comes from. INSTANCE_SACELLUM_13-15 has it plainly, on an
-                        // un-socketed Resolute Myrmidon's Soul sitting in a bag:
+                        // A stat entry is eight bytes: type, uint16 value, a pad byte, then a uint32
+                        // holding how long the bonus lasts. That last field is where the client's
+                        // "Duration: 8h" on a talisman tooltip comes from, and filling five zeroes
+                        // here meant no talisman ever advertised one.
                         //
-                        //   03 00 2D 00 00 A8 C0 00
-                        //   ^  ^^^^^ ^^^^^^^^^^^ ^^
-                        //   |  |     43200       pad
-                        //   |  45 Willpower
-                        //   stat 3
+                        // INSTANCE_SACELLUM_13-15 has it exactly, on an un-socketed Resolute
+                        // Myrmidon's Soul sitting in a bag:
                         //
-                        // 43200 is twelve hours, which is exactly what item 2005497 carries in the
-                        // fourth field of its Stats. Filling five zeroes here meant no talisman ever
-                        // advertised a duration, socketed or not.
+                        //   03 | 00 2D | 00  | 00 00 A8 C0
+                        //   ^    ^       ^     ^
+                        //   |    |       pad   43200 = twelve hours
+                        //   |    45 Willpower
+                        //   stat 3 (Willpower)
+                        //
+                        // 43200 is what item 2005497 carries in the fourth field of its Stats. The
+                        // pad comes BEFORE the uint32, not after -- writing them the other way round
+                        // puts the duration one byte early and the client reads rubbish.
                         //
                         // Zero for everything that is not a timed talisman, which is every item but
                         // 77 of them, so this is byte-identical to the old behaviour elsewhere.
                         Out.WriteByte(Key.Key);
                         Out.WriteUInt16(Key.Value);
-                        Out.WriteUInt32(info.TalismanDuration);
                         Out.WriteByte(0);
+                        Out.WriteUInt32(info.TalismanDuration);
                     }
                 }
 
@@ -624,11 +627,14 @@ namespace WorldServer.World.Objects
                             Out.WriteByte((byte)talismanInfo._Stats.Count); // Valid 1.4.8
                             foreach (KeyValuePair<byte, ushort> Key in talismanInfo._Stats)
                             {
+                                // Same eight-byte shape as an item's own stat entry above: the pad
+                                // byte precedes the uint32. This block had the two the wrong way
+                                // round for as long as it has existed, which never showed because
+                                // the value written was always zero.
                                 Out.WriteByte(Key.Key);
                                 Out.WriteUInt16(Key.Value);
-                                Out.WriteUInt32(remaining);
                                 Out.WriteByte(0);
-                                //  Out.Fill(0, 5);
+                                Out.WriteUInt32(remaining);
                             }
                             Out.WriteByte((byte)talismanInfo.EffectsList.Count);
                             foreach (ushort effect in talismanInfo.EffectsList)

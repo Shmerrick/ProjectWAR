@@ -65,7 +65,13 @@ Rows marked `*` cannot complete; rows marked `(roaming)` never activate at all (
 Two real failures remain, and neither is what the earlier version claimed:
 
 1. **The roaming quests never activate.** Amsu's Charge, The Assault of Nekh Akhet and Ricci's
-   Raiders carry `PQAreaId 0` and no map pin. `Player.cs:7101` attaches a public quest only when the
+```
+03 | 00 2D | 00  | 00 00 A8 C0
+^    ^       ^     ^
+|    |       pad   43200 = twelve hours
+|    45 Willpower
+stat 3
+``` Raiders carry `PQAreaId 0` and no map pin. `Player.cs:7101` attaches a public quest only when the
    player's current area is `> 0 && < 29` and equals the quest's `PQAreaId`, so a quest with 0 can
    never attach to anybody. Their creatures are spawned and their objectives are intact — this is an
    activation failure, not missing content. They are the **only** sources of the Horse and Scorpion
@@ -561,10 +567,14 @@ block settles the layout:
 stat 3
 ```
 
-43200 is twelve hours — exactly the fourth field of item 2005497's `Stats`. So the five bytes after
-a stat are a uint32 duration and a pad, in the item's **own** stat block as well as the socketed
-one, and `BuildItem` was writing `Out.Fill(0, 5)` there. That is why a talisman showed no duration
-even sitting in a bag, before any question of socketing it.
+43200 is twelve hours -- exactly the fourth field of item 2005497's `Stats`. A stat entry is eight
+bytes: type, uint16 value, **a pad byte, then the uint32**. `BuildItem` was writing `Out.Fill(0, 5)`
+there, in the item's **own** stat block as well as the socketed one, which is why a talisman showed
+no duration even sitting in a bag.
+
+The pad comes first, and getting that backwards is not a harmless detail: writing the uint32 before
+the pad puts the duration one byte early and the client reads rubbish, which looks exactly like the
+field not working at all. Both blocks now write pad-then-uint32.
 
 What is **not** confirmed is the socketed case: no capture in the corpus shows a timed talisman
 actually in a weapon, so whether that field carries the remaining time or the full lifetime is
@@ -572,6 +582,32 @@ inference. Remaining is the only reading that makes a countdown work, and the va
 per-instance state (`talis.Timer`) rather than the item row, which points the same way — but it is
 inference, and it is the first thing an in-client test should check.
 
+
+
+### Are +64 and +90 real?
+
+Yes, both, and neither came from this work — they predate it in the database. They are two different
+families, each internally consistent.
+
+**Myrmidon's Soul**, five tiers, eight stats each. Every large-vessel value is exactly 4/3 of its
+normal-vessel counterpart:
+
+| normal | 30 | 37 | 42 | 45 | 48 |
+| --- | --- | --- | --- | --- | --- |
+| **Massive** | 40 | 49 | 56 | 60 | **64** |
+
+`+64` is the top Massive tier, following the same ratio as the four below it. `2005663` carried
+`1:64` before any of this, which is where the Demon stat mapping came from.
+
+**Soul of the ... King** is a separate, higher family at 2005631-2005727, rarity 5 rather than 3-4:
+normal 60, Massive **90**. A 3:2 step rather than 4:3, but consistent within itself.
+
+And `+64` is not near the ceiling: Type-23 talismans reach 180 on the resistance and defensive stats
+(26, 80, 81, 82, 94), and 95 on the elemental resists.
+
+The screenshot showing `+92 Intelligence ([1] +64)` is arithmetic, not a third value. Annihilator
+Warpmantle (434199) carries `4:18;5:12;9:28;84:3` — Toughness 18, Wounds 12, **Intelligence 28**,
+crit reduction 3. 28 + 64 = 92. The item, the talisman and the total all agree.
 
 ### When the clock starts
 
