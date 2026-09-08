@@ -102,11 +102,23 @@ namespace ClientDataMatrix.UI
                 AutoGenerateColumns = false,
                 ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText
             };
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Entry", DataPropertyName = "Entry", Width = 90 });
+            // Client name leads and is labelled by its source file; everything from our world
+            // database announces itself as DB. "Name" on its own means two different things here --
+            // Mythic's art name and ours -- and an unlabelled column is how the wrong one gets
+            // copied into a migration.
+            _grid.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Client name (objects.csv)", DataPropertyName = "ClientName", Width = 240
+            });
             _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Severity", DataPropertyName = "Severity", Width = 80 });
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Kind", DataPropertyName = "Kind", Width = 190 });
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Name", DataPropertyName = "Name", Width = 230 });
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Detail", DataPropertyName = "Detail", Width = 520 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Kind", DataPropertyName = "Kind", Width = 200 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "DB entry", DataPropertyName = "DatabaseEntry", Width = 90 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "DB name (item_infos.Name)", DataPropertyName = "DatabaseName", Width = 230
+            });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "DB ModelId", DataPropertyName = "DatabaseModelId", Width = 85 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Detail", DataPropertyName = "Detail", Width = 460 });
             _grid.SelectionChanged += (s, e) => ShowIconForSelection();
 
             _icon = new PictureBox
@@ -213,7 +225,7 @@ namespace ClientDataMatrix.UI
                 rows = rows.Where(f => f.Severity.ToString() == wanted);
 
             _grid.DataSource = new BindingList<ItemCrosswalkService.Finding>(
-                rows.OrderBy(f => f.Severity).ThenBy(f => f.Entry).ToList());
+                rows.OrderBy(f => f.Severity).ThenBy(f => f.DatabaseEntry).ToList());
         }
 
         private void ShowIconForSelection()
@@ -234,16 +246,13 @@ namespace ClientDataMatrix.UI
             if (finding == null)
                 return;
 
-            // The finding does not carry the ModelId, so re-read it the same way the report did.
-            // Cheap: one dictionary hit plus one file read.
-            long modelId;
-            if (!TryFindModelId(finding.Entry, out modelId))
+            if (finding.DatabaseModelId <= 0)
             {
                 _iconCaption.Text = "no ModelId";
                 return;
             }
 
-            ClientItemArtService.ItemArt art = _art.Resolve(modelId);
+            ClientItemArtService.ItemArt art = _art.Resolve(finding.DatabaseModelId);
             if (art.TexturePath == null)
             {
                 _iconCaption.Text = art.ObjectName ?? "no art";
@@ -254,36 +263,6 @@ namespace ClientDataMatrix.UI
             _currentIcon = DdsImage.TryLoad(art.TexturePath, out error);
             _icon.Image = _currentIcon;
             _iconCaption.Text = _currentIcon != null ? art.ObjectName : "decode failed";
-        }
-
-        private readonly Dictionary<long, long> _modelIdByEntry = new Dictionary<long, long>();
-
-        private bool TryFindModelId(long entry, out long modelId)
-        {
-            if (_modelIdByEntry.TryGetValue(entry, out modelId))
-                return modelId > 0;
-
-            try
-            {
-                using (var connection = new MySql.Data.MySqlClient.MySqlConnection(WorldDatabaseLocator.Resolve(null)))
-                {
-                    connection.Open();
-                    using (var command = new MySql.Data.MySqlClient.MySqlCommand(
-                        "SELECT ModelId FROM " + (string)_table.SelectedItem + " WHERE Entry = @e", connection))
-                    {
-                        command.Parameters.AddWithValue("@e", entry);
-                        object result = command.ExecuteScalar();
-                        modelId = result == null ? 0 : Convert.ToInt64(result, CultureInfo.InvariantCulture);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                modelId = 0;
-            }
-
-            _modelIdByEntry[entry] = modelId;
-            return modelId > 0;
         }
 
         private static void Open(string path)

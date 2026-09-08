@@ -40,10 +40,30 @@ namespace ClientDataMatrix.Services
             Suspect
         }
 
+        /// <summary>
+        /// One row's disagreement with the client.
+        ///
+        /// NAMING IS DELIBERATE HERE. Every field that came out of our world database is prefixed
+        /// `Database`, and the client's own wording is carried unprefixed under the name the client
+        /// file gives it. Two different things get called "the name of item 2005602" -- Mythic's art
+        /// calls it `tk_soultalisman_intelligence` and our table calls it "Omnipotent Myrmidon's
+        /// Soul" -- and quoting either without saying which is how the wrong one ends up in a
+        /// migration. The client's word wins the plain label; ours has to announce itself.
+        /// </summary>
         public sealed class Finding
         {
-            public long Entry;
-            public string Name;
+            /// <summary>`item_infos.Entry`. Ours; the client has no item key at all.</summary>
+            public long DatabaseEntry;
+
+            /// <summary>`item_infos.Name`. Ours. No client file holds item display names.</summary>
+            public string DatabaseName;
+
+            /// <summary>`objects.csv` column `name` — what Mythic calls this art.</summary>
+            public string ClientName;
+
+            /// <summary>`item_infos.ModelId`, which addresses `objects.csv` column `ID`.</summary>
+            public long DatabaseModelId;
+
             public Severity Severity;
             public string Kind;
             public string Detail;
@@ -123,56 +143,57 @@ namespace ClientDataMatrix.Services
         private void Examine(Report report, long entry, string name, long modelId,
             HashSet<long> captureVerifiedEntries)
         {
+            // Resolved once up front so every finding can carry the client's own name for the art
+            // alongside our database name, rather than quoting one of the two unlabelled.
+            ClientItemArtService.ItemArt art = modelId == 0 ? null : _art.Resolve(modelId);
+            string clientName = art == null ? null : art.ObjectName;
+
             // --- art -------------------------------------------------------------------------
-            if (modelId == 0)
+            if (art == null)
             {
-                Add(report, entry, name, Severity.Hole, "ModelId missing",
+                Add(report, entry, name, clientName, modelId, Severity.Hole, "ModelId missing",
                     "ModelId is 0, so the item has no art at all");
+            }
+            else if (art.Failure != null && art.ObjectName == null)
+            {
+                Add(report, entry, name, clientName, modelId, Severity.Violation,
+                    "ModelId not in objects.csv", art.Failure + " -- nothing can render this item");
+            }
+            else if (art.HasIcon)
+            {
+                ++report.IconsResolved;
+            }
+            else if (art.IconId < 0)
+            {
+                Add(report, entry, name, clientName, modelId, Severity.Hole, "art has no icon",
+                    "objects.csv row " + modelId + " leaves Icon # blank");
+            }
+            else if (art.TextureName == null)
+            {
+                Add(report, entry, name, clientName, modelId, Severity.Violation, "icon not declared",
+                    "objects.csv points at icon " + art.IconId + ", which icons.xml does not define");
             }
             else
             {
-                ClientItemArtService.ItemArt art = _art.Resolve(modelId);
-
-                if (art.Failure != null && art.ObjectName == null)
-                {
-                    Add(report, entry, name, Severity.Violation, "ModelId not in objects.csv",
-                        art.Failure + " -- nothing can render this item");
-                }
-                else if (art.HasIcon)
-                {
-                    ++report.IconsResolved;
-                }
-                else if (art.IconId < 0)
-                {
-                    Add(report, entry, name, Severity.Hole, "art has no icon",
-                        "objects.csv row " + modelId + " (" + art.ObjectName + ") leaves Icon # blank");
-                }
-                else if (art.TextureName == null)
-                {
-                    Add(report, entry, name, Severity.Violation, "icon not declared",
-                        "objects.csv points at icon " + art.IconId + ", which icons.xml does not define");
-                }
-                else
-                {
-                    Add(report, entry, name, Severity.Hole, "icon texture absent",
-                        "icons.xml names " + art.TextureName + ", which is not in the extraction");
-                }
+                Add(report, entry, name, clientName, modelId, Severity.Hole, "icon texture absent",
+                    "icons.xml names " + art.TextureName + ", which is not in the extraction");
             }
 
             // --- name ------------------------------------------------------------------------
-            // The client holds no item names, so these are self-consistency checks on our own data,
-            // never comparisons. A name is not "wrong" here; it is malformed.
+            // These are self-consistency checks on OUR data. The client holds no item display names,
+            // so nothing here is a comparison -- a name is not "wrong", it is malformed.
             if (string.IsNullOrWhiteSpace(name))
             {
-                Add(report, entry, name, Severity.Hole, "name empty", "no name at all");
+                Add(report, entry, name, clientName, modelId, Severity.Hole,
+                    "database name empty", "no name at all");
             }
             else
             {
                 if (char.IsLower(name[0]))
                 {
                     bool placeholder = name.StartsWith("unk", StringComparison.Ordinal);
-                    Add(report, entry, name, Severity.Suspect,
-                        placeholder ? "name is a placeholder" : "name begins lowercase",
+                    Add(report, entry, name, clientName, modelId, Severity.Suspect,
+                        placeholder ? "database name is a placeholder" : "database name begins lowercase",
                         placeholder
                             ? "hand-added placeholder from the database merge"
                             : "a real item name does not begin mid-word -- likely a lost prefix");
@@ -187,10 +208,10 @@ namespace ClientDataMatrix.Services
                 // and would be suspicious, so it stays checked -- there are currently none.
                 if (name.StartsWith(" ", StringComparison.Ordinal))
                 {
-                    Add(report, entry, name, Severity.Suspect, "name begins with a space",
+                    Add(report, entry, name, clientName, modelId, Severity.Suspect,
+                        "database name begins with a space",
                         "leading whitespace, which no captured name shows");
                 }
-
                 if (captureVerifiedEntries != null && captureVerifiedEntries.Contains(entry))
                 {
                     // Recorded, not a finding: the useful signal is how thin this coverage is.
@@ -198,13 +219,15 @@ namespace ClientDataMatrix.Services
             }
         }
 
-        private static void Add(Report report, long entry, string name, Severity severity,
-            string kind, string detail)
+        private static void Add(Report report, long entry, string databaseName, string clientName,
+            long modelId, Severity severity, string kind, string detail)
         {
             report.Findings.Add(new Finding
             {
-                Entry = entry,
-                Name = name,
+                DatabaseEntry = entry,
+                DatabaseName = databaseName,
+                ClientName = clientName,
+                DatabaseModelId = modelId,
                 Severity = severity,
                 Kind = kind,
                 Detail = detail
@@ -234,6 +257,13 @@ namespace ClientDataMatrix.Services
             text.AppendLine("- **Hole** — the row leaves something empty that the client could fill.");
             text.AppendLine("- **Suspect** — the row looks self-damaged. The client cannot arbitrate item names, so these are");
             text.AppendLine("  flagged and never rewritten from a guess; the packet captures are the only source that can settle them.");
+            text.AppendLine();
+            text.AppendLine("**Naming.** Columns carrying Mythic's own wording are labelled by the client file they come from;");
+            text.AppendLine("anything from our world database says so explicitly. Item 2005602 is `tk_soultalisman_intelligence`");
+            text.AppendLine("to the client and \"Omnipotent Myrmidon's Soul\" to us — both are \"the name\", and quoting one without");
+            text.AppendLine("saying which is how the wrong one ends up in a migration. Note that the client has **no item display");
+            text.AppendLine("names at all**: `objects.csv` names the *art*, so a blank client name means that art row is unnamed,");
+            text.AppendLine("never that the item is.");
             text.AppendLine();
             text.AppendLine("| | |");
             text.AppendLine("|---|---|");
@@ -276,22 +306,28 @@ namespace ClientDataMatrix.Services
                     text.AppendLine();
                     text.AppendLine("### " + byKind.Key + " — " + byKind.Count().ToString("N0", CultureInfo.InvariantCulture) + " rows");
                     text.AppendLine();
-                    text.AppendLine("| Entry | Name | Detail |");
-                    text.AppendLine("|---:|---|---|");
+
+                    // Client name first. Two things get called "the name" of an item -- Mythic's art
+                    // name in objects.csv and ours in item_infos -- and a column headed plain "Name"
+                    // is how the wrong one gets quoted into a migration.
+                    text.AppendLine("| Client name (`objects.csv`) | DB entry | DB name (`item_infos.Name`) | Detail |");
+                    text.AppendLine("|---|---:|---|---|");
 
                     int shown = 0;
-                    foreach (Finding finding in byKind.OrderBy(f => f.Entry))
+                    foreach (Finding finding in byKind.OrderBy(f => f.DatabaseEntry))
                     {
                         if (shown++ >= perKindCap)
                         {
-                            text.AppendLine("| … | | "
+                            text.AppendLine("| … | | | "
                                 + (byKind.Count() - perKindCap).ToString("N0", CultureInfo.InvariantCulture)
                                 + " more, see `item-crosswalk.csv` |");
                             break;
                         }
 
-                        text.AppendLine("| " + finding.Entry + " | " + Escape(finding.Name) + " | "
-                            + Escape(finding.Detail) + " |");
+                        text.AppendLine("| " + Escape(finding.ClientName ?? "—")
+                            + " | " + finding.DatabaseEntry
+                            + " | " + Escape(finding.DatabaseName)
+                            + " | " + Escape(finding.Detail) + " |");
                     }
                 }
             }
@@ -302,13 +338,15 @@ namespace ClientDataMatrix.Services
             // plausible nonsense sat at the top of the visible rows.
             string csvPath = Path.Combine(directory, "item-crosswalk.csv");
             var csv = new StringBuilder();
-            csv.AppendLine("Entry,Severity,Kind,Name,Detail");
-            foreach (Finding finding in report.Findings.OrderBy(f => f.Severity).ThenBy(f => f.Entry))
+            csv.AppendLine("ClientName,DatabaseEntry,DatabaseName,DatabaseModelId,Severity,Kind,Detail");
+            foreach (Finding finding in report.Findings.OrderBy(f => f.Severity).ThenBy(f => f.DatabaseEntry))
             {
-                csv.Append(finding.Entry).Append(',')
+                csv.Append(Csv(finding.ClientName)).Append(',')
+                   .Append(finding.DatabaseEntry).Append(',')
+                   .Append(Csv(finding.DatabaseName)).Append(',')
+                   .Append(finding.DatabaseModelId).Append(',')
                    .Append(finding.Severity).Append(',')
                    .Append(Csv(finding.Kind)).Append(',')
-                   .Append(Csv(finding.Name)).Append(',')
                    .Append(Csv(finding.Detail)).AppendLine();
             }
             File.WriteAllText(csvPath, csv.ToString(), new UTF8Encoding(false));

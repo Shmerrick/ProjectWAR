@@ -152,13 +152,21 @@ namespace ClientDataMatrix.UI
 
         private void Render(ClientItemArtService.ItemArt art)
         {
+            // Every line names the file the value came from, and the one value that is ours says
+            // so. The client calls this art `tk_soultalisman_intelligence`; our table calls the
+            // item "Omnipotent Myrmidon's Soul". Both are "the name" and neither should appear
+            // here unattributed.
             var text = new System.Text.StringBuilder();
-            text.AppendLine("ModelId        " + art.ModelId.ToString(CultureInfo.InvariantCulture));
-            text.AppendLine("objects.csv    " + (art.ObjectName ?? "(no row)"));
-            text.AppendLine("Icon #         " + (art.IconId >= 0
+            text.AppendLine("DB  item_infos.ModelId      " + art.ModelId.ToString(CultureInfo.InvariantCulture));
+            text.AppendLine("    objects.csv  ID          " + art.ModelId.ToString(CultureInfo.InvariantCulture));
+            text.AppendLine("    objects.csv  name        " + (art.ObjectName ?? "(no row)"));
+            text.AppendLine("    objects.csv  Icon #      " + (art.IconId >= 0
                 ? art.IconId.ToString(CultureInfo.InvariantCulture) : "(blank)"));
-            text.AppendLine("icons.xml      " + (art.TextureName ?? "(unresolved)"));
-            text.AppendLine("texture file   " + (art.TexturePath ?? "(absent)"));
+            text.AppendLine("    icons.xml    texture     " + (art.TextureName ?? "(unresolved)"));
+            text.AppendLine("    file on disk             " + (art.TexturePath ?? "(absent)"));
+            text.AppendLine();
+            text.AppendLine("The client has no item display name. objects.csv names the ART;");
+            text.AppendLine("item display names exist only in our database and the packet captures.");
             text.AppendLine();
             text.AppendLine("3D asset");
 
