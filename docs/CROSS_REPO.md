@@ -68,6 +68,32 @@ units. The similarly named creature packet `FigLeafData` is a separate evidence 
 see that note's links to `Creature.cs` and `CreatureService.cs`. No schema or runtime
 behavior changed in the September 8 documentation review.
 
+## Where the world database came from
+
+Recorded 2026-09-08 from the repository owner, who authored part of it. It is not written down
+anywhere else, and a session spent reconstructing it from data shape alone got only as far as
+"structurally genuine, provenance unknown" — so read this before doing that again.
+
+`war_world` is an **amalgamation of several people's private contributions**, not a single dump:
+
+- **[WarEmu](https://github.com/waremu/waremu)** is the original public database, and the base
+  everything else was layered onto.
+- **A private release of Return of Reckoning's database**, which a departing RoR developer released,
+  was authored into this repository's lineage by its owner (as `SaltySailor`, the 2018 root commit
+  `156b07c6`). RoR is the large live private server, so that layer is mature, heavily curated
+  content rather than a scrape.
+- **Londo's data is the best-developed layer**, owing to his connection with the Mythic developers.
+  See the `Londos Server v2` row in the data-root table above, and read its caveat together with
+  this: the *dump* carries reverse-engineering marks (`Unk5`–`Unk24` placeholder columns, a MySQL
+  8.0.13 header from years after shutdown), but the *content* has better provenance than the schema
+  shape suggests.
+
+Two consequences. There is **no single upstream authority** for a given row — quality varies by
+which contributor's layer it came from, and "our database says so" carries different weight in
+different id ranges. And the hand-added placeholders (`unk1`–`unk32`) and front-truncated names are
+artifacts of that merging, inherited rather than introduced here. Because the client holds no item
+names at all, the packet captures are the only external check, and they cover 1,955 of 88,727 items.
+
 ## Direction of authority
 
 When two sources disagree, this is the order:

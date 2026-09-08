@@ -124,20 +124,28 @@ The open dependabot branch is cut from master and does not apply.
    The nearest thing to a second opinion is
    `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2\War_Item.sql` (9,948
    rows: `Name`, `Description`, `ModelID`, `SlotIndex`, `ItemTypeID`, `DPS`, `Speed`, `CareerMask`,
-   `RaceMask`, `Rarity`, `TalismanSlotCount`, bind flags). **It is another emulator's reconstruction,
-   not Mythic's database**, and nothing in the toolkit claims otherwise: its schema carries `Unk5`
-   through `Unk24` — placeholder names for fields whose meaning the author could not determine, which
-   the data's authors would never need — plus typos (`AllowAltApperance`, `IsTwhoHanded`), and the
-   dump was produced by MySQL 8.0.13, released five years after the live game shut down. Treat it as
-   corroboration between two reconstructions, never as ground truth; where it and we disagree,
-   neither side wins by default.
+   `RaceMask`, `Rarity`, `TalismanSlotCount`, bind flags). Judge the *dump* and the *content*
+   separately. The dump is not Mythic's own: its schema carries `Unk5`–`Unk24` placeholder columns,
+   typos (`AllowAltApperance`, `IsTwhoHanded`), and a MySQL 8.0.13 header from five years after the
+   game shut down, and its 7,092 rows above id 100M are alphabetically ordered with fabricated
+   sequential ids and zeroed `ModelID`/`SlotIndex`/`ItemTypeID` — a harvested name list. But the
+   content of the real rows is the **best-developed layer we have**, owing to Londo's connection with
+   the Mythic developers (see `docs/CROSS_REPO.md`). So: strong corroboration, weak ceremony. It does
+   not outrank a packet capture, and its high-id block should not be trusted at all.
 
    It overlaps 2,617 of our 88,727 entries and agrees on 2,562 names. Migration 85 repaired four
    where ours began mid-word; the captures have since independently confirmed three of those four,
    which is the pattern to follow — use Londo to find candidates, the captures to settle them.
-   **`item_infos` is genuine server data, not a scrape — that much is now established structurally**,
-   even though its provenance is undocumented and only 1,955 items can be checked directly against
-   captures. Four things say so. Its rows are in *authoring* order, one armour set at a time grouped
+   **`item_infos` is an amalgamation of several contributors' private databases** — WarEmu as the
+   public base, a released Return of Reckoning database on top, Londo's Mythic-connected data, and
+   other private contributions. `docs/CROSS_REPO.md` records this from the repository owner, who
+   authored one of those layers; it is written down nowhere else, so read it rather than
+   re-deriving it. The practical consequence is that **there is no single upstream authority for a
+   row** — quality varies by which layer it came from — and the `unk1`–`unk32` placeholders and
+   front-truncated names are merge artifacts inherited from that history, not damage introduced here.
+
+   It is nonetheless genuine server data rather than a scrape, which is worth knowing independently
+   because it means the structure can be trusted even where a name cannot. Four things say so. Its rows are in *authoring* order, one armour set at a time grouped
    by slot: 700000-700003 are `Klad`/`Beardmail`/`Vestments`/`Bulwark of Reprisal`, all SlotId 20,
    whose ModelIds resolve to `DW_Armor_IB_01_Body`, `_HA_`, `_RP_`, `_EN_` — the same set across the
    four Dwarf careers, with name, slot and client art agreeing independently. Only 50 of 88,727 rows

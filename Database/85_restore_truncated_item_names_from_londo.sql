@@ -6,17 +6,15 @@
 -- is a second, independently-assembled copy of item data (ID, Name, Description, ModelID,
 -- SlotIndex, ItemTypeID, DPS, Speed, CareerMask, RaceMask, Rarity, TalismanSlotCount, bind flags).
 --
--- It is **not** Mythic's own database, and nothing in the toolkit claims it is. Its schema carries
--- `Unk5`, `Unk6`, `Unk7`, `Unk8`, `Unk17`, `Unk18Set`, `Unk18`, `Unk19`-`Unk24` -- placeholder names
--- a reverse-engineer gives fields whose meaning is undetermined, which the authors of the data would
--- never need -- plus typos (`AllowAltApperance`, `IsTwhoHanded`). The dump was produced by MySQL
--- 8.0.13, released 2018, five years after the live game shut down. It is another emulator's
--- reconstruction, so it is corroboration, not an arbiter.
+-- It is not Mythic's own database, though its content is the best-developed layer of the amalgamated
+-- world database, owing to Londo's connection with the Mythic developers (docs/CROSS_REPO.md). The
+-- dump itself still carries reverse-engineering marks -- `Unk5`-`Unk24` placeholder columns, typos
+-- (`AllowAltApperance`), and a MySQL 8.0.13 header from years after shutdown -- so it corroborates
+-- rather than arbitrates. A packet capture outranks it.
 --
--- It is still worth consulting because item names cannot be checked against the client at all:
+-- It is worth consulting because item names cannot be checked against the client at all:
 -- WorldServer writes the name into the item packet itself (`World/Objects/Item.cs:512`,
--- `Out.WritePascalString(info.Name)`), so the client never stores them. Two independent
--- reconstructions disagreeing is the only signal available here.
+-- `Out.WritePascalString(info.Name)`), so the client never stores them.
 --
 -- 2,617 of its 9,948 rows share an Entry with ours and the names agree on 2,562. Of the 34
 -- disagreements, 12 are trailing whitespace, 39 are genuine cross-patch renames, and these four are
