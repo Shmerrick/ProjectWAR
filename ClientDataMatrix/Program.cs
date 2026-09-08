@@ -28,6 +28,15 @@ namespace ClientDataMatrix
             public long QueryId { get; set; }
             public int QueryLimit { get; set; }
             public bool ShowUsage { get; set; }
+
+            /// <summary>Overrides the connection read from bin/*/Configs/World.xml.</summary>
+            public string ConnectionString { get; set; }
+
+            /// <summary>
+            /// Which item table to crosswalk. Defaults to mythic_src_item_infos because
+            /// UseMythicActionCoverageTables ships true and that is the one the server loads.
+            /// </summary>
+            public string ItemTable { get; set; }
         }
 
         [STAThread]
@@ -93,6 +102,32 @@ namespace ClientDataMatrix
                 ConsoleManager.EnsureConsole();
                 string indexPath = ClientIndexExporter.Write(extractedRoot, outputRoot);
                 Console.WriteLine("Client index written to " + indexPath);
+                return 0;
+            }
+
+            if (string.Equals(toolArguments.Command, "crosswalk_items", StringComparison.OrdinalIgnoreCase))
+            {
+                ConsoleManager.EnsureConsole();
+
+                var art = new ClientItemArtService(extractedRoot);
+                Console.WriteLine("Client art: " + art.ObjectCount.ToString("N0", CultureInfo.InvariantCulture)
+                    + " objects, " + art.IconCount.ToString("N0", CultureInfo.InvariantCulture)
+                    + " icons, " + art.TextureFileCount.ToString("N0", CultureInfo.InvariantCulture) + " textures on disk.");
+
+                string connection = WorldDatabaseLocator.Resolve(toolArguments.ConnectionString);
+                Console.WriteLine("World database: " + WorldDatabaseLocator.DescribeTarget(connection));
+
+                var crosswalk = new ItemCrosswalkService(connection, art);
+                ItemCrosswalkService.Report report = crosswalk.Run(
+                    toolArguments.ItemTable ?? "mythic_src_item_infos", null);
+
+                Console.WriteLine("Examined " + report.ItemsExamined.ToString("N0", CultureInfo.InvariantCulture)
+                    + " items; " + report.IconsResolved.ToString("N0", CultureInfo.InvariantCulture)
+                    + " resolved to an icon; " + report.Findings.Count.ToString("N0", CultureInfo.InvariantCulture)
+                    + " findings.");
+
+                string directory = ItemCrosswalkService.Write(report, outputRoot, 40);
+                Console.WriteLine("Crosswalk written to " + directory);
                 return 0;
             }
 
@@ -353,6 +388,22 @@ namespace ClientDataMatrix
                     continue;
                 }
 
+                if (string.Equals(currentArgument, "--connection", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index + 1 >= args.Length)
+                        throw new ArgumentException("Missing value for --connection.");
+                    parsedArguments.ConnectionString = args[++index];
+                    continue;
+                }
+
+                if (string.Equals(currentArgument, "--table", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index + 1 >= args.Length)
+                        throw new ArgumentException("Missing value for --table.");
+                    parsedArguments.ItemTable = args[++index];
+                    continue;
+                }
+
                 if (string.Equals(currentArgument, "--help", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(currentArgument, "-h", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(currentArgument, "/?", StringComparison.OrdinalIgnoreCase))
@@ -448,6 +499,14 @@ namespace ClientDataMatrix
                 && string.Equals(positionalArguments[1], "index", StringComparison.OrdinalIgnoreCase))
             {
                 parsedArguments.Command = "export_index";
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "crosswalk", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(positionalArguments[1], "items", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedArguments.Command = "crosswalk_items";
                 return parsedArguments;
             }
 

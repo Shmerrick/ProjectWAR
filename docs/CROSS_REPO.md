@@ -94,6 +94,44 @@ different id ranges. And the hand-added placeholders (`unk1`–`unk32`) and fron
 artifacts of that merging, inherited rather than introduced here. Because the client holds no item
 names at all, the packet captures are the only external check, and they cover 1,955 of 88,727 items.
 
+## Which source owns which domain
+
+The ordering below is the tie-breaker; this table is where each system actually falls. It exists
+because "the client has no item names" was mistaken for a general rule about the client during the
+September 8 session, and it is not — **items are the one large system the client is silent on.**
+
+| Domain | What the client holds | Who arbitrates |
+|---|---|---|
+| **Abilities** | `data/strings/english/abilitynames.txt`, `abilitydesc.txt`, `componenteffects.txt` (29,001 rows each), plus `data/bin/abilityexport.bin` and `abilitycomponentexport.bin` — 5.6 MB of the ability engine itself, imported as `mythic_bin_ability` (16,922 rows) | **Client.** It is the arbiter; migrations 76/77 corrected `mythic_src_abilities` against it |
+| **Zones, world, RvR** | zone and area names, `objectivenames.txt` (7,073), `mappoints.xml` warcamps and landmarks, per-zone `fixtures.csv`, `influenceids.csv`, `flypath.csv`, `jumppoints.csv`, `rvrlakes.csv`, `zoneglyphs.csv` | **Client.** The 2026-09-05 influence-id correction came from here |
+| **Tome** | `unlockmapping.csv` (11,999), `unlock_event_descs.txt`, achievements, titles, emotes | **Client** |
+| **Creatures** | `monsters.csv` (1,317) — art-side names only, e.g. `PH - Plague Victim - Base Empire Female` | Client for art; **display names are server-side** |
+| **Item art** | `objects.csv` (name, `NIF #`, `Icon #`), `icons.xml` (5,260 textures), the `.dds` files themselves | **Client** — see the art chain below |
+| **Item names, stats, careers** | *nothing* | **Packet captures only**, covering 1,955 of 88,727 items |
+
+**The item art chain**, which is easy to get wrong — there are two icon columns in play and only one
+is right:
+
+```
+item_infos.ModelId -> data/gamedata/objects.csv  (col 0 "ID")
+                   -> col 3 "Icon #"
+                   -> interface/default/eatemplate_icons/source/icons.xml
+                   -> texture -> interface/default/eatemplate_icons/textures/<name>.dds
+```
+
+87,396 of 88,727 items (98.5%) resolve all the way to a texture, and the texture name matches the
+object name (`8334` → `tk_soultalisman_intelligence` → `tk_soultalisman_intelligence.dds`). All the
+textures are 64×64 DXT1; 5,253 of the 5,260 referenced files are present.
+
+**Do not** route this through `itemdata.csv`'s own `icon` column. That is a different id space, it
+resolves into `icons.xml` only by coincidence, and it produces nonsense — "Greataxe of Chaotic
+Torsion" lands on `Or_TM_shield10`. `WorldServer/API/BotEditorHttpServer.cs` currently uses that
+wrong path for its item-icon route (BUG-150).
+
+For 3D, `objects.csv` splits by asset kind: world objects carry a `NIF #`, while worn armour and
+weapons carry a `Figpart/Nif_ColumnA` name (`DW_Armor_IB_01_Body`) resolved through the Figleaf
+character-art system rather than a standalone `.nif`. The tree holds 3,856 `.nif` files.
+
 ## Direction of authority
 
 When two sources disagree, this is the order:

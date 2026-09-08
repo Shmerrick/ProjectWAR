@@ -104,6 +104,7 @@ namespace ClientDataMatrix.UI
         private TextBox _logTextBox;
         private ToolStripStatusLabel _statusLabel;
         private TabControl _mainTabs;
+        private ItemArtTab _itemArtTab;
 
         private MatrixAnalysisSession _session;
         private DefinitionCatalog _definitions;
@@ -207,6 +208,13 @@ namespace ClientDataMatrix.UI
             _mainTabs.TabPages.Add(CreateOperationTab());
             _mainTabs.TabPages.Add(CreateUnknownTab());
             _mainTabs.TabPages.Add(CreateConflictTab());
+
+            // Item art does not need the ability dataset, so it is usable before Reload Data
+            // finishes -- it reads objects.csv and icons.xml on its own, on demand.
+            _itemArtTab = new ItemArtTab();
+            _itemArtTab.Bind(_rootPathTextBox == null ? null : _rootPathTextBox.Text);
+            _mainTabs.TabPages.Add(_itemArtTab.Page);
+
             _mainTabs.TabPages.Add(CreateStatusTab());
             _mainTabs.TabPages.Add(CreateLogTab());
             return _mainTabs;
@@ -930,6 +938,11 @@ namespace ClientDataMatrix.UI
         {
             if (_isBusy)
                 return;
+
+            // Point the art tab at whatever root the box now holds, so changing it and pressing
+            // Reload Data does not leave that tab reading the previous extraction.
+            if (_itemArtTab != null)
+                _itemArtTab.Bind(_rootPathTextBox.Text);
 
             try
             {

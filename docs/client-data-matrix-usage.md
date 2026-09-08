@@ -682,3 +682,64 @@ translations. A grep for one id was returning 47 rows of which 43 were the same 
 languages.
 
 The index is gitignored — it is derived data, and regenerating it is cheaper than carrying it.
+
+## crosswalk items — the world database against the client
+
+```powershell
+.\bin\Release\ClientDataMatrix.exe crosswalk items
+```
+
+Reads `objects.csv`, `icons.xml` and the icon textures, then every row of the item table the running
+server loads, and writes `docs/data-matrix/crosswalk/item-crosswalk.md` plus an uncapped
+`item-crosswalk.csv`. Read-only — it never writes to the database, and it emits no SQL, because the
+right answer to a violation is usually "find the correct value", not "null the column".
+
+The connection comes from `bin/Release/Configs/World.xml`, the same file WorldServer reads, so the
+crosswalk cannot silently check a different database than the server serves. `--connection`
+overrides it; `--table item_infos` checks the other half of the pair (the default is
+`mythic_src_item_infos`, since `UseMythicActionCoverageTables` ships true).
+
+Findings are split three ways, and the split is the point:
+
+| | Meaning |
+|---|---|
+| **Violation** | The row asserts something the client contradicts. A `ModelId` absent from `objects.csv` is not a matter of opinion — nothing can render it. |
+| **Hole** | The row leaves something empty the client could fill. |
+| **Suspect** | The row looks self-damaged. Item names have no client arbiter, so these are flagged and never rewritten from a guess; only the packet captures can settle them. |
+
+Current state of `mythic_src_item_infos` — 88,727 items, **88,240 (99.5%) resolve to an icon**:
+
+| Severity | Kind | Rows |
+|---|---|---:|
+| Violation | ModelId not in objects.csv | 1 |
+| Hole | art has no icon | 436 |
+| Hole | ModelId missing | 50 |
+| Suspect | name is a placeholder (`unk1`–`unk32`) | 41 |
+| Suspect | name begins lowercase | 26 |
+
+**Trailing spaces are not flagged, deliberately.** 12,672 item names end in a space, and the first
+version of this report called all of them suspect. They are authentic: on every one of the 36 that a
+packet capture covers, the live server sent the space too — 36 of 36. Flagging them would invite the
+same "cleanup" that once stripped the `^m`/`^f`/`^n` caret suffixes from 5,210 rows and had to be
+reverted out of the base dump. A *leading* space would still be suspicious; there are none.
+
+## Item Art tab — icons and 3D identity
+
+The GUI's **Item Art** tab takes an `item_infos.ModelId` and shows the icon the game draws, decoded
+from the client's own `.dds`. It reads `objects.csv` and `icons.xml` on demand, so it works before
+`Reload Data` has finished.
+
+It is keyed by ModelId rather than item Entry on purpose: the client has no item table at all, and
+`ModelId` is the only link from one of our rows to client art. Use the crosswalk report to map in
+bulk.
+
+`.dds` decoding is `Services/DdsImage.cs`, written by hand rather than pulled in as a dependency —
+every one of the 5,253 icon textures is 64×64 DXT1, so exactly one codec is needed. It handles
+DXT1's one-bit-alpha mode, which matters because item icons are cut-outs and treating that mode as
+opaque puts a black box behind every one.
+
+**3D is identified, not rendered.** `objects.csv` splits by asset kind: world objects carry a
+`NIF #`, while worn armour and weapons carry a Figleaf part name (`DW_Armor_IB_01_Body`) assembled by
+the character-art system rather than loaded as a standalone `.nif`. The tab reports which kind a
+ModelId is and the asset it names. Rendering geometry is a real project and WAR-RE-Toolkit already
+has `mesh-viewer` and `geom2fbx`, so this points at those rather than duplicating them.
