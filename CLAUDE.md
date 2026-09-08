@@ -153,6 +153,7 @@ Bots are real persisted `Player` characters on the shared account id `9999`, run
 - `docs/STATUS.md` — per-project build outputs and current LOS-generation parity status.
 - `docs/INTERNAL_BUG_TRACKER.md` — live ledger of known bugs; update it when you find or fix one.
 - `docs/BASTION_STAIR.md`, `docs/MOUNT_GUNBAD.md`, `docs/LAND_OF_THE_DEAD.md`, `docs/WARD_SYSTEM.md`, `docs/SYSTEM_GUILDS.md`, `docs/GUILD_KEEP_CLAIM_FLAGS.md` — the systems most recently restored on `RESTART`; read the matching one before touching Gunbad, the Tomb Kings expedition, wards, guilds, or keep claims.
+- `docs/LOTD_GLYPHS_AND_TOMBS.md` — Land of the Dead glyph sources, the PQ spawn gap and ungated tomb entry; read with `docs/LAND_OF_THE_DEAD.md`.
 - `docs/DUNGEON_DIFFICULTY.md`, `docs/CREATURE_LEVEL_SCALING.md` — the rank-40+ Hard/Nightmare rules (existing rank +1 and ward tier +1 for Hard, another +1 of each for Nightmare) and how creature levels and wards are stored across `instance_creature_spawns`, `instance_boss_spawns`, `creature_spawns` and `pquest_spawns`. **Neither difficulty mode is implemented** — these record the specification and the open design decisions.
 - `docs/MASTER_TO_RESTART_AUDIT.md` — the per-change record of what master did and why `RESTART` rejected it. Consult it before concluding something is "missing" from this branch.
 - `docs/bot-editor-api.md`, `docs/client-data-matrix-usage.md`, `docs/los/occ-re-notes.md`, `docs/data-matrix/`.
