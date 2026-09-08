@@ -259,14 +259,49 @@ or `INSTANCE_tombofsky` — captures of actual tomb entries. That is consistent 
 appearing when an enemy instance exists to invade, which those sessions may not have had, but it is
 not evidence. Confirming the pair needs a capture taken with a live enemy instance present.
 
+
+### Invadability is evaluated live, never stored
+
+The rule moves underneath a running instance:
+
+> "If someone starts an instance while they own LOTD, they cannot be invaded, but if control of LOTD
+> swaps to the other realm, their instance can now be invaded."
+
+So a copy's invadability is not a property of the copy. Nothing about the instance changes when the
+expedition flips — the answer changes because the world did. `Instance` therefore stores only
+`OwningRealm`, a fact about who opened it, and `InstanceMgr.CanBeInvadedBy(instance, player)`
+computes the rest on every call:
+
+1. the zone is one of the four lairs (`LotdService.IsInvadableLairZone`);
+2. the invader's realm currently holds the expedition (`LotdService.CanRealmAccessLotd`) — this is
+   the part that moves;
+3. the copy belongs to the other realm.
+
+There is deliberately no `Invadable` field to go stale. `GetInvadableInstances(player, zoneId)`
+lists the enemy copies open in a zone, skipping empty ones — invading an empty instance is a private
+dungeon run with extra steps, and the coward brand is defined in terms of defeating its defenders.
+
+`OwningRealm` is separate from `Instance.Realm` on purpose. `Realm` is the realm-*instance* marker:
+non-zero makes a copy persistent and filters its spawns to that realm, which is Mount Gunbad and
+Bastion Stair behaviour and wrong for a lair. It stays 0 on group instances.
+
+`.lotd instances` lists every open lair copy with its owner and whether the caller could invade it
+right now. Flip the expedition with `.lotd unlock` and run it again: the same copies change from
+safe to invadable with nothing about them having changed. That is the behaviour to test.
+
+**What this does not do.** There is still no way for a player to invade — that needs the lobby
+packets, which are not established (see above). This is the ownership model underneath it, and it is
+observable through the GM command only.
+
 ### What implementing it would take
 
-1. Give the tomb instances a realm — either move them to the Type-4 realm-instance model or add an
-   owning realm to group instances, and keep a registry of open enemy copies per zone.
+1. ~~Give the tomb instances a realm and a way to find open enemy copies per zone.~~ **Done** —
+   `Instance.OwningRealm` plus `InstanceMgr.GetInvadableInstances`, evaluated live.
 2. Send the lobby when a player of the expedition-holding realm uses a tomb portal and an enemy copy
    exists, with `canInvade` set accordingly; handle the reply, with a 60-second server-side timeout
    matching the client's.
-3. Gate invasion on `LotdService.CanRealmAccessLotd` — only the holder may invade.
+3. ~~Gate invasion on `LotdService.CanRealmAccessLotd` — only the holder may invade.~~ **Done**,
+   inside `CanBeInvadedBy`.
 4. Implement the coward brand: applied on leaving an invaded instance with its defenders alive, and
    blocking further Land of the Dead instance entry while held.
 

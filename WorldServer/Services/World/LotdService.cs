@@ -21,6 +21,26 @@ namespace WorldServer.Services.World
 
         public const ushort LotdZoneId = 191;
 
+        /// <summary>
+        /// The four Land of the Dead lairs, which the expedition holder can invade. The Tomb of the
+        /// Vulture Lord (179) is deliberately absent: it is the raid dungeon, it carries no glyph
+        /// cost in the client's zone map, and nothing establishes that it was invadable. Add it if
+        /// evidence turns up.
+        /// </summary>
+        private static readonly ushort[] InvadableLairZones = { 241, 242, 243, 244 };
+
+        /// <summary>True for a lair whose enemy copies the expedition holder may enter.</summary>
+        public static bool IsInvadableLairZone(ushort zoneId)
+        {
+            for (int i = 0; i < InvadableLairZones.Length; ++i)
+            {
+                if (InvadableLairZones[i] == zoneId)
+                    return true;
+            }
+
+            return false;
+        }
+
         private const byte RetailTrackerCount = 1;
         private const byte RetailTrackerId = 1;
         private const uint RetailTrackerHeaderValue = 4;

@@ -283,6 +283,7 @@ namespace WorldServer.World.Objects.Instances
                             Instance_Lockouts deadbosses = ResolveCharacterLockout(
                                 (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump);
                             ints = new TOTVL(Jump.ZoneID, i, realm, deadbosses);
+                            ints.OwningRealm = (byte)player.Realm;
                             _instances.Add(i, ints);
                             return i;
                         }
@@ -292,6 +293,7 @@ namespace WorldServer.World.Objects.Instances
                             Instance_Lockouts deadbosses = ResolveCharacterLockout(
                                 (player.PriorityGroup?.GetLeader() ?? player)._Value, Jump);
                             ints = new Instance(Jump.ZoneID, i, realm, deadbosses);
+                            ints.OwningRealm = (byte)player.Realm;
                             _instances.Add(i, ints);
                             return i;
                         }
@@ -329,6 +331,92 @@ namespace WorldServer.World.Objects.Instances
                 InstanceID = "~" + zoneId + ":" + expires,
                 Bosseskilled = string.Join(":", bosses)
             };
+        }
+
+        /// <summary>Every open copy of a zone, in id order. For diagnostics.</summary>
+        public List<Instance> GetOpenInstances(ushort zoneId)
+        {
+            var open = new List<Instance>();
+
+            lock (_instances)
+            {
+                foreach (KeyValuePair<ushort, Instance> pair in _instances)
+                {
+                    if (pair.Value != null && pair.Value.ZoneID == zoneId)
+                        open.Add(pair.Value);
+                }
+            }
+
+            return open;
+        }
+
+        /// <summary>
+        /// Whether <paramref name="player"/> may invade <paramref name="instance"/> right now.
+        ///
+        /// Evaluated on every call and never cached, because the answer changes underneath a live
+        /// instance. A group that opened a copy while their realm held the expedition cannot be
+        /// invaded; the moment the other realm takes the expedition, that same copy becomes a
+        /// target, with nothing about the instance itself having changed. Storing an "invadable"
+        /// flag at creation would freeze the wrong answer, so there is deliberately no such field --
+        /// only <see cref="Instance.OwningRealm"/>, which is a fact about who opened it.
+        ///
+        /// The conditions, in order of how often they are false:
+        ///   - the zone is one of the four Land of the Dead lairs;
+        ///   - the invader's realm currently holds the expedition;
+        ///   - the copy belongs to the other realm.
+        /// </summary>
+        public bool CanBeInvadedBy(Instance instance, Player player)
+        {
+            if (instance == null || player == null)
+                return false;
+
+            if (!LotdService.IsInvadableLairZone(instance.ZoneID))
+                return false;
+
+            // Only the realm holding the expedition may invade. This is the part that moves.
+            if (!LotdService.CanRealmAccessLotd(player.Realm))
+                return false;
+
+            byte owner = instance.OwningRealm;
+            return owner != 0 && owner != (byte)player.Realm;
+        }
+
+        /// <summary>
+        /// The enemy copies of <paramref name="zoneId"/> this player could invade right now, in
+        /// creation order. Empty when the player's realm does not hold the expedition, when the
+        /// zone is not an invadable lair, or when the enemy has no copy open.
+        ///
+        /// A copy with nobody in it is skipped: invading an empty instance is a private dungeon run
+        /// with extra steps, and the coward brand the client describes is defined in terms of
+        /// defeating its defenders.
+        /// </summary>
+        public List<Instance> GetInvadableInstances(Player player, ushort zoneId)
+        {
+            var invadable = new List<Instance>();
+
+            if (player == null || !LotdService.IsInvadableLairZone(zoneId))
+                return invadable;
+
+            if (!LotdService.CanRealmAccessLotd(player.Realm))
+                return invadable;
+
+            lock (_instances)
+            {
+                foreach (KeyValuePair<ushort, Instance> pair in _instances)
+                {
+                    Instance instance = pair.Value;
+                    if (instance == null || instance.ZoneID != zoneId)
+                        continue;
+
+                    if (instance.Players == null || instance.Players.Count == 0)
+                        continue;
+
+                    if (CanBeInvadedBy(instance, player))
+                        invadable.Add(instance);
+                }
+            }
+
+            return invadable;
         }
 
         private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, ushort InstancemainID, byte maxplayers)

@@ -61,6 +61,20 @@ namespace WorldServer.World.Objects.Instances
         /// realm both selects that realm's spawns and makes the instance persistent.
         /// </summary>
         public readonly byte Realm;
+
+        /// <summary>
+        /// Which realm opened this copy, for group instances. Distinct from <see cref="Realm"/>,
+        /// which is the realm-instance marker and must stay 0 here -- a non-zero Realm changes
+        /// spawn filtering and makes the instance persistent, neither of which applies to a group
+        /// copy.
+        ///
+        /// Exists for Land of the Dead invasion: the realm holding the expedition can enter the
+        /// other realm's tomb copies, so a copy has to know whose it is. Whether it can be invaded
+        /// right now is deliberately NOT stored -- see
+        /// <see cref="InstanceMgr.CanBeInvadedBy"/>.
+        /// </summary>
+        public byte OwningRealm { get; set; }
+
         public Instance_Lockouts Lockout = null;
         private int closetime;
         public byte state;
