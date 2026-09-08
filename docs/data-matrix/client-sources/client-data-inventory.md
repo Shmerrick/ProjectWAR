@@ -7,10 +7,10 @@ Root: `C:\Users\Admin\Downloads\myps`
 
 | | |
 | --- | --- |
-| Files discovered | 8206 |
-| Read successfully | 8206 |
+| Files discovered | 8499 |
+| Read successfully | 8499 |
 | Failed to read | 0 |
-| Data rows | 5,497,743 |
+| Data rows | 5,505,870 |
 | Joinable (unique integer key) | 4,573 |
 | Global reference tables searched for links | 168 |
 | Candidate links | 2,058 |
@@ -27,7 +27,36 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
+| `test` | PlainText | 24 | 1 | no | columns: Line |
+| `vfx_buff_dw_meleegather` | PlainText | 25 | 1 | no | columns: Line |
+| `vfx_buff_or_meleegather` | PlainText | 25 | 1 | no | columns: Line |
+| `vfx_buff_or_ragegather` | PlainText | 25 | 1 | no | columns: Line |
+| `vfx_buff_or_waaaghgather` | PlainText | 25 | 1 | no | columns: Line |
+| `vfx_damg_flashstreaks` | PlainText | 37 | 1 | no | columns: Line |
+| `vfx_eart_impact` | PlainText | 36 | 1 | no | columns: Line |
+| `vfx_eart_impact2` | PlainText | 69 | 1 | no | columns: Line |
+| `vfx_elec_arcball` | PlainText | 55 | 1 | no | columns: Line |
+| `vfx_elec_arcballflash` | PlainText | 59 | 1 | no | columns: Line |
+| `vfx_elec_arcdisk` | PlainText | 38 | 1 | no | columns: Line |
+| `vfx_elec_arcflashsparks` | PlainText | 89 | 1 | no | columns: Line |
+| `vfx_elec_lightning` | PlainText | 103 | 1 | no | columns: Line |
+| `vfx_elec_zapcloud` | PlainText | 35 | 1 | no | columns: Line |
 | `vfx_jero_flametrail` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_life_resurrect` | PlainText | 23 | 1 | no | columns: Line |
+| `vfx_opti_3xshockrings1_blu` | PlainText | 24 | 1 | no | columns: Line |
+| `vfx_opti_3xshockrings2_blu` | PlainText | 24 | 1 | no | columns: Line |
+| `vfx_orc_handcasting` | PlainText | 34 | 1 | no | columns: Line |
+| `vfx_rune_arcsringflakksons_blu` | PlainText | 79 | 1 | no | columns: Line |
+| `vfx_rune_arcsringfury_blu` | PlainText | 79 | 1 | no | columns: Line |
+| `vfx_rune_blurinmight_blu` | PlainText | 65 | 1 | no | columns: Line |
+| `vfx_rune_flashringbreaking_orn` | PlainText | 67 | 1 | no | columns: Line |
+| `vfx_rune_flashringstriking_orn` | PlainText | 67 | 1 | no | columns: Line |
+| `vfx_rune_hotstrikegrudge` | PlainText | 68 | 1 | no | columns: Line |
+| `vfx_rune_solarringsmelting` | PlainText | 66 | 1 | no | columns: Line |
+| `vfx_rune_stonelife_blu` | PlainText | 80 | 1 | no | columns: Line |
+| `vfx_rune_stonespellbreaking_blu` | PlainText | 80 | 1 | no | columns: Line |
+| `vfx_stat_fear` | PlainText | 58 | 1 | no | columns: Line |
+| `vfx_temp_spikesflash_hit` | PlainText | 37 | 1 | no | columns: Line |
 | `vfx_weapontrail_autoattack` | Xml | 2 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
 | `vfx_weapontrail_blue` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `vfx_weapontrail_changing1` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -93,6 +122,12 @@ small column in the game. Every file is still inventoried below.
 | `vfx_weapontrail_white` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `vfx_weapontrail_whorange` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `vfx_weapontrail_yellow` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## assetdb
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `figleaf` | Binary | 1 | 1 | no | columns: Bytes |
 
 ## audio
 
@@ -374,7 +409,17 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
+| `login` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `mythloginserviceconfig` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
+## data/bin
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `abilitycomponentexport` | Binary | 1 | 1 | no | columns: Bytes |
+| `abilityexport` | Binary | 1 | 1 | no | columns: Bytes |
+| `abilityrequirementexport` | Binary | 1 | 1 | no | columns: Bytes |
+| `upgradetableexport` | Binary | 1 | 1 | no | columns: Bytes |
 
 ## data/gamedata
 
@@ -8346,6 +8391,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `eadefaultmods` | PlainText | 97 | 1 | no | columns: Line |
 
+## interface/default/easystem_actionbarclustermanager
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_actionbarclustermanager` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_actionbarclustermanager/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8354,11 +8405,23 @@ small column in the game. Every file is still inventoried below.
 | `layoutmodes` | PlainText | 259 | 1 | no | columns: Line |
 | `newabilityhandler` | PlainText | 109 | 1 | no | columns: Line |
 
+## interface/default/easystem_advancedwindowmanager
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_advancedwindowmanager` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_advancedwindowmanager/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `advancedwindowmanager` | PlainText | 175 | 1 | no | columns: Line |
+
+## interface/default/easystem_dialogmanager
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_dialogmanager` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_dialogmanager/source
 
@@ -8371,6 +8434,12 @@ small column in the game. Every file is still inventoried below.
 | `threebuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `twobuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/easystem_eventtext
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_eventtext` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_eventtext/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8379,12 +8448,24 @@ small column in the game. Every file is still inventoried below.
 | `system_eventtext` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
 | `templates_eventtext` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/easystem_glyphdisplay
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_glyphdisplay` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_glyphdisplay/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `glyphdisplay` | PlainText | 490 | 1 | no | columns: Line |
 | `glyphdisplay` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_layouteditor
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_layouteditor` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_layouteditor/source
 
@@ -8402,12 +8483,24 @@ small column in the game. Every file is still inventoried below.
 | `layoutframetemplates` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
 | `layoutsnapframe` | PlainText | 184 | 1 | no | columns: Line |
 
+## interface/default/easystem_resourceframes
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_resourceframes` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_resourceframes/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `moneyframe` | PlainText | 413 | 1 | no | columns: Line |
 | `moneyframe` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_rrq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_rrq` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_rrq/source
 
@@ -8422,6 +8515,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_tombtoggle01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/easystem_strings
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_strings` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_strings/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8429,11 +8528,23 @@ small column in the game. Every file is still inventoried below.
 | `dataconverter` | PlainText | 17 | 1 | no | columns: Line |
 | `stringutils` | PlainText | 1,102 | 1 | no | columns: Line |
 
+## interface/default/easystem_targetinfo
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_targetinfo` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_targetinfo/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `targetinfo` | PlainText | 235 | 1 | no | columns: Line |
+
+## interface/default/easystem_threepartbar
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_threepartbar` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_threepartbar/source
 
@@ -8447,6 +8558,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_victorypoints01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_tooltips
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tooltipsystem` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_tooltips/source
 
@@ -8464,6 +8581,12 @@ small column in the game. Every file is still inventoried below.
 | `tometooltips` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `tooltips` | PlainText | 927 | 1 | no | columns: Line |
 | `tooltips` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_utils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_utils` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/easystem_utils/source
 
@@ -8491,6 +8614,12 @@ small column in the game. Every file is still inventoried below.
 | `timedstatemachine` | PlainText | 154 | 1 | no | columns: Line |
 | `timeutils` | PlainText | 248 | 1 | no | columns: Line |
 
+## interface/default/easystem_windowutils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_windowutils` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/easystem_windowutils/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8517,6 +8646,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `windowutilstextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_defaultwindowskin
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eatemplate_defaultwindowskin` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/eatemplate_defaultwindowskin/source
 
@@ -8552,6 +8687,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `defaultskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/eatemplate_icons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eatemplate_icons` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/eatemplate_icons/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8559,6 +8700,18 @@ small column in the game. Every file is still inventoried below.
 | `erroricons` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `icons` | PlainText | 287 | 1 | no | columns: Line |
 | `icons` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_icons/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `thumbs` | Binary | 1 | 1 | no | columns: Bytes |
+
+## interface/default/eatemplate_parchmentwindowskin
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eatemplate_parchmentwindowskin` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/eatemplate_parchmentwindowskin/source
 
@@ -8577,6 +8730,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `parchmentskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_unitframes
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eatemplate_unitframes` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/eatemplate_unitframes/source
 
@@ -8600,6 +8759,12 @@ small column in the game. Every file is still inventoried below.
 | `ea_buffframes01` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 | `ea_temptargets_d3` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_abilitieswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_abilitieswindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_abilitieswindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8612,6 +8777,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilitieswindowtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_actionbars
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_actionbars` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_actionbars/source
 
@@ -8632,6 +8803,12 @@ small column in the game. Every file is still inventoried below.
 | `actionbaranimationtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `actionbarendcaptextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_advancedwarwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_advancedwarwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_advancedwarwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8639,12 +8816,24 @@ small column in the game. Every file is still inventoried below.
 | `advancedwarwindow` | PlainText | 361 | 1 | no | columns: Line |
 | `advancedwarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_alerttextwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_alerttextwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_alerttextwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `alerttextwindow` | PlainText | 655 | 1 | no | columns: Line |
 | `alerttextwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_auctionhousewindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_auctionhousewindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_auctionhousewindow/source
 
@@ -8658,6 +8847,12 @@ small column in the game. Every file is still inventoried below.
 | `auctionwindowsellcontrols` | PlainText | 232 | 1 | no | columns: Line |
 | `auctionwindowsellcontrols` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 | `templates_auctionwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_backpackwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_backpackwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_backpackwindow/source
 
@@ -8681,12 +8876,24 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_backpack01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_bankwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_bankwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_bankwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `bankwindow` | PlainText | 455 | 1 | no | columns: Line |
 | `bankwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_barbershopwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_barbershopwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_barbershopwindow/source
 
@@ -8701,12 +8908,24 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_battlegrouphud
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_battlegrouphud` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_battlegrouphud/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `battlegrouphud` | PlainText | 501 | 1 | no | columns: Line |
 | `battlegrouphud` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_careerresourceswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_careerresourceswindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_careerresourceswindow/source
 
@@ -8758,12 +8977,24 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_career_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_casttimerwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_casttimerwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_casttimerwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `layertimerwindow` | PlainText | 337 | 1 | no | columns: Line |
 | `layertimerwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_characterwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_characterwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_characterwindow/source
 
@@ -8777,12 +9008,24 @@ small column in the game. Every file is still inventoried below.
 | `characterwindowstats` | PlainText | 1,284 | 1 | no | columns: Line |
 | `characterwindowtrophies` | PlainText | 651 | 1 | no | columns: Line |
 
+## interface/default/ea_chatsystem
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_chatsystem` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_chatsystem/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `chatmanager` | PlainText | 385 | 1 | no | columns: Line |
 | `conversationwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_chatwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_chatwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_chatwindow/source
 
@@ -8799,12 +9042,24 @@ small column in the game. Every file is still inventoried below.
 | `chatwindow` | Xml | 35 | 3 | no | columns: Element, Count, Attributes |
 | `chatwindowverticalscroll` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_claimwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_claimwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_claimwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `claimwindow` | PlainText | 272 | 1 | no | columns: Line |
 | `claimwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_contestedinstanceselectionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_contestedinstanceselectionwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_contestedinstanceselectionwindow/source
 
@@ -8813,12 +9068,24 @@ small column in the game. Every file is still inventoried below.
 | `contestedinstanceselectionwindow` | PlainText | 98 | 1 | no | columns: Line |
 | `contestedinstanceselectionwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_contextmenu
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_contextmenu` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_contextmenu/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `contextmenu` | PlainText | 657 | 1 | no | columns: Line |
 | `contextmenu` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_craftingwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_craftingwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_craftingwindow/source
 
@@ -8841,6 +9108,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_craftingwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_cultivationwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_cultivationwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_cultivationwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8855,6 +9128,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_cultivating01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_currenteventswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_currenteventswindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_currenteventswindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8863,11 +9142,23 @@ small column in the game. Every file is still inventoried below.
 | `currenteventswindow` | PlainText | 547 | 1 | no | columns: Line |
 | `currenteventswindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_cursor
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_cursor` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_cursor/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `cursor` | PlainText | 290 | 1 | no | columns: Line |
+
+## interface/default/ea_customizeperformancewindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_customizeperformancewindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_customizeperformancewindow/source
 
@@ -8875,6 +9166,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_customizeperformancewindow` | PlainText | 334 | 1 | no | columns: Line |
 | `ea_customizeperformancewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_deathwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_deathwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_deathwindow/source
 
@@ -8889,11 +9186,23 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_death01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_grantedabilitywindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_grantedabilitywindow` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_grantedabilitywindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `grantedabilitywindow` | PlainText | 13 | 1 | no | columns: Line |
+
+## interface/default/ea_groupwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_groupwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_groupwindow/source
 
@@ -8902,12 +9211,24 @@ small column in the game. Every file is still inventoried below.
 | `groupwindow` | PlainText | 554 | 1 | no | columns: Line |
 | `groupwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_guildvaultwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_guildvaultwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_guildvaultwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `guildvaultwindow` | PlainText | 859 | 1 | no | columns: Line |
 | `guildvaultwindow` | Xml | 17 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
+
+## interface/default/ea_guildwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_guildwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_guildwindow/source
 
@@ -8955,6 +9276,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_guild01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_helptips
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_helptips` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_helptips/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -8962,6 +9289,12 @@ small column in the game. Every file is still inventoried below.
 | `helptips` | PlainText | 379 | 1 | no | columns: Line |
 | `helptips` | Xml | 33 | 3 | no | columns: Element, Count, Attributes |
 | `helptipsreferences` | PlainText | 89 | 1 | no | columns: Line |
+
+## interface/default/ea_helpwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_window_help` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_helpwindow/source
 
@@ -9027,12 +9360,24 @@ small column in the game. Every file is still inventoried below.
 | `ea_help01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 | `ea_help_tutorial_texdefs` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_inspectionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_inspectionwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_inspectionwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `inspectionwindow` | PlainText | 605 | 1 | no | columns: Line |
 | `inspectionwindow` | Xml | 39 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_interactionwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_interactionwindow/source
 
@@ -9090,12 +9435,24 @@ small column in the game. Every file is still inventoried below.
 | `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 | `trainingtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_internalbuffs
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_internalbuffs` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_internalbuffs/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_internalbuffs` | PlainText | 39 | 1 | no | columns: Line |
 | `ea_internalbuffs` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_itemenhancementwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_itemenhancementwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_itemenhancementwindow/source
 
@@ -9104,12 +9461,24 @@ small column in the game. Every file is still inventoried below.
 | `itemenhancementwindow` | PlainText | 598 | 1 | no | columns: Line |
 | `itemenhancementwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_itemstackingwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_itemstackingwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_itemstackingwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `itemstackingwindow` | PlainText | 201 | 1 | no | columns: Line |
 | `itemstackingwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_keymappingwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_keymappingwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_keymappingwindow/source
 
@@ -9118,11 +9487,23 @@ small column in the game. Every file is still inventoried below.
 | `keymappingwindow` | PlainText | 527 | 1 | no | columns: Line |
 | `keymappingwindow` | Xml | 28 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_lcdkeyboard
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_lcdkeyboard` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_lcdkeyboard/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `g15test` | PlainText | 217 | 1 | no | columns: Line |
+
+## interface/default/ea_legacytemplates
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_legacytemplates` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_legacytemplates/source
 
@@ -9141,6 +9522,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `liveevents` | PlainText | 58 | 1 | no | columns: Line |
+| `liveevents` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_loadingscreen
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_loadingscreen` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_loadingscreen/source
 
@@ -9166,6 +9554,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_lootwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_lootwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_lootwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9177,12 +9571,24 @@ small column in the game. Every file is still inventoried below.
 | `lootwindow` | PlainText | 359 | 1 | no | columns: Line |
 | `lootwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_macrowindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_macrowindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_macrowindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `macrowindow` | PlainText | 200 | 1 | no | columns: Line |
 | `macrowindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mailwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_mailwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_mailwindow/source
 
@@ -9209,6 +9615,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_mailwindow01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_mainmenuwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_mainmenuwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_mainmenuwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9221,6 +9633,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `menutextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_menubarwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_menubarwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_menubarwindow/source
 
@@ -9236,6 +9654,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `menubartextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_modifyitem
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `easystem_modifyitem` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_modifyitem/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9243,6 +9667,12 @@ small column in the game. Every file is still inventoried below.
 | `ea_dyewindow` | PlainText | 86 | 1 | no | columns: Line |
 | `ea_dyewindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 | `useitemtargeting` | PlainText | 441 | 1 | no | columns: Line |
+
+## interface/default/ea_moralewindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_moralewindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_moralewindow/source
 
@@ -9257,12 +9687,24 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `moralewindowanimationtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_mouseovertargetwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_mouseovertargetwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_mouseovertargetwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `mouseovertargetwindow` | PlainText | 100 | 1 | no | columns: Line |
 | `mouseovertargetwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_objectivetrackers` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_objectivetrackers/source
 
@@ -9285,6 +9727,12 @@ small column in the game. Every file is still inventoried below.
 | `winometerwindow` | PlainText | 145 | 1 | no | columns: Line |
 | `winometerwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_openpartywindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_openpartywindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_openpartywindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9301,6 +9749,12 @@ small column in the game. Every file is still inventoried below.
 | `openpartywindowtabworld` | PlainText | 942 | 1 | no | columns: Line |
 | `openpartywindowtabworld` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_overheadmapwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_overheadmapwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_overheadmapwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9315,6 +9769,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_scenario01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_playerassist
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_playerassist` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_playerassist/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9322,11 +9782,23 @@ small column in the game. Every file is still inventoried below.
 | `ea_playerassist` | PlainText | 65 | 1 | no | columns: Line |
 | `ea_playerassist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_playermenu
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_playermenu` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_playermenu/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `playermenuwindow` | PlainText | 386 | 1 | no | columns: Line |
+
+## interface/default/ea_playerstatuswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_playerstatuswindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_playerstatuswindow/source
 
@@ -9334,6 +9806,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `playerwindow` | PlainText | 729 | 1 | no | columns: Line |
 | `playerwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_pqlootwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_pqlootwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_pqlootwindow/source
 
@@ -9349,6 +9827,12 @@ small column in the game. Every file is still inventoried below.
 | `ea_anim_tumblers_d1` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `ea_pqloot` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_questtrackerwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_questtrackerwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_questtrackerwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9357,12 +9841,24 @@ small column in the game. Every file is still inventoried below.
 | `questtrackerwindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
 | `templates_questtrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_rpbarwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_rpbarwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_rpbarwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `rpbarwindow` | PlainText | 152 | 1 | no | columns: Line |
 | `rpbarwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_rvrtracker
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_rvrtracker` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_rvrtracker/source
 
@@ -9371,12 +9867,24 @@ small column in the game. Every file is still inventoried below.
 | `rvrtracker` | PlainText | 195 | 1 | no | columns: Line |
 | `rvrtracker` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_scenariogroupwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_scenariogroupwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_scenariogroupwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `scenariogroupwindow` | PlainText | 935 | 1 | no | columns: Line |
 | `scenariogroupwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_scenariolobbywindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_scenariolobbywindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_scenariolobbywindow/source
 
@@ -9389,6 +9897,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
+| `ea_scenariosummarywindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 | `scenariosummarywindow` | PlainText | 730 | 1 | no | columns: Line |
 | `scenariosummarywindow` | Xml | 42 | 3 | no | columns: Element, Count, Attributes |
 
@@ -9397,6 +9906,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_scenariosummary01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_screenflashwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_screenflashwindow` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_screenflashwindow/source
 
@@ -9410,6 +9925,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `screenflashtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_settingswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_settingswindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_settingswindow/source
 
@@ -9437,6 +9958,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `settingswindowtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_siegeweaponwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_siegeweaponwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_siegeweaponwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9462,6 +9989,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `siegetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_socialwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_socialwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_socialwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9484,12 +10017,24 @@ small column in the game. Every file is still inventoried below.
 | `socialwindowtabsearch` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
 | `socialwindowtemplates` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_summoningprompt
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_summoningprompt` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_summoningprompt/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `summoningprompt` | PlainText | 106 | 1 | no | columns: Line |
 | `summoningprompt` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_surveywindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_surveywindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_surveywindow/source
 
@@ -9499,6 +10044,12 @@ small column in the game. Every file is still inventoried below.
 | `surveypopupwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
 | `surveywindow` | PlainText | 184 | 1 | no | columns: Line |
 | `surveywindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tacticswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_tacticswindow` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_tacticswindow/source
 
@@ -9513,6 +10064,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `tacticswindowtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_targetwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_targetwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_targetwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9520,12 +10077,24 @@ small column in the game. Every file is still inventoried below.
 | `targetwindow` | PlainText | 255 | 1 | no | columns: Line |
 | `targetwindow` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_tomealertwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_tomealertwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_tomealertwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tomealertwindow` | PlainText | 266 | 1 | no | columns: Line |
 | `tomealertwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tomeofknowledge
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tomeofknowledge` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_tomeofknowledge/source
 
@@ -9560,12 +10129,24 @@ small column in the game. Every file is still inventoried below.
 | `tomewindow_warjournal` | PlainText | 1,601 | 1 | no | columns: Line |
 | `tomewindow_warjournal` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_tradewindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_tradewindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_tradewindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tradewindow` | PlainText | 676 | 1 | no | columns: Line |
 | `tradewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_trialalertwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_trialalertwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_trialalertwindow/source
 
@@ -9580,6 +10161,12 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_trialalerttextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_uidebugtools
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_uidebugtools` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_uidebugtools/source
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -9587,6 +10174,12 @@ small column in the game. Every file is still inventoried below.
 | `debug` | PlainText | 278 | 1 | no | columns: Line |
 | `debugwindow` | PlainText | 293 | 1 | no | columns: Line |
 | `debugwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_uimodwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_uimodwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_uimodwindow/source
 
@@ -9599,6 +10192,12 @@ small column in the game. Every file is still inventoried below.
 | `uimodwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
 | `versionmismatchwindow` | PlainText | 289 | 1 | no | columns: Line |
 | `versionmismatchwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_uiprofileswindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_uiprofileswindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_uiprofileswindow/source
 
@@ -9622,12 +10221,24 @@ small column in the game. Every file is still inventoried below.
 | `renameuiprofilewindow` | PlainText | 94 | 1 | no | columns: Line |
 | `renameuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_videoplayer
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_videoplayer` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_videoplayer/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `videoplayer` | PlainText | 71 | 1 | no | columns: Line |
 | `videoplayer` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_worldmapwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_worldmapwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_worldmapwindow/source
 
@@ -9654,12 +10265,24 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_worldmapwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
 
+## interface/default/ea_xpbarwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_xpbarwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
 ## interface/default/ea_xpbarwindow/source
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `xpbarwindow` | PlainText | 223 | 1 | no | columns: Line |
 | `xpbarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_zonecontrolwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_zonecontrolwindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_zonecontrolwindow/source
 
@@ -10450,6 +11073,70 @@ small column in the game. Every file is still inventoried below.
 | `glyphs` | HeaderedCsv | 20 | 8 | yes | 1 header row; columns: # Glyph Id, Image File Name, Glyph Line Id, Unlock Index 101 to 120, tool tip text Id, tool tip text item 1 |
 | `storylines` | HeaderedCsv | 9 | 1 | yes | 1 header row; columns: Storyline Id |
 
+## shaders
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `blobshadowshader` | PlainText | 19 | 1 | no | columns: Line |
+| `blobshadowshader` | PlainText | 56 | 1 | no | columns: Line |
+| `colorshader` | PlainText | 12 | 1 | no | columns: Line |
+| `colorshader` | PlainText | 60 | 1 | no | columns: Line |
+| `colorspace` | PlainText | 48 | 1 | no | columns: Line |
+| `debugcolor` | PlainText | 30 | 1 | no | columns: Line |
+| `debugcolor` | PlainText | 65 | 1 | no | columns: Line |
+| `debugnormal` | PlainText | 71 | 1 | no | columns: Line |
+| `depthonlyshader` | PlainText | 26 | 1 | no | columns: Line |
+| `depthonlyshader` | PlainText | 71 | 1 | no | columns: Line |
+| `gameterrain_core.inc` | PlainText | 396 | 1 | no | columns: Line |
+| `gameterrain_core.inc` | PlainText | 122 | 1 | no | columns: Line |
+| `gameterrain_hybridlighting` | PlainText | 4 | 1 | no | columns: Line |
+| `gameterrain_hybridlighting` | PlainText | 3 | 1 | no | columns: Line |
+| `gameterrain_offscreen` | PlainText | 4 | 1 | no | columns: Line |
+| `gameterrain_offscreen` | PlainText | 83 | 1 | no | columns: Line |
+| `gameterrain_onscreen.inc` | PlainText | 5 | 1 | no | columns: Line |
+| `gameterrain_vertexlighting` | PlainText | 5 | 1 | no | columns: Line |
+| `gameterrain_vertexlighting` | PlainText | 7 | 1 | no | columns: Line |
+| `genericshader_core.inc` | PlainText | 561 | 1 | no | columns: Line |
+| `genericshader_core.inc` | PlainText | 455 | 1 | no | columns: Line |
+| `genericshader_hybridlight` | PlainText | 29 | 1 | no | columns: Line |
+| `genericshader_hybridlight` | PlainText | 8 | 1 | no | columns: Line |
+| `genericshader_vertexlight` | PlainText | 24 | 1 | no | columns: Line |
+| `genericshader_vertexlight` | PlainText | 13 | 1 | no | columns: Line |
+| `hybridlighting_pshdecl` | PlainText | 46 | 1 | no | columns: Line |
+| `hybridlighting_pshimpl` | PlainText | 426 | 1 | no | columns: Line |
+| `hybridlighting_vshdecl` | PlainText | 8 | 1 | no | columns: Line |
+| `hybridlighting_vshimpl` | PlainText | 99 | 1 | no | columns: Line |
+| `imageprocessing2` | PlainText | 3 | 1 | no | columns: Line |
+| `imageprocessing20` | PlainText | 4 | 1 | no | columns: Line |
+| `imageprocessing2b` | PlainText | 4 | 1 | no | columns: Line |
+| `imageprocessing3` | PlainText | 3 | 1 | no | columns: Line |
+| `imageprocessing30` | PlainText | 4 | 1 | no | columns: Line |
+| `imageprocessing_core.inc` | PlainText | 247 | 1 | no | columns: Line |
+| `imageprocessing_core.inc` | PlainText | 31 | 1 | no | columns: Line |
+| `lighting_pshimpl` | PlainText | 8 | 1 | no | columns: Line |
+| `lighting_vshimpl` | PlainText | 8 | 1 | no | columns: Line |
+| `matrixopmacros` | PlainText | 97 | 1 | no | columns: Line |
+| `oldpostprocess` | PlainText | 230 | 1 | no | columns: Line |
+| `postprocess` | PlainText | 352 | 1 | no | columns: Line |
+| `postprocess` | PlainText | 30 | 1 | no | columns: Line |
+| `postprocess_old` | PlainText | 233 | 1 | no | columns: Line |
+| `shaderlighting` | PlainText | 140 | 1 | no | columns: Line |
+| `shadowmapshader` | PlainText | 39 | 1 | no | columns: Line |
+| `shadowmapshader` | PlainText | 75 | 1 | no | columns: Line |
+| `skyshader` | PlainText | 162 | 1 | no | columns: Line |
+| `skyshader` | PlainText | 93 | 1 | no | columns: Line |
+| `terrain_core.psh` | PlainText | 253 | 1 | no | columns: Line |
+| `uidecalshader` | PlainText | 32 | 1 | no | columns: Line |
+| `uidecalshader` | PlainText | 69 | 1 | no | columns: Line |
+| `uishader` | PlainText | 45 | 1 | no | columns: Line |
+| `uishader` | PlainText | 59 | 1 | no | columns: Line |
+| `vertexlighting_pshdecl` | PlainText | 9 | 1 | no | columns: Line |
+| `vertexlighting_pshimpl` | PlainText | 5 | 1 | no | columns: Line |
+| `vertexlighting_vshdecl` | PlainText | 5 | 1 | no | columns: Line |
+| `vertexlighting_vshimpl` | PlainText | 100 | 1 | no | columns: Line |
+| `watershader` | PlainText | 163 | 1 | no | columns: Line |
+| `watershader` | PlainText | 105 | 1 | no | columns: Line |
+
 ## unknown_hashes/csv
 
 | File | Format | Rows | Cols | Key | Notes |
@@ -11000,6 +11687,108 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `zones` | Binary | 1 | 1 | no | columns: Bytes |
+
+## zones/regions
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `region001` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region002` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region003` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region004` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region005` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region006` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region007` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region008` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region009` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region010` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region011` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region012` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region014` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region015` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region016` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region017` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region030` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region031` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region032` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region033` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region034` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region036` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region037` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region038` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region039` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region041` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region042` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region043` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region044` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region045` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region050` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region051` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region052` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region060` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region063` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region064` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region065` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region066` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region130` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region131` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region132` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region133` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region134` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region135` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region136` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region137` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region138` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region139` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region152` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region153` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region154` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region155` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region156` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region157` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region158` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region159` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region160` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region163` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region164` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region165` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region166` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region167` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region168` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region169` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region170` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region171` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region172` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region173` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region174` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region176` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region177` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region179` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region195` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region196` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region197` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region198` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region199` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region230` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region231` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region232` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region234` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region235` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region236` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region237` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region238` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region241` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region242` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region243` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region244` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region260` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region263` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region264` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region265` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region266` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region410` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region411` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region412` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 
 ## zones/scenery
 
@@ -12926,6 +13715,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 49 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `thumbs` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
 
 ## zones/zone137/textures
@@ -13259,6 +14049,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `textures` | HeaderedCsv | 168 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+| `thumbs` | Binary | 1 | 1 | no | columns: Bytes |
 
 ## zones/zone163
 
@@ -14027,6 +14818,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `textures` | HeaderedCsv | 953 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+| `thumbs` | Binary | 1 | 1 | no | columns: Bytes |
 
 ## zones/zone210
 
@@ -14441,6 +15233,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+| `thumbs` | Binary | 1 | 1 | no | columns: Bytes |
 
 ## zones/zone234
 

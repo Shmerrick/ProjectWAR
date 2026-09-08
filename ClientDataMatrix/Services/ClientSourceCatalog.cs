@@ -129,7 +129,24 @@ namespace ClientDataMatrix.Services
         /// how the game is wired.
         /// </summary>
         private static readonly HashSet<string> DataExtensions =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".csv", ".xml", ".txt", ".lua", ".ini", ".dat" };
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ".csv", ".xml", ".txt", ".lua", ".ini", ".dat",
+
+                // Found by auditing the finished extraction against this list rather than trusting
+                // it. All of these are text and none were being read:
+                //   .mod     97 UI module definitions, XML. This is the file type that carried the
+                //            contested-instance lobby's contract; missing it was not academic.
+                //   .layout  97 region definitions, XML: <region number="1"><zone number="6" x=.. y=..>
+                //   .cfg      1 login.cfg, XML
+                //   .ems     29 particle system definitions
+                //   .h/.inc/.psh/.vsh  shader source, text
+                ".mod", ".layout", ".cfg", ".ems", ".h", ".inc", ".psh", ".vsh",
+
+                // Binary, listed for size only so they are visible rather than invisible.
+                // abilitycomponentexport.bin is among them and the name alone is worth knowing.
+                ".db", ".bin"
+            };
 
         /// <summary>
         /// How many of a table's rows may repeat an id before column 0 stops counting as its key.
@@ -233,7 +250,12 @@ namespace ClientDataMatrix.Services
             switch (extension.ToLowerInvariant())
             {
                 case ".csv": return SourceFormat.HeaderedCsv;
-                case ".xml": return SourceFormat.Xml;
+
+                // .mod, .layout and .cfg are XML under another extension.
+                case ".xml":
+                case ".mod":
+                case ".layout":
+                case ".cfg": return SourceFormat.Xml;
 
                 // A .txt is usually an "id{tab}text" table but not always -- notes and unkeyed
                 // lists share the extension -- so the loader sniffs the first lines and downgrades
@@ -241,8 +263,16 @@ namespace ClientDataMatrix.Services
                 case ".txt": return SourceFormat.IndexedStringTable;
 
                 case ".lua":
-                case ".ini": return SourceFormat.PlainText;
-                case ".dat": return SourceFormat.Binary;
+                case ".ini":
+                case ".ems":
+                case ".h":
+                case ".inc":
+                case ".psh":
+                case ".vsh": return SourceFormat.PlainText;
+
+                case ".dat":
+                case ".db":
+                case ".bin": return SourceFormat.Binary;
                 default: return SourceFormat.Unknown;
             }
         }

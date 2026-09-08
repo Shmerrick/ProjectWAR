@@ -361,8 +361,7 @@ Primary files:
 ```
 
 Everything else in this tool is about abilities and reads eight files. This one walks the extracted
-client and reads **all 8,206 data files** in it -- every .csv, .xml, .txt, .lua, .ini and .dat under
-the extraction root, 5.4 million data rows, in about 13 seconds. It writes two documents to
+client and reads **all 8,499 data files** in it, 5.5 million data rows, in about 13 seconds. It writes two documents to
 `docs/data-matrix/client-sources/`.
 
 Discovery is a recursive sweep, not a list of directories. The first version named three and reached
@@ -496,3 +495,25 @@ detection discarding a 41,000-row table over 375 imperfect rows out of 41,384.
 Two independent checks now agree end to end: row counts match an independent count using the same
 rules across all 103 gamedata CSVs, and the inventory's per-family tables list exactly the 8,206
 files the header claims.
+
+### The extension list was a guess; it has been checked
+
+The set of extensions to read was written from memory before the extraction finished. Auditing it
+against the completed tree found **293 text files being skipped**, in types that matter:
+
+| ext | count | what it is |
+| --- | --- | --- |
+| `.mod` | 97 | UI module definitions, XML. **The file type that carried the contested-instance lobby's contract** — skipping it was not academic |
+| `.layout` | 97 | region definitions, XML: `<region number="1"><zone number="6" x="90" y="103"/>` |
+| `.ems` | 29 | particle system definitions |
+| `.psh` `.vsh` `.h` `.inc` | 59 | shader source |
+| `.cfg` | 1 | `login.cfg`, XML |
+| `.db` `.bin` | 10 | binary; listed for size so they are visible. `abilitycomponentexport.bin` is one of them |
+
+Everything else in the tree was checked and is genuinely art or audio — `.dds`, `.xsm`, `.nif`,
+`.wav`, `.mp3`, `.geom`, `.lmp`, `.mask`, `.diffuse`, `.tint`, `.specular`, `.kf`, `.kfm`, `.xac`,
+`.pcx`, `.tga`, `.ttf`, `.bik`. `.patch` (14,336) and `.zmft` (232) were sampled and are binary
+despite sounding like manifests, at 41% and 37% printable with no readable structure. The 18
+extensionless files are NIF effects in `art/nifs/effects`.
+
+Coverage is now **8,499 of 8,499**, which matches the file count on disk exactly.
