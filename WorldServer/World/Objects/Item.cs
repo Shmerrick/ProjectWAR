@@ -223,14 +223,11 @@ namespace WorldServer.World.Objects
                 if (tali.Slot == SlotId && tali.Fused == 1 || info.Crafts == ItemService.GetItem_Info(tali.Entry).Crafts && tali.Slot != SlotId)
                     return false;
             }
-            // Timer is the absolute unix timestamp the talisman decays at, or 0 for a permanent
-            // one. It has always been written as 0 here, which is why every timed talisman lasted
-            // forever despite the client showing a duration on the tooltip.
-            uint expiry = info.TalismanDuration == 0
-                ? 0u
-                : (uint)(TCPManager.GetTimeStamp() + info.TalismanDuration);
-
-            CharSaveInfo._Talismans.Add(new Talisman(entry, SlotId, 1, expiry));
+            // Timer stays 0 here. This only places the talisman in the slot UNFUSED (Fused = 1) --
+            // the player is still choosing, and AbortFuseTalisman throws it away again. A decaying
+            // talisman must not start decaying while it sits in the fusing window; the clock starts
+            // when it is committed to the item, in FuseTalisman.
+            CharSaveInfo._Talismans.Add(new Talisman(entry, SlotId, 1, 0));
             return true;
         }
 
@@ -292,33 +289,61 @@ namespace WorldServer.World.Objects
             return item;
         }
 
+        /// <summary>
+        /// Commits the talismans sitting unfused in this item's slots.
+        ///
+        /// This is where a decaying talisman's clock starts. Placing one through
+        /// <see cref="AddTalisman"/> leaves it unfused and abandonable; fusing is the point it is
+        /// actually in the item, so that is when the expiry is stamped.
+        /// </summary>
         public void FuseTalisman()
         {
+            if (CharSaveInfo == null || CharSaveInfo._Talismans == null)
+                return;
+
             List<Talisman> unfused = new List<Talisman>();
 
             foreach (Talisman tali in CharSaveInfo._Talismans)
             {
                 if (tali.Fused == 1)
-                {
                     unfused.Add(tali);
-                }
             }
-            for (int i = 0; i < CharSaveInfo._Talismans.Count; i++)
+
+            if (unfused.Count == 0)
+                return;
+
+            // Drop the already-fused talisman each new one is replacing. This used to walk forwards
+            // and call RemoveAt(i) from inside a nested loop that then re-read index i, so a
+            // replacement could delete the wrong entry or run off the end of the list; walking
+            // backwards removes exactly the intended rows.
+            for (int i = CharSaveInfo._Talismans.Count - 1; i >= 0; --i)
             {
-                foreach (Talisman tali in unfused)
+                Talisman existing = CharSaveInfo._Talismans[i];
+                if (existing.Fused != 0)
+                    continue;
+
+                for (int j = 0; j < unfused.Count; ++j)
                 {
-                    if (CharSaveInfo._Talismans[i].Slot == tali.Slot && CharSaveInfo._Talismans[i].Fused == 0)
+                    if (unfused[j].Slot == existing.Slot)
+                    {
                         CharSaveInfo._Talismans.RemoveAt(i);
-                }
-            }
-            foreach (Talisman tali in CharSaveInfo._Talismans)
-            {
-                if (tali.Fused == 1)
-                {
-                    tali.Fused = 0;
+                        break;
+                    }
                 }
             }
 
+            long now = TCPManager.GetTimeStamp();
+
+            for (int i = 0; i < unfused.Count; ++i)
+            {
+                Talisman tali = unfused[i];
+                tali.Fused = 0;
+
+                Item_Info info = ItemService.GetItem_Info(tali.Entry);
+                tali.Timer = info == null || info.TalismanDuration == 0
+                    ? 0u
+                    : (uint)(now + info.TalismanDuration);
+            }
         }
 
         public List<uint> AbortFuseTalisman()

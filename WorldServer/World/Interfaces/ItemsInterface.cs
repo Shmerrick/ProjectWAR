@@ -962,6 +962,13 @@ namespace WorldServer.World.Interfaces
 
             Player Plr = _playerOwner;
 
+            // A talisman's clock runs from the moment it is fused, whether or not the item is being
+            // worn, so one can decay while the weapon sits in a bag. Clear those out before the
+            // stats go on rather than granting them for up to a sweep interval -- and, more
+            // importantly, so that equip and unequip agree about which talismans exist. Applying a
+            // stat here that the sweep later removes would leave the player permanently short.
+            Itm.RemoveExpiredTalismans(TCPManager.GetTimeStamp());
+
             foreach (KeyValuePair<byte, ushort> Stats in Itm.Info._Stats)
                 Plr.StsInterface.AddItemBonusStat((Stats)Stats.Key, Stats.Value);
 

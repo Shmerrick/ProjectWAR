@@ -556,6 +556,31 @@ inference. Remaining is the only reading that makes a countdown work, and the va
 per-instance state (`talis.Timer`) rather than the item row, which points the same way — but it is
 inference, and it is the first thing an in-client test should check.
 
+
+### When the clock starts
+
+**The timer starts when the talisman is fused into an item, not when it is acquired and not when
+the item is worn.**
+
+That distinction is load-bearing, because socketing is two steps. `AddTalisman` places the talisman
+in the slot **unfused** (`Fused = 1`) while the player is still choosing, and `AbortFuseTalisman`
+throws it away again. Only `FuseTalisman` commits it. Stamping the expiry on placement would start
+an eight-hour clock while somebody browsed the fusing window, and re-stamp it on every abort and
+retry, so the stamp is written in `FuseTalisman` at the moment `Fused` flips to 0.
+
+A fused talisman then decays whether or not the item is worn — the stamp is absolute, so a weapon
+left in a bag comes out with less time on it, or none.
+
+Which creates one more hole worth closing: `EquipItem` applies talisman stats, and would have
+granted the stats of an already-decayed talisman for up to a sweep interval. Worse, equip and
+unequip would have disagreed about which talismans exist — the sweep removing a stat that equip had
+added — and the player would end up permanently short. `EquipItem` now clears expired talismans
+before applying anything.
+
+`FuseTalisman` also had a real bug on the replacement path. It walked the list forwards calling
+`RemoveAt(i)` from inside a nested loop that then re-read index `i`, so replacing a fused talisman
+could delete the wrong entry or index off the end of the list. It now walks backwards.
+
 ### How it works now
 
 `Item_Info.TalismanDuration` is parsed from the fourth field. `AddTalisman` stamps
