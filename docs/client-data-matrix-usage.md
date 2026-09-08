@@ -353,3 +353,55 @@ Primary files:
 - `component-operation-schemas.csv`
 - `component-operation-schemas.fields.csv`
 - `component-operation-schemas.abilities.csv`
+
+## Reading the whole client: `report sources`
+
+```powershell
+.\bin\Release\ClientDataMatrix.exe report sources --root C:\Users\Admin\Downloads\myps --output docs\data-matrix
+```
+
+Everything else in this tool is about abilities and reads eight files. This one walks the extracted
+client and reads **all 701** of them — 103 gamedata CSVs, 6 gamedata XML files, 56 English string
+tables and their thirteen other locales, and the 68 zone map definitions — 1.25 million data rows.
+It writes two documents to `docs/data-matrix/client-sources/`.
+
+**`client-data-inventory.md`** lists every file with its format, row and column counts, column
+names, how many header and comment rows were skipped, and — the useful part — whether its first
+column is a unique integer, meaning it can be joined against at all. 121 of the 701 can.
+
+**`client-data-links.md`** lists every column whose values resolve into another file's key, with a
+sample of the target's names for those values.
+
+### Why the link report is a shortlist and not an answer
+
+The first version of this produced 18,310 "links" and every one of them was numerically valid. Most
+of these files number their rows from 1 with no gaps, so any column of numbers inside such a range
+resolves into it completely whether or not it means to. Filtering to English strings, ignoring row-id
+columns as sources and raising the evidence floor cuts it to 1,154 — which is a searchable shortlist,
+not a set of conclusions.
+
+Two things were tried for ranking and neither works: rate, because dense targets always score 100%,
+and a specificity score weighting rate against the target's density, because that just promotes
+whichever sparse table happens to absorb small numbers. **No arithmetic on these numbers separates a
+real reference from a coincidence**, so the report says so and orders by weight of evidence instead.
+
+What settles a link is the sample column. Nothing about 88,676 item rows resolving into `objects.csv`
+proves `ModelId` means art; what proves it is that 8334 is named `tk_soultalisman_intelligence` and
+the item carrying it grants Intelligence. Read the names.
+
+The standing warning is in the report itself: `data/gamedata/abilities.csv` agrees with the client's
+real ability ids on 13 of 3,115 while looking entirely plausible by these measures, and joining on it
+is what filled `mythic_src_abilities` with another ability's names and effect ids.
+
+### Notes on the readers
+
+- CSVs carry one or two header rows — one in `itemdata.csv`, two in `abilities.csv` and
+  `objects.csv` where the first groups columns and the second names them. The header is however many
+  leading rows do not start with an integer, and the last of them is kept as the column names.
+- Rows beginning with `;` are authoring comments and appear **throughout** the data, not just at the
+  top. They are counted and dropped. Treating them as data is how `abilities.csv` ids drift.
+- String tables are UTF-16 and keep their caret suffixes (`^n`, `^m`, `^f`) verbatim. Those are
+  grammatical gender markers; stripping them once cost 5,210 rows of the world database.
+- Some XML is not well-formed and the client reads it anyway —
+  `maps/zone006/mappoints.xml` has a landmark called "Pick & Goggles" with a bare ampersand. Bare
+  ampersands are escaped and the parse retried rather than losing a zone's map over one character.

@@ -77,6 +77,15 @@ namespace ClientDataMatrix
                 return report.HasFailures ? 1 : 0;
             }
 
+            // Reads the client directly and needs none of the ability dataset, so it runs before
+            // that load rather than paying for it.
+            if (string.Equals(toolArguments.Command, "report_sources", StringComparison.OrdinalIgnoreCase))
+            {
+                string sourcesDirectory = ClientSourceReport.Write(toolArguments.ExtractedRootPath, outputRoot);
+                Console.WriteLine("Client data inventory written to " + sourcesDirectory);
+                return 0;
+            }
+
             MatrixAnalysisSession session = MatrixAnalysisSession.Load(toolArguments.ExtractedRootPath);
 
             if (string.Equals(toolArguments.Command, "doctor_ability", StringComparison.OrdinalIgnoreCase)
@@ -371,6 +380,14 @@ namespace ClientDataMatrix
 
             if (positionalArguments.Count >= 2
                 && string.Equals(positionalArguments[0], "report", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(positionalArguments[1], "sources", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedArguments.Command = "report_sources";
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "report", StringComparison.OrdinalIgnoreCase)
                 && string.Equals(positionalArguments[1], "conflicts", StringComparison.OrdinalIgnoreCase))
             {
                 parsedArguments.Command = "report_conflicts";
@@ -475,6 +492,7 @@ namespace ClientDataMatrix
             Console.WriteLine("  ClientDataMatrix clean");
             Console.WriteLine("  ClientDataMatrix doctor ability <abilityId> [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix export graph ability <abilityId> [--root <path>] [--output <path>]");
+            Console.WriteLine("  ClientDataMatrix report sources [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix report conflicts [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix report coverage [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix report domains [--root <path>] [--output <path>]");
