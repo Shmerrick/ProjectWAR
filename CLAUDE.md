@@ -109,10 +109,17 @@ The open dependabot branch is cut from master and does not apply.
    LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
    ```
 
-   **Item names have no arbiter at all — not the client, and not the Londo dump.** WorldServer
-   writes the item name into the item packet itself (`World/Objects/Item.cs:512`,
-   `Out.WritePascalString(info.Name)`), so the client never holds them and no client file can
-   arbitrate `item_infos.Name` the way `abilitynames.txt` arbitrates ability names.
+   **Item names have no *client* arbiter — the packet captures are the arbiter instead.**
+   WorldServer writes the item name into the item packet itself (`World/Objects/Item.cs:512`,
+   `Out.WritePascalString(info.Name)`), and so did the real server, so no client file can arbitrate
+   `item_infos.Name` the way `abilitynames.txt` arbitrates ability names. But that same fact makes
+   the capture corpus authoritative: 24,977 `F_GET_ITEM` (0xAA) frames across the 1,027 logs carry
+   the live 1.4.8 server's own names for **1,955 distinct items**, in its own bytes. Extract with
+   `tools/captures/extract_item_names.awk`; 1,709 of 1,760 joinable names already agree (97.1%),
+   which is what validates the decode. **Check an item name here before anywhere else.** Migrations
+   85 and 86 repaired six names this way. The decode's failure mode is the alternate-appearance
+   block shifting the frame, so require the frame's ModelId to match ours and the entry to carry a
+   single name across all frames before trusting a disagreement.
 
    The nearest thing to a second opinion is
    `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2\War_Item.sql` (9,948
@@ -126,10 +133,11 @@ The open dependabot branch is cut from master and does not apply.
    neither side wins by default.
 
    It overlaps 2,617 of our 88,727 entries and agrees on 2,562 names. Migration 85 repaired four
-   where ours began mid-word (`rought Key`, `of Geheb: Hondo`, `tched Axebelt of the Flesh`) — those
-   are self-evidently damaged in our copy whatever the other says. The other ~75,000 names arrived in
-   the base `war_world.sql` from the pre-`RESTART` lineage with no surviving provenance. Item names
-   are the weakest data we have; do not present one as verified.
+   where ours began mid-word; the captures have since independently confirmed three of those four,
+   which is the pattern to follow — use Londo to find candidates, the captures to settle them.
+   The other ~75,000 names arrived in the base `war_world.sql` from the pre-`RESTART` lineage with no
+   surviving provenance, and only 1,955 items are covered by captures, so most item names remain
+   unverified. Do not present one as verified without a capture behind it.
 
    **Large parts of `item_infos` were generated from the client, so they cannot re-verify it.**
    WAR-RE-Toolkit's `generate_item_infos.py` built the table from `itemdata.csv` + `objects.csv`,
