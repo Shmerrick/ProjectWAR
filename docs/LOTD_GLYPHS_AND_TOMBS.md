@@ -370,6 +370,61 @@ Three things are still missing and need evidence rather than a guess:
   Tomb of the Stars".
 
 
+
+### What the second capture set adds
+
+**The 30-minute timer, confirmed twice.** "or 29:54" on a lair, and 24:36 counting down on the
+header of "Purge the Tomb of the Vulture Lord - Purge! (Normal)". Migration 81's `Time = 1800` is
+right.
+
+**The Vulture Lord's names are exactly ours.** The live tracker header reads *"Purge the Tomb of the
+Vulture Lord"* with stage *"Purge!"* — `pquest_info` 599 and its `StageName` verbatim. So the
+"Conflict Within the Tomb - Purge" header seen on a lair is a different name for the four lair
+quests only; 599 needs no rename, and 595-598 remain open.
+
+**The invader tracks the defender's realm.** Order invading shows "Destruction Defenders Purged
+4/6", which is exactly what 599 carries. So the per-tomb realm wording is not necessarily wrong — it
+matches this capture — but a Destruction invasion of the same tomb must show the opposite, and
+nothing in the database provides that.
+
+**Three Major bags, and nothing else.** The Public Quest Scoreboard reads "3 Rewards" with three
+purple icons over six contributors, and no bag of another colour appears.
+
+`GoldChest.GenerateLootBags` could not produce that for any of the five. The four lairs carry
+`PQDifficult` 3, which resolves to Hard and pays gold and blue bags the live window never shows.
+Worse, **Purge the Tomb of the Vulture Lord carries `PQDifficult` 0**, which becomes
+`(PublicQuestDifficulty)(-1)` and falls through to the `default:` branch, where only the gold count
+is assigned and the array keeps its initialiser — **one white bag** for an invasion that should pay
+three purples. The purge quests now bypass the difficulty switch entirely.
+
+(That default branch also catches 64 other `PQType 1` quests carrying `PQDifficult 0`, each paying a
+single white bag. Whether that is intended for them is not established, so they are left alone.)
+
+**The reward tables differ by realm, and the reason is a hypothesis.** One bag offered Cluster of
+Golden Scarabs / Golden Scarab / Oaken Figurine; another offered Golden Cartouche / Omnipotent
+Myrmidon's Soul / Trueshot Myrmidon's Soul. The suggestion is that the table scales with how far the
+*defending* group had progressed — the richer bag came from a group killed near the Vulture Lord, the
+poorer from one killed after a few bosses. **Not established**, and one of the two captures is
+disputed (the wrong bag was opened), so no loot table is written from it.
+
+### Two mechanics with no implementation at all
+
+**Progressive respawn checkpoints in the Vulture Lord.** Killing a boss unlocks a checkpoint that
+becomes the player's respawn point for the zone, and an NPC in the first room ports arrivals to the
+furthest unlocked one — which is why invaders are not seen starting from the entrance. That NPC's
+realm access follows Land of the Dead ownership, so an invading realm can use it too.
+
+Zone 179 has exactly **two** `zone_respawns` rows — 635 Order and 636 Destruction, both at the
+entrance — and there is no checkpoint state, no porter NPC identified and no boss-kill hook. The
+dungeon's ten-plus bosses are in `instance_boss_spawns` (BossID 179 upward), so the trigger points
+exist; nothing consumes them.
+
+**The quest chain that ties the roaming PQs to glyphs.** "Four Tombs for Four Pillars" exists as
+`quests` 50020-50026, and its objective text matches the live tracker word for word — "Amsu's Charge
+completed", "Horse Glyph received", "Nikosi Temple completed", "Reed Glyph received", and so on. But
+every objective carries `ObjType 0` and `ObjID 0`, so nothing progresses them, and **50022 has no
+objectives at all**. Same shape as the Purge counters: the data is here, the binding is not.
+
 ### Purge rewards, achievements and the soul talismans
 
 Nearly all of this was already in the database; what was missing was the bindings between the parts.

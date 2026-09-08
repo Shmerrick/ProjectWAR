@@ -109,8 +109,28 @@ namespace WorldServer.World.Objects
 
         private void GenerateLootBags(int playerCount)
         {
+            // Land of the Dead invasion: exactly three Major (purple) bags and nothing else. The
+            // live scoreboard reads "3 Rewards" with three purple icons over six contributors, and
+            // no bag of any other colour is offered.
+            //
+            // These cannot go through the PQType switch below. Purge the Tomb of the Vulture Lord
+            // carries PQDifficult 0, which becomes (PublicQuestDifficulty)(-1) and falls to the
+            // default branch, where only the gold count is assigned and the array keeps its
+            // initialiser -- a single white bag for an invasion that should pay three purples. The
+            // other four carry PQDifficult 3, which resolves to Hard and pays gold and blue bags
+            // that the live window never shows.
+            if (LotdService.IsPurgePublicQuest(_publicQuestInfo.Entry))
+            {
+                _bags[white] = 0;
+                _bags[green] = 0;
+                _bags[blue] = 0;
+                _bags[purple] = 3;
+                _bags[gold] = 0;
+                return;
+            }
+
             //generate lootbags
-            // RB   5/14/2016   Establish minimums based on type.        
+            // RB   5/14/2016   Establish minimums based on type.
             switch (_publicQuestInfo.PQType)
             {
                 // RB   5/14/2016   PvE PQs have bag counts based on rarity and random chance.

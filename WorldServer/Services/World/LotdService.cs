@@ -48,6 +48,24 @@ namespace WorldServer.Services.World
             return false;
         }
 
+        /// <summary>
+        /// The five Land of the Dead invasion public quests, one per invadable instance:
+        /// 595 Stars, 596 Moon, 597 Sky, 598 Sun, 599 Vulture Lord.
+        /// </summary>
+        private static readonly ushort[] PurgePublicQuests = { 595, 596, 597, 598, 599 };
+
+        /// <summary>True for a "Purge the Tomb of ..." public quest.</summary>
+        public static bool IsPurgePublicQuest(uint entry)
+        {
+            for (int i = 0; i < PurgePublicQuests.Length; ++i)
+            {
+                if (PurgePublicQuests[i] == entry)
+                    return true;
+            }
+
+            return false;
+        }
+
         private const byte RetailTrackerCount = 1;
         private const byte RetailTrackerId = 1;
         private const uint RetailTrackerHeaderValue = 4;
