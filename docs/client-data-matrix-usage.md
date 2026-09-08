@@ -626,7 +626,40 @@ defeats the one thing the index is for: a grep for `293` would miss it, and the 
 client not having the icon. UI layout files, where `id` appears on a handful of window elements,
 fall below the record threshold and keep the old element/count/attribute summary.
 
-**Item display names are not in the client.** A grep for `Myrmidon` returns nothing, and that is the
+## Searching the client by hand — the encoding trap
+
+Most of the client's string tables are **UTF-16LE**. Three obvious ways to search them are silently
+wrong, and each produced a confident false negative in the session that wrote this section:
+
+| Method | What actually happens |
+|---|---|
+| `grep -r "Myrmidon" .` | Never matches a UTF-16LE file. Returns nothing, looks like absence. |
+| `grep -a $'M\x00y\x00r\x00m\x00'` | A NUL cannot be passed as a shell argument — the C string ends there, so the pattern collapses to `M` and matches almost every binary in the tree. |
+| `iconv -f UTF-16LE file \| grep …` | Fails silently on files it cannot decode and emits nothing, so a real hit reads as a clean miss. This one is the most dangerous, because the output looks like a successful search. |
+
+Two techniques that do work:
+
+```bash
+# 1. Wildcard the NUL padding. '.' matches it, so one pattern covers UTF-16LE.
+grep -aE 'A.n.c.i.e.n.t. .T.a.b.l.e.t' file            # UTF-16LE
+grep -aE 'Ancient Tablet|A.n.c.i.e.n.t. .T.a.b.l.e.t'  # either encoding, one pass
+
+# 2. strings -el decodes 16-bit little-endian properly.
+strings -el file | grep -i 'ancient tablet'
+```
+
+Verify the technique before trusting a negative result. `grep -ac 'D.r.e.a.d.f.u.l. .A.g.o.n.y'
+data/strings/english/abilitynames.txt` returns 4 — if your method cannot find that, it cannot find
+anything, and a zero means nothing.
+
+**Item display names are not in the client**, and this was measured rather than assumed. Forty item
+names taken from the live packet captures were searched across all 8,407 text-extension files in
+both encodings: **one matched**, and it is `Ancient Tablets` in
+`tome/warjournal/activity_task_01_names.txt`, sitting between `Nagarythe Citizen` and `Lothern
+Seascout` — a public-quest stage name that happens to collide with an item, not an item table. A
+separate pass for six item-specific words across all **110,916** non-image files found zero, as did
+a UTF-8 pass for `Myrmidon` across all **187,811** extracted files and a search of the live install's
+`cache`, `user`, `notes` and `assetdb`. A grep for `Myrmidon` returns nothing, and that is the
 correct answer rather than a gap in the index: `data/strings/english/` has no `itemnames.txt`, and
 `objects.csv` carries art names (`tk_soultalisman_intelligence`), not display names. `icons.xml`
 does not fill this gap — its populated `name` values are UI asset names (`career_archmage`,

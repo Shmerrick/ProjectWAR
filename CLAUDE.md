@@ -148,6 +148,14 @@ The open dependabot branch is cut from master and does not apply.
    agreements prove nothing. Combat stats, `Career` and `Race` were never populated and are 0.
    Treat a client file as an arbiter only where the column was not imported from it.
 
+   **Searching the client by hand: the string tables are UTF-16LE and the obvious methods fail
+   silently.** `grep -r "text" .` never matches them; `grep -a $'M\x00y\x00'` collapses to `M`
+   because a NUL cannot survive as a shell argument; and `iconv -f UTF-16LE | grep` emits nothing on
+   files it cannot decode, so a real hit reads as a clean miss. Use `grep -aE 'A.n.c.i.e.n.t'` —
+   `.` matches the NUL padding — or `strings -el file | grep`. Prove the method first:
+   `grep -ac 'D.r.e.a.d.f.u.l. .A.g.o.n.y' data/strings/english/abilitynames.txt` must return 4.
+   A negative result from an unverified method is worthless. See `docs/client-data-matrix-usage.md`.
+
    Format is `relative/path{tab}id{tab}field{tab}value`, English only, every keyed file in the
    extraction that has a readable column — **including record-shaped XML**, which was skipped
    entirely until it was noticed that this hid `interface/default/eatemplate_icons/source/icons.xml`,
