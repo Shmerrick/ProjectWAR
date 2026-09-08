@@ -70,7 +70,7 @@ namespace WorldServer.Managers.Commands
 
             int listed = 0;
 
-            foreach (ushort zoneId in new ushort[] { 241, 242, 243, 244 })
+            foreach (ushort zoneId in new ushort[] { 179, 241, 242, 243, 244 })
             {
                 foreach (Instance instance in WorldMgr.InstanceMgr.GetOpenInstances(zoneId))
                 {

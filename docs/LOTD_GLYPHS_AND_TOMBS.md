@@ -272,7 +272,8 @@ expedition flips — the answer changes because the world did. `Instance` theref
 `OwningRealm`, a fact about who opened it, and `InstanceMgr.CanBeInvadedBy(instance, player)`
 computes the rest on every call:
 
-1. the zone is one of the four lairs (`LotdService.IsInvadableLairZone`);
+1. the zone is an invadable Land of the Dead instance -- the four lairs or the Tomb of the Vulture
+   Lord (`LotdService.IsInvadableLairZone`);
 2. the invader's realm currently holds the expedition (`LotdService.CanRealmAccessLotd`) — this is
    the part that moves;
 3. the copy belongs to the other realm.
@@ -292,6 +293,24 @@ safe to invadable with nothing about them having changed. That is the behaviour 
 **What this does not do.** There is still no way for a player to invade — that needs the lobby
 packets, which are not established (see above). This is the ownership model underneath it, and it is
 observable through the GM command only.
+
+
+#### The Tomb of the Vulture Lord is invadable
+
+It was briefly left out of the invadable set here on the reasoning that it carries no glyph cost in
+the client's zone map. **That was a bad inference** — the entry cost and invadability are unrelated
+properties, and the "unknown" recorded against its glyph cost said nothing about invasion.
+
+The evidence runs the other way:
+
+- The coward brand is scoped to *"another Land of the Dead instance"*, with no exception carved out.
+- **It is the only instance zone in the game with a split entrance per realm.** `TOTVL.AddPlayer`
+  overrides the base entry to send each realm to its own `zone_respawns` row rather than a shared
+  door, and the comment on it notes this is unique: *"every instance zone has two realm respawn
+  rows, but in the others they are ordinary interior respawn points rather than a split entrance."*
+  A per-realm entrance is precisely what a zone needs when both realms can be inside it at once.
+
+So `InvadableLairZones` is 179, 241, 242, 243, 244.
 
 ### What implementing it would take
 

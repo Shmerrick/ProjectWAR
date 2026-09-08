@@ -361,7 +361,7 @@ namespace WorldServer.World.Objects.Instances
         /// only <see cref="Instance.OwningRealm"/>, which is a fact about who opened it.
         ///
         /// The conditions, in order of how often they are false:
-        ///   - the zone is one of the four Land of the Dead lairs;
+        ///   - the zone is an invadable Land of the Dead instance -- the four lairs or the Vulture Lord;
         ///   - the invader's realm currently holds the expedition;
         ///   - the copy belongs to the other realm.
         /// </summary>
@@ -384,7 +384,7 @@ namespace WorldServer.World.Objects.Instances
         /// <summary>
         /// The enemy copies of <paramref name="zoneId"/> this player could invade right now, in
         /// creation order. Empty when the player's realm does not hold the expedition, when the
-        /// zone is not an invadable lair, or when the enemy has no copy open.
+        /// zone is not an invadable Land of the Dead instance, or when the enemy has no copy open.
         ///
         /// A copy with nobody in it is skipped: invading an empty instance is a private dungeon run
         /// with extra steps, and the coward brand the client describes is defined in terms of

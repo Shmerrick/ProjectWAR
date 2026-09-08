@@ -22,12 +22,19 @@ namespace WorldServer.Services.World
         public const ushort LotdZoneId = 191;
 
         /// <summary>
-        /// The four Land of the Dead lairs, which the expedition holder can invade. The Tomb of the
-        /// Vulture Lord (179) is deliberately absent: it is the raid dungeon, it carries no glyph
-        /// cost in the client's zone map, and nothing establishes that it was invadable. Add it if
-        /// evidence turns up.
+        /// The Land of the Dead instances the expedition holder can invade: the four lairs and the
+        /// Tomb of the Vulture Lord.
+        ///
+        /// 179 was briefly left out of this list on the reasoning that it carries no glyph cost in
+        /// the client's zone map. That was a bad inference -- the entry cost and invadability are
+        /// unrelated properties, and nothing about the one says anything about the other. The
+        /// evidence points the other way: the coward brand text is scoped to "another Land of the
+        /// Dead instance" with no exception, and the Vulture Lord is the ONLY instance zone with a
+        /// split entrance per realm (see <see cref="TomboftheVultureLord.TOTVL.AddPlayer"/>, where
+        /// each realm arrives at its own <c>zone_respawns</c> row rather than a shared door). A
+        /// per-realm entrance is exactly what a zone needs when both realms can be inside it.
         /// </summary>
-        private static readonly ushort[] InvadableLairZones = { 241, 242, 243, 244 };
+        private static readonly ushort[] InvadableLairZones = { 179, 241, 242, 243, 244 };
 
         /// <summary>True for a lair whose enemy copies the expedition holder may enter.</summary>
         public static bool IsInvadableLairZone(ushort zoneId)
