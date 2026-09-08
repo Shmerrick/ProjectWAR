@@ -114,6 +114,33 @@ internal static class LotdGlyphChecks
             Equal(0, Scalar("SELECT COUNT(*) FROM lotd_tomb_glyph_costs WHERE TombZoneId = 179"),
                 "cost rows on the Tomb of the Vulture Lord");
 
+            // Talisman decay. Item.AddTalisman refuses anything whose Type is not 23
+            // (ITEMTYPES_ENHANCEMENT), so a talisman typed anything else cannot be socketed at all
+            // and fails silently. 305 rows carrying the talisman description were Type 0 or 31.
+            Equal(0, Scalar(
+                "SELECT COUNT(*) FROM item_infos"
+                + " WHERE Description LIKE 'This talisman can only be used%' AND Type <> 23"),
+                "talisman-described items that cannot be socketed");
+
+            Equal(0, Scalar(
+                "SELECT COUNT(*) FROM mythic_src_item_infos"
+                + " WHERE Description LIKE 'This talisman can only be used%' AND Type <> 23"),
+                "talisman-described items mistyped in the table the server reads");
+
+            // The duration lives in the fourth field of a Stats entry, "type:value:0:seconds". All
+            // sixteen Land of the Dead souls show "Duration: 8h" on the live tooltip.
+            Equal(16, Scalar(
+                "SELECT COUNT(*) FROM item_infos"
+                + " WHERE (Entry BETWEEN 2005595 AND 2005602 OR Entry BETWEEN 2005663 AND 2005670)"
+                + " AND Stats LIKE '%:0:28800;'"),
+                "Land of the Dead souls carrying the eight-hour duration");
+
+            Equal(16, Scalar(
+                "SELECT COUNT(*) FROM item_infos a JOIN mythic_src_item_infos b ON b.Entry = a.Entry"
+                + " WHERE (a.Entry BETWEEN 2005595 AND 2005602 OR a.Entry BETWEEN 2005663 AND 2005670)"
+                + " AND a.Type = b.Type AND a.Stats = b.Stats"),
+                "soul talismans in sync across both item tables");
+
             // The eight soul talismans. 2005595 Demon was corrupted -- truncated name, empty
             // description, a garbage Stats blob -- and both item tables must agree, since the
             // server reads mythic_src_item_infos (hard rule 1).
@@ -162,6 +189,7 @@ internal static class LotdGlyphChecks
             Console.WriteLine("PASS: 4 tombs spend all 10 glyphs between them, matching the client zone map; the Vulture Lord is ungated.");
             Console.WriteLine("PASS: both realms have a respawn point inside zone 191, so the expedition holder respawns there.");
             Console.WriteLine("PASS: 8 soul talismans intact in both item tables, 8 distinct stats, stocked by both archeologists for Golden Scarabs.");
+            Console.WriteLine("PASS: every talisman-described item is Type 23 and socketable; all 16 souls carry the 8h decay.");
             Console.WriteLine("These are data checks. 42 of the 46 Land of the Dead public quests still have no creatures (BUG-134),");
             Console.WriteLine("so most glyphs cannot be earned in play regardless of what this reports.");
         }

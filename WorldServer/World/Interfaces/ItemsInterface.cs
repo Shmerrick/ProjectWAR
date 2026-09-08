@@ -252,9 +252,85 @@ namespace WorldServer.World.Interfaces
             return item;
         }
 
+        /// <summary>Wall-clock of the next talisman decay sweep. See <see cref="Update"/>.</summary>
+        private long _nextTalismanDecayCheck;
+
+        /// <summary>
+        /// How often the equipped items are swept for decayed talismans. A talisman lasts hours, so
+        /// a ten-second granularity is far finer than anyone can perceive, and the sweep costs a
+        /// walk of at most 40 equipment slots with no allocation unless something actually expired.
+        /// </summary>
+        private const long TALISMAN_DECAY_INTERVAL_MS = 10000;
+
         public override void Update(long tick)
         {
+            if (tick < _nextTalismanDecayCheck)
+                return;
 
+            _nextTalismanDecayCheck = tick + TALISMAN_DECAY_INTERVAL_MS;
+            RemoveDecayedTalismans();
+        }
+
+        /// <summary>
+        /// Takes decayed talismans out of the player's equipped items, removes the stats they were
+        /// granting and tells the client.
+        ///
+        /// Talismans carry a duration -- "Duration: 8h" on the Land of the Dead souls, twelve hours
+        /// on some others -- which nothing enforced: the timer was written as 0 when the talisman
+        /// was socketed, so every timed talisman lasted forever. <see cref="Item.AddTalisman"/> now
+        /// stamps an expiry and this is what acts on it.
+        ///
+        /// Only equipped slots are swept. A talisman in a bagged item is granting nothing, and its
+        /// stamp is absolute, so it is found to have decayed the moment the item is equipped.
+        /// </summary>
+        private void RemoveDecayedTalismans()
+        {
+            Player player = _playerOwner;
+            if (player == null || Items == null || !IsLoad)
+                return;
+
+            long now = TCPManager.GetTimeStamp();
+            List<ushort> changed = null;
+
+            ushort lastSlot = MAX_EQUIPMENT_SLOT < Items.Length ? MAX_EQUIPMENT_SLOT : (ushort)Items.Length;
+
+            for (ushort slot = 0; slot < lastSlot; ++slot)
+            {
+                Item item = Items[slot];
+                if (item == null)
+                    continue;
+
+                List<uint> expired = item.RemoveExpiredTalismans(now);
+                if (expired == null)
+                    continue;
+
+                for (int i = 0; i < expired.Count; ++i)
+                {
+                    Item_Info taliInfo = ItemService.GetItem_Info(expired[i]);
+                    if (taliInfo == null)
+                        continue;
+
+                    foreach (KeyValuePair<byte, ushort> stat in taliInfo._Stats)
+                        player.StsInterface.RemoveItemBonusStat((Stats)stat.Key, stat.Value);
+
+                    RemoveItemEffects(taliInfo);
+
+                    player.SendClientMessage(taliInfo.Name + " has decayed and crumbled away.",
+                        ChatLogFilters.CHATLOGFILTERS_LOOT);
+                }
+
+                if (changed == null)
+                    changed = new List<ushort>();
+
+                changed.Add(slot);
+            }
+
+            if (changed == null)
+                return;
+
+            player.StsInterface.ApplyStats();
+            SendItemsInSlots(player, changed);
+            SendEquipped(null);
         }
 
         public override void Save()

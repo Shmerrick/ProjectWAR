@@ -504,6 +504,60 @@ Golden Scarabs for a normal vessel soul and 10 for a Massive one as placeholders
 Note that (2) needs the packet layouts, which are not established, so this cannot be built from the
 emulator source alone — see `CLAUDE.md` hard rule 3.
 
+
+## Talisman decay
+
+Every soul tooltip reads "Duration: 8h", and nothing enforced it. You were right that the client
+already supports it — the field is on the wire and has been carrying zero.
+
+### Where it was switched off
+
+Four places in a row, each one making the next irrelevant:
+
+1. **The duration never reached the server.** A `Stats` entry may carry four fields,
+   `type:value:0:seconds`, and the fourth is how long the bonus lasts once socketed. 4,882 items use
+   the long form and 61 give it a non-zero value — all talismans, 28800 for eight hours, 43200 for
+   twelve. `Item_Info`'s parser read `val[0]` and `val[1]` and dropped the rest.
+2. **The timer was never stamped.** `Item.AddTalisman` built every talisman as
+   `new Talisman(entry, SlotId, 1, 0)`.
+3. **The wire carried the zero.** `Item.BuildItem` writes `Out.WriteUInt32(talis.Timer)` per stat —
+   this is the field the client renders the duration from, and it was always 0.
+4. **Nothing swept.** `ItemsInterface.Update` was an empty method.
+
+And underneath all of it, **305 talismans could not be socketed at all**: `AddTalisman` refuses
+anything whose `Type` is not 23 (`ITEMTYPES_ENHANCEMENT`), and of the 363 items carrying the
+talisman description only 58 had it. 301 were Type 0 and 4 were Type 31 (`ITEMTYPES_POTION`).
+`AddTalisman` returns false with no message, so they simply did nothing.
+
+### How it works now
+
+`Item_Info.TalismanDuration` is parsed from the fourth field. `AddTalisman` stamps
+`Talisman.Timer` with an **absolute** unix expiry — absolute so it survives a relog and a server
+restart, where a decrementing counter would not. `BuildItem` sends the client the *remaining*
+seconds rather than the stamp, so a tooltip counts down through a session and reads correctly after
+a relog. `ItemsInterface.Update` sweeps the equipment slots every ten seconds, takes the stats back
+off, tells the player the talisman "has decayed and crumbled away", and resends the affected slots.
+
+Only equipped slots are swept: a talisman in a bagged item is granting nothing, and because the
+stamp is absolute it is found decayed the moment the item is equipped. The sweep walks at most 40
+slots and allocates nothing unless something actually expired.
+
+`Timer` was 0 on every existing row, so nothing in the database changes meaning.
+
+### Migration 83
+
+Types corrected on the 305, scoped to rows carrying the talisman description, which is
+self-evidencing. Four things agree that 23 is right: the description and the live tooltip both say
+"Talisman"; the souls that were never damaged (2005247 Violent, 2005497 Resolute) are 23; 2005595
+Demon kept Type 23 through the corruption that destroyed everything else on that row; and
+`AddTalisman` accepts nothing else.
+
+The sixteen Land of the Dead souls used the two-field form and so carried no duration despite the
+tooltip. Rewritten to `<stat>:<value>:0:28800;`, keeping each row's own stat and value. The
+large-vessel twins are given the same eight hours by inference, not capture — every captured tooltip
+is a normal-vessel soul, and the two are the same talisman, so a different duration would be the
+odd claim.
+
 ## Answering "would importing all the CSVs improve ability mapping?"
 
 No — and for `abilities.csv` specifically it would make things worse. That file is **already**

@@ -95,6 +95,18 @@ namespace Common
         public byte UniqueEquiped { get { return _uniqueEquiped; } set { _uniqueEquiped = value; } }
         [DataElement()]
         public int StartQuest { get { return _startQuest; } set { _startQuest = value; } }
+        private uint _talismanDuration;
+
+        /// <summary>
+        /// How many seconds this talisman lasts once socketed, or 0 for a permanent one.
+        ///
+        /// Read from the fourth field of a <see cref="Stats"/> entry ("type:value:0:seconds"), which
+        /// is where the client's "Duration: 8h" comes from -- 28800 on the eight-hour souls, 43200
+        /// on the twelve-hour ones. Not a column of its own, so it is not persisted back: the Stats
+        /// getter emits the short form, and nothing writes item rows at runtime.
+        /// </summary>
+        public uint TalismanDuration { get { return _talismanDuration; } }
+
         [DataElement()]
         public string Stats
         {
@@ -134,6 +146,19 @@ namespace Common
                                 _Stats.Add(type, Value);
                             else
                                 _Stats[type] = (ushort)(lastValue + Value);
+
+                            // A stat entry may carry two further fields, "type:value:0:seconds".
+                            // The fourth is how long the bonus lasts once the item is socketed, and
+                            // is set only on talismans: 4,882 items use the long form and all but 61
+                            // leave it zero. Everything read it as two fields and discarded the
+                            // rest, which is why every timed talisman behaved as a permanent one.
+                            //
+                            // One duration covers the item, not the stat -- the talismans that carry
+                            // it have a single stat each -- so the largest wins if a row ever
+                            // disagrees with itself.
+                            uint duration;
+                            if (val.Length >= 4 && uint.TryParse(val[3], out duration) && duration > _talismanDuration)
+                                _talismanDuration = duration;
                         }
                 }
                 catch(Exception)

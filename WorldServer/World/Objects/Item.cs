@@ -223,8 +223,56 @@ namespace WorldServer.World.Objects
                 if (tali.Slot == SlotId && tali.Fused == 1 || info.Crafts == ItemService.GetItem_Info(tali.Entry).Crafts && tali.Slot != SlotId)
                     return false;
             }
-            CharSaveInfo._Talismans.Add(new Talisman(entry, SlotId, 1, 0));
+            // Timer is the absolute unix timestamp the talisman decays at, or 0 for a permanent
+            // one. It has always been written as 0 here, which is why every timed talisman lasted
+            // forever despite the client showing a duration on the tooltip.
+            uint expiry = info.TalismanDuration == 0
+                ? 0u
+                : (uint)(TCPManager.GetTimeStamp() + info.TalismanDuration);
+
+            CharSaveInfo._Talismans.Add(new Talisman(entry, SlotId, 1, expiry));
             return true;
+        }
+
+        /// <summary>
+        /// Drops every talisman whose decay time has passed. Returns their entries so the caller can
+        /// take their stats back off the player; an empty list means nothing changed, which is the
+        /// case on all but a handful of ticks.
+        /// </summary>
+        public List<uint> RemoveExpiredTalismans(long now)
+        {
+            List<uint> expired = null;
+
+            if (CharSaveInfo == null || CharSaveInfo._Talismans == null)
+                return null;
+
+            for (int i = CharSaveInfo._Talismans.Count - 1; i >= 0; --i)
+            {
+                Talisman tali = CharSaveInfo._Talismans[i];
+                if (tali == null || tali.Timer == 0 || tali.Timer > now)
+                    continue;
+
+                if (expired == null)
+                    expired = new List<uint>();
+
+                expired.Add(tali.Entry);
+                CharSaveInfo._Talismans.RemoveAt(i);
+            }
+
+            return expired;
+        }
+
+        /// <summary>
+        /// Seconds left on a talisman, for the wire. The client is sent what remains, not the
+        /// absolute stamp the server stores, so a tooltip counts down across a session and reads
+        /// correctly after a relog.
+        /// </summary>
+        public static uint GetRemainingTalismanSeconds(Talisman tali, long now)
+        {
+            if (tali == null || tali.Timer == 0)
+                return 0;
+
+            return tali.Timer <= now ? 0u : (uint)(tali.Timer - now);
         }
 
         public uint RemoveTalisman(byte SlotId)
@@ -525,12 +573,17 @@ namespace WorldServer.World.Objects
                             Out.WriteByte(talis.Fused); // 0 fused 1 unfused
                             Out.WriteByte(0);
                             Out.WritePascalString(talismanInfo.Name);
+                            // The client reads this per-stat uint32 as the time left on the talisman
+                            // and renders "Duration: 8h" from it. Timer is stored as an absolute
+                            // expiry stamp, so what goes out is the remainder.
+                            uint remaining = GetRemainingTalismanSeconds(talis, TCPManager.GetTimeStamp());
+
                             Out.WriteByte((byte)talismanInfo._Stats.Count); // Valid 1.4.8
                             foreach (KeyValuePair<byte, ushort> Key in talismanInfo._Stats)
                             {
                                 Out.WriteByte(Key.Key);
                                 Out.WriteUInt16(Key.Value);
-                                Out.WriteUInt32(talis.Timer);
+                                Out.WriteUInt32(remaining);
                                 Out.WriteByte(0);
                                 //  Out.Fill(0, 5);
                             }
