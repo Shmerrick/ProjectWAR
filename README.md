@@ -44,6 +44,12 @@ Checkpoint: you should see folders like `deps/zones/zone001/`.
 
 ### Optional: Generate LOS Data Natively
 
+Figleaf supplies part of the metadata consumed by this pipeline; its format is only
+partially decoded. Consult the [canonical Figleaf findings](../WAR-RE-Toolkit/RE_FINDINGS/world/figleaf_status.md)
+and [LOS comparison scope](docs/los/occ-re-notes.md) before extending the generator.
+The evidence note links the consumer code and distinguishes Figleaf metadata from
+separate terrain/mesh inputs and creature packet fields.
+
 By default, `WorldServer` still uses prebuilt LOS binaries from `deps/los/`.
 
 If you want the repo to generate `los/*.bin` natively from an extracted WAR client:

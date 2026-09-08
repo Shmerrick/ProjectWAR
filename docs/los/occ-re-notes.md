@@ -2,6 +2,16 @@
 
 These notes track what the shipped `los/*.bin` files contain and how they compare to the current native `LosBuilder` output.
 
+## Figleaf dependency scope (September 8, 2026)
+
+[Canonical toolkit findings](../../../WAR-RE-Toolkit/RE_FINDINGS/world/figleaf_status.md)
+record Figleaf source identity, partial decoding, and remaining gaps. The implemented
+consumer is [FigleafMetadataReader](../../LosBuilder/Generation/FigleafMetadataReader.cs):
+it reads strings, fixture references, and regions. [LosGenerator](../../LosBuilder/Generation/LosGenerator.cs)
+combines these with separate zone and mesh inputs. The comparisons below validate their
+recorded cases; they do not establish a complete Figleaf schema or every zone's parity.
+The September documentation review did not rerun LOS generation.
+
 ## Format Summary
 
 The shipped LOS files use the same custom `OCC` container that `WarZone` reads in `ZoneManager.cpp`.

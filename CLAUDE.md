@@ -109,6 +109,19 @@ The open dependabot branch is cut from master and does not apply.
    LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
    ```
 
+   **Item names are server data, and the one independent record of them is the Londo dump.**
+   WorldServer writes the item name into the item packet itself (`World/Objects/Item.cs:512`,
+   `Out.WritePascalString(info.Name)`), so the client never holds them and no client file can
+   arbitrate `item_infos.Name` the way `abilitynames.txt` arbitrates ability names. The only
+   independent record we hold is `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2\War_Item.sql`
+   — a dump of Mythic's own server-side `Item` table (9,948 rows: `Name`, `Description`, `ModelID`,
+   `SlotIndex`, `ItemTypeID`, `DPS`, `Speed`, `CareerMask`, `RaceMask`, `Rarity`,
+   `TalismanSlotCount`, bind flags). Its sibling `War_ItemCSV.sql` is `objects.csv` under Mythic's
+   own name, which is what confirms `ModelID` points at an art table. It overlaps only 2,617 of our
+   88,727 entries and agrees on 2,562 names; migration 85 repaired four where ours had lost a
+   leading word. The other ~75,000 names arrived in the base `war_world.sql` from the pre-`RESTART`
+   emulator lineage and have no surviving provenance — treat them as unverified, not as truth.
+
    **Large parts of `item_infos` were generated from the client, so they cannot re-verify it.**
    WAR-RE-Toolkit's `generate_item_infos.py` built the table from `itemdata.csv` + `objects.csv`,
    expanding it from 18 rows to ~65,601 and populating `Entry`, `Name`, `Type`, `SlotId` and

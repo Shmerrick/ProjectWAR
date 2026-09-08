@@ -34,6 +34,7 @@ Paths verified present on this machine 2026-09-04.
 | `C:\Users\Admin\Downloads\myps` | **Extracted client tree.** `art`, `assetdb`, `audio`, `data`, `interface`, `shaders`, `zones`, `videos`, `unknown_hashes` | Reading client data files directly (`data/gamedata/*.csv`, `data/bin/*.bin`, `data/strings/`, `interface/interfacecore/`). This is the root `ClientDataMatrix` and native LOS generation expect |
 | `D:\Repos\Shmerrick\WAR-RE-Toolkit\libs\protocolservices\Packet Logs` | **1,027 official live-server packet captures** | Positions, spawn identity, packet layouts, opcode field offsets. The source behind scripts `04`, `10`, `11`, `12`, `14`, `17` |
 | `D:\Repos\Shmerrick\WAR-RE-Toolkit\RE_FINDINGS` | Decoded findings by domain: `combat/`, `network/`, `world/`, `evidence/` | Check here **before** decoding anything yourself |
+| `D:\Repos\Shmerrick\WAR-RE-Toolkit\data\database-tables\Londos Server v2` | **Dump of Mythic's own server-side schema** — `War_Item.sql`, `War_ItemStatistic.sql`, `War_ItemSet.sql`, `War_Ability*.sql`, `War_AssetHash.sql`, `War_PatcherAsset.sql` and ~40 more | The only independent record of **server-side** data the client never holds: item names, `DPS`, `Speed`, `CareerMask`, `RaceMask`, `Rarity`, bind flags. `War_ItemCSV.sql` is `objects.csv` under Mythic's own name. Also the source of Mythic's field vocabulary |
 | `deps/zones/` (this repo) | Zone data, not in git — `zones.zip` from the `zones-data-v1` release | Runtime zone/LOS data |
 
 Two paths appear in older docs and **do not exist**; do not reintroduce them:
@@ -58,6 +59,14 @@ Two paths appear in older docs and **do not exist**; do not reintroduce them:
 | Bot editor route contract | **ProjectWAR** `docs/bot-editor-api.md` is authoritative; the toolkit consumes it |
 | What a known bug's status is | **ProjectWAR** `docs/INTERNAL_BUG_TRACKER.md` |
 | Why something isn't on `RESTART` | **ProjectWAR** `docs/MASTER_TO_RESTART_AUDIT.md` |
+
+## Figleaf evidence and dependent systems
+
+The toolkit owns the [Figleaf scope and evidence note](../../WAR-RE-Toolkit/RE_FINDINGS/world/figleaf_status.md).
+LOS consumers should consult it before interpreting additional fields or changing coordinate
+units. The similarly named creature packet `FigLeafData` is a separate evidence question;
+see that note's links to `Creature.cs` and `CreatureService.cs`. No schema or runtime
+behavior changed in the September 8 documentation review.
 
 ## Direction of authority
 

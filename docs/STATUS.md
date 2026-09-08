@@ -88,6 +88,12 @@ Build command:
 
 ## LOS Generation Status
 
+Scope clarification (September 8, 2026): the comparison results below are the recorded
+zone 280 results, not a new full-install validation. Figleaf is partially decoded; see
+[the toolkit evidence and limits](../../WAR-RE-Toolkit/RE_FINDINGS/world/figleaf_status.md)
+and [the LOS dependency note](los/occ-re-notes.md). Historical extraction-availability
+claims below have not been re-audited after the latest extraction.
+
 Native LOS generation is implemented in `LosBuilder`. All four structural parity gaps vs. the shipped `bin/Release/los/*.bin` files are resolved for zone 280:
 
 - Region offsets: match (figleaf.db cell size is 8192 units, shift is `<< 13`)
