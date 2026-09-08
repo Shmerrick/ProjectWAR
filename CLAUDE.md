@@ -97,11 +97,11 @@ The open dependabot branch is cut from master and does not apply.
    database is not the authority and has been wrong in ways that cost whole sessions:
    `mythic_src_abilities` carried another ability's names and effect ids because someone joined on
    `data/gamedata/abilities.csv`, whose ID column agrees with the client's real ability ids on 13 of
-   3,115. Build the client index once per session and grep it afterwards -- 37 MB, 833,273 rows,
+   3,115. Build the client index once per session and grep it afterwards -- 53 MB, 778,863 rows,
    about 70 milliseconds a question, which is faster than a MySQL round trip and costs no tool call:
 
    ```powershell
-   .\bin\Release\ClientDataMatrix.exe export index --root C:\Users\Admin\Downloads\myps --output docs\data-matrix
+   .\bin\Release\ClientDataMatrix.exe export index
    ```
 
    ```bash
@@ -109,7 +109,11 @@ The open dependabot branch is cut from master and does not apply.
    LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' docs/data-matrix/client-sources/client-index.tsv
    ```
 
-   Format is `relative/path{tab}id{tab}name`, English only, every keyed file in the extraction. The
+   Format is `relative/path{tab}id{tab}field{tab}value`, English only, every keyed file in the
+   extraction that has a readable column. `field` is the client's own header for the value beside it
+   -- `name`, `Textual Name`, `Desc`, `type`, and in `unlockmapping.csv` the wonderfully explicit
+   `Description (also set on the server)`. Prefer that wording to ours when naming a column: matching
+   Mythic's vocabulary is most of why we read the client. The
    path comes first because **the file an id belongs to is part of its meaning**: 8334 is
    `tk_soultalisman_intelligence` in `objects.csv` and an ability called `Dreadful Agony` in
    `abilitynames.txt`. Quoting an id without its file is the mistake that corrupted the ability

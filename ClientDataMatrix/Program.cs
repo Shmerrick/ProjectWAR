@@ -60,11 +60,19 @@ namespace ClientDataMatrix
             }
 
             string outputRoot = Path.GetFullPath(toolArguments.OutputRoot ?? Path.Combine("docs", "data-matrix"));
+
+            // Resolve once, for every command. Only the GUI used to do this; find, lookup,
+            // export_index and the report passed the raw argument straight through, so each of them
+            // failed with "Extracted client root is required" unless --root was spelled out. A tool
+            // that needs a full path repeated on every invocation is a tool that gets used less than
+            // the guess it was built to replace.
+            string extractedRoot = ExtractedDataRootResolver.Resolve(toolArguments.ExtractedRootPath);
+
             if (string.Equals(toolArguments.Command, "gui", StringComparison.OrdinalIgnoreCase))
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm(ExtractedDataRootResolver.Resolve(toolArguments.ExtractedRootPath), outputRoot));
+                Application.Run(new MainForm(extractedRoot, outputRoot));
                 return 0;
             }
 
@@ -83,7 +91,7 @@ namespace ClientDataMatrix
             if (string.Equals(toolArguments.Command, "export_index", StringComparison.OrdinalIgnoreCase))
             {
                 ConsoleManager.EnsureConsole();
-                string indexPath = ClientIndexExporter.Write(toolArguments.ExtractedRootPath, outputRoot);
+                string indexPath = ClientIndexExporter.Write(extractedRoot, outputRoot);
                 Console.WriteLine("Client index written to " + indexPath);
                 return 0;
             }
@@ -94,7 +102,7 @@ namespace ClientDataMatrix
             {
                 ConsoleManager.EnsureConsole();
                 List<ClientQueryService.Match> hits =
-                    ClientQueryService.Find(toolArguments.ExtractedRootPath, toolArguments.QueryText,
+                    ClientQueryService.Find(extractedRoot, toolArguments.QueryText,
                         toolArguments.QueryLimit == 0 ? int.MaxValue : toolArguments.QueryLimit);
 
                 foreach (ClientQueryService.Match hit in hits)
@@ -110,7 +118,7 @@ namespace ClientDataMatrix
             {
                 ConsoleManager.EnsureConsole();
                 List<ClientQueryService.Match> rows =
-                    ClientQueryService.Lookup(toolArguments.ExtractedRootPath, toolArguments.QueryId);
+                    ClientQueryService.Lookup(extractedRoot, toolArguments.QueryId);
 
                 foreach (ClientQueryService.Match row in rows)
                     Console.WriteLine(row.RelativePath + "  [" + row.Location + "]  " + row.Content);
@@ -125,12 +133,12 @@ namespace ClientDataMatrix
             // that load rather than paying for it.
             if (string.Equals(toolArguments.Command, "report_sources", StringComparison.OrdinalIgnoreCase))
             {
-                string sourcesDirectory = ClientSourceReport.Write(toolArguments.ExtractedRootPath, outputRoot);
+                string sourcesDirectory = ClientSourceReport.Write(extractedRoot, outputRoot);
                 Console.WriteLine("Client data inventory written to " + sourcesDirectory);
                 return 0;
             }
 
-            MatrixAnalysisSession session = MatrixAnalysisSession.Load(toolArguments.ExtractedRootPath);
+            MatrixAnalysisSession session = MatrixAnalysisSession.Load(extractedRoot);
 
             if (string.Equals(toolArguments.Command, "doctor_ability", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(toolArguments.Command, "export_graph_ability", StringComparison.OrdinalIgnoreCase))

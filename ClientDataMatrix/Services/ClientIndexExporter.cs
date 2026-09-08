@@ -19,15 +19,20 @@ namespace ClientDataMatrix.Services
     /// the world database. Checking the client becomes cheaper than checking ourselves, which is the
     /// only arrangement in which it will actually happen every time.
     ///
-    /// FORMAT. Tab-separated, three columns, no header:
+    /// FORMAT. Tab-separated, four columns, no header:
     ///
-    ///     data/gamedata/objects.csv{tab}8334{tab}tk_soultalisman_intelligence
+    ///     data/gamedata/objects.csv{tab}8334{tab}Name{tab}tk_soultalisman_intelligence
     ///
     /// Tabs and newlines inside a name are replaced with spaces so one row is always one line and
     /// grep -P "\t8334\t" is exact. The path is first because the file an id belongs to is part of
     /// its meaning: 8334 is a talisman's art in objects.csv and an ability called Dreadful Agony in
     /// abilitynames.txt, and an id quoted without its file is the mistake this whole tool exists to
     /// prevent.
+    ///
+    /// The third column is the client's own header for the value beside it -- "Textual Name",
+    /// "icon", "type". It is carried because matching Mythic's vocabulary is half the point of
+    /// reading the client at all, and because it says which field you are looking at when a table
+    /// has no column called anything so obliging as Name.
     /// </summary>
     public static class ClientIndexExporter
     {
@@ -63,7 +68,16 @@ namespace ClientDataMatrix.Services
                     if (table.Error != null || !table.HasUniqueIntegerKey)
                         continue;
 
+                    int nameColumn = ChooseNameColumn(table);
+                    if (nameColumn < 0)
+                        continue;
+
                     ++files;
+
+                    string field = Clean(nameColumn < table.Columns.Count
+                        && !string.IsNullOrWhiteSpace(table.Columns[nameColumn])
+                        ? table.Columns[nameColumn]
+                        : "col" + nameColumn.ToString(CultureInfo.InvariantCulture));
 
                     foreach (string[] row in table.Rows)
                     {
@@ -78,7 +92,9 @@ namespace ClientDataMatrix.Services
                         writer.Write('\t');
                         writer.Write(id);
                         writer.Write('\t');
-                        writer.Write(Clean(row.Length > 1 ? row[1] : string.Empty));
+                        writer.Write(field);
+                        writer.Write('\t');
+                        writer.Write(Clean(nameColumn < row.Length ? row[nameColumn] : string.Empty));
                         writer.Write('\n');
                         ++rows;
                     }
@@ -89,6 +105,79 @@ namespace ClientDataMatrix.Services
                 + " rows from " + files.ToString("N0", CultureInfo.InvariantCulture) + " keyed files.");
 
             return indexPath;
+        }
+
+        /// <summary>
+        /// Which column after the key actually holds a name, or -1 if none does.
+        ///
+        /// WHY NOT JUST COLUMN 1. It was column 1, and that was wrong twice over. In
+        /// zones/*/fixtures.csv column 1 is "NIF #" and column 2 is "Textual Name", so 440,913 rows
+        /// -- 53% of the index -- carried a mesh number where their name was sitting one column
+        /// over. In itemdata.csv column 1 is "icon", a number, hiding the readable "type" (SWORD,
+        /// ASHLD) behind it. Both printed as digits or blanks, which reads as "the client does not
+        /// name this" when the client names it perfectly well. An index that quietly answers "no
+        /// name" is worse than no index, because the answer looks like evidence.
+        ///
+        /// So: take the first column whose values are mostly words rather than numbers. Sampling is
+        /// capped because a decision this coarse does not improve after a few hundred rows, and
+        /// these tables run to 65,000.
+        /// </summary>
+        private static int ChooseNameColumn(ClientSourceCatalog.LoadedTable table)
+        {
+            const int MaxSampledRows = 400;
+            const int MaxSampledColumns = 24;
+
+            int width = 0;
+            for (int i = 0; i < table.Rows.Count && i < MaxSampledRows; ++i)
+                if (table.Rows[i].Length > width)
+                    width = table.Rows[i].Length;
+
+            if (width > MaxSampledColumns)
+                width = MaxSampledColumns;
+
+            for (int column = 1; column < width; ++column)
+            {
+                int populated = 0;
+                int textual = 0;
+
+                for (int i = 0; i < table.Rows.Count && i < MaxSampledRows; ++i)
+                {
+                    string[] row = table.Rows[i];
+                    if (column >= row.Length)
+                        continue;
+
+                    string cell = (row[column] ?? string.Empty).Trim();
+                    if (cell.Length == 0)
+                        continue;
+
+                    ++populated;
+                    if (!LooksNumeric(cell))
+                        ++textual;
+                }
+
+                // Half is deliberately lenient. Real name columns carry blanks and the odd purely
+                // numeric name ("100 Gold"), and a column that is half words is still the most
+                // readable thing in the row.
+                if (populated > 0 && textual * 2 >= populated)
+                    return column;
+            }
+
+            // Nothing readable anywhere: a pure numeric lookup table. Indexing it by name would add
+            // rows that can never answer a name question, and every such row is one more line a grep
+            // for an id has to be read past.
+            return -1;
+        }
+
+        private static bool LooksNumeric(string cell)
+        {
+            for (int i = 0; i < cell.Length; ++i)
+            {
+                char c = cell[i];
+                if (!char.IsDigit(c) && c != '-' && c != '+' && c != '.' && c != 'e' && c != 'E')
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -19,10 +19,17 @@ You can also launch the GUI explicitly:
 Default roots:
 
 - extracted root: resolved by `ExtractedDataRootResolver`, which takes the first of these that
-  exists — `--root` if passed, then `C:\Users\Admin\Pictures\WAR_extracted`, then
-  `C:\Users\Admin\Downloads\myps`, then `data\WAR_extracted`, then `..\WAR_extracted`. On this
-  machine only `C:\Users\Admin\Downloads\myps` is present, so that is what it resolves to; the
-  `Pictures\WAR_extracted` default no longer exists. See `docs/CROSS_REPO.md` for the full data-root map.
+  exists — `--root` if passed, then `C:\Users\Admin\Downloads\myps`, then
+  `C:\Users\Admin\Pictures\WAR_extracted`, then `data\WAR_extracted`, then `..\WAR_extracted`.
+  `Pictures\WAR_extracted` used to be tried first and that was a trap: it is the older, partial
+  extraction (701 usable files against 8,499) from before more myp hashes were solved, so whenever it
+  exists it silently shadows the current one and every answer comes from an incomplete client —
+  indistinguishable from the client not containing the thing you asked about. Newest first now.
+  See `docs/CROSS_REPO.md` for the full data-root map.
+
+  **Every command resolves this**, not just the GUI. `find`, `lookup`, `export index` and
+  `report sources` previously passed the raw argument straight through and failed with
+  "Extracted client root is required" unless `--root` was spelled out in full.
 - output root: `docs\data-matrix`
 
 ## GUI Workflow
@@ -560,17 +567,17 @@ process start per question gets skipped in favour of guessing — which is how w
 database in the first place.
 
 ```powershell
-.\bin\Release\ClientDataMatrix.exe export index --root C:\Users\Admin\Downloads\myps --output docs\data-matrix
+.\bin\Release\ClientDataMatrix.exe export index
 ```
 
-Writes `docs/data-matrix/client-sources/client-index.tsv`: 37 MB, **833,273 rows**, every keyed row
-in the extraction as `relative/path{tab}id{tab}name`, English only. Takes about fifteen seconds
+Writes `docs/data-matrix/client-sources/client-index.tsv`: 53 MB, **778,863 rows**, every keyed row
+in the extraction as `relative/path{tab}id{tab}field{tab}value`, English only. Takes about six seconds
 once; afterwards a question is a grep:
 
 ```bash
 LC_ALL=C grep $'\t8334\t' docs/data-matrix/client-sources/client-index.tsv          # ~70 ms
 LC_ALL=C grep $'^data/strings/english/abilitynames.txt\t692\t' <index>              # one file
-LC_ALL=C grep -i 'myrmidon' <index> | head                                          # by name
+LC_ALL=C grep -i 'soultalisman' <index> | head                                    # by name
 ```
 
 Faster than a MySQL round trip, and no tool call. Use `grep $'\t<id>\t'` rather than `grep -P`,
@@ -582,12 +589,34 @@ DeM_dw_Atk_A-out`, `anim_statedef.csv → Work (chop wood)` and `abilitynames.tx
 Four files, four meanings. And the pair that matters most:
 
 ```
-data/strings/english/abilitynames.txt   692   Rampaging Siphon
-data/gamedata/abilities.csv             692   Hip Shot
+data/strings/english/abilitynames.txt   692   Text   Rampaging Siphon
+data/gamedata/abilities.csv             692   Name   Hip Shot
 ```
 
 That is the `mythic_src_abilities` corruption in two lines — an art-authoring sheet and the client's
 real ability ids, disagreeing at the same number. Seeing it costs 70 ms now.
+
+**Why the third column is the client's own header.** The exporter used to take column 1 as "the
+name", and that was wrong wherever column 1 is not a name. In `zones/*/fixtures.csv` column 1 is
+`NIF #` and column 2 is `Textual Name`, so 440,913 rows — 53% of the index — printed a mesh number
+where their name sat one column over. In `itemdata.csv` column 1 is `icon`, a number, hiding the
+readable `type` (`SWORD`, `ASHLD`) behind it. Both rendered as digits or blanks, which reads as *the
+client does not name this* when the client names it perfectly well — an index that quietly answers
+"no name" is worse than none, because the answer looks like evidence. The exporter now picks the
+first mostly-textual column and prints its header, and skips tables with no readable column at all
+(`packages.csv`, `packageinfo.txt`) rather than padding the index with rows that can never answer a
+name question.
+
+Take the wording from that header when naming things on our side. `unlockmapping.csv` labels its
+text column `Description (also set on the server)` — that is Mythic telling us what the field is
+for, and it outranks whatever we would have called it.
+
+**Item display names are not in the client.** A grep for `Myrmidon` returns nothing, and that is the
+correct answer rather than a gap in the index: `data/strings/english/` has no `itemnames.txt`, and
+`objects.csv` carries art names (`tk_soultalisman_intelligence`), not display names. Item names are
+server data, so `item_infos.Name` has no client arbiter the way `abilitynames.txt` is one for
+abilities. Check item *identity* against `objects.csv` via `ModelId`; do not expect to confirm an
+item's name from the client.
 
 **English only**, deliberately: the client ships the same string tables in fourteen locales keyed
 identically, and including them tripled the file while burying the readable row under thirteen
