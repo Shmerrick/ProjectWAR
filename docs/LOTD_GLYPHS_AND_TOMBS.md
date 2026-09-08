@@ -4,8 +4,8 @@ Findings from 2026-09-07 against the Release database. Companion to `docs/LAND_O
 which covers the expedition race and travel and says nothing about glyphs.
 
 **Summary: glyph acquisition is real and is recorded. Every glyph now has a source (migration 78),
-but almost none can be earned, because 42 of the 46 Land of the Dead public quests have no
-creatures. Tomb entry now requires and spends the right glyphs, taken from the client zone map.**
+and all twenty can be earned except Horse and Scorpion, whose only sources are the roaming quests
+that never activate. Tomb entry requires and spends the right glyphs, taken from the client zone map.**
 
 ## Glyphs are Tome of Knowledge unlocks, not items
 
@@ -26,55 +26,71 @@ character's tome like any other. Nothing extra is needed for that part.
 
 ## What can actually be earned
 
-Joining each glyph to the PQs that award it, and each of those PQs to its creature spawns
-(`pquest_spawns` → `pquest_objectives.Guid`, **not** `pquest_spawns.Entry`, which is a creature id):
+**Correction.** An earlier version of this section reported that 42 of the 46 Land of the Dead
+public quests had no creatures and that almost no glyph could be earned. That was wrong, and it was
+wrong because it counted the wrong table: **these quests do not use `pquest_spawns`.** They name
+their targets through `pquest_objectives.ObjectId` and those targets are ordinary `creature_spawns`
+and `gameobject_spawns` rows in zone 191. Counting `pquest_spawns` says almost nothing is placed;
+counting what the objectives actually point at says nearly everything is.
 
-| ToK | Glyph | Awarded by | Spawn rows |
-| --- | --- | --- | --- |
-| 7960 | Reed (Dest) | Nikosi Temple, Sedjhet Temple | 9 |
-| 7961 | Vulture (Dest) | Aerie of Death, The Carrion Nest | 0 |
-| 7962 | Scroll (Dest) | Obelisk of Judgement, The Quarry of Bone | 52 |
-| 7963 | Horse (Dest) | The Assault of Nekh Akhet | 0 |
-| 7964 | Ankhra (Dest) | Forbidden Vaults, Tombs of the Bitter Wind | 0 |
-| 7965 | Scarab (Dest) | Pit of Asaph, Pit of Kem Senef | 0 |
-| 7966 | Vase (Dest) | Hall of the Heavens, The Library of Zandri | 0 |
-| 7967 | Riverbarge (Dest) | The Quay of Seftu | 0 |
-| 7968 | Scorpion (Dest) | Ricci's Raiders | 0 |
-| 7969 | Skull (Dest) | Temple of Ualatp | 0 |
-| 7970 | Reed (Order) | Nikosi Temple, Sedjhet Temple | 1 |
-| 7971 | Vulture (Order) | Aerie of Death, The Carrion Nest | 0 |
-| 7972 | Scroll (Order) | Obelisk of Judgement, The Quarry of Bone | 66 |
-| 7973 | Horse (Order) | Amsu's Charge, The Assault of Nekh Akhet | 0 |
-| 7974 | Ankhra (Order) | Forbidden Vaults, Tombs of the Bitter Wind | 0 |
-| 7975 | Scarab (Order) | Pit of Asaph, Pit of Kem Senef | 0 |
-| 7976 | Vase (Order) | Hall of the Heavens, The Library of Zandri | 0 |
-| 7977 | Riverbarge (Order) | The Quay of Seftu | 0 |
-| 7978 | Scorpion (Order) | Ricci's Raiders | 0 |
-| 7979 | Skull (Order) | Temple of Ualatp | 0 |
+Measured correctly — every objective of a quest resolved to a spawned creature or gameobject in
+zone 191 — **all twenty glyphs have at least one source that can be completed**, which matches the
+reported experience of earning most of them.
 
-Two failures, not one:
+Rows marked `*` cannot complete; rows marked `(roaming)` never activate at all (see below).
 
-1. **No creatures.** Only 4 of the 46 PQs in zone 191 have any spawn rows — Sedjhet Temple (556, 9),
-   Obelisk of Judgement (558, 66) and their realm duplicates (886, 1; 887, 52). The other 42,
-   including all three roaming PQs, have objectives defined and nothing to kill. Destruction can
-   therefore earn only Reed and Scroll; Order only Reed and Scroll.
-2. **Six Order glyphs had no source at all — FIXED by migration 78.** PQ rows 886-899 are the Order
-   duplicates of 550-563,
-   and twelve of them carried **zero objectives**, so their `TokCompleted` bindings did not exist.
-   Vulture, Ankhra, Scarab, Vase, Riverbarge and Skull were unreachable for Order regardless of
-   spawns. Migration 78 copies each missing objective set from its Destruction twin and shifts
-   `TokCompleted` into the Order block, exactly as whoever built 886 and 887 did — 41 rows across
-   twelve PQs. All 20 glyphs now have at least one awarding PQ. The spawn problem above is
-   untouched by it.
+| ToK | Glyph | Awarded by |
+| --- | --- | --- |
+| 7960 | Reed (Dest) | Nikosi Temple, Sedjhet Temple * |
+| 7961 | Vulture (Dest) | Aerie of Death, The Carrion Nest |
+| 7962 | Scroll (Dest) | Obelisk of Judgement *, The Quarry of Bone |
+| 7963 | Horse (Dest) | The Assault of Nekh Akhet (roaming) |
+| 7964 | Ankhra (Dest) | Forbidden Vaults, Tombs of the Bitter Wind |
+| 7965 | Scarab (Dest) | Pit of Asaph, Pit of Kem Senef |
+| 7966 | Vase (Dest) | Hall of the Heavens, The Library of Zandri |
+| 7967 | Riverbarge (Dest) | The Quay of Seftu |
+| 7968 | Scorpion (Dest) | Ricci's Raiders (roaming) |
+| 7969 | Skull (Dest) | Temple of Ualatp |
+| 7970 | Reed (Order) | Nikosi Temple, Sedjhet Temple * |
+| 7971 | Vulture (Order) | Aerie of Death, The Carrion Nest |
+| 7972 | Scroll (Order) | Obelisk of Judgement *, The Quarry of Bone |
+| 7973 | Horse (Order) | Amsu's Charge (roaming), The Assault of Nekh Akhet (roaming) |
+| 7974 | Ankhra (Order) | Forbidden Vaults, Tombs of the Bitter Wind |
+| 7975 | Scarab (Order) | Pit of Asaph, Pit of Kem Senef |
+| 7976 | Vase (Order) | Hall of the Heavens, The Library of Zandri |
+| 7977 | Riverbarge (Order) | The Quay of Seftu |
+| 7978 | Scorpion (Order) | Ricci's Raiders (roaming) |
+| 7979 | Skull (Order) | Temple of Ualatp |
 
-### This is missing content, not deletion
+Two real failures remain, and neither is what the earlier version claimed:
 
-Unlike the gameobject loss (`docs/GAMEOBJECT_DATA_LOSS.md`), nothing was removed here. The
-pre-deletion dump at `a4995e92` holds **134** `pquest_spawns` rows for zone 191; the live database
-holds **128**. The overall drop from 29,437 to 27,611 is accounted for by the ~1,842 rows moved to
-`pquest_spawns_unresolved` by the earlier archival commit. The Land of the Dead PQs were never
-populated in this database, so there is no dump to restore them from — placements have to come from
-the client's zone data or from captures.
+1. **The roaming quests never activate.** Amsu's Charge, The Assault of Nekh Akhet and Ricci's
+   Raiders carry `PQAreaId 0` and no map pin. `Player.cs:7101` attaches a public quest only when the
+   player's current area is `> 0 && < 29` and equals the quest's `PQAreaId`, so a quest with 0 can
+   never attach to anybody. Their creatures are spawned and their objectives are intact — this is an
+   activation failure, not missing content. They are the **only** sources of the Horse and Scorpion
+   glyphs, which is exactly the reported symptom.
+
+   Whether roaming quests were area-bound on live at all, or placed by a script that moves them, is
+   not established, so no area id is invented here.
+
+2. **Three creatures are never spawned.** `93695 Kae Seki` (Sedjhet Temple Stage III), `93698 Doomed
+   Skeleton` and `93700 Condemned Skeleton` (Obelisk of Judgement Stages I and II) have
+   `creature_protos` rows and zero spawns anywhere. That blocks those two quests on both realms.
+   Both glyphs they award have an intact alternative — Nikosi Temple also gives Reed, The Quarry of
+   Bone also gives Scroll — so no glyph is lost to it.
+
+A third, now fixed: Pit of Asaph's boss objective was typed `QUEST_USE_GO` against Ibehme the Fury
+of Asaph, who is a creature and is spawned, so killing her raised an event the stage was not
+listening for and the quest hung on its last stage. Migration 84 types it as a kill, matching every
+other temple boss.
+
+### What this means for the tomb gate
+
+Stars needs Reed, Vulture and **Horse**; Sky needs Scroll, Ankhra and **Scorpion**. Both of those
+depend on the roaming quests, so those two lairs stay shut until BUG-134 is fixed. Moon (Scarab,
+Vase) and Sun (Riverbarge, Skull) are fully reachable today. That is the authentic gate behaving
+correctly against a real content gap, not the gate being wrong, so migration 80 stays.
 
 ## Tomb entry
 

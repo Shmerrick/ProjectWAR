@@ -9,8 +9,8 @@ using MySql.Data.MySqlClient;
 // interface/interfacecore/maps/zone191/mappoints.xml, and the in-zone respawn points that the
 // death rule depends on.
 //
-// Does not verify that a PQ can actually be completed -- 42 of the 46 have no creatures (BUG-134),
-// which is a separate problem this cannot see.
+// Does not cover the roaming quests, which carry PQAreaId 0 and so never activate (BUG-134); that
+// is why the Horse and Scorpion glyphs cannot be earned even though their creatures are spawned.
 internal static class LotdGlyphChecks
 {
     private static MySqlConnection _connection;
@@ -57,6 +57,34 @@ internal static class LotdGlyphChecks
         using (_connection = new MySqlConnection(builder.ConnectionString))
         {
             _connection.Open();
+
+            // Every glyph must have at least one public quest that can actually be completed --
+            // meaning every objective of that quest names an object which is spawned in zone 191.
+            //
+            // This is the check that matters, and getting it wrong once already produced a false
+            // report. Land of the Dead public quests do NOT use pquest_spawns; they reference
+            // ordinary creature_spawns and gameobject_spawns through pquest_objectives.ObjectId.
+            // Counting pquest_spawns rows says almost nothing is placed, which is untrue.
+            Equal(20, Scalar(
+                "SELECT COUNT(*) FROM ("
+                + "  SELECT t.Entry FROM tok_infos t JOIN pquest_objectives o ON o.TokCompleted = t.Entry"
+                + "   WHERE t.Entry BETWEEN 7960 AND 7979"
+                + "   GROUP BY t.Entry"
+                + "  HAVING SUM(CASE WHEN (SELECT COUNT(*) FROM pquest_objectives o2"
+                + "                         WHERE o2.Entry = o.Entry AND o2.ObjectId <> 0"
+                + "                           AND NOT ((o2.Type = 2 AND (SELECT COUNT(*) FROM creature_spawns cs"
+                + "                                                       WHERE cs.Entry = o2.ObjectId AND cs.ZoneId = 191) > 0)"
+                + "                                 OR (o2.Type = 3 AND (SELECT COUNT(*) FROM gameobject_spawns gs"
+                + "                                                       WHERE gs.Entry = o2.ObjectId AND gs.ZoneId = 191) > 0))) = 0"
+                + "                THEN 1 ELSE 0 END) > 0"
+                + ") AS earnable"),
+                "glyphs with at least one fully spawned public quest awarding them");
+
+            // Pit of Asaph's boss objective was typed QUEST_USE_GO against a creature, so killing
+            // Ibehme raised an event the stage was not listening for and the quest never finished.
+            Equal(0, Scalar(
+                "SELECT COUNT(*) FROM pquest_objectives WHERE ObjectId = 93719 AND Type <> 2"),
+                "Pit of Asaph boss objectives still typed as a gameobject");
 
             // Every one of the twenty glyph entries must have at least one public quest awarding it.
             // Six Order glyphs had none until migration 78 (BUG-135).
@@ -190,8 +218,9 @@ internal static class LotdGlyphChecks
             Console.WriteLine("PASS: both realms have a respawn point inside zone 191, so the expedition holder respawns there.");
             Console.WriteLine("PASS: 8 soul talismans intact in both item tables, 8 distinct stats, stocked by both archeologists for Golden Scarabs.");
             Console.WriteLine("PASS: every talisman-described item is Type 23 and socketable; all 16 souls carry the 8h decay.");
-            Console.WriteLine("These are data checks. 42 of the 46 Land of the Dead public quests still have no creatures (BUG-134),");
-            Console.WriteLine("so most glyphs cannot be earned in play regardless of what this reports.");
+            Console.WriteLine("These are data checks. They do not cover the roaming public quests -- Amsu's Charge, The");
+            Console.WriteLine("Assault of Nekh Akhet and Ricci's Raiders -- which carry PQAreaId 0 and so never activate,");
+            Console.WriteLine("which is why the Horse and Scorpion glyphs cannot be earned (BUG-134).");
         }
     }
 

@@ -176,5 +176,6 @@ SELECT-only. Asserts that all twenty Land of the Dead glyph entries have a publi
 them, that neither realm's quests award the other realm's glyphs, and that the four gated tombs
 spend all ten glyphs between them exactly as `interface/interfacecore/maps/zone191/mappoints.xml`
 assigns them — with the Tomb of the Vulture Lord left ungated, as the client has it. It cannot see
-BUG-134: 42 of the 46 quests still have no creatures, so most glyphs remain unearnable in play.
+BUG-134: the roaming quests carry PQAreaId 0 and never activate, so Horse and Scorpion remain
+unearnable even though their creatures are spawned.
 Background in [`docs/LOTD_GLYPHS_AND_TOMBS.md`](../../docs/LOTD_GLYPHS_AND_TOMBS.md).
