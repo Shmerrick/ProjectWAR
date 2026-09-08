@@ -148,14 +148,22 @@ namespace WorldServer.Services.World
         /// <summary>
         /// The "Controlled &lt;form&gt;" ability for a realm, or 0 if there is none.
         ///
-        /// This is what actually performs the transformation. Each of these eight abilities carries
-        /// a component with operation 51 -- career ability-set replacement, described by the client
-        /// itself as "Normal career abilities have been replaced with those of the Aspect's" -- and
-        /// all eight resolve to effect 4860, "Skaven PaM - FORM OF... A SKAVEN!". Applying one as a
-        /// buff hands the client the ability entry; the client then swaps the action bar out of its
-        /// own data, and reverts when the buff is removed.
+        /// The live server applies this to the player as a buff when a form is taken. The
+        /// "CONTROL A GUTTER RUNNER" capture carries it plainly -- F_INIT_EFFECTS (0xD7) with
+        /// entry 0x611E little-endian, 24862 "Destruction Controlled Gutter Runner", zero
+        /// duration, on the player's own Oid. All eight resolve to effect 4860, "Skaven PaM -
+        /// FORM OF... A SKAVEN!".
         ///
-        /// Granting the form's abilities cannot do this on its own: F_CHARACTER_INFO subcode 1 is
+        /// CORRECTION. An earlier version of this comment said each of these abilities carries a
+        /// component with operation 51, career ability-set replacement, and that applying the buff
+        /// therefore makes the client swap the bar from its own data. That is not true and was
+        /// never checked: in the client's own records all eight have empty ComponentData and no
+        /// rows at all in mythic_bin_abilitycomponentlink. They have no components. Whatever
+        /// performs the transformation, it is not an op-51 component on these entries, and this
+        /// server does not currently reproduce it -- taking a form grants the abilities and applies
+        /// the buff, and the bar is not swapped or restored. See docs/SKAVEN_PLAY_AS_MONSTER.md.
+        ///
+        /// Granting the form's abilities cannot do it either: F_CHARACTER_INFO subcode 1 is
         /// cumulative, so it adds actions but never replaces or removes them.
         /// </summary>
         public static ushort GetControlAbility(SkavenForm form, Realms realm)

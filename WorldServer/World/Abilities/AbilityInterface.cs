@@ -60,8 +60,18 @@ namespace WorldServer.World.Abilities
         private readonly List<ushort> _grantedAbilities = new List<ushort>();
 
         /// <summary>
-        /// Replaces the granted-ability set and re-sends the action list. Passing null or an empty
-        /// array clears it, which is what ending a monster form does.
+        /// Replaces the granted-ability set. Passing null or an empty array clears it, which is
+        /// what ending a monster form does.
+        ///
+        /// Clearing does NOT re-send the action list, and re-sending would not undo anything if it
+        /// did. F_CHARACTER_INFO subcode 1 is cumulative on the client: in the official "play as a
+        /// gutter runner" capture the count climbs 0x17 -> 0x1E as the kit is granted and never
+        /// falls again for the rest of the session, and the four "CONTROL A ..." captures show the
+        /// same one-way growth. The live server never shrank it, so sending a shorter list is at
+        /// best ignored and at worst desyncs the client's idea of how many actions it holds.
+        ///
+        /// Which means the action list is not the lever that takes a monster form's buttons away.
+        /// What is, is still unknown -- see docs/SKAVEN_PLAY_AS_MONSTER.md.
         /// </summary>
         public void SetGrantedAbilities(IEnumerable<ushort> abilities)
         {
@@ -76,7 +86,8 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            SendAbilityLevels();
+            if (_grantedAbilities.Count > 0)
+                SendAbilityLevels();
         }
 
         public bool HasGrantedAbility(ushort entry)
@@ -925,12 +936,64 @@ namespace WorldServer.World.Abilities
 
         #region AbilityCast
 
+        /// <summary>
+        /// Tells the client the server will not run a cast it asked for, so the client clears its
+        /// cast bar.
+        ///
+        /// The client starts its own cast bar the moment the button is pressed and waits to be told
+        /// how it ended. <see cref="AbilityProcessor.CancelCast"/> does that for a cast already in
+        /// flight, but it needs an <c>AbInfo</c> and so cannot speak for one the server rejected
+        /// before any processor state existed. Those rejections used to be silent: the bar stayed up
+        /// forever, and a client stuck mid-cast will not interact with anything, so doors, NPCs and
+        /// objects all stopped responding until relog (BUG-132).
+        ///
+        /// The Skaven monster forms hit this on every button press. 21 of their 22 abilities have no
+        /// row in either server ability table -- only 24824 Snare Net does -- so
+        /// <see cref="AbilityMgr.GetAbilityInfo"/> returns null for the rest and the cast was
+        /// dropped on the floor. Any unknown or unimplemented ability id does the same thing.
+        ///
+        /// Mirrors CancelCast's packet pair: F_USE_ABILITY carrying the failure code, then
+        /// F_UPDATE_STATE/CastCompletion, which is what actually hides the bar.
+        /// </summary>
+        private void RejectCast(ushort abilityId, byte castSequence, ushort failCode)
+        {
+            Player player = GetPlayer();
+            if (player == null)
+                return;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_USE_ABILITY, 20);
+            Out.WriteUInt16(0);
+            Out.WriteUInt16(abilityId);
+            Out.WriteUInt16(player.Oid);
+            Out.WriteUInt16(0); // No AbilityInfo, so no EffectID to report.
+            Out.WriteUInt16(0); // No resolved target.
+            Out.WriteByte(0);
+            Out.WriteByte(1);
+            Out.WriteUInt16(failCode);
+            Out.WriteInt16(0);
+            Out.WriteByte(castSequence);
+            Out.WriteUInt16(0);
+            Out.WriteByte(0);
+            player.SendPacket(Out);
+
+            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
+            Out.WriteUInt16(player.Oid);
+            Out.WriteByte((byte)StateOpcode.CastCompletion);
+            Out.WriteUInt16(0);
+            Out.WriteByte(0);
+            Out.WriteUInt16(abilityId);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            player.SendPacket(Out);
+        }
+
         public bool StartCast(Unit instigator, ushort abilityId, byte castSequence, byte cooldownGroup = 0, byte overrideAbilityLevel = 0, bool enemyVisible = true, bool friendlyVisible = true, bool moving = false)
         {
             if (PreventCasting)
             {
                 if (_Owner is Player)
                     (_Owner as Player)?.SendClientMessage("A developer has disabled all abilities.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                RejectCast(abilityId, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
 
@@ -943,7 +1006,10 @@ namespace WorldServer.World.Abilities
             AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(abilityId);
 
             if (abInfo == null || (abInfo.ConstantInfo.Origin != AbilityOrigin.AO_ITEM && !IsValidAbility(abInfo)))
+            {
+                RejectCast(abilityId, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
+            }
 
             //Fix so that WE/WH cant use all their 3 openers at the same time, this is in conjunction with whats in AbilityProcessor
             if (_Owner is Player)
@@ -971,6 +1037,7 @@ namespace WorldServer.World.Abilities
                     Player owner = _Owner as Player;
                     owner?.SendClientMessage(abilityId + " " + AbilityMgr.GetAbilityNameFor(abilityId) + " has no implementation.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 }
+                RejectCast(abilityId, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
             catch (Exception e)
@@ -978,6 +1045,7 @@ namespace WorldServer.World.Abilities
                 if (_Owner is Player)
                     (_Owner as Player)?.SendClientMessage(abilityId + " " + AbilityMgr.GetAbilityNameFor(abilityId) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
                 Log.Error("Ability System", e.ToString());
+                RejectCast(abilityId, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
         }
@@ -991,6 +1059,7 @@ namespace WorldServer.World.Abilities
                     Player owner = _Owner as Player;
                     owner?.SendClientMessage("A developer has disabled all abilities.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 }
+                RejectCast(abilityID, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
 
@@ -1003,7 +1072,10 @@ namespace WorldServer.World.Abilities
             AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(abilityID);
 
             if (abInfo == null || (abInfo.ConstantInfo.Origin != AbilityOrigin.AO_ITEM && !IsValidAbility(abInfo)))
+            {
+                RejectCast(abilityID, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
+            }
             try
             {
                 if (AbilityMgr.HasCommandsFor(abilityID) || abInfo.ConstantInfo.ChannelID != 0)
@@ -1022,6 +1094,7 @@ namespace WorldServer.World.Abilities
                     var owner = _Owner as Player;
                     owner?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " has no implementation.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 }
+                RejectCast(abilityID, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
             catch (Exception e)
@@ -1031,6 +1104,7 @@ namespace WorldServer.World.Abilities
                     var owner = _Owner as Player;
                     owner?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
                 }
+                RejectCast(abilityID, castSequence, (ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
                 return false;
             }
         }

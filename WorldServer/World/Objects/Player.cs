@@ -4273,10 +4273,12 @@ namespace WorldServer.World.Objects
             SkavenForm = form;
             AbtInterface.SetGrantedAbilities(definition.Abilities);
 
-            // The control ability is what actually swaps the action bar. Its op-51 component tells
-            // the client to replace the career action set with this form's, and the client does
-            // that from its own data; the granted list above only supplies the contents. Removing
-            // the buff is what reverts the bar, which is why ending a form must clear it.
+            // The live server applies this buff when a form is taken -- F_INIT_EFFECTS carrying the
+            // control ability, verbatim in the "CONTROL A GUTTER RUNNER" capture. It is applied
+            // here for the same reason, but be clear about what it does NOT do: the claim that its
+            // op-51 component makes the client swap the action bar was wrong. These abilities have
+            // no components in the client at all. The bar is not swapped when a form is taken and
+            // not restored when it ends. See docs/SKAVEN_PLAY_AS_MONSTER.md.
             ushort control = SkavenFormService.GetControlAbility(form, Realm);
             if (control != 0)
             {
