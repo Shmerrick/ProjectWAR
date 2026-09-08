@@ -82,6 +82,8 @@
     <Compile Include="Services\ClientIndexExporter.cs" />
     <Compile Include="Services\ClientItemArtService.cs" />
     <Compile Include="UI\ItemArtTab.cs" />
+    <Compile Include="UI\CrosswalkTab.cs" />
+    <Compile Include="UI\ClientSearchTab.cs" />
     <Compile Include="Services\DdsImage.cs" />
     <Compile Include="Services\ItemCrosswalkService.cs" />
     <Compile Include="Services\ClientLinkAnalyzer.cs" />

@@ -105,6 +105,8 @@ namespace ClientDataMatrix.UI
         private ToolStripStatusLabel _statusLabel;
         private TabControl _mainTabs;
         private ItemArtTab _itemArtTab;
+        private CrosswalkTab _crosswalkTab;
+        private ClientSearchTab _clientSearchTab;
 
         private MatrixAnalysisSession _session;
         private DefinitionCatalog _definitions;
@@ -209,11 +211,22 @@ namespace ClientDataMatrix.UI
             _mainTabs.TabPages.Add(CreateUnknownTab());
             _mainTabs.TabPages.Add(CreateConflictTab());
 
-            // Item art does not need the ability dataset, so it is usable before Reload Data
-            // finishes -- it reads objects.csv and icons.xml on its own, on demand.
+            // These three read the client (and, for the crosswalk, the world database) directly and
+            // need none of the ability dataset, so they work before Reload Data has finished.
+            string root = _rootPathTextBox == null ? null : _rootPathTextBox.Text;
+            string output = _outputPathTextBox == null ? null : _outputPathTextBox.Text;
+
             _itemArtTab = new ItemArtTab();
-            _itemArtTab.Bind(_rootPathTextBox == null ? null : _rootPathTextBox.Text);
+            _itemArtTab.Bind(root);
             _mainTabs.TabPages.Add(_itemArtTab.Page);
+
+            _crosswalkTab = new CrosswalkTab();
+            _crosswalkTab.Bind(root, output);
+            _mainTabs.TabPages.Add(_crosswalkTab.Page);
+
+            _clientSearchTab = new ClientSearchTab();
+            _clientSearchTab.Bind(root, output);
+            _mainTabs.TabPages.Add(_clientSearchTab.Page);
 
             _mainTabs.TabPages.Add(CreateStatusTab());
             _mainTabs.TabPages.Add(CreateLogTab());
@@ -939,10 +952,14 @@ namespace ClientDataMatrix.UI
             if (_isBusy)
                 return;
 
-            // Point the art tab at whatever root the box now holds, so changing it and pressing
-            // Reload Data does not leave that tab reading the previous extraction.
+            // Point the client-reading tabs at whatever the boxes now hold, so changing a root and
+            // pressing Reload Data does not leave them reading the previous extraction.
             if (_itemArtTab != null)
                 _itemArtTab.Bind(_rootPathTextBox.Text);
+            if (_crosswalkTab != null)
+                _crosswalkTab.Bind(_rootPathTextBox.Text, _outputPathTextBox.Text);
+            if (_clientSearchTab != null)
+                _clientSearchTab.Bind(_rootPathTextBox.Text, _outputPathTextBox.Text);
 
             try
             {
