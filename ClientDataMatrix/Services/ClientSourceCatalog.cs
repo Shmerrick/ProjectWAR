@@ -38,6 +38,13 @@ namespace ClientDataMatrix.Services
             IndexedStringTable,
 
             Xml,
+
+            /// <summary>Text with no table structure: Lua UI source, notes, unkeyed lists.</summary>
+            PlainText,
+
+            /// <summary>Binary. Size is recorded; contents are not interpreted.</summary>
+            Binary,
+
             Unknown
         }
 
@@ -83,6 +90,9 @@ namespace ClientDataMatrix.Services
 
             public string Error;
 
+            /// <summary>True when the file could only be read partially -- malformed XML.</summary>
+            public bool Degraded;
+
             public int ColumnCount
             {
                 get { return Columns.Count; }
@@ -105,64 +115,115 @@ namespace ClientDataMatrix.Services
         }
 
         /// <summary>
-        /// Every data file worth reading, in a stable order.
-        ///
-        /// Deliberately not a hard-coded list: a file the client ships and nobody has looked at yet
-        /// is precisely the file most likely to answer an open question, so discovery walks the
-        /// directories rather than trusting anyone to have registered them.
+        /// Extensions worth reading. Everything else in the extraction is art -- .dds textures,
+        /// .nif meshes, .wav audio -- which is 170,000 of the 178,000 files and says nothing about
+        /// how the game is wired.
         /// </summary>
+        private static readonly HashSet<string> DataExtensions =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".csv", ".xml", ".txt", ".lua", ".ini", ".dat" };
+
         public List<ClientSource> Discover()
         {
             var sources = new List<ClientSource>();
 
-            AddDirectory(sources, "data/gamedata", "*.csv", SourceFormat.HeaderedCsv, "gamedata");
-            AddDirectory(sources, "data/gamedata", "*.xml", SourceFormat.Xml, "gamedata");
+            if (!Directory.Exists(_root))
+                return sources;
 
-            string stringsRoot = Path.Combine(_root, "data", "strings");
-            if (Directory.Exists(stringsRoot))
+            // Walks the whole extraction rather than a list of directories somebody thought to add.
+            // An earlier version hard-coded three, which reached 701 files out of the 8,026 that
+            // carry data -- it missed every string table below the top level of data/strings, and
+            // the whole of interface/, where the client's own UI source states what it expects the
+            // server to send.
+            foreach (string file in EnumerateFilesSafely(_root).OrderBy(f => f, StringComparer.OrdinalIgnoreCase))
             {
-                foreach (string localeDir in Directory.GetDirectories(stringsRoot).OrderBy(d => d))
-                {
-                    string locale = Path.GetFileName(localeDir);
-                    AddDirectory(sources, "data/strings/" + locale, "*.txt",
-                        SourceFormat.IndexedStringTable, "strings/" + locale);
-                }
-            }
+                string extension = Path.GetExtension(file);
+                if (!DataExtensions.Contains(extension))
+                    continue;
 
-            string mapsRoot = Path.Combine(_root, "interface", "interfacecore", "maps");
-            if (Directory.Exists(mapsRoot))
-            {
-                foreach (string zoneDir in Directory.GetDirectories(mapsRoot).OrderBy(d => d))
+                FileInfo info;
+                try
                 {
-                    string zone = Path.GetFileName(zoneDir);
-                    AddDirectory(sources, "interface/interfacecore/maps/" + zone, "*.xml",
-                        SourceFormat.Xml, "maps/" + zone);
-                    AddDirectory(sources, "interface/interfacecore/maps/" + zone, "*.csv",
-                        SourceFormat.HeaderedCsv, "maps/" + zone);
+                    info = new FileInfo(file);
                 }
+                catch (IOException)
+                {
+                    continue;
+                }
+
+                string relative = file.Substring(_root.Length).TrimStart('\\', '/').Replace('\\', '/');
+                int lastSlash = relative.LastIndexOf('/');
+
+                sources.Add(new ClientSource
+                {
+                    RelativePath = relative,
+                    Name = Path.GetFileNameWithoutExtension(info.Name),
+                    Family = lastSlash <= 0 ? "(root)" : relative.Substring(0, lastSlash),
+                    Format = ClassifyByExtension(extension),
+                    ByteSize = info.Length
+                });
             }
 
             return sources;
         }
 
-        private void AddDirectory(List<ClientSource> sources, string relativeDir, string pattern,
-            SourceFormat format, string family)
+        /// <summary>
+        /// Depth-first walk that skips directories it cannot enter instead of abandoning the sweep.
+        /// The extraction is often still running when this is used, so a directory can vanish or be
+        /// locked between being listed and being opened.
+        /// </summary>
+        private static IEnumerable<string> EnumerateFilesSafely(string root)
         {
-            string absolute = Path.Combine(_root, relativeDir.Replace('/', Path.DirectorySeparatorChar));
-            if (!Directory.Exists(absolute))
-                return;
+            var pending = new Stack<string>();
+            pending.Push(root);
 
-            foreach (string file in Directory.GetFiles(absolute, pattern).OrderBy(f => f))
+            while (pending.Count > 0)
             {
-                var info = new FileInfo(file);
-                sources.Add(new ClientSource
+                string directory = pending.Pop();
+
+                string[] subdirectories;
+                try
                 {
-                    RelativePath = relativeDir + "/" + info.Name,
-                    Name = Path.GetFileNameWithoutExtension(info.Name),
-                    Family = family,
-                    Format = format,
-                    ByteSize = info.Length
-                });
+                    subdirectories = Directory.GetDirectories(directory);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+
+                foreach (string subdirectory in subdirectories)
+                    pending.Push(subdirectory);
+
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles(directory);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+
+                foreach (string file in files)
+                    yield return file;
+            }
+        }
+
+        private static SourceFormat ClassifyByExtension(string extension)
+        {
+            switch (extension.ToLowerInvariant())
+            {
+                case ".csv": return SourceFormat.HeaderedCsv;
+                case ".xml": return SourceFormat.Xml;
+
+                // A .txt is usually an "id{tab}text" table but not always -- notes and unkeyed
+                // lists share the extension -- so the loader sniffs the first lines and downgrades
+                // to PlainText when the shape is wrong, rather than reporting an empty table.
+                case ".txt": return SourceFormat.IndexedStringTable;
+
+                case ".lua":
+                case ".ini": return SourceFormat.PlainText;
+                case ".dat": return SourceFormat.Binary;
+                default: return SourceFormat.Unknown;
             }
         }
 
@@ -183,11 +244,32 @@ namespace ClientDataMatrix.Services
                     case SourceFormat.HeaderedCsv:
                         LoadCsv(path, table);
                         break;
+
                     case SourceFormat.IndexedStringTable:
+                        // Not every .txt is a keyed table. If too few lines are "int{tab}text" the
+                        // file is something else -- a note, a filename list -- and is recorded as
+                        // plain text rather than reported as a table with no rows.
                         LoadIndexedStrings(path, table);
+                        if (!LooksLikeStringTable(table))
+                        {
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            source.Format = SourceFormat.PlainText;
+                            LoadPlainText(path, table);
+                        }
                         break;
+
                     case SourceFormat.Xml:
                         LoadXmlShape(path, table);
+                        break;
+
+                    case SourceFormat.PlainText:
+                        LoadPlainText(path, table);
+                        break;
+
+                    case SourceFormat.Binary:
+                        table.Columns.Add("Bytes");
+                        table.Rows.Add(new[] { source.ByteSize.ToString(CultureInfo.InvariantCulture) });
                         break;
                 }
 
@@ -294,6 +376,33 @@ namespace ClientDataMatrix.Services
         }
 
         /// <summary>
+        /// True when enough of the file parsed as "id{tab}text" to call it a keyed string table.
+        /// Files that are merely text share the .txt extension with the string tables.
+        /// </summary>
+        private static bool LooksLikeStringTable(LoadedTable table)
+        {
+            return table.Rows.Count >= 2;
+        }
+
+        /// <summary>
+        /// Keeps a text file as lines. Lua UI source is the reason this exists: it is not a table,
+        /// but it is the client stating what it expects -- the contested-instance lobby's handler
+        /// signature and its sixty-second timeout were read straight out of it -- so it belongs in
+        /// the inventory even though nothing can be joined against it.
+        /// </summary>
+        private static void LoadPlainText(string path, LoadedTable table)
+        {
+            table.Columns.Add("Line");
+
+            foreach (string line in ReadLines(path))
+                table.Rows.Add(new[] { line });
+
+            // Trailing newline produces one empty final line; not worth reporting as content.
+            if (table.Rows.Count > 0 && table.Rows[table.Rows.Count - 1][0].Length == 0)
+                table.Rows.RemoveAt(table.Rows.Count - 1);
+        }
+
+        /// <summary>
         /// Records an XML file's element shape rather than parsing it into rows: one row per distinct
         /// element name, with how many times it occurs and which attributes it carries. Enough to see
         /// what a file holds and decide whether it is worth reading properly.
@@ -324,7 +433,20 @@ namespace ClientDataMatrix.Services
                 // named "Pick & Goggles" with a bare ampersand. Refusing the file would lose a whole
                 // zone's map data over a character the game itself accepts, so escape the stray
                 // ampersands and retry once.
-                document = System.Xml.Linq.XDocument.Parse(EscapeBareAmpersands(raw));
+                try
+                {
+                    document = System.Xml.Linq.XDocument.Parse(EscapeBareAmpersands(raw));
+                }
+                catch (System.Xml.XmlException)
+                {
+                    // Six files are malformed past that -- unescaped '<' inside attributes,
+                    // '=' inside element names, curly quotes around attribute values. keybindings.xml
+                    // and command.xml are among them, so refusing to read them would mean the tool
+                    // could not report on the client's own key and command definitions at all.
+                    // Fall back to counting element names textually and say the read was degraded.
+                    ScanElementsTextually(raw, table);
+                    return;
+                }
             }
 
             foreach (System.Xml.Linq.XElement element in document.Descendants())
@@ -364,7 +486,10 @@ namespace ClientDataMatrix.Services
         /// </summary>
         private static void IndexKeys(LoadedTable table)
         {
-            if (table.Source.Format == SourceFormat.Xml || table.Rows.Count == 0)
+            if (table.Source.Format == SourceFormat.Xml
+                || table.Source.Format == SourceFormat.PlainText
+                || table.Source.Format == SourceFormat.Binary
+                || table.Rows.Count == 0)
                 return;
 
             var keys = new HashSet<long>();
@@ -399,6 +524,52 @@ namespace ClientDataMatrix.Services
             {
                 table.Columns.Add("col" + table.Columns.Count.ToString(CultureInfo.InvariantCulture));
             }
+        }
+
+        /// <summary>
+        /// Counts element names by text search, for XML no parser will accept. Attributes are not
+        /// recovered -- the file is malformed in the attribute syntax, which is exactly why the
+        /// parser refused it -- so this reports which elements are present and how often, and marks
+        /// the result degraded rather than pretending to a full read.
+        /// </summary>
+        private static void ScanElementsTextually(string raw, LoadedTable table)
+        {
+            var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (int i = 0; i < raw.Length - 1; ++i)
+            {
+                if (raw[i] != '<')
+                    continue;
+
+                char next = raw[i + 1];
+                if (!char.IsLetter(next) && next != '_')
+                    continue;
+
+                int end = i + 1;
+                while (end < raw.Length && (char.IsLetterOrDigit(raw[end]) || raw[end] == '_' || raw[end] == '-'))
+                    ++end;
+
+                string name = raw.Substring(i + 1, end - i - 1);
+                if (name.Length == 0)
+                    continue;
+
+                int count;
+                counts.TryGetValue(name, out count);
+                counts[name] = count + 1;
+                i = end - 1;
+            }
+
+            foreach (KeyValuePair<string, int> pair in counts.OrderByDescending(p => p.Value).ThenBy(p => p.Key))
+            {
+                table.Rows.Add(new[]
+                {
+                    pair.Key,
+                    pair.Value.ToString(CultureInfo.InvariantCulture),
+                    "(not parsed: malformed XML)"
+                });
+            }
+
+            table.Degraded = true;
         }
 
         /// <summary>

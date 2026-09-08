@@ -76,11 +76,19 @@ namespace ClientDataMatrix.Services
             text.AppendLine("| Read successfully | " + loaded + " |");
             text.AppendLine("| Failed to read | " + failed + " |");
             text.AppendLine("| Data rows | " + rows.ToString("N0", CultureInfo.InvariantCulture) + " |");
-            text.AppendLine("| Joinable (unique integer key) | " + analyzer.KeyedTableCount + " |");
+            text.AppendLine("| Joinable (unique integer key) | "
+                + tables.Count(t => t.HasUniqueIntegerKey && t.Keys.Count > 0)
+                    .ToString("N0", CultureInfo.InvariantCulture) + " |");
+            text.AppendLine("| Global reference tables searched for links | " + analyzer.TableCount + " |");
             text.AppendLine("| Candidate links | " + links.Count.ToString("N0", CultureInfo.InvariantCulture) + " |");
             text.AppendLine();
             text.AppendLine("A file with a unique integer first column can be joined against; one without cannot,");
             text.AppendLine("and that is stated per file below rather than left to be discovered.");
+            text.AppendLine();
+            text.AppendLine("Link searching covers `data/gamedata` and `data/strings/english` only -- the tables other");
+            text.AppendLine("files actually reference. Including the per-zone and per-asset files as targets produced");
+            text.AppendLine("280,761 candidates of pure combinatorial noise, since a texture list keyed 1..40 absorbs any");
+            text.AppendLine("small column in the game. Every file is still inventoried below.");
             text.AppendLine();
 
             foreach (IGrouping<string, ClientSourceCatalog.LoadedTable> family in tables
@@ -121,6 +129,9 @@ namespace ClientDataMatrix.Services
 
             if (table.CommentRows > 0)
                 parts.Add(table.CommentRows + " comment row" + (table.CommentRows == 1 ? "" : "s") + " dropped");
+
+            if (table.Degraded)
+                parts.Add("**degraded read** -- malformed XML, elements counted textually");
 
             if (table.Rows.Count == 0)
                 parts.Add("empty");

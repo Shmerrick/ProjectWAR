@@ -84,11 +84,18 @@ namespace ClientDataMatrix.Services
             if (table == null || table.Source == null || table.Error != null)
                 return;
 
-            // Only English strings take part in link analysis. The client ships the same string
-            // tables in fourteen locales keyed identically, so including the rest multiplies every
-            // candidate by fourteen and buries the readable one. The inventory still lists them all.
-            if (table.Source.Family.StartsWith("strings/", StringComparison.OrdinalIgnoreCase)
-                && !table.Source.Family.Equals("strings/english", StringComparison.OrdinalIgnoreCase))
+            // Link analysis is restricted to the client's GLOBAL reference tables: data/gamedata and
+            // the English string tables. The full sweep reads 8,206 files, 4,582 of which have a
+            // unique integer key, and comparing every column against every one of those produced
+            // 280,761 candidates -- combinatorial noise, because a per-zone texture list keyed 1..40
+            // absorbs any small column in the game.
+            //
+            // Those files are local by nature: zones/zone042/textures/textures.csv is not something
+            // another table references by id. The tables that ARE referenced from everywhere live in
+            // data/gamedata, and the names for them live in data/strings/english. The inventory still
+            // lists all 8,206; only the link search is narrowed.
+            if (!table.Source.Family.Equals("data/gamedata", StringComparison.OrdinalIgnoreCase)
+                && !table.Source.Family.Equals("data/strings/english", StringComparison.OrdinalIgnoreCase))
                 return;
 
             if (!_tables.ContainsKey(table.Source.RelativePath))

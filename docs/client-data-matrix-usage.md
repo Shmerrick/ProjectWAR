@@ -361,24 +361,35 @@ Primary files:
 ```
 
 Everything else in this tool is about abilities and reads eight files. This one walks the extracted
-client and reads **all 701** of them — 103 gamedata CSVs, 6 gamedata XML files, 56 English string
-tables and their thirteen other locales, and the 68 zone map definitions — 1.25 million data rows.
-It writes two documents to `docs/data-matrix/client-sources/`.
+client and reads **all 8,206 data files** in it -- every .csv, .xml, .txt, .lua, .ini and .dat under
+the extraction root, 5.4 million data rows, in about 13 seconds. It writes two documents to
+`docs/data-matrix/client-sources/`.
+
+Discovery is a recursive sweep, not a list of directories. The first version named three and reached
+701 files: it missed every string table below the top level of `data/strings` (4,343 of them), and
+the whole of `interface/`, which is where the client's own Lua states what it expects the server to
+send -- the contested-instance lobby's handler signature and its sixty-second timeout were read out
+of exactly that.
 
 **`client-data-inventory.md`** lists every file with its format, row and column counts, column
-names, how many header and comment rows were skipped, and — the useful part — whether its first
-column is a unique integer, meaning it can be joined against at all. 121 of the 701 can.
+names, how many header and comment rows were skipped, and -- the useful part -- whether its first
+column is a unique integer, meaning it can be joined against at all. 4,582 of the 8,206 can.
 
 **`client-data-links.md`** lists every column whose values resolve into another file's key, with a
 sample of the target's names for those values.
 
 ### Why the link report is a shortlist and not an answer
 
-The first version of this produced 18,310 "links" and every one of them was numerically valid. Most
-of these files number their rows from 1 with no gaps, so any column of numbers inside such a range
-resolves into it completely whether or not it means to. Filtering to English strings, ignoring row-id
-columns as sources and raising the evidence floor cuts it to 1,154 — which is a searchable shortlist,
-not a set of conclusions.
+Numeric link detection does not survive contact with this data unaided. Searching every keyed table
+against every other produced **280,761** candidates, all numerically valid: most of these files
+number their rows from 1 with no gaps, so any column inside such a range resolves into it completely
+whether or not it means to, and a per-zone texture list keyed 1..40 absorbs any small column in the
+game.
+
+So link searching is scoped to `data/gamedata` and `data/strings/english` -- the tables other files
+actually reference -- with row-id columns refused as sources and an evidence floor of 50 distinct
+values. That gives 1,154: a searchable shortlist, not a set of conclusions. Every file is still
+inventoried.
 
 Two things were tried for ranking and neither works: rate, because dense targets always score 100%,
 and a specificity score weighting rate against the target's density, because that just promotes
@@ -402,6 +413,15 @@ is what filled `mythic_src_abilities` with another ability's names and effect id
   top. They are counted and dropped. Treating them as data is how `abilities.csv` ids drift.
 - String tables are UTF-16 and keep their caret suffixes (`^n`, `^m`, `^f`) verbatim. Those are
   grammatical gender markers; stripping them once cost 5,210 rows of the world database.
-- Some XML is not well-formed and the client reads it anyway —
-  `maps/zone006/mappoints.xml` has a landmark called "Pick & Goggles" with a bare ampersand. Bare
-  ampersands are escaped and the parse retried rather than losing a zone's map over one character.
+- Some XML is not well-formed and the client reads it anyway. `maps/zone006/mappoints.xml` has a
+  landmark called "Pick & Goggles" with a bare ampersand; bare ampersands are escaped and the parse
+  retried. Six files are malformed past that -- unescaped `<` inside attributes, `=` inside element
+  names, curly quotes around values -- and `keybindings.xml` and `command.xml` are among them, so
+  refusing them would mean not reporting on the client's own key and command definitions. Those fall
+  back to counting element names textually and are marked **degraded read** in the inventory.
+- A `.txt` is usually a keyed string table but not always; the loader sniffs the shape and records
+  the file as plain text rather than reporting a table with no rows.
+- Lua and .ini are kept as lines. They are not tables and nothing can be joined against them, but
+  they are the client stating its expectations, so they belong in the inventory.
+- The sweep tolerates a live extraction: directories that vanish or lock mid-walk are skipped rather
+  than aborting, and a report taken while `warmyptool` is still running is a snapshot of that moment.

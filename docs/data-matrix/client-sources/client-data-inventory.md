@@ -7,22 +7,382 @@ Root: `C:\Users\Admin\Downloads\myps`
 
 | | |
 | --- | --- |
-| Files discovered | 701 |
-| Read successfully | 701 |
+| Files discovered | 8206 |
+| Read successfully | 8206 |
 | Failed to read | 0 |
-| Data rows | 1,252,060 |
-| Joinable (unique integer key) | 121 |
+| Data rows | 5,409,896 |
+| Joinable (unique integer key) | 4,582 |
+| Global reference tables searched for links | 168 |
 | Candidate links | 1,154 |
 
 A file with a unique integer first column can be joined against; one without cannot,
 and that is stated per file below rather than left to be discovered.
 
-## gamedata
+Link searching covers `data/gamedata` and `data/strings/english` only -- the tables other
+files actually reference. Including the per-zone and per-asset files as targets produced
+280,761 candidates of pure combinatorial noise, since a texture list keyed 1..40 absorbs any
+small column in the game. Every file is still inventoried below.
+
+## art/nifs/effects
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `vfx_jero_flametrail` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_autoattack` | Xml | 2 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
+| `vfx_weapontrail_blue` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_changing1` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_chaosdark` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_ch_blupur` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_ch_bluyel` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_ch_redpur` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_delfdagger` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_delfdagger_green` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_delfdagger_plague` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_delfdagger_red` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_delfdagger_standard` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_cripplinganger` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_crushinganger` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_hatefulstrike` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_mindkiller` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_murderouswrath` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_de_pitilessstrike` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_disciple01` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_disciple02` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_disciple03` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_disciple04` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_dw_slayer01` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_elfblue` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_em_bludgeon` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_em_b_sword` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_em_divinestrike` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_em_smite` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_em_weightofguilt` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_flame` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_flames` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_glob` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_green_long` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_gs_redgrn01` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_gs_redgrn02` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_gs_redgrn03` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_heavens2` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_brutalassault` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_drawblood` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_exploitweakness` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_grimslsh` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_oppstrike` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_swftstrkp1` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_he_swftstrkp2` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_holy` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_ice` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_lava` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_nature1` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_phantomsone` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_purple` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_purple_long` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_quick` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_quick_red` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_red` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_redberserk` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_rock` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_spirit` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_sunlight` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_unholy` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_webbing` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_whbluewhite` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_white` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_whorange` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `vfx_weapontrail_yellow` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## audio
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `audio_animated` | HeaderedCsv | 0 | 8 | no | 4 header rows; 16 comment rows dropped; empty; columns: qi_tk_or_airship_01.nif, audio_explosion, 45, g_Explosion_4, one-shot, at offset., frames 1350-1450 |
+| `audio_doors` | HeaderedCsv | 0 | 8 | no | 133 header rows; 17 comment rows dropped; empty; columns: tk_causeway_upper07.nif, 0, x_tk_causeway_upper07, [MUTE___misc], TK STATUE BOSS COLLAPSE!, ]jump 191 10526 26602 6247 90 |
+| `audio_dynamic_srs` | Binary | 1 | 1 | no | columns: Bytes |
+| `audio_effects` | HeaderedCsv | 0 | 11 | no | 3632 header rows; 372 comment rows dropped; empty; columns: 3618, s_Vfx_Elec_ArcBallFlash, player impact electrical shock, 1.4.2, 3832, 0 |
+| `audio_filelist` | HeaderedCsv | 0 | 1 | no | 22814 header rows; empty; columns: Zombie_VO_PQ_03.mp3 |
+| `audio_filelist_vo` | HeaderedCsv | 0 | 1 | no | 16243 header rows; empty; columns: Zombie_VO_PQ_03.mp3 |
+| `audio_filters` | HeaderedCsv | 0 | 13 | no | 20 header rows; 27 comment rows dropped; empty; columns: !, EAX REVERB FILTER |
+| `audio_groups` | HeaderedCsv | 0 | 7 | no | 1412 header rows; 521 comment rows dropped; empty; columns: g_Female+Male_Scream_c, g_Female_Scream_c, g_Male_Scream_c, A, EOL |
+| `audio_icons` | HeaderedCsv | 0 | 7 | no | 1186 header rows; 850 comment rows dropped; empty; columns: 2031, #N/A |
+| `audio_interface` | HeaderedCsv | 0 | 5 | no | 157 header rows; 88 comment rows dropped; empty; columns: 222, morale level decrements, [MUTE___unneeded_interface_hook], what happens when you change more than one level at a time? |
+| `audio_loops` | HeaderedCsv | 0 | 9 | no | 364 header rows; 30 comment rows dropped; empty; columns: l_Dwarf_Hewer_Ride, s_Dwarf_Hewer_Startup, s_Dwarf_Hewer_Ride_L, [MUTE___misc], 250, vehicles |
+| `audio_music` | HeaderedCsv | 0 | 0 | no | 3 comment rows dropped; empty |
+| `audio_new_creatures` | HeaderedCsv | 0 | 57 | no | 3523 header rows; 15 comment rows dropped; empty; columns: ZombieMale, ZombieMale, g_ZombieMale_Greeting, g_ZombieMale_Greeting, g_Creature_Fart_2, s_ZombieMale_Aggro |
+| `audio_new_creatures2` | HeaderedCsv | 0 | 6 | no | 4032 header rows; 217 comment rows dropped; empty; columns: pain, (no tag) |
+| `audio_objects` | HeaderedCsv | 0 | 12 | no | 889 header rows; 19 comment rows dropped; empty; columns: 7002, vfx_ch_elysium_VineCage_breaking, needs custom audio for vines moving |
+| `audio_queues` | HeaderedCsv | 0 | 7 | no | 2053 header rows; 136 comment rows dropped; empty; columns: q_DarkElf_Female_Puke+Splat, g_Female_Puke, g_Puke_Splat, 750, creatures2 |
+| `audio_scripts` | HeaderedCsv | 0 | 6 | no | 391 header rows; 30 comment rows dropped; empty; columns: x_Music_Loop_Percussion_FightEvent_Start, [s_Silence_1000 : t=6000], L, 2009.06.08 - had to set a delay because fanfare was stacking on this., EOL |
+| `audio_server` | HeaderedCsv | 0 | 13 | no | 1333 header rows; 349 comment rows dropped; empty; columns: 486, 2007.09.04, high elf female, Spirits of the Asur, I beseech thee! Join the ranks of your warrior descendants and push the Druchii disease from our soil!, this violates the Undead High Elf Policy (tm).  was the PQ changed, or dropped?, 5 : unused 2 |
+| `audio_server_sr` | HeaderedCsv | 0 | 9 | no | 20 header rows; 1 comment row dropped; empty; columns: 020, a_Amb_Custom_QuarryOfBone, xyz_191_Amb_Custom_QuarryOfBone, sd, ]jump 191 38396 44010 7936 209, ]togglesoundregion 020 1 |
+| `audio_sounds` | HeaderedCsv | 0 | 32 | no | 15674 header rows; 2345 comment rows dropped; empty; columns: s_HighElf_Male_[Trainer]_Offer_C_04, HighElf_Male_[Trainer]_Offer_C_04.mp3, 0.71, 0.5, 160, 1920 |
+| `audio_vehicles` | HeaderedCsv | 0 | 6 | no | 26 header rows; 5 comment rows dropped; empty; columns: pain, q_Weapon_Pain_3 |
+| `audio_weapons` | HeaderedCsv | 0 | 6 | no | 80 header rows; 34 comment rows dropped; empty; columns: 1302, swing, g_Cannon_Fire, 2008.07.29 - still in use? |
+
+## audio/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone002` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone003` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone004` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone005` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone006` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone007` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone008` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone009` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone010` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone011` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone012` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone013` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone014` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone015` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone016` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone017` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone018` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone019` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone020` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone021` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone022` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone023` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone024` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone025` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone026` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone027` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone028` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone030` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone031` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone032` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone033` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone034` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone036` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone037` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone038` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone039` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone041` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone042` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone043` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone044` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone045` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone050` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone060` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone063` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone064` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone065` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone066` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone070` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone071` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone072` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone073` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone074` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone075` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone076` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone077` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone078` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone079` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone082` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone083` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone084` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone085` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone086` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone087` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone088` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone089` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone090` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone091` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone092` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone093` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone094` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone095` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone100` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone101` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone102` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone103` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone104` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone105` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone106` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone107` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone108` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone109` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone110` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone111` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone112` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone113` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone114` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone115` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone116` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone117` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone118` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone120` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone121` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone122` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone123` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone124` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone125` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone126` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone127` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone128` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone129` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone130` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone131` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone132` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone133` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone134` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone135` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone136` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone137` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone138` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone139` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone140` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone142` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone143` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone144` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone145` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone146` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone147` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone150` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone151` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone152` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone153` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone154` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone155` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone156` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone158` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone159` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone160` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone161` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone162` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone163` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone164` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone165` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone166` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone167` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone168` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone169` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone170` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone171` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone172` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone173` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone174` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone175` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone176` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone177` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone178` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone179` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone180` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone181` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone182` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone183` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone184` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone185` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone190` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone191` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone192` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone193` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone194` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone195` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone196` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone198` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone200` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone201` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone202` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone203` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone204` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone205` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone206` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone207` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone208` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone209` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone210` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone211` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone212` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone213` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone214` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone215` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone216` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone217` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone218` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone219` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone220` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone221` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone222` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone223` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone224` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone225` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone226` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone227` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone228` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone229` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone230` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone231` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone232` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone234` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone235` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone236` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone237` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone238` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone241` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone242` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone243` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone244` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone245` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone246` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone247` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone248` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone249` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone260` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone263` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone264` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone265` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone266` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone275` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone276` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone277` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone278` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone279` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone280` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone281` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone282` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone283` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone284` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone285` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone286` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone287` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone288` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone289` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone290` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone291` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone292` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone294` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone295` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone297` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone298` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone301` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone302` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone303` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone304` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone305` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone306` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone307` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone410` | Binary | 1 | 1 | no | columns: Bytes |
+| `zone411` | Binary | 1 | 1 | no | columns: Bytes |
+
+## data
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mythloginserviceconfig` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
+## data/gamedata
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilities` | HeaderedCsv | 5,222 | 20 | no | 2 header rows; 223 comment rows dropped; columns: ID, name, Description, Notes, Icon, Icon |
 | `abilityline_to_bufftype` | HeaderedCsv | 8 | 6 | yes | 1 header row; columns: Line Id, Type name, Client-side enumeration value, Buff Frame Red, Buff Frame Green, Buff Frame Blue |
+| `actor` | PlainText | 262 | 1 | no | columns: Line |
 | `anim_abilities` | HeaderedCsv | 1,103 | 18 | no | 2 header rows; 19 comment rows dropped; columns: ID, name, Description, ;, Anim, Motion Description |
 | `anim_archery` | HeaderedCsv | 45 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
 | `anim_armory` | HeaderedCsv | 0 | 13 | no | 382 header rows; empty; columns: Pistol/Pistol, 37901, 38000 |
@@ -131,556 +491,13 @@ and that is stated per file below rather than left to be discovered.
 | `weaponeffects` | HeaderedCsv | 0 | 3 | no | 250 header rows; empty |
 | `zoneglyphs` | HeaderedCsv | 6 | 3 | yes | 2 header rows; columns: #, #, # |
 
-## maps/zone001
+## data/patcher
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `layout` | Xml | 43 | 3 | no | columns: Element, Count, Attributes |
 
-## maps/zone002
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone003
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone004
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone005
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone006
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 5 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone007
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone008
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone009
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 11 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone010
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone011
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone013
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone026
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 4 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone027
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone030
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone031
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone032
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone034
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone039
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone041
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone042
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone043
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone044
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone045
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone050
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone060
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-
-## maps/zone100
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone101
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 17 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone102
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone103
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone104
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone105
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone106
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone107
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone108
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone109
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone110
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone120
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 5 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone130
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone131
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone132
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone134
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone135
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone136
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone138
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone139
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone157
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone158
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone159
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone160
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-
-## maps/zone161
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone162
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone167
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone168
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone179
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone191
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 74 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone197
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone200
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone201
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone202
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone203
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone204
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone205
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone206
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone207
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone208
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone209
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone210
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone220
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 4 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
-| `mappieces` | HeaderedCsv | 3 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone230
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone235
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone236
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone237
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone238
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-
-## maps/zone241
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone242
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone243
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone244
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-
-## maps/zone410
-
-| File | Format | Rows | Cols | Key | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
-| `mappoints` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
-
-## strings/english
+## data/strings/english
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -688,23 +505,24 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 224 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 194 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,981 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 304 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,690 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
@@ -712,36 +530,731 @@ and that is stated per file below rather than left to be discovered.
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 58 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 167 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 168 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 948 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `pregame` | PlainText | 220 | 1 | no | columns: Line |
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 57 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
-| `signtext` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 153 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 32 | 1 | no | columns: Line |
 | `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 25 | 1 | no | columns: Line |
 
-## strings/french
+## data/strings/english/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mac_credits` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 56 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 182 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 805 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 188 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 103 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 18 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 55 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `trialalert` | PlainText | 36 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 156 | 1 | no | columns: Line |
+
+## data/strings/english/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 30 | 1 | no | columns: Line |
+
+## data/strings/english/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 71 | 1 | no | columns: Line |
+
+## data/strings/english/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 22 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 3,563 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 101 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 313 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 9,364 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 227 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 941 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch133` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch134` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch135` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch136` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch140` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,018 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,018 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 636 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 503 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 501 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 655 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/english/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone050_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone158_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone159_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone410_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone411_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 451 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/french
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -749,23 +1262,24 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 224 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,981 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,690 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
@@ -773,37 +1287,794 @@ and that is stated per file below rather than left to be discovered.
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 58 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 167 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 167 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `patchtitle` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `patchtitle` | PlainText | 1 | 1 | no | columns: Line |
+| `pregame` | PlainText | 220 | 1 | no | columns: Line |
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
-| `signtext` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 153 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 32 | 1 | no | columns: Line |
 | `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 25 | 1 | no | columns: Line |
 
-## strings/german
+## data/strings/french/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mac_credits` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 56 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 182 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 805 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 188 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 103 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 18 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 55 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `trialalert` | PlainText | 36 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 156 | 1 | no | columns: Line |
+
+## data/strings/french/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 30 | 1 | no | columns: Line |
+
+## data/strings/french/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 71 | 1 | no | columns: Line |
+
+## data/strings/french/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 22 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 3,563 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 102 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 314 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_ekrund_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_ekrund_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battlemarsh_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battlemarsh_task_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_task_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `wild_hunt_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_destruction` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_order` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch133` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch134` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch135` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch136` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch140` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 301 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone050_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone158_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone159_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone410_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone411_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 451 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/french/zones/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone106_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+
+## data/strings/german
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -811,23 +2082,24 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 224 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,981 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,690 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
@@ -835,37 +2107,806 @@ and that is stated per file below rather than left to be discovered.
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 58 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 167 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 167 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `patchtitle` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `patchtitle` | PlainText | 1 | 1 | no | columns: Line |
+| `pregame` | PlainText | 220 | 1 | no | columns: Line |
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
-| `signtext` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 153 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 32 | 1 | no | columns: Line |
 | `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 25 | 1 | no | columns: Line |
 
-## strings/italian
+## data/strings/german/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mac_credits` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 56 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 182 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 805 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 188 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 103 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 18 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 143 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 55 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `trialalert` | PlainText | 36 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 156 | 1 | no | columns: Line |
+
+## data/strings/german/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 30 | 1 | no | columns: Line |
+
+## data/strings/german/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 71 | 1 | no | columns: Line |
+
+## data/strings/german/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 22 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 3,563 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 102 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 314 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_ekrund_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `assault_on_ekrund_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `battlemarsh_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `battlemarsh_task_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_task_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `wild_hunt_description` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_destruction` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_order` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch133` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch134` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch135` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch136` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch140` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 301 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names` | IndexedStringTable | 346 | 2 | yes | columns: Id, Text |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 176 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_desc` | IndexedStringTable | 176 | 2 | yes | columns: Id, Text |
+| `entries_descs` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone050_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone090_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone091_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone092_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone093_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone094_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone095_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone158_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone159_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone410_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone411_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 451 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/german/zones/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone106_area_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -874,45 +2915,420 @@ and that is stated per file below rather than left to be discovered.
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,925 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,601 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
 | `maptextpointstrings` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 66 | 1 | no | columns: Line |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
 
-## strings/japanese
+## data/strings/italian/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `backpack` | PlainText | 37 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 155 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 122 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 166 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 103 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 8 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 133 | 1 | no | columns: Line |
+
+## data/strings/italian/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 21 | 1 | no | columns: Line |
+
+## data/strings/italian/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 64 | 1 | no | columns: Line |
+
+## data/strings/italian/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 4,050 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 54 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/italian/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilityeffect` | IndexedStringTable | 1,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,207 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 57 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
+| `default` | PlainText | 1,884 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 781 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,447 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 53 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 132 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
@@ -920,13 +3336,683 @@ and that is stated per file below rather than left to be discovered.
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 140 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 24 | 1 | no | columns: Line |
 
-## strings/korean
+## data/strings/japanese/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 87 | 1 | no | columns: Line |
+| `backpack` | PlainText | 36 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 155 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 63 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 649 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 167 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 90 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 8 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 115 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 60 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 25 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 46 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 56 | 1 | no | columns: Line |
+
+## data/strings/japanese/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/japanese/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/japanese/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 46 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 42 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
+
+## data/strings/japanese/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 38 | 1 | no | columns: Line |
+
+## data/strings/japanese/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 44 | 1 | no | columns: Line |
+
+## data/strings/japanese/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eula` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entry_descs` | IndexedStringTable | 901 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 901 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 131 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 137 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 49 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 49 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tips` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,008 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,008 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 105 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/japanese/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 86 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 56 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 76 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 87 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 68 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 115 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 113 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 109 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 97 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 75 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 81 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 82 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 57 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 113 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 113 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 77 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 98 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 117 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 114 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 78 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 79 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 77 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 84 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 90 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 99 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 118 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 106 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 71 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -934,57 +4020,771 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 192 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,937 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 252 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 791 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,612 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 56 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 147 | 1 | no | columns: Line |
 | `npctitles` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 932 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `pregame` | PlainText | 258 | 1 | no | columns: Line |
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 54 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
-| `signtext` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 175 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 24 | 1 | no | columns: Line |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
 
-## strings/russian
+## data/strings/korean/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 87 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 176 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 787 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 175 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 10 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 98 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 60 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 8 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 25 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 140 | 1 | no | columns: Line |
+
+## data/strings/korean/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/korean/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 64 | 1 | no | columns: Line |
+
+## data/strings/korean/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 46 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
+
+## data/strings/korean/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 42 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 4,090 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 158 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 8,907 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 227 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 922 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 140 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 141 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 139 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 111 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 84 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 85 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 86 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_ekrund_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_ekrund_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battlemarsh_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battlemarsh_task_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_task_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `wild_hunt_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 299 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,020 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,020 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 636 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 555 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 503 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 655 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/korean/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 120 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -992,23 +4792,24 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,204 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 223 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,978 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,678 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
@@ -1016,37 +4817,1573 @@ and that is stated per file below rather than left to be discovered.
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 58 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 167 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 164 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `patchtitle` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `patchtitle` | PlainText | 1 | 1 | no | columns: Line |
+| `pregame` | PlainText | 220 | 1 | no | columns: Line |
 | `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
-| `signtext` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 153 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 32 | 1 | no | columns: Line |
 | `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 25 | 1 | no | columns: Line |
 
-## strings/spanish
+## data/strings/russian/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mac_credits` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 56 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 182 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 805 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 188 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 103 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 18 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 115 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 29 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `trialalert` | PlainText | 36 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 156 | 1 | no | columns: Line |
+
+## data/strings/russian/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 30 | 1 | no | columns: Line |
+
+## data/strings/russian/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 71 | 1 | no | columns: Line |
+
+## data/strings/russian/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 22 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 3,563 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 102 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 314 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_ekrund_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `assault_on_ekrund_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battlemarsh_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `battlemarsh_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `battle_at_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `clash_in_ellyrion_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `phoenix_imperiled_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `struggle_for_the_temple_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `wild_hunt_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_destruction` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_order` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch133` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch134` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch135` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch136` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch140` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 107 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 301 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `abilitydesc` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
+| `abilityeffect` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
+| `abilitynames` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
+| `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
+| `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+| `bindableactions` | PlainText | 211 | 1 | no | columns: Line |
+| `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
+| `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `careernames_f` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
+| `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
+| `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
+| `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `default` | PlainText | 1,947 | 1 | no | columns: Line |
+| `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
+| `emotes` | IndexedStringTable | 1,041 | 2 | yes | columns: Id, Text |
+| `hardcoded` | PlainText | 1,658 | 1 | no | columns: Line |
+| `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
+| `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
+| `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
+| `initerrors` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `mappointtypes` | PlainText | 57 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 159 | 1 | no | columns: Line |
+| `maptextpointstrings` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `npctitles` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
+| `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
+| `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
+| `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
+| `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `patchtitle` | PlainText | 1 | 1 | no | columns: Line |
+| `pregame` | PlainText | 210 | 1 | no | columns: Line |
+| `racenames_f` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `racenames_m` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
+| `scenarionames` | IndexedStringTable | 2,208 | 2 | yes | columns: Id, Text |
+| `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
+| `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `signtext` | PlainText | 1,249 | 1 | no | columns: Line |
+| `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `socialstrings` | PlainText | 153 | 1 | no | columns: Line |
+| `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `training` | PlainText | 28 | 1 | no | columns: Line |
+| `uimodulecategories` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone050_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone158_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone159_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone410_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone411_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 451 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mac_credits` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 57 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 182 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 805 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 175 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 100 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 20 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 115 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 29 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 54 | 1 | no | columns: Line |
+| `trialalert` | PlainText | 36 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 156 | 1 | no | columns: Line |
+
+## data/strings/russian/zones/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 28 | 1 | no | columns: Line |
+
+## data/strings/russian/zones/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 68 | 1 | no | columns: Line |
+
+## data/strings/russian/zones/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 46 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
+
+## data/strings/russian/zones/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 42 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 3,641 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 105 | 2 | yes | columns: Id, Text |
+| `eula_mac` | IndexedStringTable | 317 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_descs` | IndexedStringTable | 900 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `patch133` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch134` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch135` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+
+## data/strings/russian/zones/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone050_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone157_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone158_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone159_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone197_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -1055,65 +6392,1180 @@ and that is stated per file below rather than left to be discovered.
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,937 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 791 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,605 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 56 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 147 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 7,073 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `patchtitle` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `patchtitle` | PlainText | 1 | 1 | no | columns: Line |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 175 | 1 | no | columns: Line |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
 
-## strings/s_chinese
+## data/strings/spanish/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 87 | 1 | no | columns: Line |
+| `backpack` | PlainText | 37 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 155 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 787 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 175 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 10 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 60 | 1 | no | columns: Line |
+| `serverlanguages` | PlainText | 11 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 140 | 1 | no | columns: Line |
+
+## data/strings/spanish/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 21 | 1 | no | columns: Line |
+
+## data/strings/spanish/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 64 | 1 | no | columns: Line |
+
+## data/strings/spanish/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 4,050 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 126 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 12,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 628 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 2,000 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `scurvy_dogs_task_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_01_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_02_text` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `fragment_task_03_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_04_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `fragment_task_06_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_07_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_08_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_task_09_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `fragment_text` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_fragment_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_full_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_short_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `sigil_text` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names_f` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,301 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_text` | IndexedStringTable | 681 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 661 | 2 | yes | columns: Id, Text |
+| `glyph_activities_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_activities_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `glyph_line_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `glyph_names` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_item_text` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `glyph_tooltip_text` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/spanish/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone179_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone241_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone242_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone243_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone244_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 57 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindlocations` | IndexedStringTable | 290 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `helptipdesc` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `initerrors` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `keepnames` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 44 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 85 | 1 | no | columns: Line |
 | `npctitles` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 105 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 24 | 1 | no | columns: Line |
 
-## strings/t_chinese
+## data/strings/s_chinese/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 61 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 52 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 87 | 1 | no | columns: Line |
+| `backpack` | PlainText | 32 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 155 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 53 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 643 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 167 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 88 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 8 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 95 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 60 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 5 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 25 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 46 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 55 | 1 | no | columns: Line |
+
+## data/strings/s_chinese/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/s_chinese/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/s_chinese/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 45 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
+
+## data/strings/s_chinese/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 23 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 6 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 30 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | PlainText | 3 | 1 | no | columns: Line |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_descs` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eula` | IndexedStringTable | 103 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 11,999 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entry_descs` | IndexedStringTable | 901 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 901 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 178 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 131 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 131 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tips` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,008 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,008 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 660 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 652 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/s_chinese/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -1121,21 +7573,22 @@ and that is stated per file below rather than left to be discovered.
 | `abilityeffect` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
-| `abilitytooltipmarkup` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `abilitytooltipmarkup` | PlainText | 62 | 1 | no | columns: Line |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `bindableactions` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
 | `bindlocations` | IndexedStringTable | 198 | 2 | yes | columns: Id, Text |
 | `careerlines_f` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
-| `combatevents` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `combatevents` | PlainText | 10 | 1 | no | columns: Line |
+| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `componenteffects` | IndexedStringTable | 25,997 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
-| `default` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `default` | PlainText | 1,937 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 252 | 2 | yes | columns: Id, Text |
 | `emotes` | IndexedStringTable | 791 | 2 | yes | columns: Id, Text |
-| `hardcoded` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `hardcoded` | PlainText | 1,605 | 1 | no | columns: Line |
 | `helptipdesc` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
 | `helptipdescalt` | IndexedStringTable | 152 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 145 | 2 | yes | columns: Id, Text |
@@ -1143,28 +7596,7641 @@ and that is stated per file below rather than left to be discovered.
 | `keepnames` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
 | `keepupgradedescs` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
 | `keepupgradenames` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `keybindings` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `landmarkspecialtypes` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
-| `mappointtypes` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `mapsystem` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `mappointtypes` | PlainText | 56 | 1 | no | columns: Line |
+| `mapsystem` | PlainText | 147 | 1 | no | columns: Line |
 | `maptextpointstrings` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
 | `npctitles` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
 | `objectivenames` | IndexedStringTable | 939 | 2 | yes | columns: Id, Text |
 | `packageinfo` | IndexedStringTable | 208 | 2 | yes | columns: Id, Text |
 | `packagenames` | IndexedStringTable | 18,002 | 2 | yes | columns: Id, Text |
 | `pairingnames` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
-| `patch` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `pregame` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `patch` | PlainText | 70 | 1 | no | columns: Line |
+| `pregame` | PlainText | 258 | 1 | no | columns: Line |
 | `scenariolobby` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `scenarionames` | IndexedStringTable | 54 | 2 | yes | columns: Id, Text |
 | `scenarioscore` | IndexedStringTable | 5,011 | 2 | yes | columns: Id, Text |
 | `siegeweapontypes` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
 | `skillnames` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
-| `socialstrings` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `socialstrings` | PlainText | 175 | 1 | no | columns: Line |
 | `specializationpathdescriptions` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `specializationpathnames` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
 | `splashscreen` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `tomesectionnames` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
-| `training` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `urls` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
-| `worldcontrol` | IndexedStringTable | 0 | 2 | no | empty; columns: Id, Text |
+| `training` | PlainText | 24 | 1 | no | columns: Line |
+| `urls` | PlainText | 5 | 1 | no | columns: Line |
+| `worldcontrol` | PlainText | 62 | 1 | no | columns: Line |
+
+## data/strings/t_chinese/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `additional_support_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `additional_support_titles` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `creditstrings` | IndexedStringTable | 51 | 2 | yes | columns: Id, Text |
+| `eashanghai_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+| `eashanghai_titles` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+| `eatiburon_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `eatiburon_titles` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ea_cqc_names` | IndexedStringTable | 67 | 2 | yes | columns: Id, Text |
+| `goa_business_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `goa_direction_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `goa_marketing_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `goa_operations_names` | IndexedStringTable | 94 | 2 | yes | columns: Id, Text |
+| `goa_production_names` | IndexedStringTable | 66 | 2 | yes | columns: Id, Text |
+| `gw_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `gw_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_art_names` | IndexedStringTable | 68 | 2 | yes | columns: Id, Text |
+| `mythic_art_titles` | IndexedStringTable | 68 | 2 | yes | columns: Id, Text |
+| `mythic_community_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_community_titles` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `mythic_content_names` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_content_titles` | IndexedStringTable | 55 | 2 | yes | columns: Id, Text |
+| `mythic_cs_names` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_cs_titles` | IndexedStringTable | 14 | 2 | yes | columns: Id, Text |
+| `mythic_design_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_design_titles` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_names` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `mythic_engineering_titles` | IndexedStringTable | 34 | 2 | yes | columns: Id, Text |
+| `mythic_executives_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_executives_titles` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_marketing_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_operations_names` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_operations_titles` | IndexedStringTable | 29 | 2 | yes | columns: Id, Text |
+| `mythic_production_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_production_titles` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `mythic_qa_names` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+| `mythic_qa_titles` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+| `mythic_support_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `mythic_support_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `orchestra_titles` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+| `other_contributors` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `special_thanks_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+| `trilobit_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `war_babies_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+| `womb_names` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `womb_titles` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/interface
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionhouse` | PlainText | 87 | 1 | no | columns: Line |
+| `backpack` | PlainText | 39 | 1 | no | columns: Line |
+| `chatstrings` | PlainText | 176 | 1 | no | columns: Line |
+| `currentevents` | PlainText | 32 | 1 | no | columns: Line |
+| `customizeuistrings` | PlainText | 174 | 1 | no | columns: Line |
+| `guildstrings` | PlainText | 787 | 1 | no | columns: Line |
+| `helpstrings` | PlainText | 175 | 1 | no | columns: Line |
+| `hudstrings` | PlainText | 105 | 1 | no | columns: Line |
+| `lcdstrings` | PlainText | 13 | 1 | no | columns: Line |
+| `liveeventstrings` | PlainText | 10 | 1 | no | columns: Line |
+| `mailstrings` | PlainText | 98 | 1 | no | columns: Line |
+| `mappinfilternames` | PlainText | 16 | 1 | no | columns: Line |
+| `profanityfilter` | IndexedStringTable | 116 | 2 | yes | columns: Id, Text |
+| `rvrcitystrings` | PlainText | 60 | 1 | no | columns: Line |
+| `serverlocation` | PlainText | 7 | 1 | no | columns: Line |
+| `shortkeynames` | PlainText | 27 | 1 | no | columns: Line |
+| `siegestrings` | PlainText | 47 | 1 | no | columns: Line |
+| `tutorialstrings` | PlainText | 97 | 1 | no | columns: Line |
+| `usersettingsstrings` | PlainText | 140 | 1 | no | columns: Line |
+
+## data/strings/t_chinese/interface/interactionwindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `store` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/t_chinese/interface/objectivetrackers
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `objectivetrackertext` | PlainText | 16 | 1 | no | columns: Line |
+
+## data/strings/t_chinese/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 43 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 46 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 35 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 36 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 44 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | PlainText | 1 | 1 | no | columns: Line |
+
+## data/strings/t_chinese/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 24 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 38 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 42 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 39 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 47 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 9 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 27 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 40 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 41 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 37 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 26 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 33 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `map_point_names` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/pregame
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `creationfeatures` | PlainText | 4,050 | 1 | no | columns: Line |
+| `eula` | IndexedStringTable | 153 | 2 | yes | columns: Id, Text |
+| `pbeula` | IndexedStringTable | 19 | 2 | yes | columns: Id, Text |
+| `roc` | IndexedStringTable | 149 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/renowntitles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chaos_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `chaos_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `darkelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `dwarves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `goblin_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `highelves_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `human_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_f` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `orcs_m` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlock_event_descs` | IndexedStringTable | 9,346 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entry_descs` | IndexedStringTable | 217 | 2 | yes | columns: Id, Text |
+| `entry_names` | IndexedStringTable | 926 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_01` | PlainText | 1 | 1 | no | columns: Line |
+| `entry_reward_desc_02` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_03` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_04` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `entry_reward_desc_05` | IndexedStringTable | 21 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 101 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 119 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `main_text_level_01` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_02` | IndexedStringTable | 129 | 2 | yes | columns: Id, Text |
+| `main_text_level_03` | IndexedStringTable | 131 | 2 | yes | columns: Id, Text |
+| `names` | IndexedStringTable | 131 | 2 | yes | columns: Id, Text |
+| `species_names` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_07` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_08` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_09` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_desc_10` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_02` | IndexedStringTable | 146 | 2 | yes | columns: Id, Text |
+| `species_reward_task_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_04` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_05` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_06` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_reward_task_07` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_08` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_09` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_reward_task_10` | IndexedStringTable | 134 | 2 | yes | columns: Id, Text |
+| `species_text_level_01` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_02` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `species_text_level_03` | IndexedStringTable | 138 | 2 | yes | columns: Id, Text |
+| `subtype_descs` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `subtype_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_names_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_01` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_02` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_03` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_04` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_05` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_06` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_07` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_08` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_09` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `sub_entry_text_10` | IndexedStringTable | 69 | 2 | yes | columns: Id, Text |
+| `type_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `suit_names` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `value_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `subsections_names` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 171 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 448 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 447 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 221 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/liveevent
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `assault_on_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `assault_on_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `battlemarsh_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battlemarsh_task_names` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `battle_at_the_gates_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_destruction` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_description_order` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_destruction` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `beyond_the_sands_task_names_order` | IndexedStringTable | 18 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `bitter_rivals_task_names` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `conflict_at_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_destruction` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `daemon_moon_rising_task_names_order` | IndexedStringTable | 60 | 2 | yes | columns: Id, Text |
+| `halloween_description` | IndexedStringTable | 5 | 2 | yes | columns: Id, Text |
+| `halloween_task_names` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `heavy_metal_descriptions` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `heavy_metal_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `ishas_sorrow_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `keg_end_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `keg_end_task_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `night_of_murder_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `night_of_murder_task_names` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `return_to_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_destruction` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `rise_of_the_tomb_kings_task_names_order` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `the_struggle_for_nordenwatch_task_names` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `wild_hunt_description` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names` | IndexedStringTable | 11 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_destruction` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+| `wild_hunt_task_names_order` | IndexedStringTable | 28 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `patch131` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `patch132` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `tips` | IndexedStringTable | 58 | 2 | yes | columns: Id, Text |
+| `trialstrings` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+| `zone_descs` | IndexedStringTable | 299 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_names` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 351 | 2 | yes | columns: Id, Text |
+| `zones_text` | IndexedStringTable | 264 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_names` | IndexedStringTable | 20 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragment_task_05_text` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tactic_ability_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries_desc` | IndexedStringTable | 352 | 2 | yes | columns: Id, Text |
+| `entries_descs` | PlainText | 1 | 1 | no | columns: Line |
+| `entries_names_f` | IndexedStringTable | 1,017 | 2 | yes | columns: Id, Text |
+| `entries_names_m` | IndexedStringTable | 1,017 | 2 | yes | columns: Id, Text |
+| `types_names` | IndexedStringTable | 8 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities_names` | IndexedStringTable | 634 | 2 | yes | columns: Id, Text |
+| `activities_text` | IndexedStringTable | 626 | 2 | yes | columns: Id, Text |
+| `activities_types` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `activity_task_01_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_01_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_02_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_02_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_03_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_03_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_04_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_04_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_05_text` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_06_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_06_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_07_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_names` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_08_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `activity_task_09_names` | IndexedStringTable | 552 | 2 | yes | columns: Id, Text |
+| `activity_task_09_text` | IndexedStringTable | 553 | 2 | yes | columns: Id, Text |
+| `entries_location_text` | IndexedStringTable | 649 | 2 | yes | columns: Id, Text |
+| `entries_names` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
+| `entries_npc_names` | IndexedStringTable | 651 | 2 | yes | columns: Id, Text |
+| `entries_short_titles` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
+| `entries_text` | IndexedStringTable | 654 | 2 | yes | columns: Id, Text |
+| `entries_titles` | IndexedStringTable | 650 | 2 | yes | columns: Id, Text |
+| `storyline_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `storyline_summaries` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+
+## data/strings/t_chinese/zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zone001_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone002_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone003_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone004_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `zone005_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone006_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone007_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone008_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone009_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone010_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `zone011_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone026_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone027_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone030_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone034_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone036_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone037_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone038_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone039_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone041_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone043_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone060_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone100_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
+| `zone101_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone102_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone103_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone104_area_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `zone105_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone106_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone107_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone108_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone109_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone110_area_names` | IndexedStringTable | 31 | 2 | yes | columns: Id, Text |
+| `zone120_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone130_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone132_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone135_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone136_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone138_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone139_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone152_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone153_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone154_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `zone155_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone156_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone160_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone161_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
+| `zone162_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone167_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `zone168_area_names` | IndexedStringTable | 73 | 2 | yes | columns: Id, Text |
+| `zone169_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone170_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone171_area_names` | IndexedStringTable | 121 | 2 | yes | columns: Id, Text |
+| `zone172_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `zone173_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone175_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone176_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone177_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `zone178_area_names` | IndexedStringTable | 16 | 2 | yes | columns: Id, Text |
+| `zone190_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone191_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone195_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone196_area_names` | IndexedStringTable | 32 | 2 | yes | columns: Id, Text |
+| `zone200_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
+| `zone201_area_names` | IndexedStringTable | 88 | 2 | yes | columns: Id, Text |
+| `zone202_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone203_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone204_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `zone205_area_names` | IndexedStringTable | 112 | 2 | yes | columns: Id, Text |
+| `zone206_area_names` | IndexedStringTable | 80 | 2 | yes | columns: Id, Text |
+| `zone207_area_names` | IndexedStringTable | 89 | 2 | yes | columns: Id, Text |
+| `zone208_area_names` | IndexedStringTable | 64 | 2 | yes | columns: Id, Text |
+| `zone209_area_names` | IndexedStringTable | 96 | 2 | yes | columns: Id, Text |
+| `zone210_area_names` | IndexedStringTable | 15 | 2 | yes | columns: Id, Text |
+| `zone220_area_names` | IndexedStringTable | 48 | 2 | yes | columns: Id, Text |
+| `zone260_area_names` | IndexedStringTable | 10 | 2 | yes | columns: Id, Text |
+| `zone_names` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_destruction` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+| `zone_ranks_order` | IndexedStringTable | 300 | 2 | yes | columns: Id, Text |
+
+## interface/default
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `eadefaultmods` | PlainText | 97 | 1 | no | columns: Line |
+
+## interface/default/easystem_actionbarclustermanager/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `actionbarclustermanager` | PlainText | 536 | 1 | no | columns: Line |
+| `layoutmodes` | PlainText | 259 | 1 | no | columns: Line |
+| `newabilityhandler` | PlainText | 109 | 1 | no | columns: Line |
+
+## interface/default/easystem_advancedwindowmanager/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `advancedwindowmanager` | PlainText | 175 | 1 | no | columns: Line |
+
+## interface/default/easystem_dialogmanager/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `dialogmanager` | PlainText | 923 | 1 | no | columns: Line |
+| `dialogs` | PlainText | 60 | 1 | no | columns: Line |
+| `onebuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `textentrydlg` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `threebuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `twobuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_eventtext/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `system_eventtext` | PlainText | 520 | 1 | no | columns: Line |
+| `system_eventtext` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `templates_eventtext` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_glyphdisplay/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `glyphdisplay` | PlainText | 490 | 1 | no | columns: Line |
+| `glyphdisplay` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_layouteditor/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `layoutcontrolframe` | PlainText | 709 | 1 | no | columns: Line |
+| `layouteditor` | PlainText | 731 | 1 | no | columns: Line |
+| `layouteditor` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `layouteditoroptions` | PlainText | 103 | 1 | no | columns: Line |
+| `layouteditoroptions` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `layouteditorutils` | PlainText | 53 | 1 | no | columns: Line |
+| `layouteditorwindowbrowser` | PlainText | 363 | 1 | no | columns: Line |
+| `layouteditorwindowbrowser` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `layoutframe` | PlainText | 555 | 1 | no | columns: Line |
+| `layoutframetemplates` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `layoutsnapframe` | PlainText | 184 | 1 | no | columns: Line |
+
+## interface/default/easystem_resourceframes/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `moneyframe` | PlainText | 413 | 1 | no | columns: Line |
+| `moneyframe` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_rrq/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `rrqprogressbar` | PlainText | 607 | 1 | no | columns: Line |
+| `rrqprogressbar` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_rrq/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_tombtoggle01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_strings/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `dataconverter` | PlainText | 17 | 1 | no | columns: Line |
+| `stringutils` | PlainText | 1,102 | 1 | no | columns: Line |
+
+## interface/default/easystem_targetinfo/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `targetinfo` | PlainText | 235 | 1 | no | columns: Line |
+
+## interface/default/easystem_threepartbar/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_threepartbar` | PlainText | 377 | 1 | no | columns: Line |
+| `ea_threepartbar` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_threepartbar/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_victorypoints01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_tooltips/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `abilitytooltips` | PlainText | 221 | 1 | no | columns: Line |
+| `abilitytooltips` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+| `careertooltips` | PlainText | 13 | 1 | no | columns: Line |
+| `careertooltips` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `itemtooltips` | PlainText | 1,862 | 1 | no | columns: Line |
+| `itemtooltips` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `maptooltips` | PlainText | 1,121 | 1 | no | columns: Line |
+| `maptooltips` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `tometooltips` | PlainText | 57 | 1 | no | columns: Line |
+| `tometooltips` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `tooltips` | PlainText | 927 | 1 | no | columns: Line |
+| `tooltips` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_utils/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bindoptionsdlg` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `craftingutils` | PlainText | 47 | 1 | no | columns: Line |
+| `datautils` | PlainText | 2,028 | 1 | no | columns: Line |
+| `fileutils` | PlainText | 33 | 1 | no | columns: Line |
+| `friendsuggester` | PlainText | 240 | 1 | no | columns: Line |
+| `gamedefs` | PlainText | 440 | 1 | no | columns: Line |
+| `helputils` | PlainText | 44 | 1 | no | columns: Line |
+| `iconbuttonutils` | PlainText | 23 | 1 | no | columns: Line |
+| `idgenerator` | PlainText | 26 | 1 | no | columns: Line |
+| `itemutils` | PlainText | 133 | 1 | no | columns: Line |
+| `keyutils` | PlainText | 198 | 1 | no | columns: Line |
+| `mailutils` | PlainText | 47 | 1 | no | columns: Line |
+| `maputils` | PlainText | 184 | 1 | no | columns: Line |
+| `partyutils` | PlainText | 589 | 1 | no | columns: Line |
+| `player` | PlainText | 362 | 1 | no | columns: Line |
+| `publicqueststates` | PlainText | 327 | 1 | no | columns: Line |
+| `questutils` | PlainText | 487 | 1 | no | columns: Line |
+| `queue` | PlainText | 91 | 1 | no | columns: Line |
+| `soundutils` | PlainText | 169 | 1 | no | columns: Line |
+| `timedstatemachine` | PlainText | 154 | 1 | no | columns: Line |
+| `timeutils` | PlainText | 248 | 1 | no | columns: Line |
+
+## interface/default/easystem_windowutils/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `animatedimage` | PlainText | 33 | 1 | no | columns: Line |
+| `backpackutilsmediator` | PlainText | 285 | 1 | no | columns: Line |
+| `button` | PlainText | 25 | 1 | no | columns: Line |
+| `combobox` | PlainText | 25 | 1 | no | columns: Line |
+| `dynamicimage` | PlainText | 46 | 1 | no | columns: Line |
+| `frame` | PlainText | 337 | 1 | no | columns: Line |
+| `framemanager` | PlainText | 243 | 1 | no | columns: Line |
+| `fullresizeimage` | PlainText | 1 | 1 | no | columns: Line |
+| `horizontalresizeimage` | PlainText | 3 | 1 | no | columns: Line |
+| `label` | PlainText | 48 | 1 | no | columns: Line |
+| `statusbar` | PlainText | 3 | 1 | no | columns: Line |
+| `texteditbox` | PlainText | 22 | 1 | no | columns: Line |
+| `versatileframe` | PlainText | 404 | 1 | no | columns: Line |
+| `versatileframe` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `windowutils` | PlainText | 493 | 1 | no | columns: Line |
+| `windowutils` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/easystem_windowutils/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `windowutilstextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_defaultwindowskin/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `defaultactionbuttongroup` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
+| `defaultbutton` | PlainText | 10 | 1 | no | columns: Line |
+| `defaultbutton` | Xml | 50 | 3 | no | columns: Element, Count, Attributes |
+| `defaultcolor` | PlainText | 586 | 1 | no | columns: Line |
+| `defaultcombobox` | Xml | 38 | 3 | no | columns: Element, Count, Attributes |
+| `defaultcornerimages` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
+| `defaulteditbox` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `defaultframe` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `defaultfullresizeimage` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `defaulthorizontalresizeimage` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `defaulthudstatusbars` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `defaulticonbutton` | Xml | 33 | 3 | no | columns: Element, Count, Attributes |
+| `defaultimages` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `defaultlabel` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `defaultlistsortheader` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `defaultmenu` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `defaultscrollbar` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
+| `defaultsettings` | PlainText | 63 | 1 | no | columns: Line |
+| `defaultsettings` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `defaultsliderbar` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `defaultstatusbar` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
+| `defaulttitlebar` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `defaulttooltip` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_defaultwindowskin/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `defaultskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_icons/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `erroricons` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `icons` | PlainText | 287 | 1 | no | columns: Line |
+| `icons` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_parchmentwindowskin/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `pairingtemplates` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `parchmentanimationdefs` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `parchmentbuttondefs` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `parchmentimagedefs` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `parchmenttextdefs` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `tomemaptemplates` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `worldmaptemplates` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_parchmentwindowskin/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `parchmentskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/eatemplate_unitframes/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bufftracker` | PlainText | 461 | 1 | no | columns: Line |
+| `groupmemberunitframe` | PlainText | 353 | 1 | no | columns: Line |
+| `grouppetunitframe` | PlainText | 67 | 1 | no | columns: Line |
+| `mouseovertargetunitframe` | PlainText | 246 | 1 | no | columns: Line |
+| `playerpetunitframe` | PlainText | 54 | 1 | no | columns: Line |
+| `rvrindicator` | PlainText | 68 | 1 | no | columns: Line |
+| `statusbar` | PlainText | 109 | 1 | no | columns: Line |
+| `targetunitframe` | PlainText | 540 | 1 | no | columns: Line |
+| `templates_unitframes` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `unitframes` | PlainText | 188 | 1 | no | columns: Line |
+
+## interface/default/eatemplate_unitframes/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_buffframes01` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_temptargets_d3` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_abilitieswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `abilitieswindow` | PlainText | 1,329 | 1 | no | columns: Line |
+| `abilitieswindow` | Xml | 31 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_abilitieswindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `abilitieswindowtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_actionbars/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `actionbarconstants` | PlainText | 33 | 1 | no | columns: Line |
+| `actionbars` | PlainText | 1,037 | 1 | no | columns: Line |
+| `actionbars` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `actionbutton` | PlainText | 988 | 1 | no | columns: Line |
+| `stancebar` | PlainText | 34 | 1 | no | columns: Line |
+| `stancebutton` | PlainText | 21 | 1 | no | columns: Line |
+| `stanceswaps` | PlainText | 110 | 1 | no | columns: Line |
+
+## interface/default/ea_actionbars/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `actionbaranimationtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `actionbarendcaptextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_advancedwarwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `advancedwarwindow` | PlainText | 361 | 1 | no | columns: Line |
+| `advancedwarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_alerttextwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `alerttextwindow` | PlainText | 655 | 1 | no | columns: Line |
+| `alerttextwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_auctionhousewindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `auctionwindow` | PlainText | 498 | 1 | no | columns: Line |
+| `auctionwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `auctionwindowlistdatamanager` | PlainText | 190 | 1 | no | columns: Line |
+| `auctionwindowsearchcontrols` | PlainText | 599 | 1 | no | columns: Line |
+| `auctionwindowsearchcontrols` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `auctionwindowsellcontrols` | PlainText | 232 | 1 | no | columns: Line |
+| `auctionwindowsellcontrols` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `templates_auctionwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_backpackwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `backpackfilters` | PlainText | 533 | 1 | no | columns: Line |
+| `backpackfilters` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `backpackiconview` | PlainText | 751 | 1 | no | columns: Line |
+| `backpacklistview` | PlainText | 456 | 1 | no | columns: Line |
+| `backpackquestview` | PlainText | 275 | 1 | no | columns: Line |
+| `backpackutils` | PlainText | 842 | 1 | no | columns: Line |
+| `backpackwindow` | PlainText | 739 | 1 | no | columns: Line |
+| `backpackwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `iconviewtemplates` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `listviewtemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `questviewtemplates` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_backpackwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_backpack01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_bankwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bankwindow` | PlainText | 455 | 1 | no | columns: Line |
+| `bankwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_barbershopwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `barbershopwindow` | PlainText | 317 | 1 | no | columns: Line |
+| `barbershopwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_barbershopwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_battlegrouphud/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `battlegrouphud` | PlainText | 501 | 1 | no | columns: Line |
+| `battlegrouphud` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_careerresourceswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `archmage` | PlainText | 68 | 1 | no | columns: Line |
+| `archmage` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `blackguard` | PlainText | 54 | 1 | no | columns: Line |
+| `blackguard` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `blackorc` | PlainText | 79 | 1 | no | columns: Line |
+| `blackorc` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `brightwizard` | PlainText | 67 | 1 | no | columns: Line |
+| `brightwizard` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `careerresourcedata` | PlainText | 369 | 1 | no | columns: Line |
+| `careerresourceframe` | PlainText | 63 | 1 | no | columns: Line |
+| `careerresourcetemplate` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `careerresourcewindow` | PlainText | 113 | 1 | no | columns: Line |
+| `choppa` | PlainText | 101 | 1 | no | columns: Line |
+| `choppa` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `disciple` | PlainText | 62 | 1 | no | columns: Line |
+| `disciple` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `engineer` | PlainText | 60 | 1 | no | columns: Line |
+| `ironbreaker` | PlainText | 53 | 1 | no | columns: Line |
+| `ironbreaker` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `magus` | PlainText | 60 | 1 | no | columns: Line |
+| `petbutton` | PlainText | 12 | 1 | no | columns: Line |
+| `petwindow` | PlainText | 487 | 1 | no | columns: Line |
+| `petwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `shaman` | PlainText | 142 | 1 | no | columns: Line |
+| `shaman` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `slayer` | PlainText | 102 | 1 | no | columns: Line |
+| `slayer` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `sorceress` | PlainText | 56 | 1 | no | columns: Line |
+| `sorceress` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `squigherder` | PlainText | 62 | 1 | no | columns: Line |
+| `swordmaster` | PlainText | 96 | 1 | no | columns: Line |
+| `swordmaster` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `warriorpriest` | PlainText | 58 | 1 | no | columns: Line |
+| `warriorpriest` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `whitelion` | PlainText | 62 | 1 | no | columns: Line |
+| `witchelf` | PlainText | 46 | 1 | no | columns: Line |
+| `witchelf` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `witchhunter` | PlainText | 44 | 1 | no | columns: Line |
+| `witchhunter` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_careerresourceswindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_career_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_casttimerwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `layertimerwindow` | PlainText | 337 | 1 | no | columns: Line |
+| `layertimerwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_characterwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `characterwindow` | PlainText | 1,052 | 1 | no | columns: Line |
+| `characterwindow` | Xml | 52 | 3 | no | columns: Element, Count, Attributes |
+| `characterwindowbrags` | PlainText | 105 | 1 | no | columns: Line |
+| `characterwindowdyes` | PlainText | 581 | 1 | no | columns: Line |
+| `characterwindowitemappearance` | PlainText | 129 | 1 | no | columns: Line |
+| `characterwindowstats` | PlainText | 1,284 | 1 | no | columns: Line |
+| `characterwindowtrophies` | PlainText | 651 | 1 | no | columns: Line |
+
+## interface/default/ea_chatsystem/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chatmanager` | PlainText | 385 | 1 | no | columns: Line |
+| `conversationwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_chatwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chatfilterswindow` | PlainText | 162 | 1 | no | columns: Line |
+| `chatfilterswindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `chathyperlinking` | PlainText | 944 | 1 | no | columns: Line |
+| `chathyperlinkingtemplates` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `chatoptionswindow` | PlainText | 326 | 1 | no | columns: Line |
+| `chatoptionswindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
+| `chatsettings` | PlainText | 588 | 1 | no | columns: Line |
+| `chatwindow` | PlainText | 3,169 | 1 | no | columns: Line |
+| `chatwindow` | Xml | 35 | 3 | no | columns: Element, Count, Attributes |
+| `chatwindowverticalscroll` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_claimwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `claimwindow` | PlainText | 272 | 1 | no | columns: Line |
+| `claimwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_contestedinstanceselectionwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `contestedinstanceselectionwindow` | PlainText | 98 | 1 | no | columns: Line |
+| `contestedinstanceselectionwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_contextmenu/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `contextmenu` | PlainText | 657 | 1 | no | columns: Line |
+| `contextmenu` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_craftingwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `apothecarywindow` | PlainText | 931 | 1 | no | columns: Line |
+| `apothecarywindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `craftingwindow` | PlainText | 357 | 1 | no | columns: Line |
+| `craftingwindowtemplates` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `equipmentupgradewindow` | PlainText | 427 | 1 | no | columns: Line |
+| `equipmentupgradewindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `salvagingwindow` | PlainText | 274 | 1 | no | columns: Line |
+| `salvagingwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `talismanmakingwindow` | PlainText | 876 | 1 | no | columns: Line |
+| `talismanmakingwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_craftingwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_craftingwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_cultivationwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `cultivationwindow` | PlainText | 789 | 1 | no | columns: Line |
+| `cultivationwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `cultivationwindowtemplates` | Xml | 27 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_cultivationwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_cultivating01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_currenteventswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `currenteventdefs` | PlainText | 260 | 1 | no | columns: Line |
+| `currenteventswindow` | PlainText | 547 | 1 | no | columns: Line |
+| `currenteventswindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_cursor/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `cursor` | PlainText | 290 | 1 | no | columns: Line |
+
+## interface/default/ea_customizeperformancewindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_customizeperformancewindow` | PlainText | 334 | 1 | no | columns: Line |
+| `ea_customizeperformancewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_deathwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `deathwindow` | PlainText | 126 | 1 | no | columns: Line |
+| `deathwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_deathwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_death01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_grantedabilitywindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `grantedabilitywindow` | PlainText | 13 | 1 | no | columns: Line |
+
+## interface/default/ea_groupwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `groupwindow` | PlainText | 554 | 1 | no | columns: Line |
+| `groupwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_guildvaultwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `guildvaultwindow` | PlainText | 859 | 1 | no | columns: Line |
+| `guildvaultwindow` | Xml | 17 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
+
+## interface/default/ea_guildwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `calendar` | PlainText | 277 | 1 | no | columns: Line |
+| `calendar` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `colorpicker` | PlainText | 158 | 1 | no | columns: Line |
+| `colorpicker` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `guildrespectacticslist` | PlainText | 162 | 1 | no | columns: Line |
+| `guildrespectacticslist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildtacticslist` | PlainText | 394 | 1 | no | columns: Line |
+| `guildtacticslist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindow` | PlainText | 557 | 1 | no | columns: Line |
+| `guildwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabadmin` | PlainText | 1,045 | 1 | no | columns: Line |
+| `guildwindowtabadmin` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtaballiance` | PlainText | 684 | 1 | no | columns: Line |
+| `guildwindowtaballiance` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabbanner` | PlainText | 1,080 | 1 | no | columns: Line |
+| `guildwindowtabbanner` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabcalendar` | PlainText | 1,431 | 1 | no | columns: Line |
+| `guildwindowtabcalendar` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabprofile` | PlainText | 382 | 1 | no | columns: Line |
+| `guildwindowtabprofile` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruit` | PlainText | 363 | 1 | no | columns: Line |
+| `guildwindowtabrecruit` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruitprofile` | PlainText | 509 | 1 | no | columns: Line |
+| `guildwindowtabrecruitprofile` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruitsearch` | PlainText | 745 | 1 | no | columns: Line |
+| `guildwindowtabrecruitsearch` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrewards` | PlainText | 501 | 1 | no | columns: Line |
+| `guildwindowtabrewards` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabroster` | PlainText | 1,211 | 1 | no | columns: Line |
+| `guildwindowtabroster` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabsearch` | PlainText | 19 | 1 | no | columns: Line |
+| `guildwindowtabsearch` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `heraldryeditor` | PlainText | 587 | 1 | no | columns: Line |
+| `heraldryeditor` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `templates_guildwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_guildwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_guild01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_helptips/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `helptips` | PlainText | 379 | 1 | no | columns: Line |
+| `helptips` | Xml | 33 | 3 | no | columns: Element, Count, Attributes |
+| `helptipsreferences` | PlainText | 89 | 1 | no | columns: Line |
+
+## interface/default/ea_helpwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `bugreportwindow` | PlainText | 124 | 1 | no | columns: Line |
+| `bugreportwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_appeal` | PlainText | 655 | 1 | no | columns: Line |
+| `ea_window_appeal` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_feedback` | PlainText | 114 | 1 | no | columns: Line |
+| `ea_window_feedback` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_help` | PlainText | 113 | 1 | no | columns: Line |
+| `ea_window_help` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `editappealwindow` | PlainText | 172 | 1 | no | columns: Line |
+| `editappealwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `faqwindow` | PlainText | 211 | 1 | no | columns: Line |
+| `faqwindow` | Xml | 28 | 3 | no | columns: Element, Count, Attributes |
+| `manualwindow` | PlainText | 189 | 1 | no | columns: Line |
+| `manualwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `templates_appeals` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+| `templates_ea_window_help` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `tipswindow` | PlainText | 255 | 1 | no | columns: Line |
+| `tipswindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindow` | PlainText | 382 | 1 | no | columns: Line |
+| `tutorialwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_helpwindow/source/tutorials
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tutorialwindowtabbasiccontrols1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabbasiccontrols1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabbasiccontrols2` | PlainText | 21 | 1 | no | columns: Line |
+| `tutorialwindowtabbasiccontrols2` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabcombat1` | PlainText | 21 | 1 | no | columns: Line |
+| `tutorialwindowtabcombat1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabgrouping1` | PlainText | 21 | 1 | no | columns: Line |
+| `tutorialwindowtabgrouping1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabgrouping2` | PlainText | 21 | 1 | no | columns: Line |
+| `tutorialwindowtabgrouping2` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabinventory1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabinventory1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabpq1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabpq1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabquests1` | PlainText | 22 | 1 | no | columns: Line |
+| `tutorialwindowtabquests1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabrenown1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabrenown1` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabscenario1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabscenario1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabtok1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabtok1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabtraining1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabtraining1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabwarcamp1` | PlainText | 20 | 1 | no | columns: Line |
+| `tutorialwindowtabwarcamp1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtemplates` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_helpwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_help01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_help_tutorial_texdefs` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_inspectionwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `inspectionwindow` | PlainText | 605 | 1 | no | columns: Line |
+| `inspectionwindow` | Xml | 39 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_interactionwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `interactionaltar` | PlainText | 233 | 1 | no | columns: Line |
+| `interactionaltar` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `interactionbase` | PlainText | 409 | 1 | no | columns: Line |
+| `interactionbase` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactioncoretraining` | PlainText | 691 | 1 | no | columns: Line |
+| `interactioncoretraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactioneventrewards` | PlainText | 273 | 1 | no | columns: Line |
+| `interactioneventrewards` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `interactionflightmaster` | PlainText | 579 | 1 | no | columns: Line |
+| `interactionflightmaster` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `interactionhealerwindow` | PlainText | 151 | 1 | no | columns: Line |
+| `interactionhealerwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `interactioninfluencerewards` | PlainText | 207 | 1 | no | columns: Line |
+| `interactioninfluencerewards` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `interactionkeepupgrades` | PlainText | 831 | 1 | no | columns: Line |
+| `interactionkeepupgrades` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `interactionquestwindow` | PlainText | 684 | 1 | no | columns: Line |
+| `interactionquestwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `interactionrenowntraining` | PlainText | 709 | 1 | no | columns: Line |
+| `interactionrenowntraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactionspecialtytraining` | PlainText | 1,052 | 1 | no | columns: Line |
+| `interactionspecialtytraining` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `interactiontometraining` | PlainText | 681 | 1 | no | columns: Line |
+| `interactiontometraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactiontradeskills` | PlainText | 70 | 1 | no | columns: Line |
+| `interactiontraining` | PlainText | 87 | 1 | no | columns: Line |
+| `interactionutils` | PlainText | 511 | 1 | no | columns: Line |
+| `interactionwindowaltcurrency` | PlainText | 281 | 1 | no | columns: Line |
+| `interactionwindowaltcurrency` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowguildcreateform` | PlainText | 109 | 1 | no | columns: Line |
+| `interactionwindowguildcreateform` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowguildrename` | PlainText | 91 | 1 | no | columns: Line |
+| `interactionwindowguildrename` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowlastname` | PlainText | 51 | 1 | no | columns: Line |
+| `interactionwindowlastname` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowlibrarian` | PlainText | 1,226 | 1 | no | columns: Line |
+| `interactionwindowlibrarian` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowstore` | PlainText | 1,447 | 1 | no | columns: Line |
+| `interactionwindowstore` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `templates_interactionbase` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `templates_interactionflightmaster` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `templates_interactionquest` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `templates_interactiontraining` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `templates_interactionverticalscrollbar` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_interactionwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `trainingtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_internalbuffs/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_internalbuffs` | PlainText | 39 | 1 | no | columns: Line |
+| `ea_internalbuffs` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_itemenhancementwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `itemenhancementwindow` | PlainText | 598 | 1 | no | columns: Line |
+| `itemenhancementwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_itemstackingwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `itemstackingwindow` | PlainText | 201 | 1 | no | columns: Line |
+| `itemstackingwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_keymappingwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `keymappingwindow` | PlainText | 527 | 1 | no | columns: Line |
+| `keymappingwindow` | Xml | 28 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_lcdkeyboard/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `g15test` | PlainText | 217 | 1 | no | columns: Line |
+
+## interface/default/ea_legacytemplates/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `windowframetemplates` | Xml | 42 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_legacytemplates/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_liveevents
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `liveevents` | PlainText | 58 | 1 | no | columns: Line |
+
+## interface/default/ea_loadingscreen/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `generalloadingscreentemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `loadingscreen` | PlainText | 309 | 1 | no | columns: Line |
+| `loadingscreen` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+| `nodataloadingscreen` | PlainText | 57 | 1 | no | columns: Line |
+| `nodataloadingscreentemplate` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `patchnotesloadingscreen` | PlainText | 152 | 1 | no | columns: Line |
+| `patchnotesloadingscreentemplate` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `scenarioenterloadingscreen` | PlainText | 161 | 1 | no | columns: Line |
+| `scenarioenterloadingscreentemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `scenarioexitloadingscreen` | PlainText | 62 | 1 | no | columns: Line |
+| `scenarioexitloadingscreentemplate` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `standardloadingscreen` | PlainText | 149 | 1 | no | columns: Line |
+| `standardloadingscreentemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_loadingscreen/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_lootwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `chooseonelootwindow` | PlainText | 226 | 1 | no | columns: Line |
+| `chooseonelootwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `lootrollwindow` | PlainText | 443 | 1 | no | columns: Line |
+| `lootrollwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `lootwindow` | PlainText | 359 | 1 | no | columns: Line |
+| `lootwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_macrowindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `macrowindow` | PlainText | 200 | 1 | no | columns: Line |
+| `macrowindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mailwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mailwindow` | PlainText | 443 | 1 | no | columns: Line |
+| `mailwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabauction` | PlainText | 470 | 1 | no | columns: Line |
+| `mailwindowtabauction` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabinbox` | PlainText | 587 | 1 | no | columns: Line |
+| `mailwindowtabinbox` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabmessage` | PlainText | 360 | 1 | no | columns: Line |
+| `mailwindowtabmessage` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabpending` | PlainText | 48 | 1 | no | columns: Line |
+| `mailwindowtabpending` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabsend` | PlainText | 483 | 1 | no | columns: Line |
+| `mailwindowtabsend` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowutils` | PlainText | 133 | 1 | no | columns: Line |
+| `templates_mailwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mailwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_mailwindow01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mainmenuwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mainmenuwindow` | PlainText | 194 | 1 | no | columns: Line |
+| `mainmenuwindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mainmenuwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `menutextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_menubarwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `menubartemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `menubarwindow` | PlainText | 294 | 1 | no | columns: Line |
+| `menubarwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_menubarwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `menubartextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_modifyitem/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_dyewindow` | PlainText | 86 | 1 | no | columns: Line |
+| `ea_dyewindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `useitemtargeting` | PlainText | 441 | 1 | no | columns: Line |
+
+## interface/default/ea_moralewindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `moralewindow` | PlainText | 803 | 1 | no | columns: Line |
+| `moralewindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_moralewindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `moralewindowanimationtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_mouseovertargetwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mouseovertargetwindow` | PlainText | 100 | 1 | no | columns: Line |
+| `mouseovertargetwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_objectivetrackers/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `battlefieldobjectivetracker` | PlainText | 626 | 1 | no | columns: Line |
+| `battlefieldobjectivetracker` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `citytrackerwindow` | PlainText | 706 | 1 | no | columns: Line |
+| `citytrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `keepobjectivetracker` | PlainText | 528 | 1 | no | columns: Line |
+| `keepobjectivetracker` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `publicquestresults` | PlainText | 485 | 1 | no | columns: Line |
+| `publicquestresults` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `publicquesttrackerwindow` | PlainText | 924 | 1 | no | columns: Line |
+| `publicquesttrackerwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `scenariotrackerwindow` | PlainText | 562 | 1 | no | columns: Line |
+| `scenariotrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `templates_objectivetrackers` | Xml | 29 | 3 | no | columns: Element, Count, Attributes |
+| `trackerutils` | PlainText | 158 | 1 | no | columns: Line |
+| `winometerwindow` | PlainText | 145 | 1 | no | columns: Line |
+| `winometerwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_openpartywindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `openpartywindow` | PlainText | 438 | 1 | no | columns: Line |
+| `openpartywindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowcommon` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtablootrolloptions` | PlainText | 172 | 1 | no | columns: Line |
+| `openpartywindowtablootrolloptions` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabmanage` | PlainText | 697 | 1 | no | columns: Line |
+| `openpartywindowtabmanage` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabnearby` | PlainText | 699 | 1 | no | columns: Line |
+| `openpartywindowtabnearby` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabworld` | PlainText | 942 | 1 | no | columns: Line |
+| `openpartywindowtabworld` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_overheadmapwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `overheadmapwindow` | PlainText | 820 | 1 | no | columns: Line |
+| `overheadmapwindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
+| `templates_overheadmap` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_overheadmapwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_scenario01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_playerassist/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_playerassist` | PlainText | 65 | 1 | no | columns: Line |
+| `ea_playerassist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_playermenu/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `playermenuwindow` | PlainText | 386 | 1 | no | columns: Line |
+
+## interface/default/ea_playerstatuswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `playerwindow` | PlainText | 729 | 1 | no | columns: Line |
+| `playerwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_pqlootwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `pqlootwindow` | PlainText | 1,061 | 1 | no | columns: Line |
+| `pqlootwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_pqlootwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_anim_tumblers_d1` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `ea_pqloot` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_questtrackerwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `questtrackerwindow` | PlainText | 684 | 1 | no | columns: Line |
+| `questtrackerwindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `templates_questtrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_rpbarwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `rpbarwindow` | PlainText | 152 | 1 | no | columns: Line |
+| `rpbarwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_rvrtracker/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `rvrtracker` | PlainText | 195 | 1 | no | columns: Line |
+| `rvrtracker` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_scenariogroupwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `scenariogroupwindow` | PlainText | 935 | 1 | no | columns: Line |
+| `scenariogroupwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_scenariolobbywindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `scenariolobbywindow` | PlainText | 696 | 1 | no | columns: Line |
+| `scenariolobbywindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_scenariosummarywindow
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `scenariosummarywindow` | PlainText | 730 | 1 | no | columns: Line |
+| `scenariosummarywindow` | Xml | 42 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_scenariosummarywindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_scenariosummary01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_screenflashwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `screenflashwindow` | PlainText | 111 | 1 | no | columns: Line |
+| `screenflashwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_screenflashwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `screenflashtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_settingswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `settingswindowtabbed` | PlainText | 187 | 1 | no | columns: Line |
+| `settingswindowtabbed` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabchat` | PlainText | 139 | 1 | no | columns: Line |
+| `settingswindowtabchat` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabgeneral` | PlainText | 257 | 1 | no | columns: Line |
+| `settingswindowtabgeneral` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabinterface` | PlainText | 664 | 1 | no | columns: Line |
+| `settingswindowtabinterface` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabsound` | PlainText | 66 | 1 | no | columns: Line |
+| `settingswindowtabsound` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabtargetting` | PlainText | 242 | 1 | no | columns: Line |
+| `settingswindowtabtargetting` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabvideo` | PlainText | 370 | 1 | no | columns: Line |
+| `settingswindowtabvideo` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `templates_settingswindowtabbed` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_settingswindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `settingswindowtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_siegeweaponwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `siegeweaponbuildwindow` | PlainText | 348 | 1 | no | columns: Line |
+| `siegeweaponbuildwindow` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponcontrolwindow` | PlainText | 559 | 1 | no | columns: Line |
+| `siegeweaponcontrolwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweapongeneralfirewindow` | PlainText | 71 | 1 | no | columns: Line |
+| `siegeweapongeneralfirewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweapongolffirewindow` | PlainText | 250 | 1 | no | columns: Line |
+| `siegeweapongolffirewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponscorchfirewindow` | PlainText | 137 | 1 | no | columns: Line |
+| `siegeweaponscorchfirewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponsniperfirewindow` | PlainText | 180 | 1 | no | columns: Line |
+| `siegeweaponsniperfirewindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponsweetspotfirewindow` | PlainText | 216 | 1 | no | columns: Line |
+| `siegeweaponsweetspotfirewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_siegeweaponwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `siegetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_socialwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `socialwindow` | PlainText | 716 | 1 | no | columns: Line |
+| `socialwindow` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowbuddylist` | PlainText | 213 | 1 | no | columns: Line |
+| `socialwindowbuddylist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowbuddylisttabenemies` | PlainText | 322 | 1 | no | columns: Line |
+| `socialwindowbuddylisttabenemies` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowbuddylisttabfriends` | PlainText | 390 | 1 | no | columns: Line |
+| `socialwindowbuddylisttabfriends` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabfriends` | PlainText | 671 | 1 | no | columns: Line |
+| `socialwindowtabfriends` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabignore` | PlainText | 444 | 1 | no | columns: Line |
+| `socialwindowtabignore` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtaboptions` | PlainText | 146 | 1 | no | columns: Line |
+| `socialwindowtaboptions` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabsearch` | PlainText | 561 | 1 | no | columns: Line |
+| `socialwindowtabsearch` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtemplates` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_summoningprompt/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `summoningprompt` | PlainText | 106 | 1 | no | columns: Line |
+| `summoningprompt` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_surveywindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `surveypopupwindow` | PlainText | 83 | 1 | no | columns: Line |
+| `surveypopupwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `surveywindow` | PlainText | 184 | 1 | no | columns: Line |
+| `surveywindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tacticswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tacticswindow` | PlainText | 1,280 | 1 | no | columns: Line |
+| `tacticswindow` | Xml | 39 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tacticswindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tacticswindowtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_targetwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `targetwindow` | PlainText | 255 | 1 | no | columns: Line |
+| `targetwindow` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tomealertwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tomealertwindow` | PlainText | 266 | 1 | no | columns: Line |
+| `tomealertwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tomeofknowledge/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tomewindow` | PlainText | 1,357 | 1 | no | columns: Line |
+| `tomewindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_achievements` | PlainText | 484 | 1 | no | columns: Line |
+| `tomewindow_achievements` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_bestiary` | PlainText | 730 | 1 | no | columns: Line |
+| `tomewindow_bestiary` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_coredefs` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_historyandlore` | PlainText | 582 | 1 | no | columns: Line |
+| `tomewindow_historyandlore` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_liveevent` | PlainText | 1,059 | 1 | no | columns: Line |
+| `tomewindow_liveevent` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_noteworthypersons` | PlainText | 574 | 1 | no | columns: Line |
+| `tomewindow_noteworthypersons` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_oldworldarmory` | PlainText | 359 | 1 | no | columns: Line |
+| `tomewindow_oldworldarmory` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_oldworldarmory_sigils` | PlainText | 191 | 1 | no | columns: Line |
+| `tomewindow_oldworldarmory_sigils` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_questjournal` | PlainText | 1,068 | 1 | no | columns: Line |
+| `tomewindow_questjournal` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_rewards` | PlainText | 883 | 1 | no | columns: Line |
+| `tomewindow_rewards` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_sigils` | PlainText | 250 | 1 | no | columns: Line |
+| `tomewindow_sigils` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_statutils` | PlainText | 88 | 1 | no | columns: Line |
+| `tomewindow_titlepage` | PlainText | 309 | 1 | no | columns: Line |
+| `tomewindow_titlepage` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_warjournal` | PlainText | 1,601 | 1 | no | columns: Line |
+| `tomewindow_warjournal` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_tradewindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `tradewindow` | PlainText | 676 | 1 | no | columns: Line |
+| `tradewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_trialalertwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_trialalertwindow` | PlainText | 215 | 1 | no | columns: Line |
+| `ea_trialalertwindow` | Xml | 40 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_trialalertwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_trialalerttextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_uidebugtools/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `debug` | PlainText | 278 | 1 | no | columns: Line |
+| `debugwindow` | PlainText | 293 | 1 | no | columns: Line |
+| `debugwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_uimodwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `uimodadvancedwindow` | PlainText | 191 | 1 | no | columns: Line |
+| `uimodadvancedwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `uimodinfotemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `uimodwindow` | PlainText | 1,057 | 1 | no | columns: Line |
+| `uimodwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `versionmismatchwindow` | PlainText | 289 | 1 | no | columns: Line |
+| `versionmismatchwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_uiprofileswindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `characterdeletedhandler` | PlainText | 161 | 1 | no | columns: Line |
+| `createuiprofilewindow` | PlainText | 191 | 1 | no | columns: Line |
+| `createuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `deleteuiprofilewindow` | PlainText | 130 | 1 | no | columns: Line |
+| `deleteuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `exportuiprofilewindow` | PlainText | 264 | 1 | no | columns: Line |
+| `exportuiprofilewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `importuiprofilewindow` | PlainText | 394 | 1 | no | columns: Line |
+| `importuiprofilewindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `introdialoguiprofilewindow` | PlainText | 87 | 1 | no | columns: Line |
+| `introdialoguiprofilewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `manageuiprofileswindow` | PlainText | 630 | 1 | no | columns: Line |
+| `manageuiprofileswindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `popupdialoguiprofilewindow` | PlainText | 128 | 1 | no | columns: Line |
+| `popupdialoguiprofilewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `renameuiprofilewindow` | PlainText | 94 | 1 | no | columns: Line |
+| `renameuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_videoplayer/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `videoplayer` | PlainText | 71 | 1 | no | columns: Line |
+| `videoplayer` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_worldmapwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `campaignview` | PlainText | 263 | 1 | no | columns: Line |
+| `campaignviewtemplates` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `mapdefs` | PlainText | 36 | 1 | no | columns: Line |
+| `mapicontemplates` | PlainText | 139 | 1 | no | columns: Line |
+| `mapicontemplates` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `pairingview` | PlainText | 863 | 1 | no | columns: Line |
+| `pairingviewtemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `worldmapwindow` | PlainText | 576 | 1 | no | columns: Line |
+| `worldmapwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `worldmapwindowtemplates` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `worldview` | PlainText | 28 | 1 | no | columns: Line |
+| `worldviewtemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `zoneview` | PlainText | 901 | 1 | no | columns: Line |
+| `zoneviewtemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_worldmapwindow/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `ea_worldmapwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_xpbarwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `xpbarwindow` | PlainText | 223 | 1 | no | columns: Line |
+| `xpbarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/ea_zonecontrolwindow/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zonecontrolwindow` | PlainText | 52 | 1 | no | columns: Line |
+| `zonecontrolwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/default/fonts
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fonts` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `interfacecore` | PlainText | 430 | 1 | no | columns: Line |
+| `interfacecore` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `interfacecorepreload` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/credits
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `sections` | HeaderedCsv | 15 | 2 | yes | 1 header row; columns: Credit Section Ids, Name String Id |
+| `subsections` | HeaderedCsv | 29 | 7 | yes | 1 header row; columns: Credit Section Ids, SectionId, Name String Id, Desc String Id, Name Strings, Title Strings |
+
+## interface/interfacecore/fonts/english
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/fonts/japanese
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/fonts/korean
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/fonts/russian
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/fonts/s_chinese
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/fonts/t_chinese
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mapicons` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `mappointdefaults` | HeaderedCsv | 50 | 3 | yes | 1 header row; columns: Map Point Type, Default Type Desc, Icon |
+| `mapsetup` | HeaderedCsv | 0 | 25 | no | 317 header rows; empty; columns: zone411, pairing100, basemap.dds, basemap.dds, selectmap.dds, selectinfo.csv |
+
+## interface/interfacecore/maps/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 5 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 11 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 4 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone032
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone034
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone039
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone041
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone042
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone043
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone050
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone060
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+
+## interface/interfacecore/maps/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 17 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 5 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone130
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone131
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone134
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone136
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone138
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone139
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone157
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone158
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone159
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone160
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+
+## interface/interfacecore/maps/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone179
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 74 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone197
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 1 | 4 | yes | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappoints` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 4 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
+| `mappieces` | HeaderedCsv | 3 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
+| `mappoints` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone230
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone235
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone236
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone237
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone238
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `mappoints` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/maps/zone241
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone242
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone243
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone244
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+
+## interface/interfacecore/maps/zone410
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `influenceids` | HeaderedCsv | 2 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
+| `mappoints` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/source
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `characterselectwindow` | PlainText | 1,816 | 1 | no | columns: Line |
+| `characterselectwindow` | Xml | 31 | 3 | no | columns: Element, Count, Attributes |
+| `cinematicwindow` | PlainText | 49 | 1 | no | columns: Line |
+| `cinematicwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `corewindowtemplates` | Xml | 27 | 3 | no | columns: Element, Count, Attributes |
+| `creditswindow` | PlainText | 141 | 1 | no | columns: Line |
+| `creditswindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `eularocwindow` | PlainText | 182 | 1 | no | columns: Line |
+| `eularocwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `lobbybackground` | PlainText | 20 | 1 | no | columns: Line |
+| `lobbybackground` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `loginprogresswindow` | PlainText | 99 | 1 | no | columns: Line |
+| `loginprogresswindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `loginwindow` | PlainText | 54 | 1 | no | columns: Line |
+| `loginwindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `pncwindow` | PlainText | 156 | 1 | no | columns: Line |
+| `pncwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `pregameloadingwindow` | PlainText | 35 | 1 | no | columns: Line |
+| `pregameloadingwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `pregameutils` | PlainText | 76 | 1 | no | columns: Line |
+| `preloginbackground` | PlainText | 31 | 1 | no | columns: Line |
+| `preloginbackground` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `quickstartwindow` | PlainText | 243 | 1 | no | columns: Line |
+| `quickstartwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `renamewindow` | PlainText | 74 | 1 | no | columns: Line |
+| `renamewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `rulesetpopupwindow` | PlainText | 74 | 1 | no | columns: Line |
+| `rulesetpopupwindow` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `serverselectwindow` | PlainText | 848 | 1 | no | columns: Line |
+| `serverselectwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `titlewindow` | PlainText | 80 | 1 | no | columns: Line |
+| `titlewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `transferpopupwindow` | PlainText | 63 | 1 | no | columns: Line |
+| `transferpopupwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `windowstate` | PlainText | 84 | 1 | no | columns: Line |
+
+## interface/interfacecore/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `coretextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+
+## interface/interfacecore/tome
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `unlockmapping` | HeaderedCsv | 11,999 | 42 | yes | 1 header row; columns: Description (also set on the server), Exp (also set on the server), Card, Tome Section, Index, Flag 1 |
+
+## interface/interfacecore/tome/achievements
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entry` | HeaderedCsv | 2,000 | 12 | yes | 1 header row; columns: #ID, SubType#, RT 1, RId 1, RT 2, RId 2 |
+| `subtypes` | HeaderedCsv | 124 | 3 | no | 1 header row; columns: # Sub Type ID #, Type ID #, Image |
+| `types` | HeaderedCsv | 11 | 1 | yes | 1 header row; columns: Type ID # |
+
+## interface/interfacecore/tome/bestiary
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `realms` | HeaderedCsv | 310 | 2 | yes | 1 header row; columns: #tome_id, realm |
+| `species` | HeaderedCsv | 146 | 24 | yes | 1 header row; columns: #ID, SubType#, Image, AC #, RT 1, RId 1 |
+| `subtypes` | HeaderedCsv | 31 | 3 | yes | 1 header row; columns: SubType Id#, Type Id#, Image |
+| `types` | HeaderedCsv | 6 | 1 | yes | 1 header row; columns: Type Id # |
+
+## interface/interfacecore/tome/cards
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 5 | 9 | yes | 1 header row; columns: #ID, Icon, Suit, Value, Rarity, N |
+
+## interface/interfacecore/tome/gamefaq
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 10 | 3 | yes | 1 header row; columns: #ID, SubSection, Image |
+| `subsections` | HeaderedCsv | 2 | 1 | yes | 1 header row; columns: #ID |
+
+## interface/interfacecore/tome/gamemanual
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 170 | 3 | yes | 1 header row; columns: #ID, SubSection, Image |
+
+## interface/interfacecore/tome/historyandlore
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 448 | 4 | yes | 1 header row; columns: #ID, Zone, Realm, Image |
+| `pairings` | HeaderedCsv | 3 | 1 | yes | 1 header row; columns: #ID |
+| `zones` | HeaderedCsv | 264 | 3 | yes | 1 header row; columns: #ID, Pairing Id#, Tier |
+
+## interface/interfacecore/tome/loadingscreens
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `descgroups` | HeaderedCsv | 300 | 11 | yes | 1 header row; columns: Group Id, Description, String 1, String 2, String 3, String 4 |
+| `patchnotes` | HeaderedCsv | 5 | 6 | yes | 1 header row; columns: patch timestamp (seconds since unix epoch, GMT), string file name, string id main bullet begin, main bullet end, string id lesser item begin, lesser item end |
+| `scenarios` | HeaderedCsv | 33 | 10 | yes | 1 header row; columns: Zone Id, O-Enter, D-Enter, O-Win, D-Win, O-Loose |
+| `screens` | HeaderedCsv | 303 | 8 | yes | 1 header row; columns: Screen Id, Description, Image Name, Realm, Race, Always Unlocked |
+| `tipgroups` | HeaderedCsv | 6 | 96 | yes | 1 header row; columns: Group Id, Description, String 1, String 2, String 3, String 4 |
+| `zones` | HeaderedCsv | 301 | 6 | yes | 1 header row; columns: Zone Id, Screen #1, Screen #2, Screen #3, Screen #4, Screen #5 |
+
+## interface/interfacecore/tome/noteworthypersons
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 351 | 4 | yes | 1 header row; columns: #ID, Zone, Realm, Image |
+| `pairings` | HeaderedCsv | 3 | 1 | yes | 1 header row; columns: #ID |
+| `zones` | HeaderedCsv | 264 | 3 | yes | 1 header row; columns: #ID, Pairing Id#, Tier |
+
+## interface/interfacecore/tome/oldworldarmory
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `armor_set_entries` | HeaderedCsv | 104 | 26 | yes | 1 header row; columns: item id, set id, career 1, career 2, career 3, career 4 |
+| `armor_set_tier_entries` | HeaderedCsv | 21 | 2 | yes | 1 header row; columns: armor set id, tier (1 - 4) |
+| `career_column_entries` | HeaderedCsv | 24 | 2 | yes | 1 header row; columns: column, career |
+
+## interface/interfacecore/tome/sigils
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fragments` | HeaderedCsv | 25 | 5 | yes | 1 header row; columns: fragment id, sigil entry Id, icon Num, fragment index, Num Tasks |
+| `fragment_tasks` | HeaderedCsv | 32 | 5 | no | 1 header row; columns: fragment id, sigil entry id, tasks num (1 -> 9), AcId, AcId Max |
+| `sigil_entries` | HeaderedCsv | 5 | 4 | yes | 1 header row; columns: Id, Display Index, Ability Id, Slice |
+
+## interface/interfacecore/tome/tactics
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `acid_entries` | HeaderedCsv | 9 | 8 | yes | 1 header row; columns: ACID ID, String ID, Thresh. 1, Reward 1, Thresh. 2, Reward 2 |
+| `tactic_entries` | HeaderedCsv | 27 | 2 | yes | 1 header row; columns: Entry ID, Abillity |
+
+## interface/interfacecore/tome/titles
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `entries` | HeaderedCsv | 1,300 | 2 | yes | 1 header row; columns: #ID, Category |
+| `types` | HeaderedCsv | 7 | 1 | yes | 1 header row; columns: #ID |
+
+## interface/interfacecore/tome/videoplayer
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `videos` | HeaderedCsv | 2 | 4 | yes | 1 header row; columns: Video Id, Description, Standard Resolution, Wide Screen Resolution |
+
+## interface/interfacecore/tome/warjournal
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `activities` | HeaderedCsv | 671 | 7 | yes | 1 header row; columns: # Activity Id, Entry Id, Activity Index, Activity Type Id, Zone Id, Area Id |
+| `entries` | HeaderedCsv | 660 | 8 | yes | 1 header row; columns: # Entry Id, Storyline Id, Display Index, Zone Id, Area Id, Influence Id |
+| `glyphactivities` | HeaderedCsv | 2 | 2 | yes | 1 header row; columns: # Glyph Activity Id, Entry Id |
+| `glyphlines` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: # Glyph Line ID, Glyph Activity Id |
+| `glyphs` | HeaderedCsv | 20 | 8 | yes | 1 header row; columns: # Glyph Id, Image File Name, Glyph Line Id, Unlock Index 101 to 120, tool tip text Id, tool tip text item 1 |
+| `storylines` | HeaderedCsv | 9 | 1 | yes | 1 header row; columns: Storyline Id |
+
+## unknown_hashes/csv
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `017a3e1f0c4e674b` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ������G41�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y? @?    ����           0   .      1   9   2       3      4    5       6    7      8       9    :    ;    q                                ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           0   .      1   :   2       3      4    5       6    7      8       9    :    ;    r         !    #  $  %  &  '  (  )  *  +  ,  ������Gq�F:}Ɩ�>hC}?����`x�@�=e�Y�WP�Fh�=��y?  �?    ����           0   .      1   ;   2       3      4    5       6    7      8       9    :    ;    s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?8���qF��EH>Wx?ff&?    ����           0   .      1   <   2       ?   @   3      4    5       6    7      8       9    :    ;    t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ����syGH��Fõ�  �?              �?              �?ff&?    ����           0   .      1   =   2       ?   @   3   .   4    5       6    7      8       9    :    ;    u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ����<� G���F�e�2IS?h�?    h��2IS?              �?  �?    ����           0   .      1   @   2       3   :   4    5       6    7      8       9    :    ;    v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ����� G+N�F)y�  �?              �?              �?  �?    ����           0   .      1   A   2       3   9   4    5       6    7      8       9    :    ;    w      h  i  j  k  l  m  n  o  p  q  r  s  t  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           0   .      1   B   2       3   :   4    5       6    7      8       9    :    ;    x      v  w  x  y  z  {  /  }  ~    �  �  �  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           0   .      1   C   2       3   :   4    5       6    7      8       9    :    ;    y      �  �  �  �  �  �  �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           0   .      1   D   2       3   9   4    5       6    7      8       9    :    ;    z      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           0   .      1   E   2       3   9   4    5       6    7      8       9    :    ;    {      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?F��>    F����zp?  �?    ����           0   .      1   J   2       3   E   4    5       6    7      8       9    :    ;    /      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           0   .      1   Q   2       ?   @   3   /   4    5       6    7      8       9    :    ;    }      �  �  ����              �?              �?              �?  �?    ����           ~               �  �  �  �  �  ����              �?              �?              �?  �?    ����        �          �   .      �         2   0�         1�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����n�#G�i�FW��  �?              �?              �?  �?    ����        �   Ɣ@�r׾                |
+| `0b146c65cd257a90` | HeaderedCsv | 0 | 1 | no | 139 header rows; empty; columns: �F?	� �eH��L=C��2�?V��>    ����           0   .      1   l   2    3       4   o   5       6    7    8    9    :      ;       <    n          ����              �?              �?              �?  �?    ����           o         p                  ����              �?              �?              �?  �?    ����           q   .      r         2   0q         1s   @                                                                                                                                                                                                                                                                   t       u         ����              �?              �?              �?  �?    ����        u         1   0v        ����OX1G�'�FR�  �?              �?              �?  �?    ����        w   v@�?�F�                |
+| `1d7d66a7ed1ab05d` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: �  �?              �?              �?  �?    ����           7   5      8    9    :       ;    <    =    >      ?       @   q   A       B   r   C    w          ����              �?              �?              �?  �?    ����           x         y                  ����              �?              �?              �?  �?    ����           z   5      {         2   0z         1/   @                                                                                                                                                                                                                                                                   }       ~        ����              �?              �?              �?  �?    ����        ~         1   0        ����uG�4�F/B�  �?              �?              �?  �?    ����        �   U��>RJ�                |
+| `5011978e6606c855` | HeaderedCsv | 0 | 1 | no | 157 header rows; empty; columns: �  �?              �?              �?  �?    ����           8   6      9    :   r   ;       <    =   q   >       ?    @      A       B    C    D    E    y      G  H  ����              �?              �?              �?  �?    ����           z         {      J  K  L  M  N  O  ����              �?              �?              �?  �?    ����           /   6      }         2   0/         1~   @                                                                                                                                                                                                                                                                          �      Q  ����              �?              �?              �?  �?    ����        �         1   0�      S  ����uG�4�F/B�  �?              �?              �?  �?    ����        �   U��>RJ�                |
+| `5ac50af82487f2f9` | HeaderedCsv | 0 | 10 | no | 122 header rows; empty; columns:    :   ;      <      :   ;   <   =   >   ?   @   A   B   C   D   E   F   G   H   I   �����&Gp�Fo�  �?              �?              �?  �?    ����        =    >    ?    @      A    B                  C    D    E   F   X      G   ;      H       I       J       K      L      K   L   ����              �?              �?              �?  �?    ����                 M   N      N   O   P   Q   R   ����              �?              �?              �?  �?    ����        O       P         1Q         2   0   P   R   @                                                                                                                                                                                                                                                                   S       ����              �?              �?              �?  �?    ����   T   X       T       ����              �?              �?              �?  �?    ����   U       U      V   W   ����              �?              �?              �?  �?    ����        V                  W         44087.00, 30909.00, -8215.00, 0   39070.00, 32876.00, -7917.00 |
+| `8531586ea9f6ddaa` | HeaderedCsv | 0 | 1 | no | 156 header rows; empty; columns: �  �?              �?              �?  �?    ����        9    :   q   ;       <                  =    >    ?    @      A       B    C       D   7      E    F   q   G       {      {  /  ����              �?              �?              �?  �?    ����                 /   }      ~    �  �  �  ����              �?              �?              �?  �?    ����        ~          @                                                                                                                                                                                                                                                                   �         1   �   �         2   0�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����q�(GK�F3��  �?              �?              �?  �?    ����        �   ��@&�{�                |
+| `abc2f4da48e1fbbc` | HeaderedCsv | 0 | 1 | no | 162 header rows; empty; columns:       �����C2G�@G���3�#6?    #6��3�              �?  �?    ����        9   G   :       ;    6      <    =   ~   >          ?   @    A      B       C    D                  E    F    G    �                                      ����/�1G8�G�`Ɗ5;ۉj�    ۉj?�5;              �?  �?    ����        9   G   :       ;    6      <    =      >          ?   @    A      B       C    D                  E    F    G    �           !    #  $  %  &  '  (  )  *  +  ,  -  .  ����D�7G��F��Ƽ@�>�+`�    �+`?�@�>              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  ����\�6G9��F��L��>R�g?    S�g�K��>              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  ������7G�F�� ]=���    ��? ]=              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      R  S  T  U  V  W  X  Y  Z  [  \  ]  ^  _  `  a  ����zU6G5��F�/�P�%�Ρ/?    Ρ/�P�%�              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  �����]5G ;�F̏��My?��l>    ��l�My?              �?  �?    ����        9   G   :       ;    6      <    =   �   >          ?   @    A      B       C    D                  E    F    G    �      t  u  ����              �?              �?              �?  �?    ����                 �   �      w  x  y  z  {  ����              �?              �?              �?  �?    ����        �         1�       �   @                                                                                                                                                                                                                                                                      �   �         2   0�      }  ����              �?              �?              �?  �?    ����        �         1   0�        �����N6Gb. G�Y�  �?              �?              �?  �?    ����        �   ؁�>��3�                |
+| `bfbc38959e76cac9` | HeaderedCsv | 11 | 4 | yes | 2 header rows; columns: movetype id, movetype name, offset in pose sheet (to 'blank' grip), number of rows (grip types) in pose sheet |
+| `c31a32d317692912` | HeaderedCsv | 0 | 2 | no | 103 header rows; empty; columns:                       ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           7   5      8       9   :   :    ;      <       =    >    ?    @      A    B       t                             !    ������Gq�F:}Ə�>iC}?����`x�@�=f�Y�XP�Hh�=��y?  �?    ����           7   5      8       9   ;   :    ;      <       =    >    ?    @      A    B       u      $  %  &  '  (  )  *  +  ,  -  .  /  0  1  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?8���qF��EH>Wx?ff&?    ����           7   5      8       9   <   F   G   :    ;      <       =    >    ?    @      A    B       v      3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  ����syGH��Fõ�  �?              �?              �?ff&?    ����           7   5      8       9   =   F   G   :    ;      <       =    >    ?    @   .   A    B       w      B  C  D  E  F  G  H  I  J  K  L  M  N  ����<� G���F�e�2IS?h�?    h��2IS?              �?  �?    ����           7   5      8       9   @   :    ;      <       =    >    ?    @   :   A    B       x      P  Q  R  S  T  U  V  W  X  Y  Z  [  \  ����� G+N�F)y�  �?              �?              �?  �?    ����           7   5      8       9   A   :    ;      <       =    >    ?    @   9   A    B       y      ^  _  `  a  b  c  d  e  f  g  h  i  j  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           7   5      8       9   B   :    ;      <       =    >    ?    @   :   A    B       z      l  m  n  o  p  q  r  s  t  u  v  w  x  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           7   5      8       9   C   :    ;      <       =    >    ?    @   :   A    B       {      z  {  /  }  ~    �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           7   5      8       9   D   :    ;      <       =    >    ?    @   9   A    B       /      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           7   5      8       9   E   :    ;      <       =    >    ?    @   9   A    B       }      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?G��>    G����zp?  �?    ����           7   5      8       9   J   :    ;      <       =    >    ?    @   E   A    B       ~      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           7   5      8       9   Q   F   G   :    ;      <       =    >    ?    @   /   A    B             �  �  ����              �?              �?              �?  �?    ����           �         �      �  �  �  �  �  �  ����              �?              �?              �?  �?    ����           �   5      �         2   0�   @                                                                                                                                                                                                                                                                   �       �         1�      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����u�*G!p�F5N�  �?              �?              �?  �?    ����        �   _ �@+]��                |
+| `cce6db0a7e1127b4` | HeaderedCsv | 0 | 3 | no | 102 header rows; empty; columns:               ������G41�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y? @?    ����           0   .      1    2       3      4   9   5       6       7    8    9    :    ;      q                                ����I�G�6�F���<?T�, ?�����+���5?d�Y�;m˽��J>��y?��?    ����           0   .      1    2       3      4   :   5       6       7    8    9    :    ;      r         !    #  $  %  &  '  (  )  *  +  ,  ������Gq�F:}ƞ�>hC}?����`x�&@�=d�Y�VP�Hh�=��y?  �?    ����           0   .      1    2       3      4   ;   5       6       7    8    9    :    ;      s      .  /  0  1  2  3  4  5  6  7  8  9  :  ;  ����JDG�FH�ƃ(?�6�):{>�P=?^<,?4���qF��EH>Wx?ff&?    ����           0   .      1    2       3      4   <   5       ?   @   6       7    8    9    :    ;      t      =  >  ?  @  A  B  C  D  E  F  G  H  I  J  ����syGH��Fõ�  �?              �?              �?ff&?    ����           0   .      1    2       3   .   4   =   5       ?   @   6       7    8    9    :    ;      u      L  M  N  O  P  Q  R  S  T  U  V  W  X  ����<� G���F�e�2IS?g�?    g��2IS?              �?  �?    ����           0   .      1    2       3   :   4   @   5       6       7    8    9    :    ;      v      Z  [  \  ]  ^  _  `  a  b  c  d  e  f  ����� G+N�F)y�  �?              �?              �?  �?    ����           0   .      1    2       3   9   4   A   5       6       7    8    9    :    ;      w      h  i  j  k  l  m  n  o  p  q  r  s  t  �����+ GKC�F����w�>ւ>    >ւ��w�              �?  �?    ����           0   .      1    2       3   :   4   B   5       6       7    8    9    :    ;      x      v  w  x  y  z  {  /  }  ~    �  �  �  ����̔G�E�FU�0�?�;P?    �;P�0�?              �?  �?    ����           0   .      1    2       3   :   4   C   5       6       7    8    9    :    ;      y      �  �  �  �  �  �  �  �  �  �  �  �  �  �����:G���F����3���   ��?�3�           �  �?  �?    ����           0   .      1    2       3   9   4   D   5       6       7    8    9    :    ;      z      �  �  �  �  �  �  �  �  �  �  �  �  �  ����P�#G�N�Fx3��.>oF/?    oF/��.>              �?  �?    ����           0   .      1    2       3   9   4   E   5       6       7    8    9    :    ;      {      �  �  �  �  �  �  �  �  �  �  �  �  �  �����y*G Z G�9�  �?            �zp?G��>    G����zp?  �?    ����           0   .      1    2       3   E   4   J   5       6       7    8    9    :    ;      /      �  �  �  �  �  �  �  �  �  �  �  �  �  �  ����q�5G��Fq����=l~�   �l~?���=           �  �?ff&?    ����           0   .      1    2       3   /   4   Q   5       ?   @   6       7    8    9    :    ;      }      �  �  ����              �?              �?              �?  �?    ����           ~               �  �  �  �  �  ����              �?              �?              �?  �?    ����           �   .      �         2   0�         1�       �      �  ����              �?              �?              �?  �?    ����        �         1   0�      �  ����n�#G�i�FW��  �?              �?              �?  �?    ����        �   Ɣ@�r׾                |
+
+## unknown_hashes/lua
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `66645149ea09bf9e` | PlainText | 6,307 | 1 | no | columns: Line |
+| `8dbc8b5f93d20e90` | PlainText | 125 | 1 | no | columns: Line |
+
+## unknown_hashes/txt
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `0036cb1478e0c77e` | PlainText | 434 | 1 | no | columns: Line |
+| `00901704e7725cce` | PlainText | 295 | 1 | no | columns: Line |
+| `00a9691be743d508` | PlainText | 637 | 1 | no | columns: Line |
+| `020cf3f666943783` | PlainText | 2,629 | 1 | no | columns: Line |
+| `02516477147fcd0c` | PlainText | 2,678 | 1 | no | columns: Line |
+| `0280f2c817a1d7f2` | PlainText | 2,664 | 1 | no | columns: Line |
+| `034c0048fa3549f5` | PlainText | 2,582 | 1 | no | columns: Line |
+| `0351511ad1d536cd` | PlainText | 317 | 1 | no | columns: Line |
+| `03c3667aa6ef4491` | PlainText | 614 | 1 | no | columns: Line |
+| `041b4f6346525f82` | PlainText | 298 | 1 | no | columns: Line |
+| `055bf137035ff9d4` | PlainText | 583 | 1 | no | columns: Line |
+| `05ee628c574ea6f2` | PlainText | 995 | 1 | no | columns: Line |
+| `061ce817cf370c6c` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `0761e30bcbeeef71` | PlainText | 3,025 | 1 | no | columns: Line |
+| `077d37632cf3accf` | PlainText | 1,049 | 1 | no | columns: Line |
+| `07e3c2ac04cbab08` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `080d71c329f3f161` | PlainText | 329 | 1 | no | columns: Line |
+| `08d5c3d343aea3a1` | PlainText | 3,080 | 1 | no | columns: Line |
+| `0974042020c3636b` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `09d991f5c9e07e3f` | PlainText | 263 | 1 | no | columns: Line |
+| `0b430448ff695548` | PlainText | 30 | 1 | no | columns: Line |
+| `0c68f09427709595` | PlainText | 239 | 1 | no | columns: Line |
+| `0d6a756181888c3d` | PlainText | 420 | 1 | no | columns: Line |
+| `0da28fb93c73d635` | PlainText | 253 | 1 | no | columns: Line |
+| `0da41329d329b1dc` | PlainText | 339 | 1 | no | columns: Line |
+| `0ec3d8edc8d1cc1c` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `10b23835d1476808` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `10e060d8fa444966` | PlainText | 138 | 1 | no | columns: Line |
+| `10f902fcdd864f0e` | PlainText | 30 | 1 | no | columns: Line |
+| `111eb444da17f00a` | PlainText | 569 | 1 | no | columns: Line |
+| `11c1b308441b530d` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `11dcaa6972d2fae9` | PlainText | 275 | 1 | no | columns: Line |
+| `123eac663eb484a2` | PlainText | 306 | 1 | no | columns: Line |
+| `132c9a42813af8b5` | PlainText | 9 | 1 | no | columns: Line |
+| `1393e1725c3c4532` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `1398130f01908565` | PlainText | 3,422 | 1 | no | columns: Line |
+| `13e286b2de302a24` | PlainText | 36 | 1 | no | columns: Line |
+| `147ac35f5a373814` | PlainText | 9 | 1 | no | columns: Line |
+| `149fb3310211f663` | PlainText | 604 | 1 | no | columns: Line |
+| `14d7b77a72d67a5a` | PlainText | 602 | 1 | no | columns: Line |
+| `15db2490e5a8defe` | PlainText | 3,356 | 1 | no | columns: Line |
+| `15e5d6a73620d0ba` | PlainText | 47 | 1 | no | columns: Line |
+| `15ebd17dcbb99b08` | PlainText | 54 | 1 | no | columns: Line |
+| `172a82c8dde7d2a6` | PlainText | 37 | 1 | no | columns: Line |
+| `178242228f54862b` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `18137244a856bde3` | PlainText | 2,671 | 1 | no | columns: Line |
+| `19531a591947cad8` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `19b84faabee08ae1` | PlainText | 3,380 | 1 | no | columns: Line |
+| `1a30f31cd1b8df04` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `1a9e0f95836660de` | PlainText | 3,441 | 1 | no | columns: Line |
+| `1cb534448438b62f` | PlainText | 486 | 1 | no | columns: Line |
+| `1ce3810b0b144634` | PlainText | 3,427 | 1 | no | columns: Line |
+| `1ce671e8b24b1162` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `1d3ad0709caaef89` | PlainText | 1,058 | 1 | no | columns: Line |
+| `1d3c7a8d02a01d75` | PlainText | 1,047 | 1 | no | columns: Line |
+| `1eaa857f705612a5` | PlainText | 504 | 1 | no | columns: Line |
+| `210b488fa13c9a12` | PlainText | 648 | 1 | no | columns: Line |
+| `21bcc9adcea56b55` | PlainText | 489 | 1 | no | columns: Line |
+| `21c8d0937396045f` | PlainText | 1,042 | 1 | no | columns: Line |
+| `2270751d6ad23dc7` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `22758cfd96fbba9e` | PlainText | 256 | 1 | no | columns: Line |
+| `231935f1336c36f1` | PlainText | 432 | 1 | no | columns: Line |
+| `245e1a246a635f37` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `24a520c6546c809d` | PlainText | 478 | 1 | no | columns: Line |
+| `250f99dcc53e4505` | PlainText | 3,061 | 1 | no | columns: Line |
+| `25fbb6194202e05e` | PlainText | 43 | 1 | no | columns: Line |
+| `26ae382542c40953` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `26f77b0385e51c06` | PlainText | 1 | 1 | no | columns: Line |
+| `2746e7cc5730457c` | PlainText | 276 | 1 | no | columns: Line |
+| `285fc0c695a10c8b` | PlainText | 530 | 1 | no | columns: Line |
+| `291c5491974ed6cb` | PlainText | 1,380 | 1 | no | columns: Line |
+| `295c1636e1263a91` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `298ad62720b5564a` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `2a3fec776164afb9` | PlainText | 976 | 1 | no | columns: Line |
+| `2acac9693f7b354f` | PlainText | 1 | 1 | no | columns: Line |
+| `2c5f19096763b983` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `2c6f2d957ba4f834` | PlainText | 443 | 1 | no | columns: Line |
+| `2cc05200e79dd486` | PlainText | 257 | 1 | no | columns: Line |
+| `2d2ffe6132f00a49` | PlainText | 3,365 | 1 | no | columns: Line |
+| `2d479b84ff502661` | PlainText | 26 | 1 | no | columns: Line |
+| `2e582834ee9b2fe1` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `2e60f931f3eabfc8` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `2e8b0a8448c1661a` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `2f02e4c58caed3cd` | PlainText | 1 | 1 | no | columns: Line |
+| `3124caa8d65941be` | PlainText | 626 | 1 | no | columns: Line |
+| `31404c31d69e1689` | PlainText | 2,967 | 1 | no | columns: Line |
+| `320f5dd4b119d1b5` | PlainText | 420 | 1 | no | columns: Line |
+| `329114fca6223a85` | PlainText | 1 | 1 | no | columns: Line |
+| `32940535a5e2c077` | PlainText | 419 | 1 | no | columns: Line |
+| `33d0a9fffd43939b` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `340dc4d43a5d8536` | PlainText | 443 | 1 | no | columns: Line |
+| `3450521acdac4335` | PlainText | 3,080 | 1 | no | columns: Line |
+| `345e2ca2e9619146` | PlainText | 995 | 1 | no | columns: Line |
+| `34ae0b508dbb0c0f` | PlainText | 3,146 | 1 | no | columns: Line |
+| `3514e400429cb612` | PlainText | 54 | 1 | no | columns: Line |
+| `356ffe74842cce95` | PlainText | 3,461 | 1 | no | columns: Line |
+| `3670e8540e01cc9a` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `37289d23f01f0f31` | PlainText | 18 | 1 | no | columns: Line |
+| `376c69af2ad25ce1` | PlainText | 24 | 1 | no | columns: Line |
+| `3885d43fb212901e` | PlainText | 995 | 1 | no | columns: Line |
+| `38fecee53019fea5` | PlainText | 30 | 1 | no | columns: Line |
+| `39979e35cb4410a2` | PlainText | 580 | 1 | no | columns: Line |
+| `3ae27e85e70e7694` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `3b1b9f901e4e502b` | PlainText | 1,507 | 1 | no | columns: Line |
+| `3cf6bdda25b53812` | PlainText | 298 | 1 | no | columns: Line |
+| `3df17257ca05d0ab` | PlainText | 621 | 1 | no | columns: Line |
+| `3e00c1803d64b770` | PlainText | 293 | 1 | no | columns: Line |
+| `3fb9a120b6cca354` | PlainText | 1,019 | 1 | no | columns: Line |
+| `401ec6d8c50c5395` | PlainText | 33 | 1 | no | columns: Line |
+| `403f599aaff4f0d3` | PlainText | 3,416 | 1 | no | columns: Line |
+| `4097d73595d4d6c3` | PlainText | 276 | 1 | no | columns: Line |
+| `416a4e7bc0d9a1af` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `418066961e41e4db` | PlainText | 2,671 | 1 | no | columns: Line |
+| `41e24c4f0c382c03` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `42861db1e8d969ef` | PlainText | 1,007 | 1 | no | columns: Line |
+| `428f34b040160b4c` | PlainText | 33 | 1 | no | columns: Line |
+| `438ce70fe5f0f438` | PlainText | 633 | 1 | no | columns: Line |
+| `43b7368413a57519` | PlainText | 32 | 1 | no | columns: Line |
+| `449f37420944e232` | PlainText | 259 | 1 | no | columns: Line |
+| `453cf9b4f7636fb6` | PlainText | 498 | 1 | no | columns: Line |
+| `45b59ba2fbf3de04` | PlainText | 338 | 1 | no | columns: Line |
+| `45fa451255d907cf` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `46ada4ae6697c957` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `46d36bc0c02dc0dd` | PlainText | 3,538 | 1 | no | columns: Line |
+| `47f1b016ca65b401` | PlainText | 32 | 1 | no | columns: Line |
+| `48bdf918697b1fa1` | PlainText | 54 | 1 | no | columns: Line |
+| `48d61ac4db785db0` | PlainText | 66 | 1 | no | columns: Line |
+| `4937109f9b20e329` | PlainText | 3,461 | 1 | no | columns: Line |
+| `494206be48c835cd` | PlainText | 54 | 1 | no | columns: Line |
+| `49782dcab86c19d7` | PlainText | 1,076 | 1 | no | columns: Line |
+| `49b387f468f1494b` | PlainText | 421 | 1 | no | columns: Line |
+| `49d5ee068ccfb537` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `4a0e66de91446aff` | PlainText | 1,047 | 1 | no | columns: Line |
+| `4b098a871eb47cad` | PlainText | 715 | 1 | no | columns: Line |
+| `4ba5877b9c30cb9b` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `4bccc2bcb9641774` | PlainText | 311 | 1 | no | columns: Line |
+| `4c71150dc370aa78` | PlainText | 419 | 1 | no | columns: Line |
+| `4c8e5aa9c06bc87a` | PlainText | 475 | 1 | no | columns: Line |
+| `4ca1faef4a193420` | PlainText | 54 | 1 | no | columns: Line |
+| `4d1f43478591ba3c` | PlainText | 9 | 1 | no | columns: Line |
+| `4db84029cb0bda85` | PlainText | 3,054 | 1 | no | columns: Line |
+| `4e4cac4defaa9780` | PlainText | 54 | 1 | no | columns: Line |
+| `4ea800f7cad1799c` | PlainText | 1,042 | 1 | no | columns: Line |
+| `4f15ddd482c5616a` | PlainText | 488 | 1 | no | columns: Line |
+| `4f4a3e3df4757c2e` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `50b4d5d75643963f` | PlainText | 54 | 1 | no | columns: Line |
+| `5112315272379275` | PlainText | 554 | 1 | no | columns: Line |
+| `519b29744a13e954` | PlainText | 67 | 1 | no | columns: Line |
+| `51b4f5b5d4fb2b22` | PlainText | 2,677 | 1 | no | columns: Line |
+| `51f51e833efcd9e5` | PlainText | 1 | 1 | no | columns: Line |
+| `5216e0dea4aca4e1` | PlainText | 455 | 1 | no | columns: Line |
+| `528655b670669e70` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `52bd08250beea716` | PlainText | 256 | 1 | no | columns: Line |
+| `537efe7c8d138dbc` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `53a7021af88c38f7` | PlainText | 627 | 1 | no | columns: Line |
+| `53adbe5c3ae30859` | PlainText | 3,372 | 1 | no | columns: Line |
+| `547f5c42850a9a76` | PlainText | 2,728 | 1 | no | columns: Line |
+| `5490794c632ebfd4` | PlainText | 3 | 1 | no | columns: Line |
+| `5551824b051938b9` | PlainText | 281 | 1 | no | columns: Line |
+| `559e0ea9edb062d7` | PlainText | 279 | 1 | no | columns: Line |
+| `55c059e5e590187b` | PlainText | 3,010 | 1 | no | columns: Line |
+| `55ea27c0018bb3b0` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `56113fda4c059bce` | PlainText | 1 | 1 | no | columns: Line |
+| `562c4825b21a6c24` | PlainText | 488 | 1 | no | columns: Line |
+| `570ec3c574bb8e17` | PlainText | 1,026 | 1 | no | columns: Line |
+| `5791d6c070ea05fb` | PlainText | 42 | 1 | no | columns: Line |
+| `57b86683015b2d16` | PlainText | 435 | 1 | no | columns: Line |
+| `57eaf9419ed369fe` | PlainText | 2,728 | 1 | no | columns: Line |
+| `5908702b12d759c3` | PlainText | 2,629 | 1 | no | columns: Line |
+| `5968364f6151dee2` | PlainText | 3,055 | 1 | no | columns: Line |
+| `5b405f5cf7ab19af` | PlainText | 637 | 1 | no | columns: Line |
+| `5b6c32912678c718` | PlainText | 1,004 | 1 | no | columns: Line |
+| `5c760dd0ac2190a2` | PlainText | 489 | 1 | no | columns: Line |
+| `5de43842548cabdf` | PlainText | 267 | 1 | no | columns: Line |
+| `5f57012a0b5079df` | PlainText | 27 | 1 | no | columns: Line |
+| `5f7ccc16913477e2` | PlainText | 9 | 1 | no | columns: Line |
+| `5f9ac8d78d449f63` | PlainText | 3,054 | 1 | no | columns: Line |
+| `60d4e94ee2a1322f` | PlainText | 595 | 1 | no | columns: Line |
+| `61c4ea27b8badf1e` | PlainText | 339 | 1 | no | columns: Line |
+| `6284261705a3dc12` | PlainText | 281 | 1 | no | columns: Line |
+| `636a5337926cbe32` | PlainText | 422 | 1 | no | columns: Line |
+| `64463672c52d454c` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `64a09f77e9ebc0bd` | PlainText | 976 | 1 | no | columns: Line |
+| `64a367adc2da58a3` | PlainText | 3,195 | 1 | no | columns: Line |
+| `64cdda4e7e305c57` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `64d1de9e1edaecdd` | PlainText | 488 | 1 | no | columns: Line |
+| `64e3f08c52833858` | PlainText | 2,678 | 1 | no | columns: Line |
+| `6594458ce3e0b0e4` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `66423aa023ba7ded` | PlainText | 443 | 1 | no | columns: Line |
+| `684b3d4cb6593aed` | PlainText | 602 | 1 | no | columns: Line |
+| `694081995061546f` | PlainText | 1,026 | 1 | no | columns: Line |
+| `698d3c173f0e469a` | PlainText | 237 | 1 | no | columns: Line |
+| `6a063fdbeec747d5` | PlainText | 3,398 | 1 | no | columns: Line |
+| `6a4a1bc65829ad5c` | PlainText | 420 | 1 | no | columns: Line |
+| `6ac00925c858217e` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `6ad339c9278303e2` | PlainText | 434 | 1 | no | columns: Line |
+| `6b9bc1b4a3af3c4d` | PlainText | 1,049 | 1 | no | columns: Line |
+| `6c1485118b5363b9` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `6c48b9454386f821` | PlainText | 995 | 1 | no | columns: Line |
+| `6c743b4e77dcb998` | PlainText | 2,752 | 1 | no | columns: Line |
+| `6e2d40096fe607b8` | PlainText | 489 | 1 | no | columns: Line |
+| `6ebc7f3aa3a4c83b` | PlainText | 642 | 1 | no | columns: Line |
+| `6ec1a3e6fd95330e` | PlainText | 422 | 1 | no | columns: Line |
+| `6eec175e2b3c4dcd` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `6fffd75674e66e19` | PlainText | 54 | 1 | no | columns: Line |
+| `704366ef133c716d` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `717552f00d6dd689` | PlainText | 399 | 1 | no | columns: Line |
+| `7269eaf32248e02a` | PlainText | 54 | 1 | no | columns: Line |
+| `72a8df82aae865f3` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `7304c578c5aa9d4f` | PlainText | 3,007 | 1 | no | columns: Line |
+| `754b4686020e8daf` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `755ef4bec4a2fd60` | PlainText | 2,656 | 1 | no | columns: Line |
+| `7593a1f01b255a94` | PlainText | 2,727 | 1 | no | columns: Line |
+| `7654ff35fcd7b43b` | PlainText | 3 | 1 | no | columns: Line |
+| `767f9c6861ae3725` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `76a7bfc24642d13d` | PlainText | 3,499 | 1 | no | columns: Line |
+| `7752b0019819b941` | PlainText | 399 | 1 | no | columns: Line |
+| `777601074410f4cc` | PlainText | 432 | 1 | no | columns: Line |
+| `799484d3ddb6a30a` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `79b31e382eb3943c` | PlainText | 53 | 1 | no | columns: Line |
+| `7a7c50057a581ab6` | PlainText | 3,356 | 1 | no | columns: Line |
+| `7b4e0c4150966ca5` | PlainText | 30 | 1 | no | columns: Line |
+| `7baadea5715ab2dd` | PlainText | 2,727 | 1 | no | columns: Line |
+| `7bba2bd58191b30c` | PlainText | 604 | 1 | no | columns: Line |
+| `7c8051db7d7c6eaf` | PlainText | 246 | 1 | no | columns: Line |
+| `7cb36a8c99032ab6` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `7ced429beada7c57` | PlainText | 597 | 1 | no | columns: Line |
+| `7cfb192d8e2e4406` | PlainText | 1,400 | 1 | no | columns: Line |
+| `7d018ce9891d23ae` | PlainText | 2,677 | 1 | no | columns: Line |
+| `7d823400192c4cc0` | PlainText | 2,676 | 1 | no | columns: Line |
+| `7e09fd5d365a5a26` | PlainText | 614 | 1 | no | columns: Line |
+| `7e35dc7d1b8e3e57` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `7e3e2b390922b201` | PlainText | 584 | 1 | no | columns: Line |
+| `7e95e2cffb72c22f` | PlainText | 3,538 | 1 | no | columns: Line |
+| `7e9f85fcfe3cb58a` | PlainText | 7 | 1 | no | columns: Line |
+| `7ef5ba51a54e3e7b` | PlainText | 326 | 1 | no | columns: Line |
+| `7f104dcde7dc8291` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `7fa63e635c350f10` | PlainText | 96 | 1 | no | columns: Line |
+| `7fbd84db690fc51e` | PlainText | 469 | 1 | no | columns: Line |
+| `7ff67e5dc3155a8c` | PlainText | 306 | 1 | no | columns: Line |
+| `8264ea4a50f4301c` | PlainText | 329 | 1 | no | columns: Line |
+| `84661d637cc985a8` | PlainText | 301 | 1 | no | columns: Line |
+| `846da467d65dbd30` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `846ee3bdba2929a6` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `84b632c52d7d5a32` | PlainText | 650 | 1 | no | columns: Line |
+| `84d4f196e3cad63b` | PlainText | 58 | 1 | no | columns: Line |
+| `858dd025fdd176ce` | PlainText | 617 | 1 | no | columns: Line |
+| `85a984b5a2385ce3` | PlainText | 524 | 1 | no | columns: Line |
+| `86308864ecbd1c65` | PlainText | 330 | 1 | no | columns: Line |
+| `869859feb97ab04a` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `86ec9322e760e9b5` | PlainText | 12 | 1 | no | columns: Line |
+| `870965d9b002ce36` | PlainText | 579 | 1 | no | columns: Line |
+| `8887f5baa4551eb8` | PlainText | 54 | 1 | no | columns: Line |
+| `88bb9ec27b030987` | PlainText | 40 | 1 | no | columns: Line |
+| `88f04840dc414981` | PlainText | 9 | 1 | no | columns: Line |
+| `88f9576789544c1c` | PlainText | 639 | 1 | no | columns: Line |
+| `8a5774a9a813fbd8` | PlainText | 633 | 1 | no | columns: Line |
+| `8a7e24f59bcffced` | PlainText | 114 | 1 | no | columns: Line |
+| `8a99315e82f9b70f` | PlainText | 1,033 | 1 | no | columns: Line |
+| `8b19e2dbdf540033` | PlainText | 428 | 1 | no | columns: Line |
+| `8c0ccbe31d746d39` | PlainText | 614 | 1 | no | columns: Line |
+| `8cb22c74356e21bc` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `8dc7ba8957a09ae8` | PlainText | 243 | 1 | no | columns: Line |
+| `8dd85faa54bb46e4` | PlainText | 239 | 1 | no | columns: Line |
+| `8e3c93f6fdb1383d` | PlainText | 33 | 1 | no | columns: Line |
+| `8f1c794eca98f215` | PlainText | 262 | 1 | no | columns: Line |
+| `8f25f9cd9c89e77e` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `8fd4d39c3c524d6f` | PlainText | 3,004 | 1 | no | columns: Line |
+| `8fdb57c8df8eed44` | PlainText | 27 | 1 | no | columns: Line |
+| `8feac3121f961c1a` | PlainText | 1,012 | 1 | no | columns: Line |
+| `90e363042ea25eb9` | PlainText | 3,372 | 1 | no | columns: Line |
+| `9225268ae2312b60` | PlainText | 570 | 1 | no | columns: Line |
+| `9231ae7be6b0fc18` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `9264acf69464c1e9` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `927edc99bb36d796` | PlainText | 604 | 1 | no | columns: Line |
+| `92af4d6d9f981a64` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `9321584a5810229b` | PlainText | 1,027 | 1 | no | columns: Line |
+| `9341d201416c0de0` | PlainText | 54 | 1 | no | columns: Line |
+| `94614ceef1362470` | PlainText | 20 | 1 | no | columns: Line |
+| `95eecc374e04a689` | PlainText | 3,004 | 1 | no | columns: Line |
+| `95f05f68e3c6a9ad` | PlainText | 2,680 | 1 | no | columns: Line |
+| `962780936e6a8116` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `968c5b948cfcd9e2` | PlainText | 602 | 1 | no | columns: Line |
+| `96d0f1e7a0a1b4a3` | PlainText | 635 | 1 | no | columns: Line |
+| `974c239c7e364809` | PlainText | 3,416 | 1 | no | columns: Line |
+| `978121a4fc2168e3` | PlainText | 24 | 1 | no | columns: Line |
+| `9a9b6834558f927e` | PlainText | 292 | 1 | no | columns: Line |
+| `9acf69a413f87a06` | PlainText | 3,061 | 1 | no | columns: Line |
+| `9be36798b5d9581e` | PlainText | 486 | 1 | no | columns: Line |
+| `9c072dd593b9d4c6` | PlainText | 584 | 1 | no | columns: Line |
+| `9c6ace8ec0d0de83` | PlainText | 602 | 1 | no | columns: Line |
+| `9c7e47afa8115294` | PlainText | 614 | 1 | no | columns: Line |
+| `9d4d8e5b7af77a32` | PlainText | 3,022 | 1 | no | columns: Line |
+| `9d6955ccd895cf25` | PlainText | 2,752 | 1 | no | columns: Line |
+| `9dd5114fe9f13271` | PlainText | 38 | 1 | no | columns: Line |
+| `9e6ad3a528f9443a` | PlainText | 3,106 | 1 | no | columns: Line |
+| `9f5503f623d9c80e` | PlainText | 30 | 1 | no | columns: Line |
+| `9f8248dd5c372715` | PlainText | 223 | 1 | no | columns: Line |
+| `9fa75998a85730ac` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `a0315f32370734d7` | PlainText | 2,771 | 1 | no | columns: Line |
+| `a0b9705bd3a8ea25` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `a0c9aa68ffc4498e` | PlainText | 295 | 1 | no | columns: Line |
+| `a157a81cc533cce5` | PlainText | 54 | 1 | no | columns: Line |
+| `a1887241d4d29389` | PlainText | 561 | 1 | no | columns: Line |
+| `a1d827faa19145b5` | PlainText | 578 | 1 | no | columns: Line |
+| `a3316659262e92ee` | PlainText | 560 | 1 | no | columns: Line |
+| `a4ba3c7bbea6817c` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `a4d36dc6a2fc1dd1` | PlainText | 420 | 1 | no | columns: Line |
+| `a4dac6dd3ec2499b` | PlainText | 629 | 1 | no | columns: Line |
+| `a512a48a2961fe02` | PlainText | 3,538 | 1 | no | columns: Line |
+| `a527d85f45cc7e06` | PlainText | 253 | 1 | no | columns: Line |
+| `a52e0e8ffc7aeffc` | PlainText | 472 | 1 | no | columns: Line |
+| `a5aa95e57b7e960d` | PlainText | 30 | 1 | no | columns: Line |
+| `a5fda91587bac615` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+| `a607c05cf2f22ae5` | PlainText | 2,916 | 1 | no | columns: Line |
+| `a65a5d91b855204b` | PlainText | 2,680 | 1 | no | columns: Line |
+| `a65e0af8588c8f8c` | PlainText | 34 | 1 | no | columns: Line |
+| `a6e071bf4df5bfaf` | PlainText | 267 | 1 | no | columns: Line |
+| `a72767d850f95155` | PlainText | 1,027 | 1 | no | columns: Line |
+| `a7538c9a529d3c72` | PlainText | 54 | 1 | no | columns: Line |
+| `a77005ec3802e0f9` | PlainText | 330 | 1 | no | columns: Line |
+| `a871383690de2253` | PlainText | 9 | 1 | no | columns: Line |
+| `a874fe8fe3d92f38` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `a95a35eea92cd7eb` | PlainText | 2,656 | 1 | no | columns: Line |
+| `a9b96ccf64f520b9` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `aa57224d4774c859` | PlainText | 627 | 1 | no | columns: Line |
+| `aa61b528461e52fa` | PlainText | 256 | 1 | no | columns: Line |
+| `aae74dd25d892734` | PlainText | 30 | 1 | no | columns: Line |
+| `ab5f3f19c059d441` | PlainText | 257 | 1 | no | columns: Line |
+| `ab94547abda38de4` | PlainText | 54 | 1 | no | columns: Line |
+| `abee3754d5355143` | PlainText | 553 | 1 | no | columns: Line |
+| `ac1014720e17a091` | IndexedStringTable | 124 | 2 | yes | columns: Id, Text |
+| `ac20fc943e553f5a` | PlainText | 54 | 1 | no | columns: Line |
+| `ac47e2cbeb70b880` | PlainText | 262 | 1 | no | columns: Line |
+| `ac66658b53729295` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `acec017a5929f9fb` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `ad3dd017eb655d13` | PlainText | 653 | 1 | no | columns: Line |
+| `ae84f1f7568e7f3d` | PlainText | 1,076 | 1 | no | columns: Line |
+| `ae97bfc3dde30431` | PlainText | 263 | 1 | no | columns: Line |
+| `af4f27f916fdb6ea` | PlainText | 1 | 1 | no | columns: Line |
+| `b0624b3488021a18` | PlainText | 516 | 1 | no | columns: Line |
+| `b20a10e449bceb6d` | PlainText | 2,687 | 1 | no | columns: Line |
+| `b2324cac38daf93d` | PlainText | 3,096 | 1 | no | columns: Line |
+| `b25748c4faf1679b` | PlainText | 1,038 | 1 | no | columns: Line |
+| `b2d0db9fe615d2fc` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `b2e6607b29f28e10` | PlainText | 634 | 1 | no | columns: Line |
+| `b323d9adafe202a0` | PlainText | 1,058 | 1 | no | columns: Line |
+| `b383ac3af91e525f` | PlainText | 616 | 1 | no | columns: Line |
+| `b5abf1e9bca45dd2` | PlainText | 1,019 | 1 | no | columns: Line |
+| `b5ea26196e097d25` | PlainText | 3,538 | 1 | no | columns: Line |
+| `b713d876a521b69c` | PlainText | 320 | 1 | no | columns: Line |
+| `b750149a37a549ff` | PlainText | 1 | 1 | no | columns: Line |
+| `b7990719f38d2757` | PlainText | 2,967 | 1 | no | columns: Line |
+| `b8ead9628341f1c8` | PlainText | 3,171 | 1 | no | columns: Line |
+| `b92d7da806c7aeb6` | PlainText | 320 | 1 | no | columns: Line |
+| `b9b0feb4ec45bc7c` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `ba10141fc4041b40` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `ba11a1ab05137f57` | PlainText | 484 | 1 | no | columns: Line |
+| `bc602bd349a23adc` | PlainText | 421 | 1 | no | columns: Line |
+| `bd2bb1466a2ce2c1` | PlainText | 243 | 1 | no | columns: Line |
+| `bd71e965ffc2ca19` | PlainText | 632 | 1 | no | columns: Line |
+| `bd7a7d52e1438c62` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `bdf2a32da955b3dd` | PlainText | 426 | 1 | no | columns: Line |
+| `be231b64a6a53100` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `bf37825675b7514d` | PlainText | 208 | 1 | no | columns: Line |
+| `bf739c397702e999` | PlainText | 267 | 1 | no | columns: Line |
+| `c0159cc2c1a2c8ff` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `c0785f1024037d84` | PlainText | 604 | 1 | no | columns: Line |
+| `c109047758045689` | PlainText | 39 | 1 | no | columns: Line |
+| `c1907038935cd22d` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `c20001209f68a7dc` | PlainText | 640 | 1 | no | columns: Line |
+| `c20606a96abfa44b` | PlainText | 23 | 1 | no | columns: Line |
+| `c4750fc13f5ef176` | PlainText | 3,022 | 1 | no | columns: Line |
+| `c4cdff14d35f6524` | PlainText | 54 | 1 | no | columns: Line |
+| `c4f3bce1f1721216` | PlainText | 3,371 | 1 | no | columns: Line |
+| `c5134161b04e5897` | PlainText | 39 | 1 | no | columns: Line |
+| `c5363edaad7d4be3` | PlainText | 3 | 1 | no | columns: Line |
+| `c575d168b6f47199` | IndexedStringTable | 3 | 2 | yes | columns: Id, Text |
+| `c57a9096e031f718` | PlainText | 627 | 1 | no | columns: Line |
+| `c5b1147b588aed9a` | PlainText | 2,582 | 1 | no | columns: Line |
+| `c5bf8f51c87f13cc` | PlainText | 3,171 | 1 | no | columns: Line |
+| `c5e23962782540cb` | PlainText | 35 | 1 | no | columns: Line |
+| `c61628cd2f5503e0` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `c64a45f7ed3d90ac` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `c6b28678850ebf18` | PlainText | 3,380 | 1 | no | columns: Line |
+| `c7ad5985e9f40bb9` | PlainText | 2,654 | 1 | no | columns: Line |
+| `c7e4e08d2caa7c61` | PlainText | 20 | 1 | no | columns: Line |
+| `c8481910b3eef311` | PlainText | 3,365 | 1 | no | columns: Line |
+| `c9bc52e78d772fea` | PlainText | 3,010 | 1 | no | columns: Line |
+| `cbff58976f2afb6f` | PlainText | 3,335 | 1 | no | columns: Line |
+| `cc582a40e9cb3197` | PlainText | 612 | 1 | no | columns: Line |
+| `cd20089de742f76f` | PlainText | 298 | 1 | no | columns: Line |
+| `ce23f4d556211e5c` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ce74017a72cd6b24` | PlainText | 40 | 1 | no | columns: Line |
+| `ced62d7f73e6066f` | PlainText | 208 | 1 | no | columns: Line |
+| `cf5b5814889a217f` | PlainText | 635 | 1 | no | columns: Line |
+| `cfb5f1ed642b8a65` | PlainText | 2,916 | 1 | no | columns: Line |
+| `cfc1287a78dac22c` | PlainText | 597 | 1 | no | columns: Line |
+| `d13b0e9c2ec22443` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `d18f1f1bd5e05a0d` | PlainText | 54 | 1 | no | columns: Line |
+| `d1fefbd3b5f2b454` | PlainText | 3,055 | 1 | no | columns: Line |
+| `d2a9e77faae07a99` | PlainText | 428 | 1 | no | columns: Line |
+| `d2dc2f3c16a163c9` | PlainText | 443 | 1 | no | columns: Line |
+| `d343b95f6a411a08` | PlainText | 3,398 | 1 | no | columns: Line |
+| `d36cdfd6674c783a` | PlainText | 326 | 1 | no | columns: Line |
+| `d4c2fe1c9f976d21` | PlainText | 54 | 1 | no | columns: Line |
+| `d4d2d7d9bdce7859` | PlainText | 2,654 | 1 | no | columns: Line |
+| `d57fd202059a38b3` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `d5dfdf1317c4c9e1` | PlainText | 24 | 1 | no | columns: Line |
+| `d63ae245cdd1f53b` | PlainText | 435 | 1 | no | columns: Line |
+| `d71c9f57d4962df4` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `d75c21438156d842` | PlainText | 3,195 | 1 | no | columns: Line |
+| `d83be44f6eac5825` | PlainText | 41 | 1 | no | columns: Line |
+| `d83ed53c91107c5b` | PlainText | 319 | 1 | no | columns: Line |
+| `d96de9afd95573eb` | PlainText | 2,736 | 1 | no | columns: Line |
+| `d984c3192a7f7486` | PlainText | 565 | 1 | no | columns: Line |
+| `da01aaf3a21c067d` | PlainText | 1 | 1 | no | columns: Line |
+| `db2aa643882ea1e7` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `dbcc2f5c00f1badd` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `dbd57941ada96ca5` | PlainText | 259 | 1 | no | columns: Line |
+| `dbe8f103eebd39c6` | PlainText | 3,335 | 1 | no | columns: Line |
+| `dc05707f9057d6aa` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `dcb1e60defb25fd8` | PlainText | 321 | 1 | no | columns: Line |
+| `dcc5a7ebdd2be895` | PlainText | 298 | 1 | no | columns: Line |
+| `dd94a8336083ad57` | PlainText | 3,499 | 1 | no | columns: Line |
+| `ddae3bb4b70aaf3f` | PlainText | 453 | 1 | no | columns: Line |
+| `dde39bedea46c58b` | PlainText | 2,736 | 1 | no | columns: Line |
+| `ded813bea0c67f7f` | PlainText | 3,422 | 1 | no | columns: Line |
+| `df08fe16bd6e8dea` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `df17a1d2d8bc8385` | PlainText | 3,313 | 1 | no | columns: Line |
+| `df268e694c535980` | PlainText | 305 | 1 | no | columns: Line |
+| `df8176425b43d681` | PlainText | 3,025 | 1 | no | columns: Line |
+| `e177f939d2abe000` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
+| `e24ca7e7833a4f8d` | PlainText | 26 | 1 | no | columns: Line |
+| `e329c77d5b13b2dd` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `e346f1d3ee537632` | PlainText | 48 | 1 | no | columns: Line |
+| `e3b288954245014a` | PlainText | 3,146 | 1 | no | columns: Line |
+| `e3f2cf7b685382cb` | PlainText | 269 | 1 | no | columns: Line |
+| `e4141a44abd6e95a` | PlainText | 66 | 1 | no | columns: Line |
+| `e418dd4225776d0d` | PlainText | 3,007 | 1 | no | columns: Line |
+| `e4b07d0dff4891f5` | IndexedStringTable | 13 | 2 | yes | columns: Id, Text |
+| `e4f3b61213e6ce6e` | PlainText | 330 | 1 | no | columns: Line |
+| `e5232bafa8af9ef3` | PlainText | 311 | 1 | no | columns: Line |
+| `e61c0dac19b094c5` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `e62e86b0fc0199f8` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `e788af15d4262f04` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
+| `e7f5732c5505061e` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `e97d46cf032e2970` | PlainText | 548 | 1 | no | columns: Line |
+| `e982f12cb865d0a6` | PlainText | 293 | 1 | no | columns: Line |
+| `ea4ffc3edd0b1e0b` | PlainText | 54 | 1 | no | columns: Line |
+| `ea83c0ffd443ede5` | PlainText | 321 | 1 | no | columns: Line |
+| `eaa085056999cb4e` | PlainText | 578 | 1 | no | columns: Line |
+| `eaa2ad3a6a92c973` | PlainText | 12 | 1 | no | columns: Line |
+| `eac91d3ad5b9cd97` | PlainText | 1,038 | 1 | no | columns: Line |
+| `ebe3e3543f26977c` | PlainText | 40 | 1 | no | columns: Line |
+| `ec0e2d47becec864` | PlainText | 1,012 | 1 | no | columns: Line |
+| `ec3b5ce1cf9dd740` | PlainText | 3,096 | 1 | no | columns: Line |
+| `ec9695f2475abfd9` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ecae0571b306cdce` | PlainText | 584 | 1 | no | columns: Line |
+| `ecfe91b19910fe28` | PlainText | 3,106 | 1 | no | columns: Line |
+| `ed03b64282898ced` | PlainText | 614 | 1 | no | columns: Line |
+| `ed28317d0b5e8859` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `ed57b2211b8931d2` | PlainText | 330 | 1 | no | columns: Line |
+| `ee64b842d9145e90` | PlainText | 2,676 | 1 | no | columns: Line |
+| `ee6e87c127c64709` | PlainText | 524 | 1 | no | columns: Line |
+| `eeb173536669e5a7` | PlainText | 587 | 1 | no | columns: Line |
+| `eeff41701ba8db8c` | PlainText | 267 | 1 | no | columns: Line |
+| `ef7a8854f5ba1cbf` | PlainText | 279 | 1 | no | columns: Line |
+| `f0583a2fd39b7bac` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `f08ce4543aac7b06` | PlainText | 2,664 | 1 | no | columns: Line |
+| `f11931b33c9e4e38` | PlainText | 489 | 1 | no | columns: Line |
+| `f165b4b2ce136b10` | PlainText | 453 | 1 | no | columns: Line |
+| `f174c097b2d2104f` | PlainText | 338 | 1 | no | columns: Line |
+| `f1945acfa4439923` | PlainText | 3,427 | 1 | no | columns: Line |
+| `f1e35f861eed149a` | PlainText | 319 | 1 | no | columns: Line |
+| `f253d05dd3c7c49f` | PlainText | 1,007 | 1 | no | columns: Line |
+| `f2b9b4e6ecf08153` | IndexedStringTable | 7 | 2 | yes | columns: Id, Text |
+| `f325aff572914e42` | PlainText | 583 | 1 | no | columns: Line |
+| `f335aba8a90889ba` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `f35769b1946b223e` | PlainText | 3,313 | 1 | no | columns: Line |
+| `f52c95405ed522db` | PlainText | 3,371 | 1 | no | columns: Line |
+| `f5f2b2c964108a3c` | PlainText | 447 | 1 | no | columns: Line |
+| `f6120a82727559f1` | PlainText | 2,687 | 1 | no | columns: Line |
+| `f6145b34efabffa1` | PlainText | 617 | 1 | no | columns: Line |
+| `f6d34878e563d9fe` | PlainText | 641 | 1 | no | columns: Line |
+| `f781cac83317eafd` | PlainText | 621 | 1 | no | columns: Line |
+| `f84fab36517057dc` | PlainText | 612 | 1 | no | columns: Line |
+| `f8e3124f2e6f2215` | PlainText | 1,033 | 1 | no | columns: Line |
+| `f96bff7ee5e5f185` | PlainText | 275 | 1 | no | columns: Line |
+| `f9dde90c2c0eedea` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `fa5bbace16bb4fef` | IndexedStringTable | 4 | 2 | yes | columns: Id, Text |
+| `fa6229585962947c` | PlainText | 35 | 1 | no | columns: Line |
+| `fae5ffa44f07fc50` | PlainText | 426 | 1 | no | columns: Line |
+| `fb78f3daa055bdf0` | PlainText | 237 | 1 | no | columns: Line |
+| `fb79936d9a15c481` | PlainText | 46 | 1 | no | columns: Line |
+| `fb810f4942190143` | PlainText | 640 | 1 | no | columns: Line |
+| `fc1d99c94d93b237` | PlainText | 484 | 1 | no | columns: Line |
+| `fc625416922f07df` | PlainText | 2,771 | 1 | no | columns: Line |
+| `fd22010decd0db20` | PlainText | 1,004 | 1 | no | columns: Line |
+| `fdfb424a29c4993f` | PlainText | 292 | 1 | no | columns: Line |
+| `fe602ebd740a99c5` | IndexedStringTable | 12 | 2 | yes | columns: Id, Text |
+| `febe43cf2cec7a0a` | PlainText | 3,441 | 1 | no | columns: Line |
+
+## unknown_hashes/xml
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `06c56e961c0c5661` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `074774a63da15ab4` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `0b87816d0e63d541` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `120f6c2940a9f91d` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `16b8dee6a29b1ac2` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `1aabf5f8ec6ea8cf` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `25964c0c2fb5b269` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `34c0ceaff25b642b` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `b39e299c3bf615be` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `c48a53e6731c1b12` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `f66278641ce84695` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+
+## zones
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `zones` | Binary | 1 | 1 | no | columns: Bytes |
+
+## zones/scenery
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `sky_altdorf` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_altdorfdocks` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_altdorf_sewers` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_arttest` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_avelorn` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands_bloodgash` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands_gunbad` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands_horngate` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_badlands_swamp` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_blackstrand` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_borderland` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_lakevally` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_north` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_ocean` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_pqgate` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_barak_woodpath` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bastion` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bilerotburrow` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bisl` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bisl_glade` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bisl_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bisl_wartorn` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_blackcrag` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_blackfire` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_dragonbone` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_komar` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_snotwood` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_waterfall` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_bloodhorn_wolftoof` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_brightcollege` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_caledor` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaosstart` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaoswastes` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaoswastesebontower` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaoswastesem22` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaoswasteslonelytower` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chaoswasteswormlake` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chrace` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_chrace_nearclip` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_cinderfall` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_cwspit` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_deathpeak` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_default` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_dragonwake` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_dragonwakeva` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_eataine` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_eataine_tw` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_eightpeaks` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_caves` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_frostpeak` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_g4beyond` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_orczone` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_pq2` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_quarry` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ekrund_traincrash` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ellyrion` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ellyrion_creepy` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_gunbad` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_highpass` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_inevitable` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_inevitable_contested` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_isleofthedead` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_kadrinvalley` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_karaza` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lighting` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_ch_bastion` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_dw_city` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_dw_mine` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_dw_portofbarak` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_em_crypt` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_ge_cave` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_ge_ice` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_ge_skaven` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_ge_spider` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_he_caves` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_lsd_he_halls` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_deadwater` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_desaturated` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_drench` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_foulruins` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_high` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_rvr` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_marshes_swamps` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_murderwood` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_nordland` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_norsca` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ostland` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_ostland_clearing` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_outerdark` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_outerdarklust` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_outerdarkmarsh` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_outerdarkrage` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_praag` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_reikland` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_sacellum` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_saphery` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_scenario30` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_shadowlands` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_shadowlands_fog` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_skaven` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_talabec` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_talabecland` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_talabecland_fog` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_tc_blightfarm` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_tc_stonetrolls` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_tc_trollbog` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_thundermount` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_thund_dull` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_thund_stones` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_thund_sulf` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_toranroc` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_trollcountry` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_warpblade` | Binary | 1 | 1 | no | columns: Bytes |
+| `sky_woc_m` | Binary | 1 | 1 | no | columns: Bytes |
+| `war_interior` | HeaderedCsv | 0 | 8 | no | 531 header rows; empty; columns: dw_ship_ironclad_S_01.nif |
+| `water_fringes` | Binary | 1 | 1 | no | columns: Bytes |
+| `water_surfaces` | Binary | 1 | 1 | no | columns: Bytes |
+
+## zones/zone001
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9,676 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 15 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 55,415 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 417 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 26 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone001/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 478 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone002
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8,029 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 69,116 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 417 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 25 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone002/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 874 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone003
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13,100 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 67,546 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 452 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 14 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone003/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 966 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone004
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,504 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 37 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 16,436 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 321 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone004/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 309 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone005
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 12,528 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 1,768 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 425 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 30 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone005/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 742 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone006
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 4,613 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 14,881 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 409 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 34 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone006/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 542 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone007
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 7,479 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 71,316 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 375 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 27 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone007/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 792 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone008
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9,696 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 20,477 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 21 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone008/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 516 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone009
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9,126 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 31,931 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 475 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 32 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone009/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 619 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone010
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 663 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 7,713 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 147 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone010/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 270 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone011
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8,291 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 37 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 39,734 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 370 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 67 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone011/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 742 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone012
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone012/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 100 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone013
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 14,107 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone013/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 77 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone014
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone014/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 91 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone015
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8 | 22 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 6 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone015/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 80 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone016
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone016/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 356 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone017
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone017/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 212 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone018
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone018/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 248 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone019
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone019/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 233 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone020
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone020/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 127 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone021
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone021/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 120 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone022
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone022/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 162 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone023
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone023/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 123 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone024
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone024/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 139 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone025
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 11 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 11 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone025/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 79 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone026
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 6,847 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 4 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 116 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 312 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone026/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 563 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone027
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 5,419 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 30,669 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 313 | 30 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 6 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone027/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 795 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone028
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone028/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 93 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone030
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 28 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 1,456 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 175 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone030/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 278 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone031
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 900 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 2,180 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 118 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone031/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 275 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone032
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 37 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 30 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 2,236 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 22 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone032/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 255 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone033
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 489 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 932 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 229 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone033/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 315 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone034
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 859 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 136 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone034/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 232 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone036
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 738 | 22 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 11,455 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 152 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone036/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 235 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone038
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 748 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 216 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 144 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone038/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 142 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone039
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 663 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 149 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone039/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 240 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone041
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 938 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 148 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone041/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 184 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone042
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 633 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 235 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone042/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone043
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 921 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 325 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone043/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 280 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone044
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 703 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 4 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 854 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 199 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone044/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 187 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone045
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 28 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 1,456 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 175 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone045/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 278 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone050
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,724 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 4,720 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 68 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone050/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 236 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone060
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 217 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 31 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone060/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone063
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 3 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone063/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone064
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 4 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 17 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone064/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone065
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 55 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 14 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone065/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone066
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 3 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone066/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone070
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone070/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 146 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone071
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone071/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 124 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone072
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone072/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone073
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone073/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 81 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone074
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone074/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone075
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone075/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 131 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone076
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone076/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 103 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone077
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone077/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 193 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone078
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone078/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 202 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone079
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone079/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone080
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 14 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 13,907 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `nifs` | HeaderedCsv | 41 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone080/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 221 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone082
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone082/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone083
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone083/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone084
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8 | 22 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 6 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone084/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone085
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone085/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 70 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone087
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone087/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 356 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone088
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone088/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 193 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone089
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 22 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone089/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 356 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone100
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9,305 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 14 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 37,681 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 415 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 27 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone100/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 593 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone101
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13,506 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 22 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 84,050 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 400 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 38 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone101/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 909 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone102
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 10,963 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 16,292 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 413 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 51 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone102/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 803 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone103
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 7,560 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 17 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 63,785 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 481 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 16 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone103/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 803 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone104
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 892 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 15 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 4,064 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 179 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 3 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone104/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 298 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone105
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 14,475 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 53,668 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 439 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 33 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone105/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 783 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone106
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13,056 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 32,722 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 32 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone106/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 780 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone107
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 16,769 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 44,995 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 377 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 44 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone107/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 744 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone108
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8,928 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 17 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 99,020 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 379 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 47 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone108/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 1,152 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone109
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 12,625 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 118,635 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 435 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 42 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone109/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 1,215 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone110
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,429 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 31,560 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 137 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone110/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 418 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone111
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone111/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 86 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone112
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone112/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 77 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone113
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone113/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 79 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone115
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone115/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 74 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone116
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 2 | 25 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone116/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 110 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone117
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,356 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 117 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone117/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 175 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone118
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone118/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 189 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone120
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 5,456 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 13 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 40,646 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 273 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone120/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 322 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone121
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone121/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 94 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone123
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone123/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 86 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone125
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone125/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone126
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 89 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 1 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 176 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 20 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone126/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 122 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone127
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone127/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 87 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone128
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone128/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 71 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone129
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone129/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 163 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone130
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 856 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 1,427 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 101 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone130/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 390 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone131
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 691 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 22 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 66,641 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 83 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone131/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 347 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone132
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 840 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 889 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 203 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `objectivepoints` | HeaderedCsv | 3 | 7 | yes | 1 header row; columns: Point Id, Objective Id, Neutral Icon, Order Icon, Destruction Icon, X loc |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone132/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 310 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone133
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 444 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 4,397 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 78 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone133/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 118 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone134
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 629 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 334 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 150 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone134/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 182 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone135
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 357 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 76 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone135/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 97 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone136
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2,093 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 159 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone136/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 132 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone137
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 159 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 49 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | **degraded read** -- malformed XML, elements counted textually; columns: Element, Count, Attributes |
+
+## zones/zone137/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone138
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 992 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 5,419 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 140 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone138/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 220 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone139
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,518 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 179 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone139/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 302 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone140
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 569 | 22 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 9 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 40,431 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 214 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone140/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 227 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone142
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone142/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 152 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone143
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 25 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone143/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 152 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone144
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone144/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 76 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone147
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone147/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 65 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone152
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 975 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone152/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone153
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,068 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone153/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone154
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 187 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone154/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone155
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 313 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 74 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone155/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone156
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 219 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 142 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone156/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone157
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 619 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 265 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone157/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 184 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone158
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 645 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 157 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone158/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone159
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 645 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 182 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone159/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone160
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 3,677 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 41 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 116 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone160/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 191 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone161
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2,088 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 308 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 54 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone161/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone162
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 3,148 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 383 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 54 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone162/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 168 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone163
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 40 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 15 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone163/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone164
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone164/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone165
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 32 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone165/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone166
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 254 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 23 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone166/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone167
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,548 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 250 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 46 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone167/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone168
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2,299 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 280 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 51 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone168/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 184 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone169
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,337 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone169/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone170
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 621 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 109 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone170/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 199 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone171
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 74 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 56 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone171/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 158 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone172
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 200 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 25 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone172/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone173
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 248 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 147 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone173/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone174
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 11 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 10 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone174/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone175
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,141 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 15,610 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 106 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone175/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 268 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone176
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,359 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 75 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone176/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone177
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 285 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone177/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone178
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 72 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 38 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone178/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone179
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,392 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 141 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone179/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone180
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone180/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 134 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone181
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 12 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone181/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 77 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone182
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 42 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 4 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 2,414 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 18 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone182/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 168 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone184
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone184/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 99 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone189
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 25 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone189/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 152 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone190
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 65 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 43 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone190/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone191
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 6,173 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 24 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 70,322 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 441 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone191/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 765 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone192
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 28 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 17 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone192/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 254 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone193
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 17 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone193/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 138 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone194
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 17 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone194/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 566 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone195
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 247 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 54 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone195/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone196
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 346 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 49 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone196/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone197
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 142 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 12 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone197/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 184 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone198
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 50 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 28 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone198/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone199
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 54 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 39 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone199/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 644 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone200
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 12,743 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 84,768 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 431 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 12 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone200/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 995 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone201
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 12,397 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 57,061 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 290 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 12 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone201/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 737 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone202
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 15,201 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 149,169 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 14 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone202/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 865 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone203
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 14,578 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 52,303 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 413 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 48 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone203/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 734 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone204
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,365 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 12,267 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 128 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone204/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 239 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone205
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 9,167 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 84,464 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 344 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 54 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone205/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 1,055 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone206
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 8,488 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 9 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 65,442 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 353 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 10 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone206/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 852 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone207
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13,015 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 101,859 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 355 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `read me` | PlainText | 1 | 1 | no | columns: Line |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 19 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone207/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 708 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone208
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 14,238 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 75,351 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 409 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 36 | 2 | yes | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone208/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 825 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone209
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 15,680 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 9 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 112,048 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 321 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `signs` | HeaderedCsv | 58 | 2 | no | columns: col0, col1 |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone209/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 953 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone210
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,952 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 9 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 28,566 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 171 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone210/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 375 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone211
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 40 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone211/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 76 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone212
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone212/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone213
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 16 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 6 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone213/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 144 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone214
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone214/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone215
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 110 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 9 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone215/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 97 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone216
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 16 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 4 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone216/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 105 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone217
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone217/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 114 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone218
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone218/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 94 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone219
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone219/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 65 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone220
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2,661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 21 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 41,108 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 102 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone220/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 404 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone221
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 40 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone221/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 100 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone222
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 81 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 11 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone222/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 153 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone223
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 72 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 3 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone223/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 74 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone224
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 235 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 13 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone224/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 92 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone225
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone225/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 68 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone226
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone226/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 68 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone227
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 41 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone227/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 121 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone228
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 41 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone228/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 141 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone229
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone229/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 72 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone230
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 589 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 193 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone230/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 126 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone231
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 995 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 498 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone231/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 187 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone232
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 285 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 46 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone232/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone234
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 273 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 1,842 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 49 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone234/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 130 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone235
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 869 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 3,224 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 78 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone235/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 335 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone236
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,168 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 881 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 93 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone236/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 250 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone237
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 516 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 114 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone237/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 165 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone238
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,449 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 628 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 71 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone238/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 224 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone241
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 606 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 93 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone241/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 66 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone242
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 312 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 85 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone242/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone243
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 279 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 87 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone243/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 65 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone244
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 233 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 85 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone244/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone245
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone245/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone246
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone246/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone247
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone247/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone248
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone248/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone249
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 24 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone249/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone260
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2,612 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 14 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 20,724 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 167 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone260/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 298 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone275
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 30 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 10 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone275/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 74 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone276
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone276/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone277
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 27 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone277/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone278
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 13 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 9 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone278/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 77 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone279
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone279/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 84 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone280
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 77 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone280/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 127 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone281
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone281/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 66 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone282
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 30 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 3 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone282/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 123 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone283
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 3 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone283/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 131 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone284
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 31 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone284/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 180 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone285
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone285/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 67 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone286
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone286/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone287
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 28 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone287/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 138 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone288
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone288/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 93 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone289
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 103 | 23 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 15 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone289/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 109 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone290
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 29 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 10 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone290/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 82 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone291
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone291/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 70 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone292
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 21 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone292/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 90 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone294
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 2 | 22 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone294/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 100 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone295
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 677 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 172 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone295/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 186 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone297
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 418 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 14 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 7,414 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 182 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone297/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 290 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone298
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 14,345 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 53,453 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 440 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone298/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 780 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone303
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 56 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 40 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone303/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 652 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone304
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 39 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 231 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 39 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone304/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 646 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone306
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 51 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 225 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 39 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone306/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 646 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone307
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 5 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 36 | 30 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone307/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 646 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone410
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 541 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 88 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone410/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 64 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone411
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 142 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 12 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone411/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 184 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
+
+## zones/zone412
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `fixtures` | HeaderedCsv | 1,141 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
+| `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
+| `grassplacements` | HeaderedCsv | 15,610 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
+| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `nifs` | HeaderedCsv | 106 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
+| `sector` | Binary | 1 | 1 | no | columns: Bytes |
+| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+
+## zones/zone412/textures
+
+| File | Format | Rows | Cols | Key | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `textures` | HeaderedCsv | 268 | 16 | no | 1 header row; columns: patch x, patch y, base texture filename, rotate, u translate, v translate |
 
