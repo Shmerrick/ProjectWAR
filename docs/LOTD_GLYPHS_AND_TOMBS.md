@@ -512,7 +512,7 @@ already supports it — the field is on the wire and has been carrying zero.
 
 ### Where it was switched off
 
-Four places in a row, each one making the next irrelevant:
+Five places in a row, each one making the next irrelevant:
 
 1. **The duration never reached the server.** A `Stats` entry may carry four fields,
    `type:value:0:seconds`, and the fourth is how long the bonus lasts once socketed. 4,882 items use
@@ -520,14 +520,41 @@ Four places in a row, each one making the next irrelevant:
    twelve. `Item_Info`'s parser read `val[0]` and `val[1]` and dropped the rest.
 2. **The timer was never stamped.** `Item.AddTalisman` built every talisman as
    `new Talisman(entry, SlotId, 1, 0)`.
-3. **The wire carried the zero.** `Item.BuildItem` writes `Out.WriteUInt32(talis.Timer)` per stat —
+3. **The item block sent no duration.** `BuildItem` wrote `Out.Fill(0, 5)` after each of an item's
+   own stats, where the first four of those bytes are the duration — so a talisman advertised none
+   even in a bag.
+4. **The socketed block carried the zero.** `Item.BuildItem` writes `Out.WriteUInt32(talis.Timer)` per stat —
    this is the field the client renders the duration from, and it was always 0.
-4. **Nothing swept.** `ItemsInterface.Update` was an empty method.
+5. **Nothing swept.** `ItemsInterface.Update` was an empty method.
 
 And underneath all of it, **305 talismans could not be socketed at all**: `AddTalisman` refuses
 anything whose `Type` is not 23 (`ITEMTYPES_ENHANCEMENT`), and of the 363 items carrying the
 talisman description only 58 had it. 301 were Type 0 and 4 were Type 31 (`ITEMTYPES_POTION`).
 `AddTalisman` returns false with no message, so they simply did nothing.
+
+### The wire field, confirmed from a capture
+
+`INSTANCE_SACELLUM_13-15` carries an un-socketed Resolute Myrmidon's Soul in a bag, and its stat
+block settles the layout:
+
+```
+03 00 2D 00 00 A8 C0 00
+^  ^^^^^ ^^^^^^^^^^^ ^^
+|  |     43200       pad
+|  45 Willpower
+stat 3
+```
+
+43200 is twelve hours — exactly the fourth field of item 2005497's `Stats`. So the five bytes after
+a stat are a uint32 duration and a pad, in the item's **own** stat block as well as the socketed
+one, and `BuildItem` was writing `Out.Fill(0, 5)` there. That is why a talisman showed no duration
+even sitting in a bag, before any question of socketing it.
+
+What is **not** confirmed is the socketed case: no capture in the corpus shows a timed talisman
+actually in a weapon, so whether that field carries the remaining time or the full lifetime is
+inference. Remaining is the only reading that makes a countdown work, and the value comes from
+per-instance state (`talis.Timer`) rather than the item row, which points the same way — but it is
+inference, and it is the first thing an in-client test should check.
 
 ### How it works now
 
