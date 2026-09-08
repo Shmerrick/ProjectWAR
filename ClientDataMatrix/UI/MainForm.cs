@@ -30,6 +30,10 @@ namespace ClientDataMatrix.UI
         private Button _openAbilityFolderButton;
         private TextBox _abilitySummaryTextBox;
         private TreeView _abilityTreeView;
+        private PictureBox _abilityIconBox;
+        private Label _abilityIconLabel;
+        private ClientItemArtService _iconService;
+        private System.Drawing.Bitmap _abilityIcon;
         private TextBox _abilityNarrativeTextBox;
         private DataGridView _definitionGrid;
         private Label _definitionHintLabel;
@@ -139,8 +143,18 @@ namespace ClientDataMatrix.UI
         {
             Text = "ClientDataMatrix";
             StartPosition = FormStartPosition.CenterScreen;
-            MinimumSize = new Size(1360, 860);
-            Size = new Size(1500, 940);
+            // A 1360x860 minimum is larger than the work area on a scaled display, which is how
+            // panes ended up cut off with no way to recover by resizing: the form could not shrink
+            // to fit and its bottom rows fell off the screen. Take the smaller of the intended size
+            // and what the screen actually offers, and open maximised so the proportional rows get
+            // the full height.
+            Rectangle workArea = Screen.PrimaryScreen != null
+                ? Screen.PrimaryScreen.WorkingArea
+                : new Rectangle(0, 0, 1500, 940);
+
+            MinimumSize = new Size(Math.Min(1100, workArea.Width), Math.Min(700, workArea.Height));
+            Size = new Size(Math.Min(1500, workArea.Width), Math.Min(940, workArea.Height));
+            WindowState = FormWindowState.Maximized;
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
 
             TableLayoutPanel shell = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
@@ -268,7 +282,7 @@ namespace ClientDataMatrix.UI
             _abilityGrid.Columns.Add(CreateTextColumn("Name", "Name", 230));
             _abilityGrid.Columns.Add(CreateTextColumn("Effect", "EffectIdText", 80));
             _abilityGrid.Columns.Add(CreateTextColumn("Sources", "Sources", 100));
-            _abilityGrid.SelectionChanged += (sender, args) => { AbilityCatalogEntry selected = SelectedAbility(); if (selected != null) _abilityIdTextBox.Text = selected.AbilityId.ToString(CultureInfo.InvariantCulture); };
+            _abilityGrid.SelectionChanged += (sender, args) => { AbilityCatalogEntry selected = SelectedAbility(); if (selected != null) { _abilityIdTextBox.Text = selected.AbilityId.ToString(CultureInfo.InvariantCulture); ShowAbilityIcon(selected.AbilityId); } };
             _abilityGrid.CellDoubleClick += async (sender, args) => { if (args.RowIndex >= 0) await GenerateAbilityReportAsync(); };
 
             layout.Controls.Add(search, 0, 0);
@@ -283,8 +297,8 @@ namespace ClientDataMatrix.UI
             GroupBox right = new GroupBox { Text = "Ability Report", Dock = DockStyle.Fill, Padding = new Padding(10) };
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 150F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             actions.Controls.Add(new Label { Text = "Ability ID", AutoSize = true, Margin = new Padding(0, 8, 8, 0) });
@@ -299,6 +313,28 @@ namespace ClientDataMatrix.UI
             _openAbilityFolderButton = new Button { Text = "Open Output Folder", AutoSize = true, Enabled = false };
             _openAbilityFolderButton.Click += (sender, args) => OpenPath(string.IsNullOrWhiteSpace(_lastAbilityMarkdownPath) ? null : Path.GetDirectoryName(_lastAbilityMarkdownPath));
             actions.Controls.Add(_openAbilityFolderButton);
+
+            // The ability's own icon, straight from the client. abilities.csv carries an Icon column
+            // that indexes icons.xml directly -- ability 1 "Ard Noggin" is icon 2626 is
+            // abi_squig_ArdNoggin.dds -- so no objects.csv hop, unlike items.
+            _abilityIconBox = new PictureBox
+            {
+                Width = 48,
+                Height = 48,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = SystemColors.ControlDark,
+                Margin = new Padding(20, 0, 6, 0)
+            };
+            actions.Controls.Add(_abilityIconBox);
+            _abilityIconLabel = new Label
+            {
+                AutoSize = true,
+                ForeColor = SystemColors.GrayText,
+                Margin = new Padding(0, 18, 0, 0),
+                Text = "no icon"
+            };
+            actions.Controls.Add(_abilityIconLabel);
 
             _abilitySummaryTextBox = CreateReadOnlyTextBox();
             _abilitySummaryTextBox.Text = "Generate an ability report to populate the tree, the narrative, and decoded field definitions.";
@@ -331,8 +367,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Conflict Ledger");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 130F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateConflictsButton = new Button { Text = "Generate Conflict Report", AutoSize = true, Enabled = false };
@@ -411,8 +447,8 @@ namespace ClientDataMatrix.UI
 
             SplitContainer evidenceSplit = new SplitContainer { Dock = DockStyle.Fill, Orientation = Orientation.Vertical, SplitterDistance = 480 };
             TableLayoutPanel profileLayout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2 };
-            profileLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
-            profileLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            profileLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            profileLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
             profileLayout.Controls.Add(WrapInGroup("Conflict Profile", _conflictInsightTextBox), 0, 0);
             profileLayout.Controls.Add(WrapInGroup("Value Meanings", _conflictValueGrid), 0, 1);
             evidenceSplit.Panel1.Controls.Add(profileLayout);
@@ -434,8 +470,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Unknown Triage");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 145F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateUnknownsButton = new Button { Text = "Generate Operation Schemas", AutoSize = true, Enabled = false };
@@ -485,9 +521,9 @@ namespace ClientDataMatrix.UI
             detailSplit.Panel1.Controls.Add(WrapInGroup("Value Evidence", _unknownValueGrid));
 
             TableLayoutPanel insightLayout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
-            insightLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
-            insightLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 190F));
-            insightLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            insightLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            insightLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 22F));
+            insightLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 48F));
 
             _unknownInsightTextBox = CreateReadOnlyTextBox();
             _unknownInsightTextBox.Text = "Select an unknown or structural field and raw value to inspect its trigger mix, context tags, and dominant companion fields.";
@@ -531,8 +567,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Token Dictionary");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 145F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateTokenDictionaryButton = new Button { Text = "Generate Token Dictionary", AutoSize = true, Enabled = false };
@@ -570,8 +606,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Domains");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 145F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateDomainsButton = new Button { Text = "Generate Domain Ledger", AutoSize = true, Enabled = false };
@@ -625,8 +661,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Requirements");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 145F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateRequirementsButton = new Button { Text = "Generate Requirement Ledger", AutoSize = true, Enabled = false };
@@ -712,8 +748,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Operation Schemas");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 145F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateOperationSchemasButton = new Button { Text = "Generate Operation Schemas", AutoSize = true, Enabled = false };
@@ -783,8 +819,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Coverage");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 130F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateCoverageButton = new Button { Text = "Generate Coverage Report", AutoSize = true, Enabled = false };
@@ -830,8 +866,8 @@ namespace ClientDataMatrix.UI
             TabPage tab = new TabPage("Remaining Work");
             TableLayoutPanel layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 140F));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
 
             FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             _generateRemainingWorkButton = new Button { Text = "Generate Remaining Work", AutoSize = true, Enabled = false };
@@ -2568,6 +2604,56 @@ namespace ClientDataMatrix.UI
                 dialog.SelectedPath = Directory.Exists(target.Text) ? target.Text : Environment.CurrentDirectory;
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                     target.Text = dialog.SelectedPath;
+            }
+        }
+
+        /// <summary>
+        /// Shows the client's icon for an ability. Silent on failure by design -- an ability with no
+        /// icon is ordinary, and a message box for each one would be unusable.
+        /// </summary>
+        private void ShowAbilityIcon(uint abilityId)
+        {
+            if (_abilityIconBox == null)
+                return;
+
+            if (_abilityIcon != null)
+            {
+                _abilityIconBox.Image = null;
+                _abilityIcon.Dispose();
+                _abilityIcon = null;
+            }
+
+            _abilityIconLabel.Text = "no icon";
+
+            try
+            {
+                if (_iconService == null)
+                    _iconService = new ClientItemArtService(_rootPathTextBox.Text);
+
+                ClientAbilityRecord record = _session == null
+                    ? null
+                    : _session.Dataset.ClientAbilities.FirstOrDefault(a => a.AbilityId == abilityId);
+
+                if (record == null || record.IconId <= 0)
+                    return;
+
+                string textureName;
+                string file = _iconService.ResolveIconFile(record.IconId, out textureName);
+                if (file == null)
+                {
+                    _abilityIconLabel.Text = "icon " + record.IconId.ToString(CultureInfo.InvariantCulture)
+                        + (textureName == null ? " not in icons.xml" : " texture missing");
+                    return;
+                }
+
+                string error;
+                _abilityIcon = DdsImage.TryLoad(file, out error);
+                _abilityIconBox.Image = _abilityIcon;
+                _abilityIconLabel.Text = _abilityIcon != null ? textureName : "decode failed";
+            }
+            catch (Exception exception)
+            {
+                _abilityIconLabel.Text = exception.GetType().Name;
             }
         }
 

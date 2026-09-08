@@ -86,6 +86,25 @@ namespace ClientDataMatrix.Services
         public int IconCount { get { return _iconTextures.Count; } }
         public int TextureFileCount { get { return _texturePaths.Count; } }
 
+        /// <summary>
+        /// The texture file for a raw icon id, or null. Abilities need this and items do not:
+        /// `abilities.csv` carries its own `Icon` column that indexes `icons.xml` directly, with no
+        /// objects.csv hop -- ability 1 "Ard Noggin" is icon 2626 is `abi_squig_ArdNoggin.dds`. Only
+        /// items take the long way round, because an item names art and the art names the icon.
+        /// </summary>
+        public string ResolveIconFile(long iconId, out string textureName)
+        {
+            textureName = null;
+            if (iconId <= 0)
+                return null;
+
+            if (!_iconTextures.TryGetValue(iconId, out textureName))
+                return null;
+
+            string path;
+            return _texturePaths.TryGetValue(textureName, out path) ? path : null;
+        }
+
         public ItemArt Resolve(long modelId)
         {
             var art = new ItemArt { ModelId = modelId };

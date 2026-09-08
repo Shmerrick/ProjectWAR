@@ -55,11 +55,10 @@ namespace ClientDataMatrix.UI
         {
             Page = new TabPage("Crosswalk");
 
-            var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 3 };
+            var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 2 };
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 150F));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
             var actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
@@ -133,12 +132,27 @@ namespace ClientDataMatrix.UI
             side.Controls.Add(_icon);
             side.Controls.Add(_iconCaption);
 
+            // Sub-tabs rather than stacking: the summary and the 554-row grid were sharing one
+            // pane and each got half a screen. Tabbed, either one can use the whole height.
+            var sub = new TabControl { Dock = DockStyle.Fill };
+
+            var findingsPage = new TabPage("Findings");
+            var findingsLayout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1 };
+            findingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            findingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            findingsLayout.Controls.Add(_grid, 0, 0);
+            findingsLayout.Controls.Add(side, 1, 0);
+            findingsPage.Controls.Add(findingsLayout);
+            sub.TabPages.Add(findingsPage);
+
+            var summaryPage = new TabPage("Summary");
+            summaryPage.Controls.Add(_summary);
+            sub.TabPages.Add(summaryPage);
+
             layout.Controls.Add(actions, 0, 0);
             layout.SetColumnSpan(actions, 2);
-            layout.Controls.Add(_summary, 0, 1);
-            layout.SetColumnSpan(_summary, 2);
-            layout.Controls.Add(_grid, 0, 2);
-            layout.Controls.Add(side, 1, 2);
+            layout.Controls.Add(sub, 0, 1);
+            layout.SetColumnSpan(sub, 2);
 
             Page.Controls.Add(layout);
         }

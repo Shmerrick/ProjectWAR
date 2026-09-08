@@ -73,10 +73,25 @@ namespace ClientDataMatrix.Services
 
             string fourCc = "" + (char)raw[OffsetFourCc] + (char)raw[OffsetFourCc + 1]
                 + (char)raw[OffsetFourCc + 2] + (char)raw[OffsetFourCc + 3];
-            if (fourCc != "DXT1")
+
+            // DXT1, DXT3 and DXT5 all appear here. An earlier version accepted only DXT1 on the
+            // strength of a census that had sampled the first 400 files alphabetically -- they were
+            // uniformly DXT1, and the interface frames that are not (Square_Frame.dds is DXT5) sort
+            // later. Every ability whose icon was one of those rendered as "decode failed".
+            int blockBytes;
+            switch (fourCc)
             {
-                error = "Unsupported DDS format " + fourCc + " (only DXT1 appears in this client)";
-                return null;
+                case "DXT1": blockBytes = 8; break;
+                case "DXT3":
+                case "DXT5": blockBytes = 16; break;
+                default:
+                    // 33 of the icon textures are uncompressed: no FourCC, pixels laid out flat
+                    // according to the masks in the pixel-format block.
+                    if (fourCc.Trim('\0', ' ').Length == 0)
+                        return TryLoadUncompressed(raw, out error);
+
+                    error = "Unsupported DDS format " + fourCc;
+                    return null;
             }
 
             int height = BitConverter.ToInt32(raw, OffsetHeight);
@@ -89,7 +104,7 @@ namespace ClientDataMatrix.Services
 
             int blocksWide = (width + 3) / 4;
             int blocksHigh = (height + 3) / 4;
-            if (raw.Length < HeaderSize + blocksWide * blocksHigh * 8)
+            if (raw.Length < HeaderSize + blocksWide * blocksHigh * blockBytes)
             {
                 error = "Truncated: file is shorter than its own dimensions require";
                 return null;
@@ -101,11 +116,28 @@ namespace ClientDataMatrix.Services
             {
                 for (int bx = 0; bx < blocksWide; ++bx)
                 {
-                    int offset = HeaderSize + (by * blocksWide + bx) * 8;
-                    DecodeBlock(raw, offset, pixels, bx * 4, by * 4, width, height);
+                    int offset = HeaderSize + (by * blocksWide + bx) * blockBytes;
+
+                    // DXT3 and DXT5 put eight bytes of alpha first, then a colour block laid out
+                    // exactly like DXT1's -- except that it is always in four-colour mode, since
+                    // alpha is carried separately and the c0<=c1 punch-through form is not used.
+                    int colourOffset = blockBytes == 16 ? offset + 8 : offset;
+                    DecodeBlock(raw, colourOffset, pixels, bx * 4, by * 4, width, height,
+                        forceFourColour: blockBytes == 16);
+
+                    if (fourCc == "DXT3")
+                        ApplyDxt3Alpha(raw, offset, pixels, bx * 4, by * 4, width, height);
+                    else if (fourCc == "DXT5")
+                        ApplyDxt5Alpha(raw, offset, pixels, bx * 4, by * 4, width, height);
                 }
             }
 
+            return FromBgra(pixels, width, height);
+        }
+
+        /// <summary>Wraps a BGRA byte array as a bitmap, respecting the stride GDI+ hands back.</summary>
+        private static Bitmap FromBgra(byte[] pixels, int width, int height)
+        {
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             BitmapData locked = bitmap.LockBits(new Rectangle(0, 0, width, height),
                 ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -122,8 +154,129 @@ namespace ClientDataMatrix.Services
             return bitmap;
         }
 
-        private static void DecodeBlock(byte[] raw, int offset, byte[] pixels,
+        /// <summary>
+        /// An uncompressed DDS, read through the channel masks in its own pixel-format block rather
+        /// than assuming BGRA. 33 of the client's icon textures are this shape.
+        /// </summary>
+        private static Bitmap TryLoadUncompressed(byte[] raw, out string error)
+        {
+            error = null;
+
+            int height = BitConverter.ToInt32(raw, OffsetHeight);
+            int width = BitConverter.ToInt32(raw, OffsetWidth);
+            int bitCount = BitConverter.ToInt32(raw, 88);
+            uint redMask = BitConverter.ToUInt32(raw, 92);
+            uint greenMask = BitConverter.ToUInt32(raw, 96);
+            uint blueMask = BitConverter.ToUInt32(raw, 100);
+            uint alphaMask = BitConverter.ToUInt32(raw, 104);
+
+            if (bitCount != 32 && bitCount != 24)
+            {
+                error = "Unsupported uncompressed depth " + bitCount + "bpp";
+                return null;
+            }
+
+            int bytesPerPixel = bitCount / 8;
+            if (raw.Length < HeaderSize + width * height * bytesPerPixel)
+            {
+                error = "Truncated uncompressed DDS";
+                return null;
+            }
+
+            var pixels = new byte[width * height * 4];
+
+            for (int i = 0; i < width * height; ++i)
+            {
+                int source = HeaderSize + i * bytesPerPixel;
+                uint value = (uint)(raw[source] | (raw[source + 1] << 8) | (raw[source + 2] << 16));
+                if (bytesPerPixel == 4)
+                    value |= (uint)raw[source + 3] << 24;
+
+                int target = i * 4;
+                pixels[target] = Extract(value, blueMask);
+                pixels[target + 1] = Extract(value, greenMask);
+                pixels[target + 2] = Extract(value, redMask);
+                pixels[target + 3] = alphaMask == 0 ? (byte)255 : Extract(value, alphaMask);
+            }
+
+            return FromBgra(pixels, width, height);
+        }
+
+        /// <summary>Pulls one channel out through its mask and rescales it to 0-255.</summary>
+        private static byte Extract(uint value, uint mask)
+        {
+            if (mask == 0)
+                return 0;
+
+            uint isolated = value & mask;
+            int shift = 0;
+            while (((mask >> shift) & 1) == 0)
+                ++shift;
+
+            uint scaled = isolated >> shift;
+            uint max = mask >> shift;
+            return max == 0 ? (byte)0 : (byte)(scaled * 255 / max);
+        }
+
+        /// <summary>Sixteen 4-bit alpha values, one per pixel, straight off the block.</summary>
+        private static void ApplyDxt3Alpha(byte[] raw, int offset, byte[] pixels,
             int originX, int originY, int width, int height)
+        {
+            for (int i = 0; i < 16; ++i)
+            {
+                int px = originX + (i % 4);
+                int py = originY + (i / 4);
+                if (px >= width || py >= height)
+                    continue;
+
+                int nibble = (raw[offset + i / 2] >> ((i % 2) * 4)) & 0x0F;
+                pixels[(py * width + px) * 4 + 3] = (byte)(nibble * 17); // 15 -> 255
+            }
+        }
+
+        /// <summary>Two alpha endpoints and sixteen 3-bit indices into a six- or four-step ramp.</summary>
+        private static void ApplyDxt5Alpha(byte[] raw, int offset, byte[] pixels,
+            int originX, int originY, int width, int height)
+        {
+            var alpha = new byte[8];
+            alpha[0] = raw[offset];
+            alpha[1] = raw[offset + 1];
+
+            if (alpha[0] > alpha[1])
+            {
+                for (int i = 1; i < 7; ++i)
+                    alpha[i + 1] = (byte)(((7 - i) * alpha[0] + i * alpha[1]) / 7);
+            }
+            else
+            {
+                for (int i = 1; i < 5; ++i)
+                    alpha[i + 1] = (byte)(((5 - i) * alpha[0] + i * alpha[1]) / 5);
+                alpha[6] = 0;
+                alpha[7] = 255;
+            }
+
+            // Sixteen 3-bit indices packed into six bytes, read as two 24-bit little-endian runs.
+            for (int half = 0; half < 2; ++half)
+            {
+                int bits = raw[offset + 2 + half * 3]
+                    | (raw[offset + 3 + half * 3] << 8)
+                    | (raw[offset + 4 + half * 3] << 16);
+
+                for (int i = 0; i < 8; ++i)
+                {
+                    int index = half * 8 + i;
+                    int px = originX + (index % 4);
+                    int py = originY + (index / 4);
+                    if (px >= width || py >= height)
+                        continue;
+
+                    pixels[(py * width + px) * 4 + 3] = alpha[(bits >> (3 * i)) & 7];
+                }
+            }
+        }
+
+        private static void DecodeBlock(byte[] raw, int offset, byte[] pixels,
+            int originX, int originY, int width, int height, bool forceFourColour = false)
         {
             ushort c0 = (ushort)(raw[offset] | (raw[offset + 1] << 8));
             ushort c1 = (ushort)(raw[offset + 2] | (raw[offset + 3] << 8));
@@ -137,7 +290,7 @@ namespace ClientDataMatrix.Services
             Unpack565(c1, out r[1], out g[1], out b[1]);
             a[0] = a[1] = a[2] = a[3] = 255;
 
-            if (c0 > c1)
+            if (c0 > c1 || forceFourColour)
             {
                 r[2] = (byte)((2 * r[0] + r[1]) / 3);
                 g[2] = (byte)((2 * g[0] + g[1]) / 3);

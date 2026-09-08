@@ -68,7 +68,22 @@ namespace ClientDataMatrix
                 return 0;
             }
 
-            string outputRoot = Path.GetFullPath(toolArguments.OutputRoot ?? Path.Combine("docs", "data-matrix"));
+            // Anchor the default output at the repository root rather than the working directory.
+            // Launched in place from bin/Release -- which is what a double-click does -- a relative
+            // default wrote reports to bin/Release/docs/data-matrix, away from the ones already in
+            // the repo and outside the .gitignore entry that covers them.
+            string outputRoot;
+            if (toolArguments.OutputRoot != null)
+            {
+                outputRoot = Path.GetFullPath(toolArguments.OutputRoot);
+            }
+            else
+            {
+                string repository = WorldDatabaseLocator.FindRepositoryRoot();
+                outputRoot = repository != null
+                    ? Path.Combine(repository, "docs", "data-matrix")
+                    : Path.GetFullPath(Path.Combine("docs", "data-matrix"));
+            }
 
             // Resolve once, for every command. Only the GUI used to do this; find, lookup,
             // export_index and the report passed the raw argument straight through, so each of them
@@ -361,7 +376,8 @@ namespace ClientDataMatrix
             List<string> positionalArguments = new List<string>();
             ToolArguments parsedArguments = new ToolArguments
             {
-                OutputRoot = Path.Combine("docs", "data-matrix"),
+                // Left null so the repository-anchored default above applies; --output still wins.
+                OutputRoot = null,
 
                 // A search across 8,499 files can match thousands of rows. Capped by default so a
                 // careless term prints a screenful rather than a session's worth of scrollback;
