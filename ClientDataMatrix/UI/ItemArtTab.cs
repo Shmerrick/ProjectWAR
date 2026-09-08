@@ -15,9 +15,14 @@ namespace ClientDataMatrix.UI
     /// is: an objects.csv browser. Type a ModelId and see what the client would draw. The crosswalk
     /// report is what maps those back to item entries in bulk.
     ///
-    /// 3D is shown as identification, not geometry. Rendering NIF meshes is a real project and
-    /// WAR-RE-Toolkit already has `mesh-viewer` and `geom2fbx` for it, so duplicating that here
-    /// would be worse than pointing at it.
+    /// 3D is identified, not rendered, and that is not only a scoping preference. WAR-RE-Toolkit
+    /// owns mesh work (`mesh-viewer`, `geom2fbx`, `geom2obj`, `xac2ms`), so world objects with a
+    /// NIF number belong there. Worn armour is a harder case: it resolves through Figleaf, and the
+    /// toolkit's own `RE_FINDINGS/world/figleaf_status.md` records Figleaf as "partially decoded and
+    /// useful; not fully reverse-engineered", with its `FigureParts` table still carrying `Unk1a`,
+    /// `Unk1ba`, `Unk2a` and an integer `Geometry` index rather than a mesh name. So worn-armour
+    /// geometry cannot be shown by any tool in either repo today, and claiming otherwise here would
+    /// mean re-deriving a format the toolkit has already spent real effort on.
     /// </summary>
     internal sealed class ItemArtTab
     {

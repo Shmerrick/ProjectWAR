@@ -9,10 +9,23 @@ namespace ClientDataMatrix.Services
     /// <summary>
     /// Decodes the client's icon textures to a <see cref="Bitmap"/>.
     ///
-    /// WHY HAND-ROLLED. .NET Framework cannot read DDS, and the alternative was adding an imaging
-    /// dependency to a tool whose whole point is reading the client without intermediaries. Every
-    /// one of the 5,253 icon textures is 64x64 DXT1, checked across the set, so exactly one codec is
-    /// needed and it is about sixty lines.
+    /// WHY THIS EXISTS WHEN THE TOOLKIT ALREADY DECODES DXT1. WAR-RE-Toolkit has the block algorithm
+    /// twice -- `apps/diffuse2png/MythicTexture.cs` and `apps/diffuse2png2/DXT1Test` -- and this is a
+    /// deliberate second copy of about forty lines of it, so say why rather than let it look like an
+    /// oversight:
+    ///
+    ///   - Those read a *different file format*. Their `ReadHeader` takes Magic, FileVersion,
+    ///     FileSize, ID, Width, Height, ImageCount and a mipmap table: Mythic's proprietary texture
+    ///     container for world and character art. The interface icons under
+    ///     `eatemplate_icons/textures` are ordinary `DDS ` files with a 128-byte standard header.
+    ///     Only the 4x4 block math is shared; the container parsing is not.
+    ///   - The toolkit builds on .NET 10 and its own solution; this project is .NET Framework 4.8.
+    ///     There is no assembly either repo can reference from the other, so "reuse" would mean
+    ///     copying the same forty lines anyway, with a cross-repo dependency added for nothing.
+    ///
+    /// If the block math ever needs fixing, fix it in all three places. For anything beyond icons --
+    /// world textures, meshes, animations -- use the toolkit; it owns that work and this does not
+    /// try to.
     ///
     /// DXT1 stores each 4x4 block in eight bytes: two RGB565 endpoints then sixteen 2-bit indices.
     /// When the first endpoint is not greater than the second the block is in one-bit-alpha mode,

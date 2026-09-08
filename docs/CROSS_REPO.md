@@ -132,6 +132,31 @@ For 3D, `objects.csv` splits by asset kind: world objects carry a `NIF #`, while
 weapons carry a `Figpart/Nif_ColumnA` name (`DW_Armor_IB_01_Body`) resolved through the Figleaf
 character-art system rather than a standalone `.nif`. The tree holds 3,856 `.nif` files.
 
+### Don't rebuild what the toolkit owns
+
+Art and asset work belongs to WAR-RE-Toolkit. Check there first:
+
+| Need | Existing tool |
+|---|---|
+| World/character textures (Mythic's proprietary container) | `apps/diffuse2png`, `apps/diffuse2png2` |
+| Meshes | `apps/mesh-viewer`, `apps/geom2fbx`, `apps/geom2obj` |
+| Animations | `apps/xac2ms`, `apps/xsm2anim` |
+| Figleaf import into `war_world` | `apps/figleafreader`; dumps in `data/database-tables/Figleaf` |
+| myp extraction / asset hashes | `apps/warmyptool`, `apps/assethashhunter` |
+| Everything above, fronted | `tools/ToolkitControlCenter` |
+
+ProjectWAR keeps exactly one piece of art code, `ClientDataMatrix/Services/DdsImage.cs`, and it is a
+deliberate duplicate of ~40 lines of DXT1 block math that `diffuse2png` also has. The reasons are in
+that file: the toolkit's decoders parse Mythic's proprietary texture container, not the standard
+`DDS ` files the interface icons use, and the toolkit is .NET 10 against this repo's .NET Framework
+4.8, so there is no assembly to reference either way. Anything beyond interface icons should go to
+the toolkit rather than grow that file.
+
+**Worn-armour geometry is not available from any tool in either repo.**
+`RE_FINDINGS/world/figleaf_status.md` records Figleaf as "partially decoded and useful; not fully
+reverse-engineered", and the `FigureParts` table still carries `Unk1a`, `Unk1ba`, `Unk2a` and an
+integer `Geometry` index rather than a mesh name. Identify the asset; do not promise to draw it.
+
 ## Direction of authority
 
 When two sources disagree, this is the order:
