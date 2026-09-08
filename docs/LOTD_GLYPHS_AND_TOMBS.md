@@ -369,6 +369,69 @@ Three things are still missing and need evidence rather than a guess:
 - **The name.** The tracker header reads "Conflict Within the Tomb - Purge (Normal)", not "Purge the
   Tomb of the Stars".
 
+
+### Purge rewards, achievements and the soul talismans
+
+Nearly all of this was already in the database; what was missing was the bindings between the parts.
+
+**Present and correct.** The eight soul talismans are `item_infos` 2005595-2005602 with large-weapon
+twins at 2005663-2005670, carrying the live tooltip text verbatim. The currencies exist — 208408
+Silver Scarab, 208409 Golden Scarab, 208410 Silver Ankh, 208411 Golden Cartouche, 208414 Cluster of
+Golden Scarabs, 208415 Fused Cluster of Golden Cartouches. So do the achievements: `tok_infos` 7514
+"Pyramid Purged 1" carries the exact string from the live unlock banner, *"You have Purged the
+Pyramid"*, with 10 and 20 tiers at 7515/7516, the defender counterparts at 7517-7519, 7500/7501 for
+purging or defending all lairs, 7764 for five purges, and three titles — 10902 Tomb Purger, 10911
+Purge Master, 10912 The Unpurgeable.
+
+**The stat mapping, resolved.** Five come straight from the live reward window; the other three from
+the Stats column of the Massive twins, which were never corrupted:
+
+| Entry | Soul | Stat | |
+| --- | --- | --- | --- |
+| 2005595 | Demon | 1 Strength | from Massive Demon's `1:64` |
+| 2005596 | Indominable | 3 Willpower | on screen |
+| 2005597 | Iron | 4 Toughness | |
+| 2005598 | Conquering | 5 Wounds | |
+| 2005599 | Alacritous | 6 Initiative | on screen |
+| 2005600 | Masterful | 7 Weapon Skill | on screen |
+| 2005601 | Trueshot | 8 Ballistic Skill | on screen |
+| 2005602 | Omnipotent | 9 Intelligence | on screen |
+
+Eight souls for the eight stats WAR actually uses; stat 2 (Agility) is vestigial, which is why there
+is no ninth. **Demon is Strength — stat 1, the first, not the last**, and Conquering is Wounds.
+
+**Repaired (migration 82).** 2005595 was damaged identically in both item tables: name truncated to
+"mon Myrmidon's Soul", empty description, `Bind` 0, `MaxStack` 1, and 771 characters of text-shaped
+garbage in `Stats` (`116:8259;116:28448;...`). Rebuilt from an intact sibling and the Massive twin.
+
+**The vendors.** The Golden Cartouche tooltip names them: *"These may be traded to archeologists
+studying Nehekhara for powerful supplies and equipment."* Both are already spawned in zone 191, one
+per warcamp, each identified by faction and position agreeing:
+
+| Creature | Faction | Warcamp |
+| --- | --- | --- |
+| 93636 Archeologist Bergmann | 65 Order | Goldbarrow |
+| 93656 Archeologist Sveinn Ravensight | 129 Destruction | Da Dusty Dry |
+
+They shared `VendorID` 1 with **213 other creatures**, so their stock could not go there — it would
+have appeared on 215 unrelated vendors worldwide. New lists 453 and 454 hold all sixteen souls each.
+
+**The price is not established.** Nothing in `vendor_items` is priced in any Land of the Dead
+currency, so there was no scale to copy, and no capture or client file fixes it. Migration 82 uses 5
+Golden Scarabs for a normal vessel soul and 10 for a Massive one as placeholders to be replaced.
+
+### Still missing
+
+- **No loot bindings at all.** `pquest_loot` has zero rows for 595-599, and the souls and cartouches
+  are loot for nothing anywhere in the database. The live reward window offers Fused Cluster of
+  Golden Cartouches, Golden Cartouche, all eight souls, and 65 silver coins.
+- **Talisman durations are not implemented.** Every tooltip reads "Duration: 8h", but
+  `Item.cs:226` constructs every applied talisman as `new Talisman(entry, SlotId, 1, 0)` — timer
+  always zero. The `Timer` field is persisted and never populated from item data. This affects every
+  timed talisman in the game, not just these.
+- **`Type` disagrees across the eight rows** (23, 0, 0, 0, 0, 0, 0, 31) and nothing establishes
+  which is right, so migration 82 leaves it alone.
+
 ### What implementing it would take
 
 1. ~~Give the tomb instances a realm and a way to find open enemy copies per zone.~~ **Done** —

@@ -114,6 +114,41 @@ internal static class LotdGlyphChecks
             Equal(0, Scalar("SELECT COUNT(*) FROM lotd_tomb_glyph_costs WHERE TombZoneId = 179"),
                 "cost rows on the Tomb of the Vulture Lord");
 
+            // The eight soul talismans. 2005595 Demon was corrupted -- truncated name, empty
+            // description, a garbage Stats blob -- and both item tables must agree, since the
+            // server reads mythic_src_item_infos (hard rule 1).
+            for (int entry = 2005595; entry <= 2005602; ++entry)
+            {
+                Equal(1, Scalar("SELECT COUNT(*) FROM item_infos a JOIN mythic_src_item_infos b ON b.Entry = a.Entry"
+                    + " WHERE a.Entry = " + entry + " AND a.Name = b.Name AND a.Stats <=> b.Stats"
+                    + " AND a.Bind = b.Bind AND a.Name LIKE '%Myrmidon%Soul' AND a.Name NOT LIKE 'mon %'"),
+                    "soul talisman " + entry + " intact and in sync across both item tables");
+            }
+
+            // Eight souls, eight distinct stats: 1 Strength, 3 Willpower, 4 Toughness, 5 Wounds,
+            // 6 Initiative, 7 Weapon Skill, 8 Ballistic Skill, 9 Intelligence. Stat 2 (Agility) is
+            // vestigial in WAR, which is why there is no ninth soul.
+            Equal(8, Scalar("SELECT COUNT(DISTINCT SUBSTRING_INDEX(Stats, ':', 1)) FROM item_infos"
+                + " WHERE Entry BETWEEN 2005595 AND 2005602"),
+                "distinct stats across the eight soul talismans");
+
+            // The archeologists need their own vendor lists. They shared VendorID 1 with 213 other
+            // creatures, so stocking that would have put Land of the Dead talismans on vendors all
+            // over the world.
+            Equal(453, Scalar("SELECT VendorID FROM creature_protos WHERE Entry = 93636"),
+                "Archeologist Bergmann (Order) vendor list");
+            Equal(454, Scalar("SELECT VendorID FROM creature_protos WHERE Entry = 93656"),
+                "Archeologist Sveinn Ravensight (Destruction) vendor list");
+            Equal(2, Scalar("SELECT COUNT(*) FROM creature_protos WHERE VendorID IN (453, 454)"),
+                "creatures using the archeologist vendor lists");
+            Equal(16, Scalar("SELECT COUNT(*) FROM vendor_items WHERE VendorId = 453"),
+                "items stocked by the Order archeologist");
+            Equal(16, Scalar("SELECT COUNT(*) FROM vendor_items WHERE VendorId = 454"),
+                "items stocked by the Destruction archeologist");
+            Equal(0, Scalar("SELECT COUNT(*) FROM vendor_items WHERE VendorId IN (453, 454)"
+                + " AND ReqItems NOT LIKE '%,208409)'"),
+                "archeologist stock not priced in Golden Scarabs");
+
             // "After dying, you will respawn inside the Land of the Dead if your realm currently
             // controls the dungeon." The holding realm therefore needs a respawn point of its own
             // inside zone 191; without one WorldMgr falls through to the capital-city fallback and
@@ -126,6 +161,7 @@ internal static class LotdGlyphChecks
             Console.WriteLine("PASS: all 20 glyph entries have an awarding public quest, and neither realm awards the other's.");
             Console.WriteLine("PASS: 4 tombs spend all 10 glyphs between them, matching the client zone map; the Vulture Lord is ungated.");
             Console.WriteLine("PASS: both realms have a respawn point inside zone 191, so the expedition holder respawns there.");
+            Console.WriteLine("PASS: 8 soul talismans intact in both item tables, 8 distinct stats, stocked by both archeologists for Golden Scarabs.");
             Console.WriteLine("These are data checks. 42 of the 46 Land of the Dead public quests still have no creatures (BUG-134),");
             Console.WriteLine("so most glyphs cannot be earned in play regardless of what this reports.");
         }
