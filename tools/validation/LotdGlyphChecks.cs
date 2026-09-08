@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using MySql.Data.MySqlClient;
 
-// SELECT-only checks for the Land of the Dead glyph system: that every glyph has a public quest
-// awarding it, that the two realm blocks mirror each other, and that the tomb entry costs match
-// interface/interfacecore/maps/zone191/mappoints.xml.
+// SELECT-only checks for Land of the Dead data: the glyph sources, the tomb entry costs from
+// interface/interfacecore/maps/zone191/mappoints.xml, and the in-zone respawn points that the
+// death rule depends on.
 //
 // Does not verify that a PQ can actually be completed -- 42 of the 46 have no creatures (BUG-134),
 // which is a separate problem this cannot see.
@@ -114,8 +114,18 @@ internal static class LotdGlyphChecks
             Equal(0, Scalar("SELECT COUNT(*) FROM lotd_tomb_glyph_costs WHERE TombZoneId = 179"),
                 "cost rows on the Tomb of the Vulture Lord");
 
+            // "After dying, you will respawn inside the Land of the Dead if your realm currently
+            // controls the dungeon." The holding realm therefore needs a respawn point of its own
+            // inside zone 191; without one WorldMgr falls through to the capital-city fallback and
+            // the winning realm gets sent home too, which looks exactly like the rule misfiring.
+            Equal(1, Scalar("SELECT COUNT(*) FROM zone_respawns WHERE ZoneID = 191 AND Realm = 1"),
+                "Order respawn points inside the Land of the Dead");
+            Equal(1, Scalar("SELECT COUNT(*) FROM zone_respawns WHERE ZoneID = 191 AND Realm = 2"),
+                "Destruction respawn points inside the Land of the Dead");
+
             Console.WriteLine("PASS: all 20 glyph entries have an awarding public quest, and neither realm awards the other's.");
             Console.WriteLine("PASS: 4 tombs spend all 10 glyphs between them, matching the client zone map; the Vulture Lord is ungated.");
+            Console.WriteLine("PASS: both realms have a respawn point inside zone 191, so the expedition holder respawns there.");
             Console.WriteLine("These are data checks. 42 of the 46 Land of the Dead public quests still have no creatures (BUG-134),");
             Console.WriteLine("so most glyphs cannot be earned in play regardless of what this reports.");
         }

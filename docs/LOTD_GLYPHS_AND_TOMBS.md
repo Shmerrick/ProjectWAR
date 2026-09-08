@@ -168,6 +168,34 @@ have been brutal, since a group working the Necropolis banks glyphs for several 
 the first door would have thrown away everything not yet spent. The glyphs are a set of keys and a
 
 door takes only its own.
+
+## Death and respawn
+
+> "After dying, you will respawn inside the Land of the Dead if your realm currently controls the
+> dungeon. Otherwise you will respawn in your capital city."
+
+Implemented in `WorldMgr.GetZoneRespawn`. When the dead player is in zone 191 and
+`LotdService.CanRealmAccessLotd` says their realm does not hold the expedition, they go to
+`GetCapitalCityRespawn` — the Inevitable City for Destruction, Altdorf for Order — instead of a
+graveyard inside the dungeon. Only the holding realm can fly in, so a player of the losing realm
+would otherwise be stranded at a respawn point they have no way to leave or return to.
+
+Three details:
+
+- The check runs **before** the public quest and scenario branches, because it overrides them.
+  Dying to a Necropolis public quest after your realm has lost the expedition still sends you home.
+- A player inside a scenario is excluded. The scenario owns its own respawn; the zone it happens to
+  sit in does not get to override it.
+- The holding realm needs a respawn point of its own inside zone 191 or the capital fallback would
+  swallow them too. Both exist — `zone_respawns` 274 (Destruction, beside Da Dusty Dry) and 275
+  (Order, beside Goldbarrow) — and `Test-LotdGlyphs.ps1` now asserts it, because losing either would
+  present as the rule misfiring for the winners rather than as missing data.
+
+`GetCapitalCityRespawn` was factored out of the old `GetRealmSafeFallback`, which is still the
+last-resort path when a zone cannot supply a respawn at all. The difference is only in intent and
+logging: the fallback warns because it means something is missing, whereas sending the losing realm
+home is correct behaviour and logs at debug.
+
 ## Answering "would importing all the CSVs improve ability mapping?"
 
 No — and for `abilities.csv` specifically it would make things worse. That file is **already**

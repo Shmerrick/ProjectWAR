@@ -111,6 +111,25 @@ namespace WorldServer.Managers
 
         public static SpawnPoint GetZoneRespawn(ushort zoneId, byte realm, Player player)
         {
+            // "After dying, you will respawn inside the Land of the Dead if your realm currently
+            // controls the dungeon. Otherwise you will respawn in your capital city."
+            //
+            // The expedition is held by one realm at a time and only the holder can fly in, so a
+            // player of the losing realm has no way back and no business respawning at a graveyard
+            // inside it. This is checked before the public quest and scenario branches below because
+            // it overrides them: dying to a Necropolis public quest after your realm has lost the
+            // expedition still sends you home. A scenario is excluded -- its own respawn belongs to
+            // the scenario, not to the zone it happens to sit in.
+            if (zoneId == LotdService.LotdZoneId
+                && player != null
+                && player.ScnInterface.Scenario == null
+                && !LotdService.CanRealmAccessLotd((Realms)realm))
+            {
+                SpawnPoint capital = GetCapitalCityRespawn(realm);
+                _logger.Debug($"{player.Name} died in the Land of the Dead without the expedition; respawning at {capital}.");
+                return capital;
+            }
+
             SpawnPoint zoneFallback = ResolveSafeZoneFallback(zoneId, realm);
 
             if (player == null)
@@ -569,24 +588,38 @@ namespace WorldServer.Managers
             return null;
         }
 
-        private static SpawnPoint GetRealmSafeFallback(byte realm, string reason)
+        /// <summary>
+        /// Where a realm's capital city puts a player down: the Inevitable City for Destruction,
+        /// Altdorf for Order.
+        ///
+        /// Used both as the last-resort fallback when a zone cannot supply a respawn, and as a
+        /// deliberate destination in its own right -- dying in the Land of the Dead while your realm
+        /// does not hold the expedition sends you home rather than back into the dungeon.
+        /// </summary>
+        public static SpawnPoint GetCapitalCityRespawn(byte realm)
         {
-            ushort fallbackZoneId = realm == (byte)Realms.REALMS_REALM_DESTRUCTION ? (ushort)161 : (ushort)162;
+            ushort capitalZoneId = realm == (byte)Realms.REALMS_REALM_DESTRUCTION ? (ushort)161 : (ushort)162;
 
-            SpawnPoint fallback = TryGetZoneRespawnFallback(fallbackZoneId, realm);
-            if (fallback == null)
-                fallback = TryGetZoneTaxiFallback(fallbackZoneId, realm);
+            SpawnPoint capital = TryGetZoneRespawnFallback(capitalZoneId, realm);
+            if (capital == null)
+                capital = TryGetZoneTaxiFallback(capitalZoneId, realm);
 
-            if (fallback == null)
-                fallback = TryGetZoneJumpFallback(fallbackZoneId);
+            if (capital == null)
+                capital = TryGetZoneJumpFallback(capitalZoneId);
 
-            if (fallback == null)
+            if (capital == null)
             {
-                fallback = realm == (byte)Realms.REALMS_REALM_DESTRUCTION
+                capital = realm == (byte)Realms.REALMS_REALM_DESTRUCTION
                     ? new SpawnPoint(161, 442630, 127892, 17396)
                     : new SpawnPoint(162, 116235, 147790, 14121);
             }
 
+            return capital;
+        }
+
+        private static SpawnPoint GetRealmSafeFallback(byte realm, string reason)
+        {
+            SpawnPoint fallback = GetCapitalCityRespawn(realm);
             _logger.Warn($"Using realm fallback {fallback} because {reason}");
             return fallback;
         }
