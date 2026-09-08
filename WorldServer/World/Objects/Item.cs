@@ -499,9 +499,27 @@ namespace WorldServer.World.Objects
                     }
                     else
                     {
+                        // The five bytes after a stat are a uint32 and a pad, and the uint32 is how
+                        // long the bonus lasts -- this is where the client's "Duration: 8h" on a
+                        // talisman tooltip comes from. INSTANCE_SACELLUM_13-15 has it plainly, on an
+                        // un-socketed Resolute Myrmidon's Soul sitting in a bag:
+                        //
+                        //   03 00 2D 00 00 A8 C0 00
+                        //   ^  ^^^^^ ^^^^^^^^^^^ ^^
+                        //   |  |     43200       pad
+                        //   |  45 Willpower
+                        //   stat 3
+                        //
+                        // 43200 is twelve hours, which is exactly what item 2005497 carries in the
+                        // fourth field of its Stats. Filling five zeroes here meant no talisman ever
+                        // advertised a duration, socketed or not.
+                        //
+                        // Zero for everything that is not a timed talisman, which is every item but
+                        // 77 of them, so this is byte-identical to the old behaviour elsewhere.
                         Out.WriteByte(Key.Key);
                         Out.WriteUInt16(Key.Value);
-                        Out.Fill(0, 5);
+                        Out.WriteUInt32(info.TalismanDuration);
+                        Out.WriteByte(0);
                     }
                 }
 
