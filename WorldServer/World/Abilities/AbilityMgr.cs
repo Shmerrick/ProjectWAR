@@ -737,6 +737,27 @@ namespace WorldServer.World.Abilities
             return upgradeScalars;
         }
 
+        /// <summary>
+        /// `V3` on an upgrade entry selects WHICH PROPERTY that entry's scalar applies to. It is a
+        /// small enumeration -- 1 dominates at 166 rows, then 2, 3, 5, 4, 22, 8, 13 and a long tail
+        /// -- and 1 is damage.
+        ///
+        /// This used to be ignored, and the cost was not subtle. Of the 135 upgrade bins, only 32
+        /// carry a damage entry at all. For those 32, taking "the first fractional scalar in Index
+        /// order" happened to land on the damage entry every time, so the bug was invisible there.
+        /// The other 103 bins have no damage entry, and the old code still pulled a scalar out of
+        /// them and installed it as the ability's damage level-scaling factor:
+        ///
+        ///     ability 4011   0.005   taken from a V3=3 entry   ->  rank 40 deals 1.20x base, not 7.5x
+        ///     ability 4012   0.0025  taken from a V3=3 entry   ->  rank 40 deals 1.10x base
+        ///     ability 4004   0.2052  taken from a V3=4 entry   ->  rank 40 deals 9.0x base
+        ///
+        /// A duration or radius scalar applied to damage is not a small error; 0.005 is a sixth of
+        /// the intended hit. Where a bin has no damage entry the honest answer is to apply nothing
+        /// and leave the default, which is what happens now.
+        /// </summary>
+        private const int UpgradePropertyDamage = 1;
+
         private static bool TryExtractUpgradeLevelScalar(IList<MythicBinAbilityUpgradeEntryRow> entries, out float levelScalar)
         {
             levelScalar = 0f;
@@ -748,6 +769,10 @@ namespace WorldServer.World.Abilities
             foreach (MythicBinAbilityUpgradeEntryRow entry in entries)
             {
                 if (entry == null)
+                    continue;
+
+                // Only entries that scale damage may set the damage scalar.
+                if (!entry.V3.HasValue || entry.V3.Value != UpgradePropertyDamage)
                     continue;
 
                 float decodedScalar;
