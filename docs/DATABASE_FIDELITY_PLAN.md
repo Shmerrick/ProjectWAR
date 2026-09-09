@@ -96,24 +96,44 @@ the values the client's own tooltips render through `{COM_2_VAL0_SPIRITDAMAGE}` 
 `abilitydesc.txt`. Our `mythic_src_ability_damage_heals` carries `MinDamage`, `MaxDamage`,
 `DamageVariance`, `StatDamageScale` and so on — a *different shape*, populated by persons unknown.
 
-Two things stand between here and a comparison:
+### The COM token is a complete address, and that is the whole unlock
 
-1. **The link table is empty.** `mythic_bin_abilitycomponentlink` has 0 rows, and Londo's
-   `AbilityComponentXComponent` is empty too. Components attach through data embedded in the ability
-   row — ClientDataMatrix already parses this (the GUI reports 18,526 BIN components loaded against
-   11,736 BIN abilities), so the link exists in code but has never been written back to a table.
-2. **Operation semantics are only partly decoded.** Which `Val` slot is damage depends on the
-   component's operation, and that is the unfinished `Operation Schemas` / `Unknown Triage`
-   workstream in the matrix.
+An earlier revision of this document claimed two blockers — an empty link table, and undecoded
+operation semantics needed to work out which `Val` slot holds damage. **Both were wrong**, and the
+correction matters enough to record how it was established.
 
-**Verdict: tractable but real work, and the highest-value gap.** Sequence: export the
-ability→component links the matrix already resolves into a real table; map operation → which Val is
-damage, for the handful of operations that cover most damaging abilities; then compare against
-`mythic_src_ability_damage_heals` and produce a crosswalk exactly like the item one — report first,
-migrate second.
+A token is `[ABIL_<id>_]COM_<componentIndex>_VAL<slot>_<meaning>`. It names the component **by its
+index in that ability's own ordered component list**, the value **by slot**, and the meaning in the
+suffix (`DAMAGE`, `TOD_DAMAGE`, `SPIRITDAMAGE`, `DURA_SECONDS`). No operation table is required to
+find the damage: the ability's own description string says where it is. The optional `ABIL_<id>`
+prefix addresses *another* ability's components — `abilitydesc.txt` row 9 carries
+`{ABIL_3881_COM_0_VAL0_TOD_DAMAGE}`.
 
-Do **not** bulk-overwrite damage from a partially decoded schema. A wrong `Val` slot silently
-rebalances the whole game, and unlike a wrong item name nobody will see it in a tooltip.
+Worked, end to end, on ability 7 "Spine Fling" — *"dealing `{COM_1_VAL0_DAMAGE}` every second for
+`{COM_0_DURA_SECONDS}`"*:
+
+| | |
+|---|---|
+| Ordered components (`abilityexport.bin`, `Components` column) | `3301, 2` |
+| `COM_0` → component 3301 | Duration 3000, Interval 1000 → **"every second for 3 seconds"** |
+| `COM_1` → component 2 | `Values` = `15, 0, 0, 0, 0, 0, 0, 0` → Val0 = **15** |
+| `mythic_src_ability_damage_heals` MinDamage | **15** |
+
+**The trap that makes this look broken.** The ability report's `- Related component IDs:` line is a
+**sorted** set, not the ability's order. For ability 7 it prints `2, 3301`, which makes `COM_0` look
+like component 2 and yields the wrong damage for every token above index 0. The ordered list is the
+`Components` column of the `abilityexport.bin` row — `3301, 2`. Ability 1 happens to agree under
+both readings, so validating on one ability proves nothing; validate on one whose ordered and sorted
+lists differ.
+
+**Verdict: buildable now, and it is the highest-value gap.** Sequence: parse the COM tokens out of
+`abilitydesc.txt`, resolve each against the ability's *ordered* component list, and produce an
+ability crosswalk in the same violation/hole/suspect shape as the item one — every ability whose
+damage, duration, interval or radius disagrees with the client, named, with both numbers side by
+side. Report first, migrate second.
+
+Do **not** bulk-overwrite from the report. A wrong `Val` slot silently rebalances the whole game,
+and unlike a wrong item name nobody will see it in a tooltip.
 
 ## Gap 4 — the 20,590 client abilities with no server row
 
@@ -128,10 +148,10 @@ and is not a data-entry job.
 
 1. **Gap 2's 41 placeholder names** — smallest, tier 2, proves the capture→migration loop again.
 2. **Gap 1's 199 items** — bounded, each one checked against captures before writing.
-3. **Gap 3 step one**: write the ability→component links the matrix already resolves into a table,
-   so the data stops living only inside a GUI session.
-4. **Gap 3 step two**: an ability crosswalk report, same three-way split as the item one
-   (violation / hole / suspect), covering damage, cast time, cooldown and range.
+3. **Gap 3**: parse the COM tokens and build the ability crosswalk. No preliminary decode is needed —
+   the ordered component list is already parsed into the `Components` column of the ability row.
+4. Widen it beyond damage: cast time, cooldown, range, duration, interval and radius are all
+   addressable by the same tokens and the same component rows.
 5. Only then, migrations against what that report shows.
 
 Steps 1 and 2 are days of careful checking. Step 3 onward is the real restoration, and it is where
