@@ -18,7 +18,8 @@ row. So a gap is only closed when a source says what belongs there, in this orde
 |---|---|---|
 | 1 | The 1.4.8 client — `data/bin/*.bin`, `data/gamedata/*.csv`, `data/strings/` | **Arbiter.** Overwrite us. |
 | 2 | The 1,027 live packet captures | **Arbiter** for anything the client does not hold (item names, stats sent on the wire). |
-| 3 | Londo / other emulator dumps | **Corroboration.** Finds candidates; never settles one alone. |
+| 3 | **Londo's dump** — the best-developed contributed layer, per the repository owner, from his connection with the Mythic developers | Strong. Settles a question when no capture covers it; still yields to one that does. See `docs/LONDO_DATA_AUDIT.md`. |
+| 3b | WarEmu / Return of Reckoning layers | Weaker corroboration. |
 | 4 | Our own database | The thing being corrected. |
 
 **Art existing is not evidence that an item existed.** WAR shipped art for cut content, per-career
