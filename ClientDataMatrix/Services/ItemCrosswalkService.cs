@@ -50,23 +50,27 @@ namespace ClientDataMatrix.Services
         /// Soul" -- and quoting either without saying which is how the wrong one ends up in a
         /// migration. The client's word wins the plain label; ours has to announce itself.
         /// </summary>
+        /// These are PROPERTIES, not fields, and must stay that way. WinForms data binding resolves
+        /// `DataPropertyName` through TypeDescriptor, which exposes properties only -- as fields
+        /// these bound to nothing and the crosswalk grid rendered the right number of rows with
+        /// every cell blank, which reads as "no findings" rather than as a binding fault.
         public sealed class Finding
         {
             /// <summary>`item_infos.Entry`. Ours; the client has no item key at all.</summary>
-            public long DatabaseEntry;
+            public long DatabaseEntry { get; set; }
 
             /// <summary>`item_infos.Name`. Ours. No client file holds item display names.</summary>
-            public string DatabaseName;
+            public string DatabaseName { get; set; }
 
             /// <summary>`objects.csv` column `name` — what Mythic calls this art.</summary>
-            public string ClientName;
+            public string ClientName { get; set; }
 
             /// <summary>`item_infos.ModelId`, which addresses `objects.csv` column `ID`.</summary>
-            public long DatabaseModelId;
+            public long DatabaseModelId { get; set; }
 
-            public Severity Severity;
-            public string Kind;
-            public string Detail;
+            public Severity Severity { get; set; }
+            public string Kind { get; set; }
+            public string Detail { get; set; }
         }
 
         public sealed class Report
