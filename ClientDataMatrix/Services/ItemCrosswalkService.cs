@@ -80,6 +80,9 @@ namespace ClientDataMatrix.Services
             public readonly Dictionary<string, int> CountsByKind = new Dictionary<string, int>(StringComparer.Ordinal);
             public string SourceTable;
             public int IconsResolved;
+
+            /// <summary>Generated art items (migration 89) passed over; not fidelity-checked.</summary>
+            public int GeneratedArtItemsSkipped;
         }
 
         private readonly string _connectionString;
@@ -144,9 +147,30 @@ namespace ClientDataMatrix.Services
             return report;
         }
 
+        /// <summary>
+        /// Entries 46481-48601 are the generated art items from migration 89 — manufactured so that
+        /// unused client models can be spawned and worn, and explicitly not restored content.
+        ///
+        /// They are excluded from this report because they would drown it. Their names are art
+        /// names, so 288 start lowercase and trip the lost-prefix heuristic; a further 126 point at
+        /// art whose icon is undeclared or whose texture is absent, which is a fact about the client
+        /// rather than a defect in our data. Left in, they took the finding count from 554 to 942
+        /// without one of them being a real problem.
+        ///
+        /// If that block is ever renumbered, change these two constants with it.
+        /// </summary>
+        private const long GeneratedArtItemsFirst = 46481;
+        private const long GeneratedArtItemsLast = 48601;
+
         private void Examine(Report report, long entry, string name, long modelId,
             HashSet<long> captureVerifiedEntries)
         {
+            if (entry >= GeneratedArtItemsFirst && entry <= GeneratedArtItemsLast)
+            {
+                ++report.GeneratedArtItemsSkipped;
+                return;
+            }
+
             // Resolved once up front so every finding can carry the client's own name for the art
             // alongside our database name, rather than quoting one of the two unlabelled.
             ClientItemArtService.ItemArt art = modelId == 0 ? null : _art.Resolve(modelId);
@@ -273,6 +297,9 @@ namespace ClientDataMatrix.Services
             text.AppendLine("|---|---|");
             text.AppendLine("| Table read | `" + report.SourceTable + "` |");
             text.AppendLine("| Items examined | " + report.ItemsExamined.ToString("N0", CultureInfo.InvariantCulture) + " |");
+            if (report.GeneratedArtItemsSkipped > 0)
+                text.AppendLine("| — of which generated art items, skipped (migration 89) | "
+                    + report.GeneratedArtItemsSkipped.ToString("N0", CultureInfo.InvariantCulture) + " |");
             text.AppendLine("| Icons fully resolved | " + report.IconsResolved.ToString("N0", CultureInfo.InvariantCulture)
                 + " (" + (100.0 * report.IconsResolved / Math.Max(1, report.ItemsExamined)).ToString("F1", CultureInfo.InvariantCulture) + "%) |");
             text.AppendLine("| Findings | " + report.Findings.Count.ToString("N0", CultureInfo.InvariantCulture) + " |");
