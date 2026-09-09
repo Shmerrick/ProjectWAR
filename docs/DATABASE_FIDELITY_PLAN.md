@@ -238,3 +238,27 @@ Three causes worth chasing, in order:
 
 Decode the `Index` semantics first; causes 1 and 2 both dissolve if the 20 entries turn out to be a
 per-level curve. Tracked as BUG-151.
+
+---
+
+## Progress
+
+**Gap 2 (placeholder names) — closed as not actionable.** The 41 `unk*` placeholders and 26
+lowercase-starting names were cross-checked against both remaining sources and neither can resolve
+them: no capture covers any of them (`unk25` was the only one that ever did, fixed in migration 86),
+and Londo carries no differing name for any. They stay as they are, correctly — there is nothing to
+write but invention.
+
+**Gap 1 (missing items) — 95 of 199 written, migration 87.** Of the 199 Londo-named candidates, 99
+are also present in the live packet captures; on those the two sources agree on 99 of 99 ModelIds
+and 97 of 99 names. 95 were inserted after dropping two dev rows (`NPC_SK_Catcher_01**TEST**`,
+`Dagger 1`) and two duplicate ids that the temporary table's primary key caught. Both item tables
+went 88,727 → 88,822, all 95 resolve to an icon, and the crosswalk's finding count is unchanged at
+554 — nothing new was broken.
+
+One mapping was recovered on the way: **Londo's `DPS` column is the combined wire field**, not DPS.
+Armour rows carry a value there with Speed 0, which is the shape our own `Item.BuildItem` writes as
+`info.Dps > 0 ? info.Dps : info.Armor`. Splitting on `Speed > 0` is what stopped a chest piece being
+imported with 1188 DPS.
+
+The remaining 104 have Londo only. Left out deliberately.
