@@ -112,6 +112,7 @@ namespace ClientDataMatrix.UI
         private ItemArtTab _itemArtTab;
         private CrosswalkTab _crosswalkTab;
         private ClientSearchTab _clientSearchTab;
+        private AbilityCrosswalkTab _abilityCrosswalkTab;
 
         private MatrixAnalysisSession _session;
         private DefinitionCatalog _definitions;
@@ -238,6 +239,10 @@ namespace ClientDataMatrix.UI
             _crosswalkTab = new CrosswalkTab();
             _crosswalkTab.Bind(root, output);
             _mainTabs.TabPages.Add(_crosswalkTab.Page);
+
+            _abilityCrosswalkTab = new AbilityCrosswalkTab();
+            _abilityCrosswalkTab.Bind(root, output);
+            _mainTabs.TabPages.Add(_abilityCrosswalkTab.Page);
 
             _clientSearchTab = new ClientSearchTab();
             _clientSearchTab.Bind(root, output);
@@ -1034,6 +1039,8 @@ namespace ClientDataMatrix.UI
                 _crosswalkTab.Bind(_rootPathTextBox.Text, _outputPathTextBox.Text);
             if (_clientSearchTab != null)
                 _clientSearchTab.Bind(_rootPathTextBox.Text, _outputPathTextBox.Text);
+            if (_abilityCrosswalkTab != null)
+                _abilityCrosswalkTab.Bind(_rootPathTextBox.Text, _outputPathTextBox.Text);
 
             try
             {

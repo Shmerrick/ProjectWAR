@@ -43,6 +43,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=9.6.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
       <HintPath>..\packages\MySql.Data.9.6.0\lib\net48\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -84,8 +88,11 @@
     <Compile Include="UI\ItemArtTab.cs" />
     <Compile Include="UI\CrosswalkTab.cs" />
     <Compile Include="UI\ClientSearchTab.cs" />
+    <Compile Include="UI\AbilityCrosswalkTab.cs" />
     <Compile Include="Services\DdsImage.cs" />
     <Compile Include="Services\ItemCrosswalkService.cs" />
+    <Compile Include="Services\AbilityTokenResolver.cs" />
+    <Compile Include="Services\AbilityCrosswalkService.cs" />
     <Compile Include="Services\ClientLinkAnalyzer.cs" />
     <Compile Include="Services\ClientSourceReport.cs" />
     <Compile Include="Services\AbilityGraphBuilder.cs" />

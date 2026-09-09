@@ -146,6 +146,31 @@ namespace ClientDataMatrix
                 return 0;
             }
 
+            if (string.Equals(toolArguments.Command, "crosswalk_abilities", StringComparison.OrdinalIgnoreCase))
+            {
+                ConsoleManager.EnsureConsole();
+
+                string connection = WorldDatabaseLocator.Resolve(toolArguments.ConnectionString);
+                Console.WriteLine("World database: " + WorldDatabaseLocator.DescribeTarget(connection));
+
+                var crosswalk = new AbilityCrosswalkService(connection, extractedRoot);
+                AbilityCrosswalkService.Report report = crosswalk.Run();
+
+                Console.WriteLine("Descriptions " + report.AbilitiesWithDescriptions.ToString("N0", CultureInfo.InvariantCulture)
+                    + "   abilities with components " + report.AbilitiesWithComponents.ToString("N0", CultureInfo.InvariantCulture));
+                Console.WriteLine("LOGIC   damage tokens " + report.DamageTokensSeen.ToString("N0", CultureInfo.InvariantCulture)
+                    + ", resolved " + report.DamageTokensResolved.ToString("N0", CultureInfo.InvariantCulture)
+                    + " (" + report.ResolutionRate.ToString("F2", CultureInfo.InvariantCulture) + "%)");
+                Console.WriteLine("DATA    comparable " + report.ComparableAbilities.ToString("N0", CultureInfo.InvariantCulture)
+                    + ", agree " + report.Agreements.ToString("N0", CultureInfo.InvariantCulture)
+                    + " (" + report.AgreementRate.ToString("F2", CultureInfo.InvariantCulture) + "%), disagree "
+                    + report.Disagreements.ToString("N0", CultureInfo.InvariantCulture));
+
+                string directory = AbilityCrosswalkService.Write(report, outputRoot, 40);
+                Console.WriteLine("Ability crosswalk written to " + directory);
+                return 0;
+            }
+
             // Queries read the client directly and want no ability dataset and no link analysis, so
             // they run before that load and stream tables one at a time.
             if (string.Equals(toolArguments.Command, "find", StringComparison.OrdinalIgnoreCase))
@@ -523,6 +548,14 @@ namespace ClientDataMatrix
                 && string.Equals(positionalArguments[1], "items", StringComparison.OrdinalIgnoreCase))
             {
                 parsedArguments.Command = "crosswalk_items";
+                return parsedArguments;
+            }
+
+            if (positionalArguments.Count >= 2
+                && string.Equals(positionalArguments[0], "crosswalk", StringComparison.OrdinalIgnoreCase)
+                && string.Equals(positionalArguments[1], "abilities", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedArguments.Command = "crosswalk_abilities";
                 return parsedArguments;
             }
 
