@@ -22,7 +22,7 @@ namespace WorldServer.Managers.Commands
 
             if (tasks.Count == 0)
             {
-                SendCsr(plr, "No ward task counters are loaded. Apply Database/25_ward_fragment_task_counters.sql and restart.");
+                SendCsr(plr, "No ward task counters are loaded. The ward_task_counters table is empty; re-import the world database from Database/war_world.7z and restart.");
                 return;
             }
 

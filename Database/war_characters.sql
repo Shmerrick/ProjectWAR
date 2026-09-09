@@ -1,21 +1,27 @@
-CREATE DATABASE  IF NOT EXISTS `war_characters` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `war_characters`;
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
--- Host: localhost    Database: war_characters
+-- Host: 127.0.0.1    Database: war_characters
 -- ------------------------------------------------------
 -- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `war_characters`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `war_characters` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+USE `war_characters`;
 
 --
 -- Table structure for table `auctions`
@@ -342,7 +348,8 @@ CREATE TABLE `characters` (
   `HonorPoints` smallint unsigned NOT NULL,
   `HonorRank` smallint unsigned NOT NULL,
   PRIMARY KEY (`CharacterId`),
-  UNIQUE KEY `Name` (`Name`)
+  UNIQUE KEY `Name` (`Name`),
+  KEY `idx_characters_accountid` (`AccountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -375,7 +382,8 @@ CREATE TABLE `characters_items` (
   `BoundtoPlayer` tinyint unsigned NOT NULL,
   `Alternate_AppereanceEntry` int unsigned NOT NULL,
   `characters_items_ID` varchar(255) NOT NULL,
-  PRIMARY KEY (`characters_items_ID`)
+  PRIMARY KEY (`characters_items_ID`),
+  KEY `idx_characters_items_characterid` (`CharacterId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -410,7 +418,8 @@ CREATE TABLE `characters_mails` (
   `Cr` tinyint unsigned NOT NULL,
   `Opened` tinyint unsigned NOT NULL,
   `ItemsString` text NOT NULL,
-  PRIMARY KEY (`Guid`)
+  PRIMARY KEY (`Guid`),
+  KEY `idx_characters_mails_characterid` (`CharacterId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -826,7 +835,8 @@ CREATE TABLE `guild_members` (
   `RenownContributed` bigint unsigned NOT NULL,
   `Tithe` tinyint unsigned NOT NULL,
   `TitheContributed` bigint unsigned NOT NULL,
-  PRIMARY KEY (`CharacterId`)
+  PRIMARY KEY (`CharacterId`),
+  KEY `idx_guild_members_guildid` (`GuildId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -956,4 +966,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-28 18:28:52
+-- Dump completed on 2026-09-09 13:52:40

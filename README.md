@@ -115,75 +115,12 @@ mysql -u root -p war_characters -e "source Database/war_characters.sql"
 mysql -u root -p war_world -e "source Database/war_world.sql"
 ```
 
-Then apply the incremental update scripts, **in numerical order**. The base dumps are never edited, so every schema and data change since they were captured lives in these files. Skipping them leaves the server running against an out-of-date schema.
+That is the whole database setup. There are no incremental update scripts to apply: the
+numbered `NN_*.sql` series that used to follow this step has been folded into the dumps above,
+so a fresh import already carries every schema and data change made since the original capture.
 
-```powershell
-# Each script selects its own database, so no database argument is needed.
-Get-ChildItem Database\*.sql |
-    Where-Object { $_.Name -match '^\d+_' } |
-    Sort-Object Name |
-    ForEach-Object {
-        Write-Host "applying $($_.Name)"
-        mysql -u root -p -e "source Database/$($_.Name)"
-        if ($LASTEXITCODE -ne 0) { throw "Migration failed: $($_.Name)" }
-    }
-```
-
-Current scripts, oldest first:
-
-| Script | What it does |
-|--------|--------------|
-| `01_add_tokunlock3.sql` | Adds `item_infos.TokUnlock3`, needed for the third Tome unlock on equip |
-| `02_restore_mailboxes.sql` | Restores the mailbox gameobject prototypes |
-| `03_add_hot_path_indexes.sql` | Indexes the per-login character lookups; without it every login full-scans `characters_items` |
-| `04_restore_guild_keep_claim_flags.sql` | Restores 21 packet-verified guild keep-claim flags; three keeps remain disabled pending authoritative coordinates |
-| `05_restore_invader_superior_ward_unlocks.sql` | Restores the five client-defined Superior Ward unlocks across all 24 Invader armor sets |
-| `06_remove_invalid_creature_ability_header.sql` | Removes a CSV header accidentally imported as an unusable creature ability row |
-| `07_restore_known_creature_ward_tiers.sql` | Historical prototype-level ward restoration; superseded by `08` because prototypes are reused across locations |
-| `08_move_creature_wards_to_spawns.sql` | Adds ward fields to concrete world, instance, boss, and PQ spawns and reverses the unsafe prototype assignments from `07` |
-| `09_normalize_spawn_ward_columns.sql` | Normalizes pre-existing ward columns to validated unsigned, non-null, default-zero fields |
-| `10_restore_ruinous_powers_tombstones.sql` | Restores the 25 capture-verified Perished Soul objects and their three-second interactions for Ruinous Powers stage II |
-| `11_restore_ruinous_powers_finale.sql` | Restores Mathus's timed ritual movement and the capture-verified Bloodhowler finale as separate phases |
-| `12_restore_norsca_chapter_state.sql` | Corrects Chaos Chapter 2 influence, restores Ruinous Powers scenery/ToK objects, and moves its reward chest to the official position |
-| `13_restore_mailbox_spawns.sql` | Restores 190 historical Order and Destruction mailbox spawns across 32 zones |
-| `14_fix_bilerot_burrow_entrance.sql` | Restores Bilerot Burrow as an instanced jump at the capture-verified entrance and assigns Greater Ward to its concrete spawns |
-| `15_restore_shared_bastion_stair.sql` | Restores Bastion Stair's base map as a shared PvE zone while leaving its four boss maps instanced |
-| `16_remove_orphaned_bilerot_spawn.sql` | Removes the sole Bilerot instance spawn whose prototype is missing and whose position is absent from official captures |
-| `17_restore_bilerot_death_respawn.sql` | Routes Destruction death releases from Bilerot Burrow back to the Inevitable City respawn |
-| `18_restore_endgame_dungeon_ward_tiers.sql` | Corrects the Destruction city dungeons to Lesser Ward and assigns Greater Ward to The Lost Vale |
-| `19_restore_help_tips.sql` | Restores 59 beginner help tips and the trigger table behind them, so Tome unlocks stop popping empty tip windows |
-| `20_restore_ward_fragment_equip_tasks.sql` | Sets `TokUnlock3` to the fragment task entry across all ten ward armour sets (1,377 items) and restores ten empty section 5 placeholder rows |
-| `21_sync_ward_fragment_tasks_to_mythic_items.sql` | Copies those ward tasks into `mythic_src_item_infos`, the table the server actually loads items from under the shipped `UseMythicActionCoverageTables = true`. Without it scripts `01`, `05` and `20` are invisible to the running server |
-| `23_fix_dungeon_influence_ids.sql` | Historical erroneous change: confused chapter row IDs with influence track IDs. Superseded by `32`; apply the complete series |
-| `24_bastion_stair_realm_instance.sql` | Makes Bastion Stair realm-instanced like Mount Gunbad (entry jumps to `Type 4` / `InstanceID 160`), superseding script `15`'s shared-zone premise, and removes 195 `instance_creature_spawns` rows that exactly duplicate world spawns and would otherwise spawn twice |
-| `25_ward_fragment_task_counters.sql` | Creates `ward_fragment_tasks` and seeds all 32 ward task counter bindings from the client's `fragment_tasks.csv` — the only source for each counter id and its completion threshold |
-| `26_ward_task_creatures.sql` | Creates `ward_task_creatures` and maps the boss-kill counters to the ten creatures their task names resolve to; six names with no matching prototype are deliberately left unmapped |
-| `27_fix_comma_split_ward_tasks.sql` | Repairs `tok_infos` 7708, 7713 and 7714, whose names contain a comma that a CSV import split on, shifting every following column. They are the three ward counters that could not bind |
-| `28_remove_duplicate_boss_spawns.sql` | Removes duplicated `instance_boss_spawns` rows that spawned every Bastion Stair and Mount Gunbad boss twice on the same spot |
-| `29_fix_boss_map_influence_ids.sql` | Extends script `23` to the four Bastion boss maps, which still named two unrelated Nordland chapters |
-| `30_boss_maps_award_no_influence.sql` | Corrects `29`: video of the live dungeon shows the instanced boss fights award **no** influence, so their ids are zeroed. The dungeon proper keeps `6`/`2` |
-| `31_bastion_stair_zone_type_and_portals.sql` | Sets zone 160 to `Type 4` so in-dungeon portals stop ejecting players from their realm instance, and returns the 15 internal wing portals to `Type 0` — script `24` had made all 18 jumps `Type 4`, so every wing portal opened a new instance |
-| `32_restore_client_dungeon_influence_tracks.sql` | Corrects `23`: restores the exact Order/Destruction tracks in client `maps/zone160/influenceids.csv` (129/128) and `maps/zone060/influenceids.csv` (64/65), plus PQ fallback IDs; lookup uses `chapter_infos.InfluenceEntry` |
-| `33_restore_verified_area_influence_tracks.sql` | Repairs seven populated area bindings from exact client `maps/zone011`, `zone101`, `zone107`, `zone120` and `zone209` `influenceids.csv` rows; each statement cites its source line |
-| `34_restore_holmsteinn_supply_prototype.sql` | Restores the missing model-10 supply prototype used by 43 existing Holmsteinn Revisited placements, from official `PQ_T1CHAOS_EASY_holmsteinn revisited_CH2` static-object packets |
-| `35_restore_bastion_kaarn_and_path_chest.sql` | Restores Kaarn's scale and Path of Fury's chest position from `bastion_stairs.txt.gz` packets 71889 and 46264, with atlas initialization 18276 |
-| `51_archive_deleted_bastion_creature_placements.sql` | After the intervening numbered updates, preserves the 24 disabled creature_spawns records deleted by migration 46 in an archive, verbatim from the untouched base dump; adds no live spawns and reports affected empty PQ objectives |
-| `52_restore_peaceful_city_influence_semantics.sql` | Corrects 42 peaceful-capital area bindings to no influence, as explicitly defined by the stock client's alerttextwindow.lua:528-533 and publicquesttrackerwindow.lua:819-823 |
-| `53_archive_invalid_nonretail_taxi_rows.sql` | Archives the five BUG-010 taxi rows whose destination falls outside its own zone into `zone_taxis_unresolved`, so a later repair keeps the original coordinates; changes no live routing |
-
-For the WorldServer diagnostic repairs, apply migrations 52 and 53 before starting
-the updated build, then run `tools/validation/Test-WorldDiagnosticData.ps1`. Both
-scripts are re-runnable and have been applied and verified on the local Release
-database. See
-the [diagnostic handoff](docs/handoffs/2026-09-06-worldserver-diagnostics.md) for
-client/capture evidence and the verified startup with zero errors and warnings.
-
-For the September 6 review fixes, apply migration 51 before starting the updated server,
-then run `tools/validation/Test-ArchiveRecovery.ps1`. It has already been applied twice and
-verified on the local Release database. See the [review-fix handoff](docs/handoffs/2026-09-06-review-fixes.md)
-for PQ credit, Gunbad lockout corrections and remaining client retests.
-
-Every script selects its own database and is safe to re-run: `01` and `03` skip existing work, `02` uses `REPLACE INTO`, `04` upserts its objective rows while preserving existing nonzero keep mappings, `05` fills only missing Invader ward mappings, `06` deletes only the exact malformed header signature, `07` fills only empty legacy prototype bits, `08` adds ward fields to concrete spawns before reversing the 79 rows changed by `07`, `09` enforces the final ward-column definition, `10` replaces only the spawn rows belonging to Ruinous Powers objective 800, `11` upserts only the two capture-backed finale phases and their spawns, `12` upserts only the three capture-backed Norsca objects while correcting the associated chapter and chest rows, `13` replaces only the 190 historical mailbox GUIDs while preserving unrelated custom spawns, `14` enforces the Bilerot jump and records its original ward assignment, `15` changes only Bastion Stair's base-map routing plus the 195 exact spawn matches already present in its instance data, `16` deletes only the exact orphaned Bilerot spawn signature, `17` copies the canonical Inevitable City destination into the existing Destruction Bilerot respawn row, `18` idempotently establishes the final Lesser/Greater requirements for zones `195`, `196`, and `260`, `19` replaces only its own 59 help-tip rows, and `20` keys on `TokUnlock2` plus `SlotId` rather than item names and upserts only the ten placeholder section 5 rows.
+The next database change starts a new series at `00_`. Until one exists, `Database/` holds only
+the three base dumps.
 
 Checkpoint: all three databases exist and contain tables.
 
@@ -364,7 +301,7 @@ explaining a change.
 **CRITICAL RULE FOR ALL CONTRIBUTORS AND AI AGENTS:**
 
 1. **NEVER modify** the base `.sql` files located in the `Database/` folder (`war_accounts.sql`, `war_characters.sql`, `war_world.sql`). These are meant for the initial setup by end-users.
-2. If a source code change requires a database schema or data modification, you **MUST create a new update script**, named `NN_short_description.sql` with the next free number in the series (the table above lists the current scripts). Each script selects its own database and must be safe to re-run.
+2. If a source code change requires a database schema or data modification, you **MUST create a new update script**, named `NN_short_description.sql` with the next free number in the series. The previous series was folded into the base dumps, so `Database/` currently holds no numbered scripts and the next one is `00_`. Each script must select its own database with a `USE` statement and be safe to re-run.
 3. These update scripts should be provided alongside the code changes, and end-users must be prompted to apply them to their database prior to loading the emulator for the server to run correctly.
 4. Apply the script to your own local Release database and verify the resulting schema and data before handing the work off. A clean compile is not verification of database-backed behavior (`AGENTS.md` rule 6).
 5. Note that the ORM auto-provisions unknown tables (`ObjectDatabase.CheckOrCreateTable` issues `CREATE TABLE IF NOT EXISTS` on registration), so a brand-new `DataObject` entity works without a script. Write one when **existing rows** need changing.

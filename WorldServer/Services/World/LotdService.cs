@@ -104,7 +104,7 @@ namespace WorldServer.Services.World
                 _tracker = null;
                 Exception root = ex.InnerException ?? ex;
                 Log.Error("LotdService",
-                    $"Failed to load Land of the Dead resource tracker. Apply Database/update_005_lotd_resource_tracker.sql and, if the table already exists, Database/update_006_lotd_resource_tracker_schema_fix.sql. {root.Message}");
+                    $"Failed to load Land of the Dead resource tracker. The ORM provisions this table on registration, so a failure here is a schema or connection fault, not a missing migration. {root.Message}");
             }
         }
 
@@ -217,7 +217,7 @@ namespace WorldServer.Services.World
         public static string GetStatusSummary()
         {
             if (_tracker == null)
-                return "Land of the Dead tracker is not loaded, so neither realm can reach it. Apply Database/update_005_lotd_resource_tracker.sql.";
+                return "Land of the Dead tracker is not loaded, so neither realm can reach it. Check the LotdService startup log for the load failure.";
 
             string race = (LotdTrackerState)_tracker.State == LotdTrackerState.Paused
                 ? "race paused " + GetRemainingOpenMinutes() + "/" + _tracker.UnlockDurationMinutes + " min"

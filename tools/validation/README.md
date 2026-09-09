@@ -130,7 +130,7 @@ targets, multiple contributors to one quest, independent realm quests, unmatched
 quests, zero damage and exclusion of PQ-owned creatures. Lockout fixtures now use Gunbad
 boss-map destinations 63-66 with shared InstanceID 60, matching the Release zone_jumps rows.
 
-After applying `Database/51_archive_deleted_bastion_creature_placements.sql`, run:
+Against a current world database, run:
 
 ```powershell
 ./tools/validation/Test-ArchiveRecovery.ps1
@@ -143,7 +143,7 @@ objective, an affected populated objective and an unrelated empty objective. The
 source is the untouched `Database/war_world.7z` creature_spawns records, reproduced in migration
 51; these are preserved emulator data, not newly established retail placements.
 
-After applying `Database/76_realign_mythic_src_ability_identity.sql`, run:
+Against a current world database, run:
 
 ```powershell
 ./tools/validation/Test-AbilityAlignment.ps1
@@ -165,8 +165,8 @@ asserts the agreement counts both migrations left (6,012 names, 8,349 `mythic_sr
 in `abilities`) plus a tripwire on the count of `EffectID` values still matching
 `mythic_csv_abilities.AbilityId` — the join key that caused the corruption in the first place.
 
-After applying `Database/78_restore_order_lotd_pq_objectives.sql`, `79_lotd_tomb_glyph_costs.sql`
-and `80_lotd_tomb_glyph_costs_data.sql`, run:
+Against a current world database, run:
+
 
 ```powershell
 ./tools/validation/Test-LotdGlyphs.ps1

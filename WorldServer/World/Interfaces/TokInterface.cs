@@ -460,46 +460,9 @@ namespace WorldServer.World.Interfaces
                                 count--;
                             }
                         }
-                        // If we have all required unlocks count = 0 and we can proceed 
+                        // If we have all required unlocks count = 0 and we can proceed
                         if (count == 0)
-                        {
-                            // Tok is send to player
-                            SendTok((ushort)tokItemUnlock2.TokUnlock2, true);
-
-                            Character_tok Tok2 = new Character_tok
-                            {
-                                TokEntry = (ushort)tokItemUnlock2.TokUnlock2,
-                                CharacterId = GetPlayer().CharacterId,
-                                Count = 1
-                            };
-
-                            Tok_Info InfoSetTok = TokService.GetTok((ushort)tokItemUnlock2.TokUnlock2);
-
-                            // ToK is added to the book
-                            _tokUnlocks.Add((ushort)tokItemUnlock2.TokUnlock2, Tok2);
-                            TrackWardFragment((ushort)tokItemUnlock2.TokUnlock2);
-                            GetPlayer().AddXp(InfoSetTok.Xp, false, false);
-
-                            // Adding reward from final ToK - Title
-                            SendTok((ushort)InfoSetTok.Rewards, true);
-
-                            Character_tok Tok2Title = new Character_tok
-                            {
-                                TokEntry = (ushort)InfoSetTok.Rewards,
-                                CharacterId = GetPlayer().CharacterId,
-                                Count = 1
-                            };
-
-                            Tok_Info TokInfoTitle = TokService.GetTok((ushort)InfoSetTok.Rewards);
-
-                            _tokUnlocks.Add((ushort)InfoSetTok.Rewards, Tok2Title);
-                            TrackWardFragment((ushort)InfoSetTok.Rewards);
-                            GetPlayer().AddXp(TokInfoTitle.Xp, false, false);
-
-                            //ToKs saved in DB :)
-                            CharMgr.Database.AddObject(Tok2);
-                            CharMgr.Database.AddObject(Tok2Title);
-                        }
+                            GrantSetCompletion(tokItemUnlock2.TokUnlock2);
                     }
                 }
             }
@@ -1159,60 +1122,85 @@ namespace WorldServer.World.Interfaces
 
                     int count = currentSet.Count();
 
-                    foreach (Item_Info itm in currentSet)
+                    foreach (Item_Info setItem in currentSet)
                     {
-                        if (count > 0)
-                        {
-                            foreach (Item_Info setItem in currentSet)
-                            {
-                                if (HasTok(setItem.TokUnlock))
-                                    count--;
-                            }
-                        }
-
-                        if (count == 0 && !HasTok(itm.TokUnlock2))
-                        {
-                            // Tok is send to player
-                            SendTok((ushort)item.TokUnlock2, true);
-
-                            Character_tok Tok2 = new Character_tok
-                            {
-                                TokEntry = (ushort)item.TokUnlock2,
-                                CharacterId = GetPlayer().CharacterId,
-                                Count = 1
-                            };
-
-                            Tok_Info InfoSetTok = TokService.GetTok((ushort)item.TokUnlock2);
-
-                            // ToK is added to the book
-                            _tokUnlocks.Add((ushort)item.TokUnlock2, Tok2);
-                            TrackWardFragment((ushort)item.TokUnlock2);
-                            GetPlayer().AddXp(InfoSetTok.Xp, false, false);
-
-                            // Adding reward from final ToK - Title
-                            SendTok((ushort)InfoSetTok.Rewards, true);
-
-                            Character_tok Tok2Title = new Character_tok
-                            {
-                                TokEntry = (ushort)InfoSetTok.Rewards,
-                                CharacterId = GetPlayer().CharacterId,
-                                Count = 1
-                            };
-
-                            Tok_Info TokInfoTitle = TokService.GetTok((ushort)InfoSetTok.Rewards);
-
-                            _tokUnlocks.Add((ushort)InfoSetTok.Rewards, Tok2Title);
-                            TrackWardFragment((ushort)InfoSetTok.Rewards);
-                            GetPlayer().AddXp(TokInfoTitle.Xp, false, false);
-
-                            // ToKs saved in DB :)
-                            CharMgr.Database.AddObject(Tok2);
-                            CharMgr.Database.AddObject(Tok2Title);
-                        }
-                        
+                        if (HasTok(setItem.TokUnlock))
+                            count--;
                     }
+
+                    if (count == 0)
+                        GrantSetCompletion(item.TokUnlock2);
                 }
             }
+        }
+
+        /// <summary>
+        /// Awards a set-completion unlock and the title it carries, for a character who has
+        /// just been found to hold every piece of an armour set.
+        /// </summary>
+        /// <remarks>
+        /// Both halves are optional and each is skipped on its own. tok_infos.Rewards names
+        /// the title, and it is 0 for a set whose title mapping was never filled in -- two of
+        /// the twenty-one sets, Doomflayer and Warpforged, were in that state. TokService.GetTok(0)
+        /// returns null, and dereferencing it aborted Player.OnLoad before RenInterface.Load,
+        /// so every later SendRenown then failed too and the character could not enter the
+        /// world at all. See BUG-155.
+        /// </remarks>
+        private void GrantSetCompletion(ushort setTokEntry)
+        {
+            if (setTokEntry == 0 || HasTok(setTokEntry))
+                return;
+
+            Tok_Info setInfo = TokService.GetTok(setTokEntry);
+
+            if (setInfo == null)
+            {
+                Log.Error("TokInterface", "Set completion unlock " + setTokEntry + " has no tok_infos row; not awarded to " + _Owner.Name + ".");
+                return;
+            }
+
+            SendTok(setTokEntry, true);
+
+            Character_tok setTok = new Character_tok
+            {
+                TokEntry = setTokEntry,
+                CharacterId = GetPlayer().CharacterId,
+                Count = 1
+            };
+
+            _tokUnlocks.Add(setTokEntry, setTok);
+            TrackWardFragment(setTokEntry);
+            GetPlayer().AddXp(setInfo.Xp, false, false);
+            CharMgr.Database.AddObject(setTok);
+
+            // The title the set carries. A set with no title mapping still awards the set
+            // unlock above; only the title is skipped.
+            ushort titleEntry = (ushort)setInfo.Rewards;
+
+            if (titleEntry == 0 || HasTok(titleEntry))
+                return;
+
+            Tok_Info titleInfo = TokService.GetTok(titleEntry);
+
+            if (titleInfo == null)
+            {
+                Log.Error("TokInterface", "Set completion unlock " + setTokEntry + " names title " + titleEntry + ", which has no tok_infos row; title not awarded to " + _Owner.Name + ".");
+                return;
+            }
+
+            SendTok(titleEntry, true);
+
+            Character_tok titleTok = new Character_tok
+            {
+                TokEntry = titleEntry,
+                CharacterId = GetPlayer().CharacterId,
+                Count = 1
+            };
+
+            _tokUnlocks.Add(titleEntry, titleTok);
+            TrackWardFragment(titleEntry);
+            GetPlayer().AddXp(titleInfo.Xp, false, false);
+            CharMgr.Database.AddObject(titleTok);
         }
 
         private void TrackWardFragment(ushort tokEntry)

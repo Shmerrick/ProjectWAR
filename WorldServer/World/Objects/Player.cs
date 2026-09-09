@@ -4287,7 +4287,7 @@ namespace WorldServer.World.Objects
                     BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, controlBuff));
                 else
                     Log.Error("SkavenForm", "Control ability " + control + " has no buff info; the "
-                        + "action bar will not swap. Apply Database/75_skaven_control_ability_buffs.sql.");
+                        + "action bar will not swap. The buff_infos row for it is missing; re-import the world database from Database/war_world.7z.");
             }
 
             SendClientMessage("You take control of a " + definition.MenuText.Replace("Control a ", "") + ".",

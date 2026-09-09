@@ -95,7 +95,7 @@ internal static class ThanquolEncounterChecks
 
             PQuest_Info info = Read<PQuest_Info>(connection,
                 "SELECT * FROM pquest_info WHERE Entry=" + PQuestEntry).SingleOrDefault();
-            if (info == null) throw new InvalidOperationException("Public quest 911 is missing. Apply Database/68_thanquols_incursion_encounter.sql.");
+            if (info == null) throw new InvalidOperationException("Public quest 911 is missing from the world database.");
             Expect(info.Name, "Thanquol's Incursion", "pquest_info.Name");
             Expect(info.ZoneId, ZoneId, "pquest_info.ZoneId");
             // PQDifficult 0 is what serialises the difficulty byte the captures carry (0xFF).
@@ -178,7 +178,7 @@ internal static class ThanquolEncounterChecks
             long goldRows = (long)new MySqlCommand(
                 "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND Bag=5 AND PQType=2", connection).ExecuteScalar();
             if (goldRows == 0)
-                throw new InvalidOperationException("No gold-bag loot for public quest 911. Apply Database/70_thanquol_gold_bag_rewards.sql.");
+                throw new InvalidOperationException("No gold-bag loot for public quest 911 in the world database.");
 
             long wrongBag = (long)new MySqlCommand(
                 "SELECT COUNT(*) FROM pquest_loot WHERE PQEntry=911 AND (Bag<>5 OR PQType<>2 OR PQTier<>4)", connection).ExecuteScalar();
