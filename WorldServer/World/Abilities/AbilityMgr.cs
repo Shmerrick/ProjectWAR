@@ -738,9 +738,33 @@ namespace WorldServer.World.Abilities
         }
 
         /// <summary>
-        /// `V3` on an upgrade entry selects WHICH PROPERTY that entry's scalar applies to. It is a
-        /// small enumeration -- 1 dominates at 166 rows, then 2, 3, 5, 4, 22, 8, 13 and a long tail
-        /// -- and 1 is damage.
+        /// `V3` on an upgrade entry is believed to select WHICH PROPERTY that entry's scalar applies
+        /// to. **This is an inference, not a decoded fact, and the name `V3` is a placeholder.**
+        /// Say plainly what is known and what is not, because a wrong guess here changes damage:
+        ///
+        /// KNOWN, from the client's own constructor (`world::AbilityUpgradeTable`, Ghidra
+        /// FUN_009266db, and the `UpgradeTableExport.bin` loader at FUN_0054e313):
+        ///   - a record is 0x150 = 336 bytes: 20 items of 16 bytes, plus a uint16 id at +0x144
+        ///   - each 16-byte item is three 32-bit fields followed by four single bytes
+        ///   - so our columns pair up: V1+V2 is field 0, V3+V4 is field 1, V5+V6 is field 2,
+        ///     V7+V8 are the trailing bytes. The importer read eight uint16s and numbered them,
+        ///     which is why field 0 looks like two columns that "happen" to form a float.
+        ///
+        /// KNOWN, from the data: field 0 really is a 32-bit float. 0/16256 decodes to exactly 1.0
+        /// and 0/16384 to exactly 2.0; random bytes do not land on those.
+        ///
+        /// INFERRED, and weakly: that field 1 selects a property and that 1 means damage. The
+        /// support is that 1 is by far the most common value (166 rows against 66 for the next),
+        /// that damage is the most plausible thing to upgrade most often, and that for all 32 bins
+        /// carrying a `V3 = 1` entry the previous heuristic already landed on it. That is
+        /// circumstantial. Nobody has decoded the enumeration -- not this repo, and not
+        /// WAR-RE-Toolkit's exporter, which names the same fields A00A, A00B, A01A, A01B.
+        ///
+        /// WHY THE FILTER IS STILL AN IMPROVEMENT even if `1` turns out to mean something else:
+        /// the previous code took the first fractional scalar from ANY entry, so for the 103 bins
+        /// with no `V3 = 1` entry it installed an unrelated property's number as the damage factor
+        /// -- ability 4011 got 0.005, a sixth of its intended hit. Applying one consistent field's
+        /// scalar, or nothing, is strictly less arbitrary than applying whichever came first.
         ///
         /// This used to be ignored, and the cost was not subtle. Of the 135 upgrade bins, only 32
         /// carry a damage entry at all. For those 32, taking "the first fractional scalar in Index
