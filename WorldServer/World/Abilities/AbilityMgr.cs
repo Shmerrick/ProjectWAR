@@ -692,8 +692,23 @@ namespace WorldServer.World.Abilities
         private static HashSet<ushort> BuildMoraleAbilitySet(IObjectDatabase db)
         {
             var morale = new HashSet<ushort>();
+            if (db == null)
+                return morale;
 
-            IList<MythicBinAbilityRow> rows = TrySelectAllRows<MythicBinAbilityRow>(db);
+            // Filtered, not SelectAllObjects. `mythic_bin_ability` holds 29,006 rows and several
+            // longtext columns -- MythicComponentData alone runs to megabytes across the table --
+            // and loading all of it at boot to read two fields would cost time and memory on the
+            // startup path for nothing. `MoraleLevel > 0` is 174 rows.
+            IList<MythicBinAbilityRow> rows;
+            try
+            {
+                rows = db.SelectObjects<MythicBinAbilityRow>("MoraleLevel > 0");
+            }
+            catch
+            {
+                return morale;
+            }
+
             if (rows == null)
                 return morale;
 
