@@ -211,8 +211,30 @@ everything it cannot resolve, and that is the most plausible mechanism behind a 
 disagreeing. **It is invisible to `crosswalk abilities`**, which compares the unscaled base: an
 ability can agree there and still land for the wrong amount in play.
 
-**Not yet actionable.** The same `V1`/`V2` pair decodes to 5000, 3000, 1000, 2000 and 6000 in other
-rows, which are not plausible scalars — the column means different things depending on `Index`, and
-that is undecoded. `AbilityMgr.BuildAbilityLevelScalars` already resolves some per-ability scalars
-and logs applied/unresolved counts; start by reading what it currently resolves and what it misses.
-Tracked as BUG-151.
+### How the scalars are applied today
+
+The decode itself is already correct — `AbilityMgr.TryDecodeUpgradeRowScalar` does exactly the
+`(V2 << 16) | V1` float unpack described above. The problem is everything after it, and the
+server's own startup log states the outcome:
+
+```
+upgrades=70  ability_entries=211  applied_rows=121  applied_entries=86  unresolved_rows=3940
+```
+
+**121 damage rows get a per-ability scalar; 3,940 keep the hardcoded default.** About 3%.
+
+Three causes worth chasing, in order:
+
+1. **Only 70 of 138 upgrade bins yield a scalar at all.** `TryExtractUpgradeLevelScalar` discards
+   anything outside `(0, 2]`, and the same `V1`/`V2` pair legitimately decodes to 5000, 3000, 1000
+   and 2000 in other rows. The column means different things depending on `Index`, and that is
+   undecoded — so the filter is throwing away rows it cannot interpret rather than rows that are
+   wrong.
+2. **A qualifying bin's 20 per-`Index` entries collapse into one number** — whichever fractional
+   candidate is encountered first. That is order-dependent, and 20 entries per bin looks like
+   per-level or per-tier data that should not collapse to a single scalar at all.
+3. **Bins map to abilities by `EffectID`, then `Entry`** (`BuildAbilityLevelScalars`). That key
+   choice is unverified.
+
+Decode the `Index` semantics first; causes 1 and 2 both dissolve if the 20 entries turn out to be a
+per-level curve. Tracked as BUG-151.
