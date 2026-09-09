@@ -602,16 +602,56 @@ namespace WorldServer.World.Abilities
             if (db == null || dbAbilities == null || abilityDamageInfos == null || abilityDamageInfos.Count == 0)
                 return;
 
+            // MORALE ABILITIES DO NOT SCALE WITH LEVEL.
+            //
+            // A morale ability's MoraleLevel is the gate that unlocks it -- the pool rank a player
+            // must have reached -- not a damage multiplier. Using one spends the whole pool and the
+            // damage is flat and unmitigated, so what the tooltip promises is what should land.
+            //
+            // The data agrees: of the 73 morale abilities we hold a MinDamage for, 69 already equal
+            // the value the client's own tooltip renders. And not one of the 174 morale abilities
+            // has an upgrade bin, because there is nothing to scale.
+            //
+            // That last fact is what made this a bug. "No upgrade bin" was being read as "use the
+            // default scalar" rather than "does not scale", so every morale ability was inflated by
+            // 7.5x at rank 40:
+            //
+            //     ability 9231  morale L4   tooltip 1000  ->  server dealt 7500
+            //     ability 1420  morale L3   tooltip  960  ->  server dealt 7200
+            //     ability 8611  morale L4   tooltip  720  ->  server dealt 5400
+            //
+            // 7,500 unmitigated would one-shot most of the rank-40 population.
+            //
+            // Flattened before the upgrade tables are consulted, and independently of them. This
+            // used to sit after two early returns that fire when the upgrade data is missing or
+            // matches nothing, which would have silently restored the 7.5x inflation on every
+            // morale ability the moment those tables failed to load.
+            HashSet<ushort> moraleAbilities = BuildMoraleAbilitySet(db);
+            int moraleRows = 0;
+
+            foreach (AbilityDamageInfo damageInfo in abilityDamageInfos)
+            {
+                if (damageInfo.MaxDamage == 0 && moraleAbilities.Contains(damageInfo.Entry))
+                {
+                    damageInfo.LevelScalingFactor = 0f;
+                    moraleRows++;
+                }
+            }
+
             string sourceName;
             Dictionary<ushort, float> upgradeLevelScalars = BuildMythicUpgradeLevelScalars(db, out sourceName);
             if (upgradeLevelScalars.Count == 0)
+            {
+                Log.Info("AbilityMgr",
+                    $"Per-ability level scaling: upgrade tables empty; morale_rows_flattened={moraleRows}.");
                 return;
+            }
 
             Dictionary<ushort, float> abilityLevelScalars = BuildAbilityLevelScalars(dbAbilities, upgradeLevelScalars);
             if (abilityLevelScalars.Count == 0)
             {
                 Log.Info("AbilityMgr",
-                    $"Per-ability level scaling skipped: no ability entries matched upgrade scalars (source={sourceName}, upgrades={upgradeLevelScalars.Count}).");
+                    $"Per-ability level scaling skipped: no ability entries matched upgrade scalars (source={sourceName}, upgrades={upgradeLevelScalars.Count}, morale_rows_flattened={moraleRows}).");
                 return;
             }
 
@@ -622,6 +662,10 @@ namespace WorldServer.World.Abilities
             foreach (AbilityDamageInfo damageInfo in abilityDamageInfos)
             {
                 if (damageInfo.MaxDamage != 0)
+                    continue;
+
+                // Already flattened above; an upgrade scalar must not overwrite that.
+                if (moraleAbilities.Contains(damageInfo.Entry))
                     continue;
 
                 float levelScalar;
@@ -637,7 +681,32 @@ namespace WorldServer.World.Abilities
             }
 
             Log.Info("AbilityMgr",
-                $"Per-ability level scaling applied: source={sourceName}, upgrades={upgradeLevelScalars.Count}, ability_entries={abilityLevelScalars.Count}, applied_rows={appliedRows}, applied_entries={appliedEntries.Count}, unresolved_rows={unresolvedRows}.");
+                $"Per-ability level scaling applied: source={sourceName}, upgrades={upgradeLevelScalars.Count}, ability_entries={abilityLevelScalars.Count}, applied_rows={appliedRows}, applied_entries={appliedEntries.Count}, morale_rows_flattened={moraleRows}, unresolved_rows={unresolvedRows}.");
+        }
+
+        /// <summary>
+        /// The abilities gated behind a morale rank. `MoraleLevel` is the pool level that unlocks
+        /// the ability, not a multiplier -- using one spends the whole pool and deals flat,
+        /// unmitigated damage -- so these must not be scaled by character level.
+        /// </summary>
+        private static HashSet<ushort> BuildMoraleAbilitySet(IObjectDatabase db)
+        {
+            var morale = new HashSet<ushort>();
+
+            IList<MythicBinAbilityRow> rows = TrySelectAllRows<MythicBinAbilityRow>(db);
+            if (rows == null)
+                return morale;
+
+            foreach (MythicBinAbilityRow row in rows)
+            {
+                if (row == null || !row.MoraleLevel.HasValue || row.MoraleLevel.Value <= 0)
+                    continue;
+
+                if (row.ID > 0 && row.ID <= ushort.MaxValue)
+                    morale.Add((ushort)row.ID);
+            }
+
+            return morale;
         }
 
         private static Dictionary<ushort, float> BuildAbilityLevelScalars(

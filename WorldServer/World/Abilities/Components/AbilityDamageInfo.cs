@@ -167,8 +167,12 @@ namespace WorldServer.World.Abilities.Components
             uint damage;
             if (MaxDamage == 0)
             {
+                // Exactly zero means "does not scale with level", and must survive. Morale
+                // abilities are flat: the tooltip's number is what lands, and treating 0 as an
+                // invalid value to be replaced by the default inflated every one of them by 7.5x
+                // at rank 40. Only a negative or non-finite factor is actually invalid.
                 float levelScalingFactor = LevelScalingFactor;
-                if (levelScalingFactor <= 0f || float.IsNaN(levelScalingFactor) || float.IsInfinity(levelScalingFactor))
+                if (levelScalingFactor < 0f || float.IsNaN(levelScalingFactor) || float.IsInfinity(levelScalingFactor))
                     levelScalingFactor = DefaultLevelScalingFactor;
 
                 damage = (uint)((((effectiveLevel - 1) * levelScalingFactor) * MinDamage) + MinDamage);
