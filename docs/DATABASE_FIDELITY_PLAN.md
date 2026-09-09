@@ -157,3 +157,62 @@ and is not a data-entry job.
 Steps 1 and 2 are days of careful checking. Step 3 onward is the real restoration, and it is where
 "our damage has been changed from how the game is supposed to be" actually gets answered — with a
 report that names every ability whose numbers disagree with the client, before anything is written.
+
+---
+
+## Correction: matching `MinDamage` is not the same as matching the tooltip
+
+Added 2026-09-08 after the ability crosswalk landed, because the crosswalk answers a narrower
+question than it appears to.
+
+**The tooltip is a contract with the player.** It is rendered from client files and says what it
+says regardless of the server. If it reads 500 and the hit lands for 400, the server is wrong by
+definition — there is no "our value is also defensible" here.
+
+`MinDamage` is not the tooltip number. It is a base the server scales
+(`WorldServer/World/Abilities/Components/AbilityDamageInfo.cs`):
+
+```
+MaxDamage == 0:  damage = ((level - 1) * LevelScalingFactor * MinDamage) + MinDamage
+MaxDamage  > 0:  damage = MinDamage + (MaxDamage - MinDamage) * ((level - 1) / 39)
+```
+
+### The Min/Max question, answered
+
+The second branch is effectively dead. `MaxDamage` is NULL on **1,433 of 1,434 rows** and the one
+exception equals `MinDamage`; `DamageVariance` is NULL on 1,401, so its random spread is a no-op as
+well. The data is single-valued, which is the same shape the client uses — one value plus a
+multiplier. **The Min/Max columns are vestigial, not actively wrong.** Whatever was done about them
+previously, the data does not carry a min/max range today.
+
+### What is actually wrong
+
+At rank 40 the live branch gives `7.5 × MinDamage`, so everything rests on `LevelScalingFactor`,
+which defaults to `0.16667f`.
+
+That constant is not invented. `mythic_bin_abilityupgradeentry` packs a 32-bit float across `V1`
+(low half) and `V2` (high half): `43713/15914` decodes to exactly **0.166667**, `0/16256` to 1.0,
+`0/16384` to 2.0. But it covers **25 of that table's 2,760 rows**. The table also holds:
+
+| Scalar | Rows |
+|---:|---:|
+| 1.0 | 60 |
+| 0.166667 | 25 |
+| 0.8147 | 16 |
+| 0.7346 | 16 |
+| 0.6544 | 16 |
+| 0.5742 | 16 |
+| 0.5344 | 16 |
+| 0.4941 | 12 |
+| 0.2052 | 12 |
+
+The client scales each ability by its own factor. The emulator falls back to one of them for
+everything it cannot resolve, and that is the most plausible mechanism behind a tooltip and a hit
+disagreeing. **It is invisible to `crosswalk abilities`**, which compares the unscaled base: an
+ability can agree there and still land for the wrong amount in play.
+
+**Not yet actionable.** The same `V1`/`V2` pair decodes to 5000, 3000, 1000, 2000 and 6000 in other
+rows, which are not plausible scalars — the column means different things depending on `Index`, and
+that is undecoded. `AbilityMgr.BuildAbilityLevelScalars` already resolves some per-ability scalars
+and logs applied/unresolved counts; start by reading what it currently resolves and what it misses.
+Tracked as BUG-151.
