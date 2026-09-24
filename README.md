@@ -115,12 +115,11 @@ mysql -u root -p war_characters -e "source Database/war_characters.sql"
 mysql -u root -p war_world -e "source Database/war_world.sql"
 ```
 
-That is the whole database setup. There are no incremental update scripts to apply: the
-numbered `NN_*.sql` series that used to follow this step has been folded into the dumps above,
-so a fresh import already carries every schema and data change made since the original capture.
-
-The next database change starts a new series at `00_`. Until one exists, `Database/` holds only
-the three base dumps.
+After importing the base dumps, apply the current numbered SQL scripts in `Database/`
+from `00_` through `11_` in numeric order before starting the server. The earlier
+series was folded into the base dumps; this newer series must still be applied.
+Each script selects its target database and is safe to rerun. For an existing
+installation, apply these updates without importing base dumps over character data.
 
 Checkpoint: all three databases exist and contain tables.
 

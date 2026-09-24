@@ -67,7 +67,7 @@ namespace Common
             set { _counts = value; Dirty = true; }
         }
 
-        //[DataElement]
+        // In-memory only: not mapped by the ORM and not restored after relog.
         public long NextAllowedUseTime
         {
             get { return _nextAllowedUseTime; }
@@ -81,7 +81,7 @@ namespace Common
                 int curTime = TCPManager.GetTimeStamp();
                 if (curTime >= NextAllowedUseTime)
                     return 0;
-                return (ushort)(NextAllowedUseTime - curTime);
+                return (ushort)System.Math.Min(ushort.MaxValue, NextAllowedUseTime - curTime);
             }
         }
 

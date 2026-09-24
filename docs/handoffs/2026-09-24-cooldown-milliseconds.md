@@ -40,11 +40,16 @@ Individual ability and item-group timers enforce the full duration. Only the
 global cooldown retains the existing 400 ms grace. Outgoing ability timers now
 match the enforced no-reduction/cap floors; expired resends send zero.
 
-Item packet fields and character persistence retain their existing seconds
-contract, rounded upward and packet-saturated to ushort. Runtime timers retain
-milliseconds, but relog can add up to 999 ms. The toolkit's item cooldown stub
-does not establish retail units; exact item wire/persistence fidelity remains
+Correction from the subsequent inventory review: item packet fields and the
+in-memory `CharacterItem.NextAllowedUseTime` use seconds, rounded upward and
+packet-saturated to ushort. That property has no `DataElement` attribute:
+it is not persisted or restored after relog. The earlier claim that relog merely
+adds up to 999 ms was incorrect. The toolkit's item cooldown stub does not
+establish retail units; exact item wire fidelity and relog persistence remain
 open. No character schema or base dump was changed.
+
+The follow-up [inventory repair](2026-09-24-item-cooldown-reliability.md) updates
+every duplicate item, bounds packet counts and tests transport failure cleanup.
 
 ## Verification and acceptance
 

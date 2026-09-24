@@ -207,6 +207,11 @@ also verifies modifier precision, NPC isolation, timer packet floors/expiry and 
 rounding. See [cooldown handoff](../../docs/handoffs/2026-09-24-cooldown-milliseconds.md)
 for evidence, units and the still-required in-client acceptance.
 
+The runtime suite also checks duplicate-item deadlines, 255-entry packet batching,
+reset and send-failure cleanup. These use in-memory `CharacterItem` fixtures;
+`NextAllowedUseTime` is not persisted by the ORM. See the
+[inventory follow-up](../../docs/handoffs/2026-09-24-item-cooldown-reliability.md).
+
 
 ```powershell
 ./tools/validation/Test-LotdGlyphs.ps1

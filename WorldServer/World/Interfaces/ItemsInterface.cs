@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FrameWork;
 using GameData;
 using NLog;
@@ -3261,38 +3261,67 @@ namespace WorldServer.World.Interfaces
 
         public void SendItemGroupCooldown(ushort groupEntry, int cooldownMilliseconds)
         {
-            ushort cooldown = WorldServer.World.Abilities.Components.AbilityInfo.GetItemCooldownSeconds(cooldownMilliseconds);
-            long nextUseTime = (TCPManager.GetTimeStampMS() + Math.Max(0, cooldownMilliseconds) + 999) / 1000;
-
-            foreach (var item in Items)
-            {
-                if (item?.Info != null && item.Info.Unk27[19] == groupEntry && !_foundItemEntries.Contains(item.Info.Entry))
-                {
-                    _foundItemEntries.Add(item.Info.Entry);
-                    _foundItems.Add(item);
-                    item.CharSaveInfo.NextAllowedUseTime = nextUseTime;
-                }
-            }
-
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_ITEM_COOLDOWN, _foundItems.Count * 20 + 1);
-
-            Out.WriteByte((byte)_foundItems.Count);
-
-            foreach (var item in _foundItems)
-            {
-                Out.WriteUInt32(item.Info.Entry);
-                Out.WriteUInt32(0);
-                Out.WriteUInt16(0);
-
-                Out.WriteUInt16(cooldown);
-            }
-
-            ((Player)_Owner).SendPacket(Out);
-
-            _foundItemEntries.Clear();
-            _foundItems.Clear();
+            UpdateItemCooldowns(groupEntry, cooldownMilliseconds, true);
         }
 
+        private void UpdateItemCooldowns(ushort entry, int cooldownMilliseconds, bool byGroup)
+        {
+            if (Items == null)
+                return;
+
+            ushort cooldown = AbilityInfo.GetItemCooldownSeconds(cooldownMilliseconds);
+            long nextUseTime = cooldownMilliseconds <= 0 ? 0
+                : (TCPManager.GetTimeStampMS() + cooldownMilliseconds + 999) / 1000;
+            try
+            {
+                // The inventory array bounds the scan. Every copy gets the deadline;
+                // only the notification is deduplicated by item entry.
+                foreach (Item item in Items)
+                {
+                    if (item?.Info == null)
+                        continue;
+                    bool matches = byGroup
+                        ? item.Info.Unk27 != null && item.Info.Unk27.Length > 19 && item.Info.Unk27[19] == entry
+                        : item.Info.SpellId == entry;
+                    if (!matches)
+                        continue;
+                    if (item.CharSaveInfo != null)
+                        item.CharSaveInfo.NextAllowedUseTime = nextUseTime;
+                    if (_foundItemEntries.Add(item.Info.Entry))
+                        _foundItems.Add(item);
+                }
+
+                if (_Owner is Player player)
+                    SendItemCooldownPackets(player, cooldown);
+            }
+            finally
+            {
+                _foundItemEntries.Clear();
+                _foundItems.Clear();
+            }
+        }
+
+        private void SendItemCooldownPackets(Player player, ushort cooldown)
+        {
+            // Existing packet layout: byte count followed by 12 bytes per entry.
+            // Split large inventories instead of narrowing their count to a byte.
+            int offset = 0;
+            do
+            {
+                int count = Math.Min(byte.MaxValue, _foundItems.Count - offset);
+                PacketOut packet = new PacketOut((byte)Opcodes.F_UPDATE_ITEM_COOLDOWN, count * 12 + 1);
+                packet.WriteByte((byte)count);
+                for (int i = 0; i < count; ++i)
+                {
+                    packet.WriteUInt32(_foundItems[offset + i].Info.Entry);
+                    packet.WriteUInt32(0);
+                    packet.WriteUInt16(0);
+                    packet.WriteUInt16(cooldown);
+                }
+                player.SendPacket(packet);
+                offset += count;
+            } while (offset < _foundItems.Count);
+        }
 
         public void SendMysteryBag(ushort slot)
         {
@@ -3363,38 +3392,8 @@ namespace WorldServer.World.Interfaces
 
         public void SendItemCooldown(ushort spellEntry, int cooldownMilliseconds)
         {
-            ushort cooldown = WorldServer.World.Abilities.Components.AbilityInfo.GetItemCooldownSeconds(cooldownMilliseconds);
-            long nextUseTime = (TCPManager.GetTimeStampMS() + Math.Max(0, cooldownMilliseconds) + 999) / 1000;
-
-            foreach (Item item in Items)
-            {
-                if (item?.Info != null && item.Info.SpellId == spellEntry && !_foundItemEntries.Contains(item.Info.Entry))
-                {
-                    _foundItemEntries.Add(item.Info.Entry);
-                    _foundItems.Add(item);
-                    item.CharSaveInfo.NextAllowedUseTime = nextUseTime;
-                }
-            }
-
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_ITEM_COOLDOWN, _foundItems.Count * 20 + 1);
-
-            Out.WriteByte((byte)_foundItems.Count);
-
-            foreach (var item in _foundItems)
-            {
-                Out.WriteUInt32(item.Info.Entry);
-                Out.WriteUInt32(0);
-                Out.WriteUInt16(0);
-
-                Out.WriteUInt16(cooldown);
-            }
-            if (_Owner is Player)
-                ((Player)_Owner).SendPacket(Out);
-
-            _foundItemEntries.Clear();
-            _foundItems.Clear();
+            UpdateItemCooldowns(spellEntry, cooldownMilliseconds, false);
         }
-
         #endregion
     }
 }

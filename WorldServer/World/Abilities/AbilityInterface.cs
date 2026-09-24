@@ -1134,7 +1134,7 @@ namespace WorldServer.World.Abilities
             return (!CanCastCooldown(0) && !abInfo.ConstantInfo.IgnoreGlobalCooldown) || !CanCastCooldown(abInfo.ConstantInfo.CooldownEntry != 0 ? abInfo.ConstantInfo.CooldownEntry : abInfo.Entry);
         }
 
-        /// <summary>Schedules exact milliseconds; item packets/persistence have a seconds boundary.</summary>
+        /// <summary>Schedules exact milliseconds; item packets and inventory records use seconds.</summary>
         public void SetItemGroupCooldown(byte cooldownGroupId, int durationMilliseconds)
         {
             if (cooldownGroupId == byte.MaxValue)

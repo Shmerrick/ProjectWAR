@@ -7,7 +7,7 @@
 -- Legacy Cooldown seconds remain intact. Initialize the new nullable ms column once;
 -- NULL is also a runtime fallback for future legacy-authored rows. Guard client repairs
 -- with each table's prior seconds value. Preserve slower server-authored AI pacing.
--- No character schema change. Item packets and persisted item deadlines still use seconds;
+-- No character schema change. Item packets and in-memory item deadlines still use seconds;
 -- runtime ability/item timers and modifiers preserve ms. Restart after application.
 USE war_world;
 SET @missing := (SELECT COUNT(*) = 0 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'abilities' AND COLUMN_NAME = 'CooldownMilliseconds');

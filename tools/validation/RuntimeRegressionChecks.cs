@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Color = System.Drawing.Color;
+using Item = WorldServer.World.Objects.Item;
 using System.Text;
 using System.IO;
 using System.Reflection;
@@ -55,6 +56,7 @@ internal static class RuntimeRegressionChecks
             CheckRegionMembership();
             CheckInfluence();
             CheckCooldowns();
+            CheckItemCooldownNotifications();
             CheckChannelRange();
             CheckStaleChannelCallback();
             CheckDungeonPackets();
@@ -277,8 +279,10 @@ internal static class RuntimeRegressionChecks
         public CaptureClient() : base(null) { }
         public byte[] LastPacket;
         public List<byte[]> Packets;
+        public bool FailSend;
         public override void SendPacket(PacketOut packet)
         {
+            if (FailSend) throw new InvalidOperationException("Injected send failure");
             LastPacket = packet.ToArray();
             if (Packets != null) Packets.Add(LastPacket);
         }
@@ -288,6 +292,65 @@ internal static class RuntimeRegressionChecks
     {
         return ((uint)bytes[offset] << 24) | ((uint)bytes[offset + 1] << 16) |
             ((uint)bytes[offset + 2] << 8) | bytes[offset + 3];
+    }
+
+    private static void CheckItemCooldownNotifications()
+    {
+        var player = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var client = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+        client.Packets = new List<byte[]>();
+        player.Client = client;
+        var inventory = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+        inventory.SetOwner(player);
+        PacketOut.SizeLen = 2;
+        for (int i = 0; i < 260; i++)
+        {
+            var info = new Item_Info { Entry = (uint)(1000 + i), SpellId = 1353 };
+            info.Unk27 = new byte[27];
+            info.Unk27[19] = 7;
+            inventory.Items[i] = new Item(player) { Info = info, CharSaveInfo = new CharacterItem() };
+        }
+        inventory.Items[260] = new Item(player) { Info = inventory.Items[0].Info, CharSaveInfo = new CharacterItem() };
+        inventory.Items[261] = new Item(player) { Info = new Item_Info { Entry = 9999, SpellId = 999 }, CharSaveInfo = new CharacterItem() };
+        inventory.SendItemCooldown(1353, 1500);
+        Assert(client.Packets.Count == 2, "Large cooldown notifications split into packets");
+        var seen = new HashSet<uint>();
+        foreach (byte[] packet in client.Packets)
+        {
+            int count = packet[3];
+            Assert(count > 0 && packet.Length == 4 + count * 12, "Item packet count matches payload length");
+            for (int i = 0; i < count; i++)
+            {
+                int offset = 4 + i * 12;
+                Assert(seen.Add(ReadUInt32(packet, offset)), "Notification entries deduplicate across batches");
+                Assert(packet[offset + 10] == 0 && packet[offset + 11] == 2, "Fractional duration rounds upward at wire boundary");
+            }
+        }
+        Assert(seen.Count == 260 && client.Packets[0][3] == 255 && client.Packets[1][3] == 5, "Every distinct item is sent once");
+        long deadline = inventory.Items[0].CharSaveInfo.NextAllowedUseTime;
+        Assert(deadline > TCPManager.GetTimeStamp(), "Cooldown assigned");
+        for (int i = 0; i <= 260; i++)
+            Assert(inventory.Items[i].CharSaveInfo.NextAllowedUseTime == deadline, "Every copy receives the same deadline");
+        Assert(inventory.Items[261].CharSaveInfo.NextAllowedUseTime == 0, "Unrelated items are unchanged");
+        inventory.SendItemGroupCooldown(7, 0);
+        for (int i = 0; i <= 260; i++)
+            Assert(inventory.Items[i].CharSaveInfo.NextAllowedUseTime == 0, "Group reset clears every copy immediately");
+
+        client.FailSend = true;
+        bool failed = false;
+        try { inventory.SendItemCooldown(1353, 1500); }
+        catch (InvalidOperationException) { failed = true; }
+        Assert(failed, "Transport failure exercised");
+        client.FailSend = false;
+        client.Packets.Clear();
+        inventory.SendItemCooldown(999, 1000);
+        Assert(client.Packets.Count == 1 && client.LastPacket[3] == 1 && ReadUInt32(client.LastPacket, 4) == 9999,
+            "Failed send cannot contaminate subsequent notification");
+        var record = new CharacterItem { NextAllowedUseTime = long.MaxValue };
+        Assert(record.RemainingCooldown == ushort.MaxValue, "Long remaining deadlines saturate instead of wrapping");
+        record.NextAllowedUseTime = 0;
+        Assert(record.RemainingCooldown == 0, "Reset has no remaining cooldown");
+        Console.WriteLine("PASS: duplicate item cooldowns, bounded packet counts, reset, overflow and send-failure cleanup.");
     }
 
     private static void CheckCooldowns()

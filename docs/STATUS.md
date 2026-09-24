@@ -16,7 +16,10 @@ The subsequent [cooldown migration](handoffs/2026-09-24-cooldown-milliseconds.md
 closes all 49 fractional cooldown gaps: 5,864 comparable cooldowns now agree.
 Migration 11 is applied and idempotency checked; runtime and loader regressions pass.
 The ability crosswalk still identifies 127 missing channels, 574 fractional-foot
-ranges and unresolved damage/duration mappings. Item relog precision remains seconds.
+ranges and unresolved damage/duration mappings. Item cooldowns are not persisted
+across relog: `CharacterItem.NextAllowedUseTime` is not ORM-mapped. The follow-up
+[inventory repair](handoffs/2026-09-24-item-cooldown-reliability.md) fixes duplicate
+updates and packet count overflow, with runtime regressions passing.
 Skaven and Thanquol have partial runtime/data scaffolding; passing their data checks
 does not establish playable features. Historical claims below are not current counts.
 
