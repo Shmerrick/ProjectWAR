@@ -1,7 +1,4 @@
 ﻿Id,Kind,Key,Label,Properties
 ability:4,ability,4,Ability 4,
-effect:4,effect,4,Effect 4,
-row:abilities.csv|line=9;AbilityId=4,row,abilities.csv|line=9;AbilityId=4,abilities.csv line=9;AbilityId=4,line_number=9 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
 row:abilitydesc.txt|line=5;EntryId=4,row,abilitydesc.txt|line=5;EntryId=4,abilitydesc.txt line=5;EntryId=4,line_number=5 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt
 row:abilitynames.txt|line=5;EntryId=4,row,abilitynames.txt|line=5;EntryId=4,abilitynames.txt line=5;EntryId=4,line_number=5 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt
-row:effects.csv|line=9;EffectId=4,row,effects.csv|line=9;EffectId=4,effects.csv line=9;EffectId=4,line_number=9 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv

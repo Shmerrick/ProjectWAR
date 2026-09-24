@@ -7,13 +7,13 @@ Root: `C:\Users\Admin\Downloads\myps`
 
 | | |
 | --- | --- |
-| Files discovered | 8499 |
-| Read successfully | 8499 |
+| Files discovered | 8500 |
+| Read successfully | 8500 |
 | Failed to read | 0 |
-| Data rows | 5,505,870 |
-| Joinable (unique integer key) | 4,573 |
-| Global reference tables searched for links | 168 |
-| Candidate links | 2,058 |
+| Data rows | 5,598,285 |
+| Joinable (unique integer key) | 4,620 |
+| Global reference tables searched for links | 169 |
+| Candidate links | 2,068 |
 
 A file with a unique integer first column can be joined against; one without cannot,
 and that is stated per file below rather than left to be discovered.
@@ -461,21 +461,22 @@ small column in the game. Every file is still inventoried below.
 | `anim_list` | HeaderedCsv | 0 | 2 | no | 33 header rows; empty; columns: kor, anim_korea.csv |
 | `anim_matrix` | HeaderedCsv | 5 | 35 | no | 46 header rows; columns: 43 |
 | `anim_motion_events` | HeaderedCsv | 0 | 15 | no | 334 header rows; empty; columns: misc, we_f_flourish, 5, 3736 |
-| `anim_mounts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `anim_motion_event_override` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `anim_mounts` | Xml | 14 | 1 | yes | columns: mountId |
 | `anim_mount_fly` | HeaderedCsv | 83 | 256 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
 | `anim_mount_greataxe` | HeaderedCsv | 224 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_mount_handweapon` | HeaderedCsv | 225 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_mount_spear` | HeaderedCsv | 213 | 256 | no | 2 header rows; 3 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_mount_unarmed` | HeaderedCsv | 235 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
 | `anim_mount_unarmedsdf` | HeaderedCsv | 209 | 256 | no | 2 header rows; 2 comment rows dropped; columns: _Cor_Draw, _Cor_Holster, _Cor_Ready, _Cor_Slow, _Cor_Walk, _Cor_Back |
-| `anim_movetypes` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `anim_movetypes` | Xml | 11 | 3 | yes | columns: id, name, priority |
 | `anim_override` | HeaderedCsv | 0 | 3 | no | 97 header rows; empty; columns: Salute, t, 175 |
-| `anim_persistentstates` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `anim_persistentstates` | Xml | 27 | 2 | yes | columns: id, name |
 | `anim_pose` | HeaderedCsv | 375 | 256 | no | 3 header rows; columns: #, Items Wielded, Ready, Walk, Back, Run |
 | `anim_prop` | HeaderedCsv | 82 | 256 | no | 2 header rows; columns: _Strings, Mus_Str_Draw, Mus_Str_Holster, Mus_Str_Ready, Mus_Str_Slow, Mus_Str_Walk |
 | `anim_prop2` | HeaderedCsv | 100 | 256 | no | 2 header rows; columns: _Bucket, job_bucket_Draw, job_bucket_Holster, job_bucket_Ready, job_bucket_Slow, job_bucket_Walk |
 | `anim_rifle` | HeaderedCsv | 43 | 251 | no | 2 header rows; columns: ID, Name, Ready Upper, IdleLegs, Walk F Torso, Walk F Legs |
-| `anim_scriptedstates` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `anim_scriptedstates` | Xml | 1,024 | 6 | no | columns: id, motId, motSheet, phase, maxloops, maxLoops |
 | `anim_scripts` | HeaderedCsv | 1,123 | 16 | yes | 1 header row; columns: Id, Desc, Period Min, Period Max, Iterations, Delay |
 | `anim_script_elements` | HeaderedCsv | 1,343 | 8 | no | 1 header row; columns: Id, Desc, Anim, Chance, col4, col5 |
 | `anim_statedef` | HeaderedCsv | 6,551 | 256 | yes | 2 header rows; 3 comment rows dropped; 1 repeated id; 29 rows with no id; columns: ID, Name, Time?, CSV, Anim ID, State Phase |
@@ -518,7 +519,7 @@ small column in the game. Every file is still inventoried below.
 | `objects` | HeaderedCsv | 9,905 | 86 | yes | 2 header rows; columns: ID, name, #, #, Part, Shield |
 | `packages` | HeaderedCsv | 10,101 | 2 | yes | 1 header row; columns: Advance ID, GFX Num |
 | `petcommanddata` | HeaderedCsv | 10 | 3 | yes | 1 header row; columns: Pet Command Id, Pet Command, Icon Num |
-| `pregame_chars` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `pregame_chars` | Xml | 459 | 3 | no | columns: slot, id, sheathed |
 | `pregame_features` | HeaderedCsv | 304 | 5 | yes | 2 header rows; columns: FEATURE_GENDER, FEATURE_CAREER, FEATURE_LABEL, featureStringIdBase |
 | `rvrlakes` | HeaderedCsv | 69 | 3 | yes | 1 header row; 3 comment rows dropped; columns: ID, Zone, Area |
 | `rvrzoneannounce` | HeaderedCsv | 4 | 2 | yes | 1 header row; columns: Announce Zone, Triggering Zone(s) |
@@ -560,7 +561,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -1317,7 +1318,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -2137,7 +2138,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -2960,7 +2961,7 @@ small column in the game. Every file is still inventoried below.
 | `abilitynames` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 132 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `default` | PlainText | 1,925 | 1 | no | columns: Line |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
@@ -4075,7 +4076,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 138 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -4847,7 +4848,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -5565,7 +5566,7 @@ small column in the game. Every file is still inventoried below.
 | `careernames_m` | IndexedStringTable | 132 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 29,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -6438,7 +6439,7 @@ small column in the game. Every file is still inventoried below.
 | `abilityresults` | IndexedStringTable | 1,206 | 2 | yes | columns: Id, Text |
 | `authorizationerrors` | IndexedStringTable | 17 | 2 | yes | columns: Id, Text |
 | `bindableactions` | PlainText | 451 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 132 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -6882,7 +6883,7 @@ small column in the game. Every file is still inventoried below.
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 136 | 2 | no | columns: Required, Text |
 | `dyenames` | IndexedStringTable | 440 | 2 | yes | columns: Id, Text |
 | `helptipdesc` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
 | `helptipnames` | IndexedStringTable | 200 | 2 | yes | columns: Id, Text |
@@ -7626,7 +7627,7 @@ small column in the game. Every file is still inventoried below.
 | `careerlines_m` | IndexedStringTable | 25 | 2 | yes | columns: Id, Text |
 | `citynames` | IndexedStringTable | 6 | 2 | yes | columns: Id, Text |
 | `combatevents` | PlainText | 10 | 1 | no | columns: Line |
-| `command` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `command` | Xml | 143 | 2 | no | columns: Required, Text |
 | `componenteffects` | IndexedStringTable | 26,001 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventdescs` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
 | `contentcurrenteventnames` | IndexedStringTable | 2 | 2 | yes | columns: Id, Text |
@@ -8430,9 +8431,9 @@ small column in the game. Every file is still inventoried below.
 | `dialogmanager` | PlainText | 923 | 1 | no | columns: Line |
 | `dialogs` | PlainText | 60 | 1 | no | columns: Line |
 | `onebuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
-| `textentrydlg` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `textentrydlg` | Xml | 20 | 2 | no | columns: x, y |
 | `threebuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
-| `twobuttondlg` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `twobuttondlg` | Xml | 9 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_eventtext
 
@@ -8459,7 +8460,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `glyphdisplay` | PlainText | 490 | 1 | no | columns: Line |
-| `glyphdisplay` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `glyphdisplay` | Xml | 8 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_layouteditor
 
@@ -8473,14 +8474,14 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `layoutcontrolframe` | PlainText | 709 | 1 | no | columns: Line |
 | `layouteditor` | PlainText | 731 | 1 | no | columns: Line |
-| `layouteditor` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `layouteditor` | Xml | 25 | 2 | no | columns: x, y |
 | `layouteditoroptions` | PlainText | 103 | 1 | no | columns: Line |
-| `layouteditoroptions` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `layouteditoroptions` | Xml | 10 | 2 | no | columns: x, y |
 | `layouteditorutils` | PlainText | 53 | 1 | no | columns: Line |
 | `layouteditorwindowbrowser` | PlainText | 363 | 1 | no | columns: Line |
-| `layouteditorwindowbrowser` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `layouteditorwindowbrowser` | Xml | 25 | 2 | no | columns: x, y |
 | `layoutframe` | PlainText | 555 | 1 | no | columns: Line |
-| `layoutframetemplates` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `layoutframetemplates` | Xml | 25 | 2 | no | columns: x, y |
 | `layoutsnapframe` | PlainText | 184 | 1 | no | columns: Line |
 
 ## interface/default/easystem_resourceframes
@@ -8494,7 +8495,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `moneyframe` | PlainText | 413 | 1 | no | columns: Line |
-| `moneyframe` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `moneyframe` | Xml | 113 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_rrq
 
@@ -8507,7 +8508,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `rrqprogressbar` | PlainText | 607 | 1 | no | columns: Line |
-| `rrqprogressbar` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `rrqprogressbar` | Xml | 38 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_rrq/textures
 
@@ -8551,13 +8552,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_threepartbar` | PlainText | 377 | 1 | no | columns: Line |
-| `ea_threepartbar` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `ea_threepartbar` | Xml | 16 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_threepartbar/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_victorypoints01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_victorypoints01_32b` | Xml | 54 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/easystem_tooltips
 
@@ -8570,17 +8571,17 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilitytooltips` | PlainText | 221 | 1 | no | columns: Line |
-| `abilitytooltips` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+| `abilitytooltips` | Xml | 45 | 2 | no | columns: x, y |
 | `careertooltips` | PlainText | 13 | 1 | no | columns: Line |
 | `careertooltips` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `itemtooltips` | PlainText | 1,862 | 1 | no | columns: Line |
-| `itemtooltips` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `itemtooltips` | Xml | 205 | 2 | no | columns: x, y |
 | `maptooltips` | PlainText | 1,121 | 1 | no | columns: Line |
-| `maptooltips` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `maptooltips` | Xml | 95 | 2 | no | columns: x, y |
 | `tometooltips` | PlainText | 57 | 1 | no | columns: Line |
-| `tometooltips` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `tometooltips` | Xml | 20 | 2 | no | columns: x, y |
 | `tooltips` | PlainText | 927 | 1 | no | columns: Line |
-| `tooltips` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tooltips` | Xml | 87 | 2 | no | columns: x, y |
 
 ## interface/default/easystem_utils
 
@@ -8657,35 +8658,35 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `defaultactionbuttongroup` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
+| `defaultactionbuttongroup` | Xml | 17 | 2 | no | columns: x, y |
 | `defaultbutton` | PlainText | 10 | 1 | no | columns: Line |
-| `defaultbutton` | Xml | 50 | 3 | no | columns: Element, Count, Attributes |
+| `defaultbutton` | Xml | 58 | 2 | no | columns: x, y |
 | `defaultcolor` | PlainText | 586 | 1 | no | columns: Line |
-| `defaultcombobox` | Xml | 38 | 3 | no | columns: Element, Count, Attributes |
+| `defaultcombobox` | Xml | 14 | 2 | no | columns: x, y |
 | `defaultcornerimages` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
 | `defaulteditbox` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-| `defaultframe` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `defaultframe` | Xml | 49 | 2 | no | columns: x, y |
 | `defaultfullresizeimage` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 | `defaulthorizontalresizeimage` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-| `defaulthudstatusbars` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-| `defaulticonbutton` | Xml | 33 | 3 | no | columns: Element, Count, Attributes |
+| `defaulthudstatusbars` | Xml | 31 | 2 | no | columns: x, y |
+| `defaulticonbutton` | Xml | 27 | 2 | no | columns: x, y |
 | `defaultimages` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
 | `defaultlabel` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
-| `defaultlistsortheader` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `defaultlistsortheader` | Xml | 9 | 2 | no | columns: x, y |
 | `defaultmenu` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 | `defaultscrollbar` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
 | `defaultsettings` | PlainText | 63 | 1 | no | columns: Line |
-| `defaultsettings` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `defaultsettings` | Xml | 9 | 2 | no | columns: x, y |
 | `defaultsliderbar` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
-| `defaultstatusbar` | Xml | 26 | 3 | no | columns: Element, Count, Attributes |
-| `defaulttitlebar` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `defaultstatusbar` | Xml | 18 | 2 | no | columns: x, y |
+| `defaulttitlebar` | Xml | 10 | 2 | no | columns: x, y |
 | `defaulttooltip` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/eatemplate_defaultwindowskin/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `defaultskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `defaultskintextures` | Xml | 479 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/eatemplate_icons
 
@@ -8699,7 +8700,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `erroricons` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 | `icons` | PlainText | 287 | 1 | no | columns: Line |
-| `icons` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `icons` | Xml | 5,260 | 3 | yes | columns: id, texture, name |
 
 ## interface/default/eatemplate_icons/textures
 
@@ -8719,17 +8720,17 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `pairingtemplates` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
 | `parchmentanimationdefs` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
-| `parchmentbuttondefs` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
-| `parchmentimagedefs` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
-| `parchmenttextdefs` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `parchmentbuttondefs` | Xml | 22 | 2 | no | columns: x, y |
+| `parchmentimagedefs` | Xml | 21 | 2 | no | columns: x, y |
+| `parchmenttextdefs` | Xml | 25 | 2 | no | columns: x, y |
 | `tomemaptemplates` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
-| `worldmaptemplates` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+| `worldmaptemplates` | Xml | 62 | 2 | no | columns: x, y |
 
 ## interface/default/eatemplate_parchmentwindowskin/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `parchmentskintextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `parchmentskintextures` | Xml | 122 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/eatemplate_unitframes
 
@@ -8749,7 +8750,7 @@ small column in the game. Every file is still inventoried below.
 | `rvrindicator` | PlainText | 68 | 1 | no | columns: Line |
 | `statusbar` | PlainText | 109 | 1 | no | columns: Line |
 | `targetunitframe` | PlainText | 540 | 1 | no | columns: Line |
-| `templates_unitframes` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `templates_unitframes` | Xml | 176 | 2 | no | columns: x, y |
 | `unitframes` | PlainText | 188 | 1 | no | columns: Line |
 
 ## interface/default/eatemplate_unitframes/textures
@@ -8770,13 +8771,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `abilitieswindow` | PlainText | 1,329 | 1 | no | columns: Line |
-| `abilitieswindow` | Xml | 31 | 3 | no | columns: Element, Count, Attributes |
+| `abilitieswindow` | Xml | 46 | 2 | no | columns: x, y |
 
 ## interface/default/ea_abilitieswindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `abilitieswindowtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `abilitieswindowtextures` | Xml | 98 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_actionbars
 
@@ -8790,7 +8791,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `actionbarconstants` | PlainText | 33 | 1 | no | columns: Line |
 | `actionbars` | PlainText | 1,037 | 1 | no | columns: Line |
-| `actionbars` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `actionbars` | Xml | 30 | 3 | no | columns: id, x, y |
 | `actionbutton` | PlainText | 988 | 1 | no | columns: Line |
 | `stancebar` | PlainText | 34 | 1 | no | columns: Line |
 | `stancebutton` | PlainText | 21 | 1 | no | columns: Line |
@@ -8801,7 +8802,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `actionbaranimationtextures` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
-| `actionbarendcaptextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `actionbarendcaptextures` | Xml | 12 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_advancedwarwindow
 
@@ -8814,7 +8815,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `advancedwarwindow` | PlainText | 361 | 1 | no | columns: Line |
-| `advancedwarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `advancedwarwindow` | Xml | 73 | 2 | no | columns: x, y |
 
 ## interface/default/ea_alerttextwindow
 
@@ -8827,7 +8828,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `alerttextwindow` | PlainText | 655 | 1 | no | columns: Line |
-| `alerttextwindow` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
+| `alerttextwindow` | Xml | 9 | 2 | no | columns: x, y |
 
 ## interface/default/ea_auctionhousewindow
 
@@ -8840,13 +8841,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `auctionwindow` | PlainText | 498 | 1 | no | columns: Line |
-| `auctionwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `auctionwindow` | Xml | 30 | 2 | no | columns: x, y |
 | `auctionwindowlistdatamanager` | PlainText | 190 | 1 | no | columns: Line |
 | `auctionwindowsearchcontrols` | PlainText | 599 | 1 | no | columns: Line |
-| `auctionwindowsearchcontrols` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `auctionwindowsearchcontrols` | Xml | 20 | 2 | no | columns: x, y |
 | `auctionwindowsellcontrols` | PlainText | 232 | 1 | no | columns: Line |
-| `auctionwindowsellcontrols` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
-| `templates_auctionwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `auctionwindowsellcontrols` | Xml | 17 | 2 | no | columns: x, y |
+| `templates_auctionwindow` | Xml | 22 | 2 | no | columns: x, y |
 
 ## interface/default/ea_backpackwindow
 
@@ -8865,16 +8866,16 @@ small column in the game. Every file is still inventoried below.
 | `backpackquestview` | PlainText | 275 | 1 | no | columns: Line |
 | `backpackutils` | PlainText | 842 | 1 | no | columns: Line |
 | `backpackwindow` | PlainText | 739 | 1 | no | columns: Line |
-| `backpackwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
-| `iconviewtemplates` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
-| `listviewtemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `backpackwindow` | Xml | 55 | 2 | no | columns: x, y |
+| `iconviewtemplates` | Xml | 15 | 2 | no | columns: x, y |
+| `listviewtemplates` | Xml | 26 | 2 | no | columns: x, y |
 | `questviewtemplates` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_backpackwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_backpack01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_backpack01_d5` | Xml | 29 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_bankwindow
 
@@ -8887,7 +8888,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `bankwindow` | PlainText | 455 | 1 | no | columns: Line |
-| `bankwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `bankwindow` | Xml | 37 | 2 | no | columns: x, y |
 
 ## interface/default/ea_barbershopwindow
 
@@ -8900,13 +8901,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `barbershopwindow` | PlainText | 317 | 1 | no | columns: Line |
-| `barbershopwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+| `barbershopwindow` | Xml | 29 | 2 | no | columns: x, y |
 
 ## interface/default/ea_barbershopwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `basetextures` | Xml | 26 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_battlegrouphud
 
@@ -8919,7 +8920,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `battlegrouphud` | PlainText | 501 | 1 | no | columns: Line |
-| `battlegrouphud` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `battlegrouphud` | Xml | 33 | 2 | no | columns: x, y |
 
 ## interface/default/ea_careerresourceswindow
 
@@ -8938,13 +8939,13 @@ small column in the game. Every file is still inventoried below.
 | `blackorc` | PlainText | 79 | 1 | no | columns: Line |
 | `blackorc` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 | `brightwizard` | PlainText | 67 | 1 | no | columns: Line |
-| `brightwizard` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `brightwizard` | Xml | 8 | 3 | yes | columns: id, x, y |
 | `careerresourcedata` | PlainText | 369 | 1 | no | columns: Line |
 | `careerresourceframe` | PlainText | 63 | 1 | no | columns: Line |
 | `careerresourcetemplate` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
 | `careerresourcewindow` | PlainText | 113 | 1 | no | columns: Line |
 | `choppa` | PlainText | 101 | 1 | no | columns: Line |
-| `choppa` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `choppa` | Xml | 14 | 2 | no | columns: x, y |
 | `disciple` | PlainText | 62 | 1 | no | columns: Line |
 | `disciple` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `engineer` | PlainText | 60 | 1 | no | columns: Line |
@@ -8953,11 +8954,11 @@ small column in the game. Every file is still inventoried below.
 | `magus` | PlainText | 60 | 1 | no | columns: Line |
 | `petbutton` | PlainText | 12 | 1 | no | columns: Line |
 | `petwindow` | PlainText | 487 | 1 | no | columns: Line |
-| `petwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `petwindow` | Xml | 9 | 2 | no | columns: x, y |
 | `shaman` | PlainText | 142 | 1 | no | columns: Line |
-| `shaman` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `shaman` | Xml | 8 | 2 | yes | columns: x, y |
 | `slayer` | PlainText | 102 | 1 | no | columns: Line |
-| `slayer` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `slayer` | Xml | 14 | 2 | no | columns: x, y |
 | `sorceress` | PlainText | 56 | 1 | no | columns: Line |
 | `sorceress` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `squigherder` | PlainText | 62 | 1 | no | columns: Line |
@@ -8967,15 +8968,15 @@ small column in the game. Every file is still inventoried below.
 | `warriorpriest` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `whitelion` | PlainText | 62 | 1 | no | columns: Line |
 | `witchelf` | PlainText | 46 | 1 | no | columns: Line |
-| `witchelf` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `witchelf` | Xml | 10 | 2 | no | columns: x, y |
 | `witchhunter` | PlainText | 44 | 1 | no | columns: Line |
-| `witchhunter` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `witchhunter` | Xml | 14 | 2 | no | columns: x, y |
 
 ## interface/default/ea_careerresourceswindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_career_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_career_textures` | Xml | 120 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_casttimerwindow
 
@@ -8988,7 +8989,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `layertimerwindow` | PlainText | 337 | 1 | no | columns: Line |
-| `layertimerwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `layertimerwindow` | Xml | 8 | 2 | no | columns: x, y |
 
 ## interface/default/ea_characterwindow
 
@@ -9001,7 +9002,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `characterwindow` | PlainText | 1,052 | 1 | no | columns: Line |
-| `characterwindow` | Xml | 52 | 3 | no | columns: Element, Count, Attributes |
+| `characterwindow` | Xml | 166 | 2 | no | columns: x, y |
 | `characterwindowbrags` | PlainText | 105 | 1 | no | columns: Line |
 | `characterwindowdyes` | PlainText | 581 | 1 | no | columns: Line |
 | `characterwindowitemappearance` | PlainText | 129 | 1 | no | columns: Line |
@@ -9019,7 +9020,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `chatmanager` | PlainText | 385 | 1 | no | columns: Line |
-| `conversationwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `conversationwindow` | Xml | 16 | 2 | no | columns: x, y |
 
 ## interface/default/ea_chatwindow
 
@@ -9032,14 +9033,14 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `chatfilterswindow` | PlainText | 162 | 1 | no | columns: Line |
-| `chatfilterswindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `chatfilterswindow` | Xml | 16 | 2 | no | columns: x, y |
 | `chathyperlinking` | PlainText | 944 | 1 | no | columns: Line |
-| `chathyperlinkingtemplates` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `chathyperlinkingtemplates` | Xml | 93 | 2 | no | columns: x, y |
 | `chatoptionswindow` | PlainText | 326 | 1 | no | columns: Line |
-| `chatoptionswindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
+| `chatoptionswindow` | Xml | 34 | 2 | no | columns: x, y |
 | `chatsettings` | PlainText | 588 | 1 | no | columns: Line |
 | `chatwindow` | PlainText | 3,169 | 1 | no | columns: Line |
-| `chatwindow` | Xml | 35 | 3 | no | columns: Element, Count, Attributes |
+| `chatwindow` | Xml | 87 | 2 | no | columns: x, y |
 | `chatwindowverticalscroll` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_claimwindow
@@ -9053,7 +9054,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `claimwindow` | PlainText | 272 | 1 | no | columns: Line |
-| `claimwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `claimwindow` | Xml | 23 | 2 | no | columns: x, y |
 
 ## interface/default/ea_contestedinstanceselectionwindow
 
@@ -9066,7 +9067,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `contestedinstanceselectionwindow` | PlainText | 98 | 1 | no | columns: Line |
-| `contestedinstanceselectionwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `contestedinstanceselectionwindow` | Xml | 15 | 2 | no | columns: x, y |
 
 ## interface/default/ea_contextmenu
 
@@ -9079,7 +9080,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `contextmenu` | PlainText | 657 | 1 | no | columns: Line |
-| `contextmenu` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `contextmenu` | Xml | 16 | 2 | no | columns: x, y |
 
 ## interface/default/ea_craftingwindow
 
@@ -9092,21 +9093,21 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `apothecarywindow` | PlainText | 931 | 1 | no | columns: Line |
-| `apothecarywindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `apothecarywindow` | Xml | 29 | 2 | no | columns: x, y |
 | `craftingwindow` | PlainText | 357 | 1 | no | columns: Line |
-| `craftingwindowtemplates` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `craftingwindowtemplates` | Xml | 24 | 2 | no | columns: x, y |
 | `equipmentupgradewindow` | PlainText | 427 | 1 | no | columns: Line |
-| `equipmentupgradewindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `equipmentupgradewindow` | Xml | 28 | 2 | no | columns: x, y |
 | `salvagingwindow` | PlainText | 274 | 1 | no | columns: Line |
-| `salvagingwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `salvagingwindow` | Xml | 9 | 2 | no | columns: x, y |
 | `talismanmakingwindow` | PlainText | 876 | 1 | no | columns: Line |
-| `talismanmakingwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `talismanmakingwindow` | Xml | 37 | 2 | no | columns: x, y |
 
 ## interface/default/ea_craftingwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_craftingwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_craftingwindow_textures` | Xml | 25 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_cultivationwindow
 
@@ -9119,14 +9120,14 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `cultivationwindow` | PlainText | 789 | 1 | no | columns: Line |
-| `cultivationwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
-| `cultivationwindowtemplates` | Xml | 27 | 3 | no | columns: Element, Count, Attributes |
+| `cultivationwindow` | Xml | 33 | 2 | no | columns: x, y |
+| `cultivationwindowtemplates` | Xml | 33 | 2 | no | columns: x, y |
 
 ## interface/default/ea_cultivationwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_cultivating01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_cultivating01_d5` | Xml | 44 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_currenteventswindow
 
@@ -9140,7 +9141,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `currenteventdefs` | PlainText | 260 | 1 | no | columns: Line |
 | `currenteventswindow` | PlainText | 547 | 1 | no | columns: Line |
-| `currenteventswindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `currenteventswindow` | Xml | 61 | 2 | no | columns: x, y |
 
 ## interface/default/ea_cursor
 
@@ -9165,7 +9166,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_customizeperformancewindow` | PlainText | 334 | 1 | no | columns: Line |
-| `ea_customizeperformancewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `ea_customizeperformancewindow` | Xml | 75 | 2 | no | columns: x, y |
 
 ## interface/default/ea_deathwindow
 
@@ -9178,7 +9179,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `deathwindow` | PlainText | 126 | 1 | no | columns: Line |
-| `deathwindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `deathwindow` | Xml | 11 | 2 | no | columns: x, y |
 
 ## interface/default/ea_deathwindow/textures
 
@@ -9235,46 +9236,46 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `calendar` | PlainText | 277 | 1 | no | columns: Line |
-| `calendar` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `calendar` | Xml | 63 | 2 | no | columns: x, y |
 | `colorpicker` | PlainText | 158 | 1 | no | columns: Line |
 | `colorpicker` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `guildrespectacticslist` | PlainText | 162 | 1 | no | columns: Line |
-| `guildrespectacticslist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildrespectacticslist` | Xml | 23 | 2 | no | columns: x, y |
 | `guildtacticslist` | PlainText | 394 | 1 | no | columns: Line |
-| `guildtacticslist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildtacticslist` | Xml | 11 | 2 | no | columns: x, y |
 | `guildwindow` | PlainText | 557 | 1 | no | columns: Line |
-| `guildwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindow` | Xml | 31 | 2 | no | columns: x, y |
 | `guildwindowtabadmin` | PlainText | 1,045 | 1 | no | columns: Line |
-| `guildwindowtabadmin` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabadmin` | Xml | 122 | 2 | no | columns: x, y |
 | `guildwindowtaballiance` | PlainText | 684 | 1 | no | columns: Line |
-| `guildwindowtaballiance` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtaballiance` | Xml | 63 | 2 | no | columns: x, y |
 | `guildwindowtabbanner` | PlainText | 1,080 | 1 | no | columns: Line |
-| `guildwindowtabbanner` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabbanner` | Xml | 60 | 2 | no | columns: x, y |
 | `guildwindowtabcalendar` | PlainText | 1,431 | 1 | no | columns: Line |
-| `guildwindowtabcalendar` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabcalendar` | Xml | 107 | 2 | no | columns: x, y |
 | `guildwindowtabprofile` | PlainText | 382 | 1 | no | columns: Line |
-| `guildwindowtabprofile` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabprofile` | Xml | 77 | 2 | no | columns: x, y |
 | `guildwindowtabrecruit` | PlainText | 363 | 1 | no | columns: Line |
-| `guildwindowtabrecruit` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruit` | Xml | 22 | 2 | no | columns: x, y |
 | `guildwindowtabrecruitprofile` | PlainText | 509 | 1 | no | columns: Line |
-| `guildwindowtabrecruitprofile` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruitprofile` | Xml | 33 | 2 | no | columns: x, y |
 | `guildwindowtabrecruitsearch` | PlainText | 745 | 1 | no | columns: Line |
-| `guildwindowtabrecruitsearch` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrecruitsearch` | Xml | 103 | 2 | no | columns: x, y |
 | `guildwindowtabrewards` | PlainText | 501 | 1 | no | columns: Line |
-| `guildwindowtabrewards` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabrewards` | Xml | 19 | 2 | no | columns: x, y |
 | `guildwindowtabroster` | PlainText | 1,211 | 1 | no | columns: Line |
-| `guildwindowtabroster` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `guildwindowtabroster` | Xml | 33 | 2 | no | columns: x, y |
 | `guildwindowtabsearch` | PlainText | 19 | 1 | no | columns: Line |
 | `guildwindowtabsearch` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 | `heraldryeditor` | PlainText | 587 | 1 | no | columns: Line |
-| `heraldryeditor` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
-| `templates_guildwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+| `heraldryeditor` | Xml | 38 | 2 | no | columns: x, y |
+| `templates_guildwindow` | Xml | 161 | 2 | no | columns: x, y |
 
 ## interface/default/ea_guildwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_guild01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_guild01_d5` | Xml | 50 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_helptips
 
@@ -9287,7 +9288,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `helptips` | PlainText | 379 | 1 | no | columns: Line |
-| `helptips` | Xml | 33 | 3 | no | columns: Element, Count, Attributes |
+| `helptips` | Xml | 22 | 2 | no | columns: x, y |
 | `helptipsreferences` | PlainText | 89 | 1 | no | columns: Line |
 
 ## interface/default/ea_helpwindow
@@ -9301,56 +9302,56 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `bugreportwindow` | PlainText | 124 | 1 | no | columns: Line |
-| `bugreportwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `bugreportwindow` | Xml | 29 | 2 | no | columns: x, y |
 | `ea_window_appeal` | PlainText | 655 | 1 | no | columns: Line |
-| `ea_window_appeal` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_appeal` | Xml | 16 | 2 | no | columns: x, y |
 | `ea_window_feedback` | PlainText | 114 | 1 | no | columns: Line |
-| `ea_window_feedback` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_feedback` | Xml | 18 | 2 | no | columns: x, y |
 | `ea_window_help` | PlainText | 113 | 1 | no | columns: Line |
-| `ea_window_help` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `ea_window_help` | Xml | 73 | 2 | no | columns: x, y |
 | `editappealwindow` | PlainText | 172 | 1 | no | columns: Line |
-| `editappealwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `editappealwindow` | Xml | 15 | 2 | no | columns: x, y |
 | `faqwindow` | PlainText | 211 | 1 | no | columns: Line |
-| `faqwindow` | Xml | 28 | 3 | no | columns: Element, Count, Attributes |
+| `faqwindow` | Xml | 34 | 2 | no | columns: x, y |
 | `manualwindow` | PlainText | 189 | 1 | no | columns: Line |
-| `manualwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `manualwindow` | Xml | 21 | 2 | no | columns: x, y |
 | `templates_appeals` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
-| `templates_ea_window_help` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `templates_ea_window_help` | Xml | 14 | 2 | no | columns: x, y |
 | `tipswindow` | PlainText | 255 | 1 | no | columns: Line |
-| `tipswindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `tipswindow` | Xml | 34 | 2 | no | columns: x, y |
 | `tutorialwindow` | PlainText | 382 | 1 | no | columns: Line |
-| `tutorialwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindow` | Xml | 23 | 2 | no | columns: x, y |
 
 ## interface/default/ea_helpwindow/source/tutorials
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tutorialwindowtabbasiccontrols1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabbasiccontrols1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabbasiccontrols1` | Xml | 14 | 2 | yes | columns: x, y |
 | `tutorialwindowtabbasiccontrols2` | PlainText | 21 | 1 | no | columns: Line |
-| `tutorialwindowtabbasiccontrols2` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabbasiccontrols2` | Xml | 12 | 2 | yes | columns: x, y |
 | `tutorialwindowtabcombat1` | PlainText | 21 | 1 | no | columns: Line |
-| `tutorialwindowtabcombat1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabcombat1` | Xml | 16 | 2 | no | columns: x, y |
 | `tutorialwindowtabgrouping1` | PlainText | 21 | 1 | no | columns: Line |
-| `tutorialwindowtabgrouping1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabgrouping1` | Xml | 12 | 2 | no | columns: x, y |
 | `tutorialwindowtabgrouping2` | PlainText | 21 | 1 | no | columns: Line |
-| `tutorialwindowtabgrouping2` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabgrouping2` | Xml | 14 | 2 | yes | columns: x, y |
 | `tutorialwindowtabinventory1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabinventory1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabinventory1` | Xml | 14 | 2 | no | columns: x, y |
 | `tutorialwindowtabpq1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabpq1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabpq1` | Xml | 16 | 2 | yes | columns: x, y |
 | `tutorialwindowtabquests1` | PlainText | 22 | 1 | no | columns: Line |
-| `tutorialwindowtabquests1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabquests1` | Xml | 12 | 2 | no | columns: x, y |
 | `tutorialwindowtabrenown1` | PlainText | 20 | 1 | no | columns: Line |
 | `tutorialwindowtabrenown1` | Xml | 7 | 3 | no | columns: Element, Count, Attributes |
 | `tutorialwindowtabscenario1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabscenario1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabscenario1` | Xml | 16 | 2 | yes | columns: x, y |
 | `tutorialwindowtabtok1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabtok1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabtok1` | Xml | 16 | 2 | no | columns: x, y |
 | `tutorialwindowtabtraining1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabtraining1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabtraining1` | Xml | 12 | 2 | no | columns: x, y |
 | `tutorialwindowtabwarcamp1` | PlainText | 20 | 1 | no | columns: Line |
-| `tutorialwindowtabwarcamp1` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tutorialwindowtabwarcamp1` | Xml | 14 | 2 | no | columns: x, y |
 | `tutorialwindowtemplates` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_helpwindow/textures
@@ -9371,7 +9372,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `inspectionwindow` | PlainText | 605 | 1 | no | columns: Line |
-| `inspectionwindow` | Xml | 39 | 3 | no | columns: Element, Count, Attributes |
+| `inspectionwindow` | Xml | 90 | 2 | no | columns: x, y |
 
 ## interface/default/ea_interactionwindow
 
@@ -9384,56 +9385,56 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `interactionaltar` | PlainText | 233 | 1 | no | columns: Line |
-| `interactionaltar` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `interactionaltar` | Xml | 37 | 2 | no | columns: x, y |
 | `interactionbase` | PlainText | 409 | 1 | no | columns: Line |
-| `interactionbase` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactionbase` | Xml | 24 | 2 | no | columns: x, y |
 | `interactioncoretraining` | PlainText | 691 | 1 | no | columns: Line |
-| `interactioncoretraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactioncoretraining` | Xml | 29 | 2 | no | columns: x, y |
 | `interactioneventrewards` | PlainText | 273 | 1 | no | columns: Line |
-| `interactioneventrewards` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `interactioneventrewards` | Xml | 29 | 2 | no | columns: x, y |
 | `interactionflightmaster` | PlainText | 579 | 1 | no | columns: Line |
-| `interactionflightmaster` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `interactionflightmaster` | Xml | 41 | 2 | no | columns: x, y |
 | `interactionhealerwindow` | PlainText | 151 | 1 | no | columns: Line |
 | `interactionhealerwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
 | `interactioninfluencerewards` | PlainText | 207 | 1 | no | columns: Line |
-| `interactioninfluencerewards` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `interactioninfluencerewards` | Xml | 26 | 2 | no | columns: x, y |
 | `interactionkeepupgrades` | PlainText | 831 | 1 | no | columns: Line |
-| `interactionkeepupgrades` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `interactionkeepupgrades` | Xml | 61 | 2 | no | columns: x, y |
 | `interactionquestwindow` | PlainText | 684 | 1 | no | columns: Line |
-| `interactionquestwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `interactionquestwindow` | Xml | 118 | 2 | no | columns: x, y |
 | `interactionrenowntraining` | PlainText | 709 | 1 | no | columns: Line |
-| `interactionrenowntraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactionrenowntraining` | Xml | 26 | 2 | no | columns: x, y |
 | `interactionspecialtytraining` | PlainText | 1,052 | 1 | no | columns: Line |
-| `interactionspecialtytraining` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `interactionspecialtytraining` | Xml | 49 | 2 | no | columns: x, y |
 | `interactiontometraining` | PlainText | 681 | 1 | no | columns: Line |
-| `interactiontometraining` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `interactiontometraining` | Xml | 23 | 2 | no | columns: x, y |
 | `interactiontradeskills` | PlainText | 70 | 1 | no | columns: Line |
 | `interactiontraining` | PlainText | 87 | 1 | no | columns: Line |
 | `interactionutils` | PlainText | 511 | 1 | no | columns: Line |
 | `interactionwindowaltcurrency` | PlainText | 281 | 1 | no | columns: Line |
-| `interactionwindowaltcurrency` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowaltcurrency` | Xml | 26 | 2 | no | columns: x, y |
 | `interactionwindowguildcreateform` | PlainText | 109 | 1 | no | columns: Line |
-| `interactionwindowguildcreateform` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowguildcreateform` | Xml | 21 | 2 | no | columns: x, y |
 | `interactionwindowguildrename` | PlainText | 91 | 1 | no | columns: Line |
-| `interactionwindowguildrename` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowguildrename` | Xml | 17 | 2 | no | columns: x, y |
 | `interactionwindowlastname` | PlainText | 51 | 1 | no | columns: Line |
-| `interactionwindowlastname` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowlastname` | Xml | 14 | 2 | no | columns: x, y |
 | `interactionwindowlibrarian` | PlainText | 1,226 | 1 | no | columns: Line |
-| `interactionwindowlibrarian` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowlibrarian` | Xml | 49 | 2 | no | columns: x, y |
 | `interactionwindowstore` | PlainText | 1,447 | 1 | no | columns: Line |
-| `interactionwindowstore` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
-| `templates_interactionbase` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
-| `templates_interactionflightmaster` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
-| `templates_interactionquest` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
-| `templates_interactiontraining` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `interactionwindowstore` | Xml | 50 | 2 | no | columns: x, y |
+| `templates_interactionbase` | Xml | 12 | 2 | no | columns: x, y |
+| `templates_interactionflightmaster` | Xml | 79 | 2 | no | columns: x, y |
+| `templates_interactionquest` | Xml | 28 | 2 | no | columns: x, y |
+| `templates_interactiontraining` | Xml | 141 | 2 | no | columns: x, y |
 | `templates_interactionverticalscrollbar` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_interactionwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `basetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
-| `trainingtextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `basetextures` | Xml | 58 | 5 | no | columns: left, height, id, top, width |
+| `trainingtextures` | Xml | 34 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_internalbuffs
 
@@ -9459,7 +9460,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `itemenhancementwindow` | PlainText | 598 | 1 | no | columns: Line |
-| `itemenhancementwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `itemenhancementwindow` | Xml | 27 | 2 | no | columns: x, y |
 
 ## interface/default/ea_itemstackingwindow
 
@@ -9472,7 +9473,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `itemstackingwindow` | PlainText | 201 | 1 | no | columns: Line |
-| `itemstackingwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `itemstackingwindow` | Xml | 8 | 2 | no | columns: x, y |
 
 ## interface/default/ea_keymappingwindow
 
@@ -9485,7 +9486,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `keymappingwindow` | PlainText | 527 | 1 | no | columns: Line |
-| `keymappingwindow` | Xml | 28 | 3 | no | columns: Element, Count, Attributes |
+| `keymappingwindow` | Xml | 37 | 2 | no | columns: x, y |
 
 ## interface/default/ea_lcdkeyboard
 
@@ -9509,7 +9510,7 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `windowframetemplates` | Xml | 42 | 3 | no | columns: Element, Count, Attributes |
+| `windowframetemplates` | Xml | 30 | 2 | no | columns: x, y |
 
 ## interface/default/ea_legacytemplates/textures
 
@@ -9534,19 +9535,19 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `generalloadingscreentemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `generalloadingscreentemplates` | Xml | 25 | 3 | yes | columns: id, x, y |
 | `loadingscreen` | PlainText | 309 | 1 | no | columns: Line |
 | `loadingscreen` | Xml | 11 | 3 | no | columns: Element, Count, Attributes |
 | `nodataloadingscreen` | PlainText | 57 | 1 | no | columns: Line |
 | `nodataloadingscreentemplate` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 | `patchnotesloadingscreen` | PlainText | 152 | 1 | no | columns: Line |
-| `patchnotesloadingscreentemplate` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `patchnotesloadingscreentemplate` | Xml | 31 | 2 | no | columns: x, y |
 | `scenarioenterloadingscreen` | PlainText | 161 | 1 | no | columns: Line |
-| `scenarioenterloadingscreentemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `scenarioenterloadingscreentemplate` | Xml | 22 | 2 | no | columns: x, y |
 | `scenarioexitloadingscreen` | PlainText | 62 | 1 | no | columns: Line |
 | `scenarioexitloadingscreentemplate` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
 | `standardloadingscreen` | PlainText | 149 | 1 | no | columns: Line |
-| `standardloadingscreentemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `standardloadingscreentemplate` | Xml | 23 | 2 | no | columns: x, y |
 
 ## interface/default/ea_loadingscreen/textures
 
@@ -9565,11 +9566,11 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `chooseonelootwindow` | PlainText | 226 | 1 | no | columns: Line |
-| `chooseonelootwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `chooseonelootwindow` | Xml | 18 | 2 | no | columns: x, y |
 | `lootrollwindow` | PlainText | 443 | 1 | no | columns: Line |
-| `lootrollwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `lootrollwindow` | Xml | 19 | 2 | no | columns: x, y |
 | `lootwindow` | PlainText | 359 | 1 | no | columns: Line |
-| `lootwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `lootwindow` | Xml | 18 | 2 | no | columns: x, y |
 
 ## interface/default/ea_macrowindow
 
@@ -9582,7 +9583,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `macrowindow` | PlainText | 200 | 1 | no | columns: Line |
-| `macrowindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `macrowindow` | Xml | 95 | 2 | no | columns: x, y |
 
 ## interface/default/ea_mailwindow
 
@@ -9595,25 +9596,25 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `mailwindow` | PlainText | 443 | 1 | no | columns: Line |
-| `mailwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindow` | Xml | 11 | 2 | no | columns: x, y |
 | `mailwindowtabauction` | PlainText | 470 | 1 | no | columns: Line |
-| `mailwindowtabauction` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabauction` | Xml | 18 | 2 | no | columns: x, y |
 | `mailwindowtabinbox` | PlainText | 587 | 1 | no | columns: Line |
-| `mailwindowtabinbox` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabinbox` | Xml | 23 | 2 | no | columns: x, y |
 | `mailwindowtabmessage` | PlainText | 360 | 1 | no | columns: Line |
-| `mailwindowtabmessage` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabmessage` | Xml | 32 | 2 | no | columns: x, y |
 | `mailwindowtabpending` | PlainText | 48 | 1 | no | columns: Line |
-| `mailwindowtabpending` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabpending` | Xml | 9 | 2 | no | columns: x, y |
 | `mailwindowtabsend` | PlainText | 483 | 1 | no | columns: Line |
-| `mailwindowtabsend` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `mailwindowtabsend` | Xml | 51 | 2 | no | columns: x, y |
 | `mailwindowutils` | PlainText | 133 | 1 | no | columns: Line |
-| `templates_mailwindow` | Xml | 36 | 3 | no | columns: Element, Count, Attributes |
+| `templates_mailwindow` | Xml | 61 | 2 | no | columns: x, y |
 
 ## interface/default/ea_mailwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_mailwindow01_32b` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_mailwindow01_32b` | Xml | 9 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_mainmenuwindow
 
@@ -9626,7 +9627,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `mainmenuwindow` | PlainText | 194 | 1 | no | columns: Line |
-| `mainmenuwindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `mainmenuwindow` | Xml | 20 | 2 | no | columns: x, y |
 
 ## interface/default/ea_mainmenuwindow/textures
 
@@ -9644,15 +9645,15 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `menubartemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `menubartemplates` | Xml | 18 | 2 | no | columns: x, y |
 | `menubarwindow` | PlainText | 294 | 1 | no | columns: Line |
-| `menubarwindow` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `menubarwindow` | Xml | 15 | 2 | no | columns: x, y |
 
 ## interface/default/ea_menubarwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `menubartextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `menubartextures` | Xml | 33 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_modifyitem
 
@@ -9665,7 +9666,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_dyewindow` | PlainText | 86 | 1 | no | columns: Line |
-| `ea_dyewindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `ea_dyewindow` | Xml | 13 | 2 | no | columns: x, y |
 | `useitemtargeting` | PlainText | 441 | 1 | no | columns: Line |
 
 ## interface/default/ea_moralewindow
@@ -9679,7 +9680,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `moralewindow` | PlainText | 803 | 1 | no | columns: Line |
-| `moralewindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
+| `moralewindow` | Xml | 20 | 3 | no | columns: id, x, y |
 
 ## interface/default/ea_moralewindow/textures
 
@@ -9711,21 +9712,21 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `battlefieldobjectivetracker` | PlainText | 626 | 1 | no | columns: Line |
-| `battlefieldobjectivetracker` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `battlefieldobjectivetracker` | Xml | 30 | 2 | no | columns: x, y |
 | `citytrackerwindow` | PlainText | 706 | 1 | no | columns: Line |
-| `citytrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `citytrackerwindow` | Xml | 16 | 2 | no | columns: x, y |
 | `keepobjectivetracker` | PlainText | 528 | 1 | no | columns: Line |
-| `keepobjectivetracker` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `keepobjectivetracker` | Xml | 19 | 2 | no | columns: x, y |
 | `publicquestresults` | PlainText | 485 | 1 | no | columns: Line |
-| `publicquestresults` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `publicquestresults` | Xml | 22 | 2 | no | columns: x, y |
 | `publicquesttrackerwindow` | PlainText | 924 | 1 | no | columns: Line |
-| `publicquesttrackerwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `publicquesttrackerwindow` | Xml | 22 | 2 | no | columns: x, y |
 | `scenariotrackerwindow` | PlainText | 562 | 1 | no | columns: Line |
-| `scenariotrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
-| `templates_objectivetrackers` | Xml | 29 | 3 | no | columns: Element, Count, Attributes |
+| `scenariotrackerwindow` | Xml | 38 | 2 | no | columns: x, y |
+| `templates_objectivetrackers` | Xml | 66 | 2 | no | columns: x, y |
 | `trackerutils` | PlainText | 158 | 1 | no | columns: Line |
 | `winometerwindow` | PlainText | 145 | 1 | no | columns: Line |
-| `winometerwindow` | Xml | 12 | 3 | no | columns: Element, Count, Attributes |
+| `winometerwindow` | Xml | 8 | 2 | no | columns: x, y |
 
 ## interface/default/ea_openpartywindow
 
@@ -9738,16 +9739,16 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `openpartywindow` | PlainText | 438 | 1 | no | columns: Line |
-| `openpartywindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
-| `openpartywindowcommon` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindow` | Xml | 33 | 2 | no | columns: x, y |
+| `openpartywindowcommon` | Xml | 26 | 2 | no | columns: x, y |
 | `openpartywindowtablootrolloptions` | PlainText | 172 | 1 | no | columns: Line |
-| `openpartywindowtablootrolloptions` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtablootrolloptions` | Xml | 27 | 2 | no | columns: x, y |
 | `openpartywindowtabmanage` | PlainText | 697 | 1 | no | columns: Line |
-| `openpartywindowtabmanage` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabmanage` | Xml | 73 | 2 | no | columns: x, y |
 | `openpartywindowtabnearby` | PlainText | 699 | 1 | no | columns: Line |
-| `openpartywindowtabnearby` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabnearby` | Xml | 47 | 2 | no | columns: x, y |
 | `openpartywindowtabworld` | PlainText | 942 | 1 | no | columns: Line |
-| `openpartywindowtabworld` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `openpartywindowtabworld` | Xml | 66 | 2 | no | columns: x, y |
 
 ## interface/default/ea_overheadmapwindow
 
@@ -9760,8 +9761,8 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `overheadmapwindow` | PlainText | 820 | 1 | no | columns: Line |
-| `overheadmapwindow` | Xml | 32 | 3 | no | columns: Element, Count, Attributes |
-| `templates_overheadmap` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `overheadmapwindow` | Xml | 48 | 2 | no | columns: x, y |
+| `templates_overheadmap` | Xml | 35 | 2 | no | columns: x, y |
 
 ## interface/default/ea_overheadmapwindow/textures
 
@@ -9805,7 +9806,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `playerwindow` | PlainText | 729 | 1 | no | columns: Line |
-| `playerwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `playerwindow` | Xml | 32 | 2 | no | columns: x, y |
 
 ## interface/default/ea_pqlootwindow
 
@@ -9818,14 +9819,14 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `pqlootwindow` | PlainText | 1,061 | 1 | no | columns: Line |
-| `pqlootwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `pqlootwindow` | Xml | 65 | 2 | no | columns: x, y |
 
 ## interface/default/ea_pqlootwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_anim_tumblers_d1` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
-| `ea_pqloot` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_anim_tumblers_d1` | Xml | 108 | 3 | no | columns: id, x, y |
+| `ea_pqloot` | Xml | 12 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_questtrackerwindow
 
@@ -9838,8 +9839,8 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `questtrackerwindow` | PlainText | 684 | 1 | no | columns: Line |
-| `questtrackerwindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
-| `templates_questtrackerwindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `questtrackerwindow` | Xml | 23 | 2 | no | columns: x, y |
+| `templates_questtrackerwindow` | Xml | 23 | 2 | no | columns: x, y |
 
 ## interface/default/ea_rpbarwindow
 
@@ -9878,7 +9879,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `scenariogroupwindow` | PlainText | 935 | 1 | no | columns: Line |
-| `scenariogroupwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `scenariogroupwindow` | Xml | 65 | 2 | no | columns: x, y |
 
 ## interface/default/ea_scenariolobbywindow
 
@@ -9891,7 +9892,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `scenariolobbywindow` | PlainText | 696 | 1 | no | columns: Line |
-| `scenariolobbywindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `scenariolobbywindow` | Xml | 73 | 2 | no | columns: x, y |
 
 ## interface/default/ea_scenariosummarywindow
 
@@ -9899,13 +9900,13 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `ea_scenariosummarywindow` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
 | `scenariosummarywindow` | PlainText | 730 | 1 | no | columns: Line |
-| `scenariosummarywindow` | Xml | 42 | 3 | no | columns: Element, Count, Attributes |
+| `scenariosummarywindow` | Xml | 115 | 2 | no | columns: y, x |
 
 ## interface/default/ea_scenariosummarywindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_scenariosummary01_d5` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_scenariosummary01_d5` | Xml | 23 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_screenflashwindow
 
@@ -9937,19 +9938,19 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `settingswindowtabbed` | PlainText | 187 | 1 | no | columns: Line |
-| `settingswindowtabbed` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabbed` | Xml | 19 | 2 | no | columns: x, y |
 | `settingswindowtabchat` | PlainText | 139 | 1 | no | columns: Line |
-| `settingswindowtabchat` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabchat` | Xml | 29 | 2 | no | columns: x, y |
 | `settingswindowtabgeneral` | PlainText | 257 | 1 | no | columns: Line |
-| `settingswindowtabgeneral` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabgeneral` | Xml | 57 | 2 | no | columns: x, y |
 | `settingswindowtabinterface` | PlainText | 664 | 1 | no | columns: Line |
-| `settingswindowtabinterface` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabinterface` | Xml | 93 | 2 | no | columns: x, y |
 | `settingswindowtabsound` | PlainText | 66 | 1 | no | columns: Line |
-| `settingswindowtabsound` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabsound` | Xml | 30 | 2 | no | columns: x, y |
 | `settingswindowtabtargetting` | PlainText | 242 | 1 | no | columns: Line |
-| `settingswindowtabtargetting` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabtargetting` | Xml | 64 | 2 | no | columns: x, y |
 | `settingswindowtabvideo` | PlainText | 370 | 1 | no | columns: Line |
-| `settingswindowtabvideo` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `settingswindowtabvideo` | Xml | 84 | 2 | no | columns: x, y |
 | `templates_settingswindowtabbed` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/default/ea_settingswindow/textures
@@ -9969,25 +9970,25 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `siegeweaponbuildwindow` | PlainText | 348 | 1 | no | columns: Line |
-| `siegeweaponbuildwindow` | Xml | 25 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponbuildwindow` | Xml | 27 | 2 | no | columns: x, y |
 | `siegeweaponcontrolwindow` | PlainText | 559 | 1 | no | columns: Line |
-| `siegeweaponcontrolwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponcontrolwindow` | Xml | 60 | 2 | no | columns: x, y |
 | `siegeweapongeneralfirewindow` | PlainText | 71 | 1 | no | columns: Line |
 | `siegeweapongeneralfirewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
 | `siegeweapongolffirewindow` | PlainText | 250 | 1 | no | columns: Line |
-| `siegeweapongolffirewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweapongolffirewindow` | Xml | 16 | 2 | no | columns: x, y |
 | `siegeweaponscorchfirewindow` | PlainText | 137 | 1 | no | columns: Line |
-| `siegeweaponscorchfirewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponscorchfirewindow` | Xml | 30 | 2 | no | columns: x, y |
 | `siegeweaponsniperfirewindow` | PlainText | 180 | 1 | no | columns: Line |
 | `siegeweaponsniperfirewindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
 | `siegeweaponsweetspotfirewindow` | PlainText | 216 | 1 | no | columns: Line |
-| `siegeweaponsweetspotfirewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `siegeweaponsweetspotfirewindow` | Xml | 15 | 2 | no | columns: x, y |
 
 ## interface/default/ea_siegeweaponwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `siegetextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `siegetextures` | Xml | 13 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_socialwindow
 
@@ -10000,22 +10001,22 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `socialwindow` | PlainText | 716 | 1 | no | columns: Line |
-| `socialwindow` | Xml | 30 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindow` | Xml | 51 | 2 | no | columns: x, y |
 | `socialwindowbuddylist` | PlainText | 213 | 1 | no | columns: Line |
-| `socialwindowbuddylist` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowbuddylist` | Xml | 27 | 2 | no | columns: x, y |
 | `socialwindowbuddylisttabenemies` | PlainText | 322 | 1 | no | columns: Line |
 | `socialwindowbuddylisttabenemies` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
 | `socialwindowbuddylisttabfriends` | PlainText | 390 | 1 | no | columns: Line |
 | `socialwindowbuddylisttabfriends` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
 | `socialwindowtabfriends` | PlainText | 671 | 1 | no | columns: Line |
-| `socialwindowtabfriends` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabfriends` | Xml | 32 | 2 | no | columns: x, y |
 | `socialwindowtabignore` | PlainText | 444 | 1 | no | columns: Line |
-| `socialwindowtabignore` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabignore` | Xml | 26 | 2 | no | columns: x, y |
 | `socialwindowtaboptions` | PlainText | 146 | 1 | no | columns: Line |
-| `socialwindowtaboptions` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtaboptions` | Xml | 36 | 2 | no | columns: x, y |
 | `socialwindowtabsearch` | PlainText | 561 | 1 | no | columns: Line |
-| `socialwindowtabsearch` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
-| `socialwindowtemplates` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `socialwindowtabsearch` | Xml | 41 | 2 | no | columns: x, y |
+| `socialwindowtemplates` | Xml | 15 | 2 | no | columns: x, y |
 
 ## interface/default/ea_summoningprompt
 
@@ -10028,7 +10029,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `summoningprompt` | PlainText | 106 | 1 | no | columns: Line |
-| `summoningprompt` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `summoningprompt` | Xml | 15 | 2 | no | columns: x, y |
 
 ## interface/default/ea_surveywindow
 
@@ -10041,9 +10042,9 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `surveypopupwindow` | PlainText | 83 | 1 | no | columns: Line |
-| `surveypopupwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `surveypopupwindow` | Xml | 15 | 2 | no | columns: x, y |
 | `surveywindow` | PlainText | 184 | 1 | no | columns: Line |
-| `surveywindow` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `surveywindow` | Xml | 48 | 2 | no | columns: x, y |
 
 ## interface/default/ea_tacticswindow
 
@@ -10056,7 +10057,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tacticswindow` | PlainText | 1,280 | 1 | no | columns: Line |
-| `tacticswindow` | Xml | 39 | 3 | no | columns: Element, Count, Attributes |
+| `tacticswindow` | Xml | 18 | 2 | no | columns: x, y |
 
 ## interface/default/ea_tacticswindow/textures
 
@@ -10088,7 +10089,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tomealertwindow` | PlainText | 266 | 1 | no | columns: Line |
-| `tomealertwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `tomealertwindow` | Xml | 12 | 2 | no | columns: x, y |
 
 ## interface/default/ea_tomeofknowledge
 
@@ -10101,33 +10102,33 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tomewindow` | PlainText | 1,357 | 1 | no | columns: Line |
-| `tomewindow` | Xml | 23 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow` | Xml | 59 | 2 | no | columns: x, y |
 | `tomewindow_achievements` | PlainText | 484 | 1 | no | columns: Line |
-| `tomewindow_achievements` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_achievements` | Xml | 31 | 2 | no | columns: x, y |
 | `tomewindow_bestiary` | PlainText | 730 | 1 | no | columns: Line |
-| `tomewindow_bestiary` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
-| `tomewindow_coredefs` | Xml | 34 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_bestiary` | Xml | 47 | 2 | no | columns: x, y |
+| `tomewindow_coredefs` | Xml | 43 | 2 | no | columns: x, y |
 | `tomewindow_historyandlore` | PlainText | 582 | 1 | no | columns: Line |
-| `tomewindow_historyandlore` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_historyandlore` | Xml | 21 | 2 | no | columns: x, y |
 | `tomewindow_liveevent` | PlainText | 1,059 | 1 | no | columns: Line |
-| `tomewindow_liveevent` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_liveevent` | Xml | 62 | 2 | no | columns: x, y |
 | `tomewindow_noteworthypersons` | PlainText | 574 | 1 | no | columns: Line |
-| `tomewindow_noteworthypersons` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_noteworthypersons` | Xml | 21 | 2 | no | columns: x, y |
 | `tomewindow_oldworldarmory` | PlainText | 359 | 1 | no | columns: Line |
-| `tomewindow_oldworldarmory` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_oldworldarmory` | Xml | 21 | 2 | no | columns: x, y |
 | `tomewindow_oldworldarmory_sigils` | PlainText | 191 | 1 | no | columns: Line |
-| `tomewindow_oldworldarmory_sigils` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_oldworldarmory_sigils` | Xml | 28 | 2 | no | columns: x, y |
 | `tomewindow_questjournal` | PlainText | 1,068 | 1 | no | columns: Line |
-| `tomewindow_questjournal` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_questjournal` | Xml | 124 | 2 | no | columns: x, y |
 | `tomewindow_rewards` | PlainText | 883 | 1 | no | columns: Line |
-| `tomewindow_rewards` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_rewards` | Xml | 28 | 2 | no | columns: x, y |
 | `tomewindow_sigils` | PlainText | 250 | 1 | no | columns: Line |
-| `tomewindow_sigils` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_sigils` | Xml | 48 | 2 | no | columns: x, y |
 | `tomewindow_statutils` | PlainText | 88 | 1 | no | columns: Line |
 | `tomewindow_titlepage` | PlainText | 309 | 1 | no | columns: Line |
-| `tomewindow_titlepage` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_titlepage` | Xml | 32 | 2 | no | columns: x, y |
 | `tomewindow_warjournal` | PlainText | 1,601 | 1 | no | columns: Line |
-| `tomewindow_warjournal` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `tomewindow_warjournal` | Xml | 93 | 2 | no | columns: x, y |
 
 ## interface/default/ea_tradewindow
 
@@ -10140,7 +10141,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `tradewindow` | PlainText | 676 | 1 | no | columns: Line |
-| `tradewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `tradewindow` | Xml | 24 | 2 | no | columns: x, y |
 
 ## interface/default/ea_trialalertwindow
 
@@ -10153,13 +10154,13 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `ea_trialalertwindow` | PlainText | 215 | 1 | no | columns: Line |
-| `ea_trialalertwindow` | Xml | 40 | 3 | no | columns: Element, Count, Attributes |
+| `ea_trialalertwindow` | Xml | 59 | 2 | no | columns: x, y |
 
 ## interface/default/ea_trialalertwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_trialalerttextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_trialalerttextures` | Xml | 14 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_uidebugtools
 
@@ -10173,7 +10174,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `debug` | PlainText | 278 | 1 | no | columns: Line |
 | `debugwindow` | PlainText | 293 | 1 | no | columns: Line |
-| `debugwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `debugwindow` | Xml | 38 | 2 | no | columns: x, y |
 
 ## interface/default/ea_uimodwindow
 
@@ -10186,12 +10187,12 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `uimodadvancedwindow` | PlainText | 191 | 1 | no | columns: Line |
-| `uimodadvancedwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
-| `uimodinfotemplate` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `uimodadvancedwindow` | Xml | 25 | 2 | no | columns: y, x |
+| `uimodinfotemplate` | Xml | 37 | 2 | no | columns: x, y |
 | `uimodwindow` | PlainText | 1,057 | 1 | no | columns: Line |
-| `uimodwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `uimodwindow` | Xml | 41 | 2 | no | columns: x, y |
 | `versionmismatchwindow` | PlainText | 289 | 1 | no | columns: Line |
-| `versionmismatchwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `versionmismatchwindow` | Xml | 22 | 2 | no | columns: x, y |
 
 ## interface/default/ea_uiprofileswindow
 
@@ -10205,21 +10206,21 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `characterdeletedhandler` | PlainText | 161 | 1 | no | columns: Line |
 | `createuiprofilewindow` | PlainText | 191 | 1 | no | columns: Line |
-| `createuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `createuiprofilewindow` | Xml | 16 | 2 | no | columns: x, y |
 | `deleteuiprofilewindow` | PlainText | 130 | 1 | no | columns: Line |
-| `deleteuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `deleteuiprofilewindow` | Xml | 10 | 2 | no | columns: x, y |
 | `exportuiprofilewindow` | PlainText | 264 | 1 | no | columns: Line |
-| `exportuiprofilewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `exportuiprofilewindow` | Xml | 15 | 2 | no | columns: x, y |
 | `importuiprofilewindow` | PlainText | 394 | 1 | no | columns: Line |
-| `importuiprofilewindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `importuiprofilewindow` | Xml | 27 | 2 | no | columns: x, y |
 | `introdialoguiprofilewindow` | PlainText | 87 | 1 | no | columns: Line |
-| `introdialoguiprofilewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `introdialoguiprofilewindow` | Xml | 12 | 2 | no | columns: x, y |
 | `manageuiprofileswindow` | PlainText | 630 | 1 | no | columns: Line |
-| `manageuiprofileswindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `manageuiprofileswindow` | Xml | 32 | 2 | no | columns: x, y |
 | `popupdialoguiprofilewindow` | PlainText | 128 | 1 | no | columns: Line |
 | `popupdialoguiprofilewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 | `renameuiprofilewindow` | PlainText | 94 | 1 | no | columns: Line |
-| `renameuiprofilewindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `renameuiprofilewindow` | Xml | 8 | 2 | no | columns: x, y |
 
 ## interface/default/ea_videoplayer
 
@@ -10245,25 +10246,25 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `campaignview` | PlainText | 263 | 1 | no | columns: Line |
-| `campaignviewtemplates` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `campaignviewtemplates` | Xml | 28 | 2 | no | columns: x, y |
 | `mapdefs` | PlainText | 36 | 1 | no | columns: Line |
 | `mapicontemplates` | PlainText | 139 | 1 | no | columns: Line |
-| `mapicontemplates` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `mapicontemplates` | Xml | 75 | 2 | no | columns: x, y |
 | `pairingview` | PlainText | 863 | 1 | no | columns: Line |
-| `pairingviewtemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `pairingviewtemplates` | Xml | 145 | 2 | no | columns: x, y |
 | `worldmapwindow` | PlainText | 576 | 1 | no | columns: Line |
-| `worldmapwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
-| `worldmapwindowtemplates` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `worldmapwindow` | Xml | 13 | 2 | no | columns: x, y |
+| `worldmapwindowtemplates` | Xml | 9 | 2 | no | columns: x, y |
 | `worldview` | PlainText | 28 | 1 | no | columns: Line |
-| `worldviewtemplates` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `worldviewtemplates` | Xml | 13 | 2 | no | columns: x, y |
 | `zoneview` | PlainText | 901 | 1 | no | columns: Line |
-| `zoneviewtemplates` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `zoneviewtemplates` | Xml | 47 | 2 | no | columns: x, y |
 
 ## interface/default/ea_worldmapwindow/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ea_worldmapwindow_textures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `ea_worldmapwindow_textures` | Xml | 57 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/default/ea_xpbarwindow
 
@@ -10276,7 +10277,7 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `xpbarwindow` | PlainText | 223 | 1 | no | columns: Line |
-| `xpbarwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `xpbarwindow` | Xml | 16 | 2 | no | columns: x, y |
 
 ## interface/default/ea_zonecontrolwindow
 
@@ -10316,49 +10317,49 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 75 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/fonts/japanese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 54 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/fonts/korean
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 75 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/fonts/russian
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 73 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/fonts/s_chinese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 54 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/fonts/t_chinese
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `corefonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
+| `corefonts` | Xml | 75 | 12 | no | columns: height, antialias, autohinting, face, file, hinting |
 | `fonts` | Xml | 3 | 3 | no | columns: Element, Count, Attributes |
 
 ## interface/interfacecore/maps
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `mapicons` | Xml | 5 | 3 | no | columns: Element, Count, Attributes |
+| `mapicons` | Xml | 263 | 6 | yes | columns: id, pointX, pointY, slice, texture, name |
 | `mappointdefaults` | HeaderedCsv | 50 | 3 | yes | 1 header row; columns: Map Point Type, Default Type Desc, Icon |
 | `mapsetup` | HeaderedCsv | 0 | 25 | no | 317 header rows; empty; columns: zone411, pairing100, basemap.dds, basemap.dds, selectmap.dds, selectinfo.csv |
 
@@ -10368,7 +10369,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 18 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone002
 
@@ -10376,7 +10377,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 23 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone003
 
@@ -10384,7 +10385,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 22 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone004
 
@@ -10399,7 +10400,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 14 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 16 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone006
 
@@ -10407,7 +10408,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 5 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 19 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone007
 
@@ -10415,7 +10416,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 26 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone008
 
@@ -10423,7 +10424,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 18 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone009
 
@@ -10431,7 +10432,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 11 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 11 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 20 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone010
 
@@ -10446,7 +10447,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 24 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone013
 
@@ -10468,7 +10469,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: Piece, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 10 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 14 | 5 | yes | columns: id, iname, mapIcon, x, y |
 
 ## interface/interfacecore/maps/zone030
 
@@ -10548,7 +10549,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 13 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone101
 
@@ -10556,7 +10557,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 9 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 17 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 21 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone102
 
@@ -10564,7 +10565,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 18 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone103
 
@@ -10572,7 +10573,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 20 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone104
 
@@ -10587,7 +10588,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 9 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 18 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone106
 
@@ -10595,7 +10596,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 18 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone107
 
@@ -10603,7 +10604,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 19 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone108
 
@@ -10611,7 +10612,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 20 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone109
 
@@ -10619,7 +10620,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 24 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone110
 
@@ -10712,14 +10713,14 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 8 | 5 | yes | columns: id, iname, mapIcon, x, y |
 
 ## interface/interfacecore/maps/zone162
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 0 | 3 | no | 1 header row; empty; columns: Area Number, Realm, Influence ID |
-| `mappoints` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 11 | 5 | yes | columns: id, iname, mapIcon, x, y |
 
 ## interface/interfacecore/maps/zone167
 
@@ -10748,7 +10749,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 74 | 4 | no | 1 header row; columns: Area Number, Realm, Influence ID, hasPQButNoInfluence |
 | `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 14 | 5 | yes | columns: id, iconSet, iname, x, y |
 
 ## interface/interfacecore/maps/zone197
 
@@ -10762,7 +10763,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 16 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 18 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 16 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone201
 
@@ -10770,7 +10771,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 24 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone202
 
@@ -10778,7 +10779,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 8 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 24 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone203
 
@@ -10786,7 +10787,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 19 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone204
 
@@ -10801,7 +10802,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 10 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 10 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 19 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone206
 
@@ -10809,7 +10810,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 8 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 15 | 6 | yes | columns: id, iname, mapIcon, x, y, liveevent |
 
 ## interface/interfacecore/maps/zone207
 
@@ -10817,7 +10818,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 7 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 16 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone208
 
@@ -10825,7 +10826,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 6 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 12 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 16 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone209
 
@@ -10833,7 +10834,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 7 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 6 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 20 | 3 | no | columns: min, max, realm |
 
 ## interface/interfacecore/maps/zone210
 
@@ -10848,7 +10849,7 @@ small column in the game. Every file is still inventoried below.
 | --- | --- | --- | --- | --- | --- |
 | `influenceids` | HeaderedCsv | 4 | 3 | no | 1 header row; columns: Area Number, Realm, Influence ID |
 | `mappieces` | HeaderedCsv | 3 | 5 | yes | 1 header row; columns: piece #, x pixel offset, y pixel offset, x size, y size |
-| `mappoints` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
+| `mappoints` | Xml | 8 | 5 | yes | columns: id, iname, mapIcon, x, y |
 
 ## interface/interfacecore/maps/zone230
 
@@ -10916,46 +10917,46 @@ small column in the game. Every file is still inventoried below.
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `characterselectwindow` | PlainText | 1,816 | 1 | no | columns: Line |
-| `characterselectwindow` | Xml | 31 | 3 | no | columns: Element, Count, Attributes |
+| `characterselectwindow` | Xml | 149 | 2 | no | columns: x, y |
 | `cinematicwindow` | PlainText | 49 | 1 | no | columns: Line |
 | `cinematicwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
 | `corewindowtemplates` | Xml | 27 | 3 | no | columns: Element, Count, Attributes |
 | `creditswindow` | PlainText | 141 | 1 | no | columns: Line |
-| `creditswindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `creditswindow` | Xml | 27 | 2 | no | columns: x, y |
 | `eularocwindow` | PlainText | 182 | 1 | no | columns: Line |
-| `eularocwindow` | Xml | 21 | 3 | no | columns: Element, Count, Attributes |
+| `eularocwindow` | Xml | 14 | 2 | no | columns: x, y |
 | `lobbybackground` | PlainText | 20 | 1 | no | columns: Line |
 | `lobbybackground` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
 | `loginprogresswindow` | PlainText | 99 | 1 | no | columns: Line |
-| `loginprogresswindow` | Xml | 14 | 3 | no | columns: Element, Count, Attributes |
+| `loginprogresswindow` | Xml | 11 | 2 | no | columns: x, y |
 | `loginwindow` | PlainText | 54 | 1 | no | columns: Line |
-| `loginwindow` | Xml | 24 | 3 | no | columns: Element, Count, Attributes |
+| `loginwindow` | Xml | 15 | 2 | no | columns: x, y |
 | `pncwindow` | PlainText | 156 | 1 | no | columns: Line |
-| `pncwindow` | Xml | 22 | 3 | no | columns: Element, Count, Attributes |
+| `pncwindow` | Xml | 20 | 2 | no | columns: x, y |
 | `pregameloadingwindow` | PlainText | 35 | 1 | no | columns: Line |
 | `pregameloadingwindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
 | `pregameutils` | PlainText | 76 | 1 | no | columns: Line |
 | `preloginbackground` | PlainText | 31 | 1 | no | columns: Line |
-| `preloginbackground` | Xml | 13 | 3 | no | columns: Element, Count, Attributes |
+| `preloginbackground` | Xml | 9 | 2 | no | columns: x, y |
 | `quickstartwindow` | PlainText | 243 | 1 | no | columns: Line |
-| `quickstartwindow` | Xml | 15 | 3 | no | columns: Element, Count, Attributes |
+| `quickstartwindow` | Xml | 31 | 2 | no | columns: x, y |
 | `renamewindow` | PlainText | 74 | 1 | no | columns: Line |
-| `renamewindow` | Xml | 17 | 3 | no | columns: Element, Count, Attributes |
+| `renamewindow` | Xml | 14 | 2 | no | columns: x, y |
 | `rulesetpopupwindow` | PlainText | 74 | 1 | no | columns: Line |
-| `rulesetpopupwindow` | Xml | 19 | 3 | no | columns: Element, Count, Attributes |
+| `rulesetpopupwindow` | Xml | 21 | 2 | no | columns: x, y |
 | `serverselectwindow` | PlainText | 848 | 1 | no | columns: Line |
-| `serverselectwindow` | Xml | 20 | 3 | no | columns: Element, Count, Attributes |
+| `serverselectwindow` | Xml | 58 | 2 | no | columns: x, y |
 | `titlewindow` | PlainText | 80 | 1 | no | columns: Line |
-| `titlewindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `titlewindow` | Xml | 14 | 2 | no | columns: x, y |
 | `transferpopupwindow` | PlainText | 63 | 1 | no | columns: Line |
-| `transferpopupwindow` | Xml | 16 | 3 | no | columns: Element, Count, Attributes |
+| `transferpopupwindow` | Xml | 10 | 2 | no | columns: x, y |
 | `windowstate` | PlainText | 84 | 1 | no | columns: Line |
 
 ## interface/interfacecore/textures
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `coretextures` | Xml | 4 | 3 | no | columns: Element, Count, Attributes |
+| `coretextures` | Xml | 177 | 5 | no | columns: left, height, id, top, width |
 
 ## interface/interfacecore/tome
 
@@ -11692,21 +11693,21 @@ small column in the game. Every file is still inventoried below.
 
 | File | Format | Rows | Cols | Key | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `region001` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region002` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region003` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region004` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region001` | Xml | 8 | 3 | yes | columns: number, x, y |
+| `region002` | Xml | 15 | 3 | yes | columns: number, x, y |
+| `region003` | Xml | 10 | 3 | yes | columns: number, x, y |
+| `region004` | Xml | 21 | 3 | yes | columns: number, x, y |
 | `region005` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region006` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region006` | Xml | 13 | 3 | yes | columns: number, x, y |
 | `region007` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `region008` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region009` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region010` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region011` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region012` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region014` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region015` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
-| `region016` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
+| `region009` | Xml | 9 | 3 | yes | columns: number, x, y |
+| `region010` | Xml | 12 | 3 | yes | columns: number, x, y |
+| `region011` | Xml | 18 | 3 | yes | columns: number, x, y |
+| `region012` | Xml | 12 | 3 | yes | columns: number, x, y |
+| `region014` | Xml | 12 | 3 | yes | columns: number, x, y |
+| `region015` | Xml | 12 | 3 | yes | columns: number, x, y |
+| `region016` | Xml | 10 | 3 | yes | columns: number, x, y |
 | `region017` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `region030` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
 | `region031` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -11932,7 +11933,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 417 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 26 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,746 | 2 | no | columns: index, pos |
 
 ## zones/zone001/textures
 
@@ -11951,7 +11952,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 417 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 25 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,473 | 2 | no | columns: index, pos |
 
 ## zones/zone002/textures
 
@@ -11970,7 +11971,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 452 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 14 | 2 | no | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,456 | 2 | no | columns: index, pos |
 
 ## zones/zone003/textures
 
@@ -11985,10 +11986,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,504 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 37 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 16,436 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 204 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 321 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 24 | 3 | no | columns: index, left, right |
 
 ## zones/zone004/textures
 
@@ -12007,7 +12008,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 425 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 30 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,689 | 2 | no | columns: index, pos |
 
 ## zones/zone005/textures
 
@@ -12022,11 +12023,11 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 4,613 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 14,881 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 1,018 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 409 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 34 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 129 | 2 | no | columns: index, pos |
 
 ## zones/zone006/textures
 
@@ -12045,7 +12046,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 375 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 27 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 628 | 2 | no | columns: index, pos |
 
 ## zones/zone007/textures
 
@@ -12064,7 +12065,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 21 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 114 | 2 | no | columns: index, pos |
 
 ## zones/zone008/textures
 
@@ -12083,7 +12084,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 475 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 32 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 237 | 2 | no | columns: index, pos |
 
 ## zones/zone009/textures
 
@@ -12098,7 +12099,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 663 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 7,713 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 268 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 147 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -12116,11 +12117,11 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 8,291 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 37 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 39,734 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 1,204 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 370 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 67 | 2 | no | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,116 | 2 | no | columns: index, pos |
 
 ## zones/zone011/textures
 
@@ -12372,7 +12373,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 11 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 25 | 2 | no | columns: index, pos |
 
 ## zones/zone025/textures
 
@@ -12390,7 +12391,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 312 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 4,013 | 2 | no | columns: index, pos |
 
 ## zones/zone026/textures
 
@@ -12405,11 +12406,11 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 5,419 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 30,669 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 513 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 313 | 30 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 6 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 329 | 2 | no | columns: index, pos |
 
 ## zones/zone027/textures
 
@@ -12442,7 +12443,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 28 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 1,456 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 145 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 175 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12481,7 +12482,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 22 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 66 | 2 | no | columns: index, pos |
 
 ## zones/zone032/textures
 
@@ -12496,7 +12497,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 489 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 932 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 35 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 229 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -12514,7 +12515,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 859 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 77 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 136 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -12535,7 +12536,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 152 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 296 | 3 | no | columns: index, left, right |
 
 ## zones/zone036/textures
 
@@ -12550,7 +12551,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 748 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 216 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 42 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 144 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12568,7 +12569,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 663 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 148 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 149 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -12586,10 +12587,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 938 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 981 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 148 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 8 | 3 | no | columns: index, left, right |
 
 ## zones/zone041/textures
 
@@ -12604,7 +12605,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 633 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 422 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 235 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12622,7 +12623,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 921 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 139 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 325 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12640,7 +12641,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 703 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 4 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 854 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 59 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 199 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12658,7 +12659,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 28 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 1,456 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 145 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 175 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12679,7 +12680,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 68 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 288 | 2 | no | columns: index, pos |
 
 ## zones/zone050/textures
 
@@ -12694,10 +12695,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 217 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 937 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 31 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 8 | 3 | no | columns: index, left, right |
 
 ## zones/zone060/textures
 
@@ -12712,7 +12713,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 3 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 18 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12730,7 +12731,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 4 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 33 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 17 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12748,7 +12749,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 55 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 42 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 14 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12766,7 +12767,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 2 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 9 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 3 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -12787,7 +12788,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 17 | 2 | yes | columns: index, pos |
 
 ## zones/zone070/textures
 
@@ -12805,7 +12806,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 4 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 22 | 2 | yes | columns: index, pos |
 
 ## zones/zone071/textures
 
@@ -13071,7 +13072,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 285 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -13111,7 +13112,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 415 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 27 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,100 | 2 | no | columns: index, pos |
 
 ## zones/zone100/textures
 
@@ -13130,7 +13131,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 400 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 38 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,486 | 2 | no | columns: index, pos |
 
 ## zones/zone101/textures
 
@@ -13149,7 +13150,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 413 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 51 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 82 | 2 | no | columns: index, pos |
 
 ## zones/zone102/textures
 
@@ -13168,7 +13169,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 481 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 16 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 949 | 2 | no | columns: index, pos |
 
 ## zones/zone103/textures
 
@@ -13183,7 +13184,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 892 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 15 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 4,064 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 334 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 179 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 3 | 2 | yes | columns: col0, col1 |
@@ -13206,7 +13207,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 439 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 33 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,275 | 2 | no | columns: index, pos |
 
 ## zones/zone105/textures
 
@@ -13225,7 +13226,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 32 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,362 | 2 | no | columns: index, pos |
 
 ## zones/zone106/textures
 
@@ -13244,7 +13245,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 377 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 44 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,623 | 2 | no | columns: index, pos |
 
 ## zones/zone107/textures
 
@@ -13263,7 +13264,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 379 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 47 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,966 | 2 | no | columns: index, pos |
 
 ## zones/zone108/textures
 
@@ -13282,7 +13283,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 435 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 42 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,664 | 2 | no | columns: index, pos |
 
 ## zones/zone109/textures
 
@@ -13300,7 +13301,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 137 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 617 | 2 | no | columns: index, pos |
 
 ## zones/zone110/textures
 
@@ -13405,7 +13406,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,356 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 284 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 117 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -13426,7 +13427,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 79 | 2 | no | columns: index, pos |
 
 ## zones/zone118/textures
 
@@ -13444,7 +13445,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 273 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 946 | 2 | no | columns: index, pos |
 
 ## zones/zone120/textures
 
@@ -13516,7 +13517,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 20 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 60 | 2 | no | columns: index, pos |
 
 ## zones/zone126/textures
 
@@ -13534,7 +13535,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 56 | 2 | no | columns: index, pos |
 
 ## zones/zone127/textures
 
@@ -13570,7 +13571,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 134 | 2 | no | columns: index, pos |
 
 ## zones/zone129/textures
 
@@ -13585,10 +13586,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 856 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 11 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 1,427 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 63 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 101 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 129 | 2 | no | columns: index, pos |
 
 ## zones/zone130/textures
 
@@ -13603,10 +13604,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 691 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 22 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 66,641 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 36 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 83 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 14 | 3 | no | columns: index, left, right |
 
 ## zones/zone131/textures
 
@@ -13621,11 +13622,11 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 840 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 889 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 76 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 203 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `objectivepoints` | HeaderedCsv | 3 | 7 | yes | 1 header row; columns: Point Id, Objective Id, Neutral Icon, Order Icon, Destruction Icon, X loc |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 42 | 3 | no | columns: index, left, right |
 
 ## zones/zone132/textures
 
@@ -13640,7 +13641,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 444 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 12 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 4,397 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 28 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 78 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -13658,10 +13659,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 629 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 334 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 76 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 150 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 34 | 3 | no | columns: index, left, right |
 
 ## zones/zone134/textures
 
@@ -13676,7 +13677,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 357 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 143 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 76 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -13694,10 +13695,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 2,093 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 280 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 159 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 20 | 3 | no | columns: index, left, right |
 
 ## zones/zone136/textures
 
@@ -13731,10 +13732,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 992 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 5,419 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 215 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 140 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 348 | 2 | no | columns: index, pos |
 
 ## zones/zone138/textures
 
@@ -13749,10 +13750,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,518 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 77 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 179 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 10 | 3 | no | columns: index, left, right |
 
 ## zones/zone139/textures
 
@@ -13770,7 +13771,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 214 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 40 | 3 | no | columns: index, left, right |
 
 ## zones/zone140/textures
 
@@ -13788,7 +13789,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 61 | 2 | no | columns: index, pos |
 
 ## zones/zone142/textures
 
@@ -13857,10 +13858,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 975 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 339 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 12 | 3 | no | columns: index, left, right |
 
 ## zones/zone152/textures
 
@@ -13875,10 +13876,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,068 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 339 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 46 | 3 | no | columns: index, left, right |
 
 ## zones/zone153/textures
 
@@ -13893,7 +13894,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 187 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 245 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -13911,7 +13912,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 313 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 39 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 74 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -13929,7 +13930,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 219 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 21 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 142 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -13950,7 +13951,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 265 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 108 | 2 | no | columns: index, pos |
 
 ## zones/zone157/textures
 
@@ -13965,7 +13966,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 645 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 692 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 157 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14001,10 +14002,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 3,677 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 41 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 555 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 116 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 8 | 3 | no | columns: index, left, right |
 
 ## zones/zone160/textures
 
@@ -14019,7 +14020,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 2,088 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 1,563 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 308 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 54 | 2 | no | columns: col0, col1 |
@@ -14042,7 +14043,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 383 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 54 | 2 | no | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 151 | 2 | no | columns: index, pos |
 
 ## zones/zone162/textures
 
@@ -14058,7 +14059,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 40 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 22 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 15 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14076,7 +14077,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 13 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 10 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14094,7 +14095,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 32 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 32 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -14112,7 +14113,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 254 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 101 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 23 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14153,7 +14154,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 280 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 51 | 2 | no | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 90 | 2 | no | columns: index, pos |
 
 ## zones/zone168/textures
 
@@ -14168,10 +14169,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,337 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 339 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 177 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 42 | 3 | no | columns: index, left, right |
 
 ## zones/zone169/textures
 
@@ -14189,7 +14190,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 109 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 156 | 2 | no | columns: index, pos |
 
 ## zones/zone170/textures
 
@@ -14204,7 +14205,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 74 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 32 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 56 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14222,7 +14223,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 200 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 269 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 25 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14240,7 +14241,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 248 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 32 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 147 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14258,7 +14259,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 11 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 36 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 10 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14276,10 +14277,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,141 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 15,610 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 37 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 106 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 252 | 2 | no | columns: index, pos |
 
 ## zones/zone175/textures
 
@@ -14294,7 +14295,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,359 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 558 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 75 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14312,7 +14313,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 285 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 271 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14330,7 +14331,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 72 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 39 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 38 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14369,7 +14370,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 0 | 23 | no | 2 header rows; empty; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 75 | 2 | no | columns: index, pos |
 
 ## zones/zone180/textures
 
@@ -14405,7 +14406,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 18 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 107 | 2 | no | columns: index, pos |
 
 ## zones/zone182/textures
 
@@ -14441,7 +14442,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 4 | 25 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 61 | 2 | no | columns: index, pos |
 
 ## zones/zone189/textures
 
@@ -14456,7 +14457,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 65 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 222 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 43 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14477,7 +14478,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 9 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 441 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 351 | 2 | no | columns: index, pos |
 
 ## zones/zone191/textures
 
@@ -14546,7 +14547,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 247 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 164 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 54 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14585,7 +14586,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 12 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 108 | 2 | no | columns: index, pos |
 
 ## zones/zone197/textures
 
@@ -14600,7 +14601,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 50 | 24 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 41 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 28 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -14640,7 +14641,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 431 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 12 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 3,728 | 2 | no | columns: index, pos |
 
 ## zones/zone200/textures
 
@@ -14659,7 +14660,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 290 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 12 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,008 | 2 | no | columns: index, pos |
 
 ## zones/zone201/textures
 
@@ -14678,7 +14679,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 411 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 14 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,651 | 2 | no | columns: index, pos |
 
 ## zones/zone202/textures
 
@@ -14697,7 +14698,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 413 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 48 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,754 | 2 | no | columns: index, pos |
 
 ## zones/zone203/textures
 
@@ -14712,10 +14713,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,365 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 3 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 12,267 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 260 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 128 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 10 | 3 | no | columns: index, left, right |
 
 ## zones/zone204/textures
 
@@ -14734,7 +14735,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 344 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 54 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,686 | 2 | no | columns: index, pos |
 
 ## zones/zone205/textures
 
@@ -14753,7 +14754,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 353 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 10 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 3,236 | 2 | no | columns: index, pos |
 
 ## zones/zone206/textures
 
@@ -14773,7 +14774,7 @@ small column in the game. Every file is still inventoried below.
 | `read me` | PlainText | 1 | 1 | no | columns: Line |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 19 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,188 | 2 | no | columns: index, pos |
 
 ## zones/zone207/textures
 
@@ -14792,7 +14793,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 409 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 36 | 2 | yes | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,762 | 2 | no | columns: index, pos |
 
 ## zones/zone208/textures
 
@@ -14811,7 +14812,7 @@ small column in the game. Every file is still inventoried below.
 | `nifs` | HeaderedCsv | 321 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `signs` | HeaderedCsv | 58 | 2 | no | columns: col0, col1 |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 2,068 | 2 | no | columns: index, pos |
 
 ## zones/zone209/textures
 
@@ -14827,10 +14828,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,952 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 9 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 28,566 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 160 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 171 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 44 | 3 | no | columns: index, left, right |
 
 ## zones/zone210/textures
 
@@ -14848,7 +14849,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 8 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 156 | 2 | no | columns: index, pos |
 
 ## zones/zone211/textures
 
@@ -14884,7 +14885,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 6 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 231 | 2 | no | columns: index, pos |
 
 ## zones/zone213/textures
 
@@ -14920,7 +14921,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 9 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 175 | 2 | no | columns: index, pos |
 
 ## zones/zone215/textures
 
@@ -14956,7 +14957,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 39 | 2 | yes | columns: index, pos |
 
 ## zones/zone217/textures
 
@@ -15007,10 +15008,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 2,661 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 21 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 41,108 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 41 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 102 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,306 | 2 | no | columns: index, pos |
 
 ## zones/zone220/textures
 
@@ -15046,7 +15047,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 11 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 33 | 2 | no | columns: index, pos |
 
 ## zones/zone222/textures
 
@@ -15136,7 +15137,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 36 | 2 | no | columns: index, pos |
 
 ## zones/zone227/textures
 
@@ -15187,10 +15188,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 589 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 0 | 2 | no | 1 header row; empty; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 53 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 193 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 11 | 3 | yes | columns: index, left, right |
 
 ## zones/zone230/textures
 
@@ -15205,10 +15206,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 995 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 8 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 498 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 60 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 104 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 22 | 3 | no | columns: index, left, right |
 
 ## zones/zone231/textures
 
@@ -15245,7 +15246,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 49 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 159 | 2 | no | columns: index, pos |
 
 ## zones/zone234/textures
 
@@ -15260,7 +15261,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 869 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 3,224 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 57 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 78 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
@@ -15278,7 +15279,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,168 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 6 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 881 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 74 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 93 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -15296,7 +15297,7 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 516 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 0 | 6 | no | 2 header rows; empty; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 9 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 114 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
 | `water` | Xml | 2 | 3 | no | columns: Element, Count, Attributes |
@@ -15314,10 +15315,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,449 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 7 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 628 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 63 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 71 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 14 | 3 | no | columns: index, left, right |
 
 ## zones/zone238/textures
 
@@ -15494,10 +15495,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 2,612 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 14 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 20,724 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 348 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 167 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,184 | 2 | no | columns: index, pos |
 
 ## zones/zone260/textures
 
@@ -15587,7 +15588,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 1 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 173 | 2 | no | columns: index, pos |
 
 ## zones/zone279/textures
 
@@ -15677,7 +15678,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 5 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 61 | 2 | no | columns: index, pos |
 
 ## zones/zone284/textures
 
@@ -15767,7 +15768,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 15 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 53 | 2 | yes | columns: index, pos |
 
 ## zones/zone289/textures
 
@@ -15821,7 +15822,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 7 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 26 | 2 | no | columns: index, pos |
 
 ## zones/zone292/textures
 
@@ -15857,7 +15858,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 172 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 363 | 2 | no | columns: index, pos |
 
 ## zones/zone295/textures
 
@@ -15875,7 +15876,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 1 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 182 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 95 | 3 | no | columns: index, left, right |
 
 ## zones/zone297/textures
 
@@ -15893,7 +15894,7 @@ small column in the game. Every file is still inventoried below.
 | `lights` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
 | `nifs` | HeaderedCsv | 440 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 1,275 | 2 | no | columns: index, pos |
 
 ## zones/zone298/textures
 
@@ -16016,10 +16017,10 @@ small column in the game. Every file is still inventoried below.
 | `fixtures` | HeaderedCsv | 1,141 | 27 | yes | 2 header rows; columns: ID, NIF #, Textual Name, X, Y, Z |
 | `grassdefs` | HeaderedCsv | 5 | 2 | yes | 1 header row; columns: Nif Id#, Filename |
 | `grassplacements` | HeaderedCsv | 15,610 | 6 | no | 2 header rows; columns: #id, xPos, yPos, Angle, Scale, Use Normal |
-| `lights` | Xml | 6 | 3 | no | columns: Element, Count, Attributes |
+| `lights` | Xml | 37 | 1 | no | columns: Fill |
 | `nifs` | HeaderedCsv | 106 | 23 | yes | 2 header rows; columns: NIF, Textual Name, Filename, Only, Shadow, Color |
 | `sector` | Binary | 1 | 1 | no | columns: Bytes |
-| `water` | Xml | 8 | 3 | no | columns: Element, Count, Attributes |
+| `water` | Xml | 252 | 2 | no | columns: index, pos |
 
 ## zones/zone412/textures
 

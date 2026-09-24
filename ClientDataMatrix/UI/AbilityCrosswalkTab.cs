@@ -23,13 +23,21 @@ namespace ClientDataMatrix.UI
     /// </summary>
     internal sealed class AbilityCrosswalkTab
     {
+        private const string AllItems = "All";
+
         private readonly Button _run = new Button { Text = "Run Ability Crosswalk", AutoSize = true };
         private readonly Button _openReport = new Button { Text = "Open Report", AutoSize = true, Enabled = false };
+        private readonly ComboBox _field = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 140,
+            Margin = new Padding(6, 3, 0, 3)
+        };
         private readonly ComboBox _kind = new ComboBox
         {
             DropDownStyle = ComboBoxStyle.DropDownList,
             Width = 320,
-            Margin = new Padding(12, 3, 0, 3)
+            Margin = new Padding(6, 3, 0, 3)
         };
         private readonly TextBox _summary;
         private readonly DataGridView _grid;
@@ -37,6 +45,7 @@ namespace ClientDataMatrix.UI
         private string _root;
         private string _outputRoot;
         private string _reportDirectory;
+        private bool _resettingFilters;
         private List<AbilityCrosswalkService.AbilityFinding> _all =
             new List<AbilityCrosswalkService.AbilityFinding>();
 
@@ -53,17 +62,13 @@ namespace ClientDataMatrix.UI
             var actions = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             actions.Controls.Add(_run);
             actions.Controls.Add(_openReport);
-            actions.Controls.Add(new Label { Text = "Show", AutoSize = true, Margin = new Padding(16, 8, 0, 0) });
-            _kind.Items.AddRange(new object[]
-            {
-                "All",
-                "damage differs from client",
-                "not comparable: tooltip quotes another ability",
-                "not comparable: slot holds a reference"
-            });
-            _kind.SelectedIndex = 0;
-            _kind.SelectedIndexChanged += (s, e) => ApplyFilter();
+            actions.Controls.Add(new Label { Text = "Column", AutoSize = true, Margin = new Padding(16, 8, 0, 0) });
+            actions.Controls.Add(_field);
+            actions.Controls.Add(new Label { Text = "Kind", AutoSize = true, Margin = new Padding(12, 8, 0, 0) });
             actions.Controls.Add(_kind);
+            ResetFilters();
+            _field.SelectedIndexChanged += (s, e) => ApplyFilter();
+            _kind.SelectedIndexChanged += (s, e) => ApplyFilter();
 
             _run.Click += async (s, e) => await RunAsync();
             _openReport.Click += (s, e) =>
@@ -87,19 +92,20 @@ namespace ClientDataMatrix.UI
                 ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText
             };
             // Client first and labelled by its source, ours labelled as ours.
-            _grid.Columns.Add(Column("Client name (abilitynames.txt)", "ClientName", 240));
-            _grid.Columns.Add(Column("DB entry", "DatabaseEntry", 90));
-            _grid.Columns.Add(Column("Kind", "Kind", 280));
-            _grid.Columns.Add(Column("Token", "Token", 220));
-            _grid.Columns.Add(Column("Client value", "ClientValue", 100));
-            _grid.Columns.Add(Column("DB MinDamage", "DatabaseValue", 110));
+            _grid.Columns.Add(Column("Client name (abilitynames.txt)", "ClientName", 220));
+            _grid.Columns.Add(Column("DB entry", "DatabaseEntry", 80));
+            _grid.Columns.Add(Column("Column", "Field", 100));
+            _grid.Columns.Add(Column("Kind", "Kind", 260));
+            _grid.Columns.Add(Column("Client source", "Token", 220));
+            _grid.Columns.Add(Column("Client value", "ClientValue", 90));
+            _grid.Columns.Add(Column("Our value", "DatabaseValue", 90));
             _grid.Columns.Add(Column("Detail", "Detail", 460));
             findingsPage.Controls.Add(_grid);
             sub.TabPages.Add(findingsPage);
 
             var summaryPage = new TabPage("Summary");
             _summary = ReadOnlyText();
-            _summary.Text = "Run the crosswalk to compare every ability's client tooltip damage against ours.";
+            _summary.Text = "Run the crosswalk to compare every ability's client data against ours.";
             summaryPage.Controls.Add(_summary);
             sub.TabPages.Add(summaryPage);
 
@@ -147,7 +153,7 @@ namespace ClientDataMatrix.UI
         private async Task RunAsync()
         {
             _run.Enabled = false;
-            _summary.Text = "Reading the client string tables and the ability component data...";
+            _summary.Text = "Reading the client ability files and the database...";
 
             try
             {
@@ -167,6 +173,7 @@ namespace ClientDataMatrix.UI
                 _all = report.Findings;
                 _openReport.Enabled = directory != null;
                 _summary.Text = Summarise(report);
+                ResetFilters();
                 ApplyFilter();
             }
             catch (Exception exception)
@@ -190,17 +197,35 @@ namespace ClientDataMatrix.UI
                 + "   (" + report.ResolutionRate.ToString("F2", CultureInfo.InvariantCulture) + "%)");
             text.AppendLine("  unresolved                   " + N(report.DamageTokensUnresolved));
             foreach (KeyValuePair<string, int> pair in report.UnresolvedReasons.OrderByDescending(p => p.Value))
-                text.AppendLine("      " + pair.Key.PadRight(42) + N(pair.Value));
+                text.AppendLine("      " + pair.Key.PadRight(48) + N(pair.Value));
             text.AppendLine();
-            text.AppendLine("DOES OUR DATA MATCH?  (tests the database)");
+            text.AppendLine("DOES OUR DAMAGE MATCH?  (tests the database)");
             text.AppendLine("  comparable abilities         " + N(report.ComparableAbilities));
             text.AppendLine("  agree with the client        " + N(report.Agreements)
                 + "   (" + report.AgreementRate.ToString("F2", CultureInfo.InvariantCulture) + "%)");
             text.AppendLine("  disagree - candidate drift   " + N(report.Disagreements));
             text.AppendLine();
-            text.AppendLine("EXCLUDED FROM THE COMPARISON (they are comparison errors, not data faults)");
+            text.AppendLine("EXCLUDED FROM THE DAMAGE COMPARISON (comparison errors, not data faults)");
             text.AppendLine("  tooltip quotes another ability   " + N(report.CrossReferenced));
             text.AppendLine("  value slot holds a reference     " + N(report.ReferenceLike));
+            text.AppendLine();
+            text.AppendLine("DO OUR OTHER COLUMNS MATCH?  (differ = both sides carry a value)");
+            text.AppendLine("  column         agree   differ   ours empty   client empty   unrepresentable   not comparable");
+            foreach (AbilityCrosswalkService.FieldTally tally in report.Fields)
+            {
+                text.AppendLine("  " + tally.Field.PadRight(12) + Pad(tally.Agreements, 8) + Pad(tally.Disagreements, 9)
+                    + Pad(tally.DatabaseEmpty, 13) + Pad(tally.ClientEmpty, 15) + Pad(tally.NotRepresentable, 18)
+                    + Pad(tally.NotComparable, 17));
+            }
+            text.AppendLine("  " + N(report.DatabaseRowsWithoutClientRecord) + " of " + N(report.DatabaseAbilityRows)
+                + " mythic_src_abilities rows have no client record and are not compared");
+            text.AppendLine();
+            text.AppendLine("IS THE TOOLKIT IMPORT FAITHFUL?  (mythic_bin_* against the client)");
+            text.AppendLine("  component lists compared       " + N(report.ComponentListsCompared));
+            text.AppendLine("  differ from the client         " + N(report.ComponentListsDiffer));
+            text.AppendLine("  client lists the import lacks  " + N(report.ClientListsWithoutImport));
+            text.AppendLine("  upgrade items compared         " + N(report.UpgradeItemsCompared));
+            text.AppendLine("  differ from the client         " + N(report.UpgradeItemsDiffer));
             return text.ToString();
         }
 
@@ -209,16 +234,54 @@ namespace ClientDataMatrix.UI
             return value.ToString("N0", CultureInfo.InvariantCulture);
         }
 
+        private static string Pad(int value, int width)
+        {
+            return N(value).PadLeft(width);
+        }
+
+        /// <summary>Rebuilds both filter lists from the current findings, back at "All".</summary>
+        private void ResetFilters()
+        {
+            _resettingFilters = true;
+            try
+            {
+                Fill(_field, _all.Select(f => f.Field));
+                Fill(_kind, _all.Select(f => f.Kind));
+            }
+            finally
+            {
+                _resettingFilters = false;
+            }
+        }
+
+        private static void Fill(ComboBox box, IEnumerable<string> values)
+        {
+            box.Items.Clear();
+            box.Items.Add(AllItems);
+            foreach (string value in values
+                .Where(v => !string.IsNullOrEmpty(v))
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(v => v, StringComparer.Ordinal))
+                box.Items.Add(value);
+            box.SelectedIndex = 0;
+        }
+
         private void ApplyFilter()
         {
-            string wanted = _kind.SelectedItem as string;
+            if (_resettingFilters)
+                return;
+
+            string field = _field.SelectedItem as string;
+            string kind = _kind.SelectedItem as string;
             IEnumerable<AbilityCrosswalkService.AbilityFinding> rows = _all;
 
-            if (!string.IsNullOrEmpty(wanted) && wanted != "All")
-                rows = rows.Where(f => f.Kind == wanted);
+            if (!string.IsNullOrEmpty(field) && field != AllItems)
+                rows = rows.Where(f => f.Field == field);
+            if (!string.IsNullOrEmpty(kind) && kind != AllItems)
+                rows = rows.Where(f => f.Kind == kind);
 
             _grid.DataSource = new BindingList<AbilityCrosswalkService.AbilityFinding>(
-                rows.OrderBy(f => f.Kind).ThenBy(f => f.DatabaseEntry).ToList());
+                rows.OrderBy(f => f.Field).ThenBy(f => f.Kind).ThenBy(f => f.DatabaseEntry).ToList());
         }
 
         private static string Explanation()
@@ -240,6 +303,10 @@ namespace ClientDataMatrix.UI
 "",
 "So no operation table is needed to find an ability's damage. The ability's own description",
 "says which component and which slot.",
+"",
+"Everything on the client side is read from the extracted client: abilityexport.bin,",
+"abilitycomponentexport.bin, upgradetableexport.bin and the string tables. The toolkit's import",
+"of those files (mythic_bin_ability, mythic_bin_abilityupgrade*) is checked, never used.",
 "",
 "",
 "WORKED EXAMPLE -- ability 7, Spine Fling",
@@ -269,10 +336,11 @@ namespace ClientDataMatrix.UI
 "   Applying it moved agreement from 58.62% to 86.21%.",
 "",
 "2. THE ORDERED LIST IS NOT THE SORTED LIST.",
-"   Take the order from mythic_bin_ability.MythicComponentData, sorted by each entry's Index.",
-"   Do NOT use the ability report's 'Related component IDs' line -- that is a SORTED set. For",
-"   ability 7 it prints '2, 3301' while the real order is '3301, 2', so COM_0 resolves to the",
-"   wrong component and every token above index 0 is silently wrong.",
+"   Take the order from abilityexport.bin's ComponentIds, in slot order with empty slots skipped,",
+"   and look each id up in abilitycomponentexport.bin. Do NOT use the ability report's 'Related",
+"   component IDs' line -- that is a SORTED set. For ability 7 it prints '2, 3301' while the real",
+"   order is '3301, 2', so COM_0 resolves to the wrong component and every token above index 0",
+"   is silently wrong.",
 "",
 "   Ability 1 agrees under both readings. Validating on one ability proves nothing; validate",
 "   on one whose sorted and ordered lists differ.",
@@ -293,12 +361,52 @@ namespace ClientDataMatrix.UI
 "",
 "WHERE THE REMAINING UNRESOLVED TOKENS GO",
 "",
-"   46 of 1,414 damage tokens do not resolve. 5 belong to abilities with no component data",
-"   imported at all. The other 41 are a single contiguous family -- abilities 7717-7756 plus",
-"   15557, the blast potions -- which share a description template referencing COM_2 while our",
-"   import holds only two components for them. Both are gaps in mythic_bin_ability, not faults",
-"   in the reading: a wrong reading fails scattered across the dataset, not in one block of",
+"   46 of 1,414 damage tokens do not resolve. 5 belong to abilities the client lists no",
+"   components for. The other 41 are a single contiguous family -- abilities 7717-7756 plus",
+"   15557, the blast potions -- which share a description template referencing COM_2 while the",
+"   client's own abilityexport.bin records hold only two components for them. That was once put",
+"   down to gaps in mythic_bin_ability; reading the client directly shows the client has two as",
+"   well, so the template names a component the records never carried. Either way it is not a",
+"   fault in the reading: a wrong reading fails scattered across the dataset, not in one block of",
 "   forty consecutive ids of the same potion line.",
+"",
+"",
+"THE OTHER COLUMNS",
+"",
+"   Every mythic_src_abilities row with a client record is checked column by column, and each",
+"   ability's first own DURA and FREQ token against mythic_src_buff_infos (buff Entry = ability",
+"   id). The units differ, and the rules are measured rather than assumed:",
+"",
+"       CastTime     client ms          = ours ms",
+"       Cooldown     client ms          = ours seconds x 1000",
+"       Range        client             = ours feet x 12",
+"       ApCost       client             = ours",
+"       EffectID     client             = ours",
+"       CareerLine   ours (a bit mask)  = 1 << (client career line - 1)",
+"       Duration     client DURA ms     = buff Duration seconds x 1000",
+"       Interval     client FREQ ms     = buff Interval ms",
+"       Channel      client FlagsRaw bit 22 = ours ChannelID set; where both channel,",
+"                    the first timed component's Duration ms = ours ChannelDuration ms,",
+"                    and client ChannelInterval ms = ours ChannelInterval ms",
+"",
+"   Only 'differ' -- both sides carry a value and they disagree -- is candidate drift. A value",
+"   on one side and none on the other is listed separately because it is often a convention:",
+"   the client binds the Squig pet abilities 6-9 to no career line while ours carry a mask.",
+"   'Not representable' is a client value our column's unit cannot hold, such as a 4,500 ms",
+"   cooldown in whole seconds. A mask granting the client's career line among others is set",
+"   aside as not comparable.",
+"",
+"   Not compared: MinRange (no client field is established), RADI (no mapping to our",
+"   EffectRadius holds -- 268 of 384 tokens differ) and heal tokens (which damage_heals index a",
+"   heal belongs to is unproven -- 48 equal, 37 differ, 20 have no row).",
+"",
+"",
+"IS THE TOOLKIT IMPORT FAITHFUL?",
+"",
+"   mythic_bin_ability and mythic_bin_abilityupgradeentry are the toolkit's import of these same",
+"   client files. They are checked against the client rather than trusted -- the component",
+"   lists and a few upgrade-table items differ -- and anything read from the import inherits",
+"   those differences. The summary gives the counts.",
 "",
 "",
 "WHY MATCHING MinDamage IS NOT THE SAME AS MATCHING THE TOOLTIP",
@@ -330,21 +438,16 @@ namespace ClientDataMatrix.UI
 "   0/16256 is 1.0; 0/16384 is 2.0. The table holds many distinct factors -- 1.0 (60 rows),",
 "   0.8147, 0.7346, 0.6544, 0.5742, 0.5344, 0.4941, 0.2052 -- in blocks of 12-16.",
 "",
-"   What goes wrong is downstream. The server's own startup log:",
+"   What went wrong was downstream. The server's startup log before BUG-151's fix:",
 "",
 "       upgrades=70  ability_entries=211  applied_rows=121  applied_entries=86",
 "       unresolved_rows=3940",
 "",
-"   121 damage rows get a per-ability scalar. 3,940 fall back to the default -- about 3%",
-"   resolved. Three causes worth chasing:",
-"",
-"     1. Only 70 of 138 upgrade bins yield a scalar. TryExtractUpgradeLevelScalar discards",
-"        anything outside (0,2], and the same V1/V2 pair legitimately decodes to 5000, 3000,",
-"        1000 and 2000 elsewhere -- the column means different things by Index, undecoded.",
-"     2. A qualifying bin's 20 per-Index entries collapse to whichever fractional candidate",
-"        comes first. That is order-dependent, and 20 entries per bin looks like per-level or",
-"        per-tier data that should not collapse to one number at all.",
-"     3. Bins map to abilities by EffectID then Entry (BuildAbilityLevelScalars). Unverified.",
+"   121 damage rows got a per-ability scalar and 3,940 fell back to the default. BUG-151 now",
+"   takes a scalar only from an entry whose V3 is 1 -- inferred to mean damage, not proven -- so",
+"   a bin with no such entry keeps the default instead of installing an unrelated property's",
+"   factor. What V3 enumerates, and whether bins map to abilities by EffectID then Entry, are",
+"   still open; see docs/INTERNAL_BUG_TRACKER.md.",
 "",
 "   This is the most likely mechanism behind 'the tooltip says one number and the hit does",
 "   another', and it is invisible to this report, which compares the unscaled base.",

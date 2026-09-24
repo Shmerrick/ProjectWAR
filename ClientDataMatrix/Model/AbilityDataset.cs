@@ -15,6 +15,9 @@ namespace ClientDataMatrix.Model
     {
         private static readonly Regex ClientFormattingRegex = new Regex(@"\^[A-Za-z]", RegexOptions.Compiled);
 
+        private Dictionary<uint, List<ClientAbilityRecord>> _clientAbilitiesByEffectId = new Dictionary<uint, List<ClientAbilityRecord>>();
+        private Dictionary<ushort, List<BinaryAbilityRecord>> _binaryAbilitiesById = new Dictionary<ushort, List<BinaryAbilityRecord>>();
+
         public string RootPath { get; private set; }
         public List<TableLoadStatus> TableStatuses { get; private set; }
         public List<ClientAbilityRecord> ClientAbilities { get; private set; }
@@ -30,6 +33,7 @@ namespace ClientDataMatrix.Model
         public List<BinaryAbilityRecord> BinaryAbilities { get; private set; }
         public List<BinaryComponentRecord> BinaryComponents { get; private set; }
         public List<BinaryRequirementRecord> BinaryRequirements { get; private set; }
+        public List<BinaryUpgradeTableRecord> BinaryUpgradeTables { get; private set; }
 
         public static AbilityDataset Load(string rootPath)
         {
@@ -55,10 +59,54 @@ namespace ClientDataMatrix.Model
             dataset.BinaryAbilities = dataset.LoadFile(@"data\bin\abilityexport.bin", "client_bin", "abilityexport.bin", AbilityBinaryParser.ParseAbilityExport);
             dataset.BinaryComponents = dataset.LoadFile(@"data\bin\abilitycomponentexport.bin", "client_bin", "abilitycomponentexport.bin", AbilityBinaryParser.ParseAbilityComponentExport);
             dataset.BinaryRequirements = dataset.LoadFile(@"data\bin\abilityrequirementexport.bin", "client_bin", "abilityrequirementexport.bin", AbilityBinaryParser.ParseAbilityRequirementExport);
+            dataset.BinaryUpgradeTables = dataset.LoadFile(@"data\bin\upgradetableexport.bin", "client_bin", "upgradetableexport.bin", AbilityBinaryParser.ParseUpgradeTableExport);
 
             dataset.ApplyComponentDescriptions();
+            dataset.BuildIndexes();
 
             return dataset;
+        }
+
+        /// <summary>abilities.csv rows for an effect id -- the sheet's own key. See <see cref="ClientAbilityRecord"/>.</summary>
+        public List<ClientAbilityRecord> GetClientAbilityRowsByEffectId(int effectId)
+        {
+            List<ClientAbilityRecord> rows;
+            return effectId > 0 && _clientAbilitiesByEffectId.TryGetValue((uint)effectId, out rows)
+                ? rows
+                : new List<ClientAbilityRecord>();
+        }
+
+        /// <summary>
+        /// abilities.csv rows for an ability, reached through the EffectId on its abilityexport.bin
+        /// record -- the only correct join. An ability with no BIN record, or EffectId 0, has none.
+        /// </summary>
+        public List<ClientAbilityRecord> GetClientAbilityRowsForAbility(ushort abilityId)
+        {
+            List<BinaryAbilityRecord> binRows;
+            return _binaryAbilitiesById.TryGetValue(abilityId, out binRows)
+                ? GetClientAbilityRowsForBinaryRows(binRows)
+                : new List<ClientAbilityRecord>();
+        }
+
+        public List<ClientAbilityRecord> GetClientAbilityRowsForBinaryRows(IEnumerable<BinaryAbilityRecord> binRows)
+        {
+            return (binRows ?? Enumerable.Empty<BinaryAbilityRecord>())
+                .Select(row => (int)row.EffectId)
+                .Where(effectId => effectId > 0)
+                .Distinct()
+                .SelectMany(effectId => GetClientAbilityRowsByEffectId(effectId))
+                .OrderBy(row => row.LineNumber)
+                .ToList();
+        }
+
+        private void BuildIndexes()
+        {
+            _clientAbilitiesByEffectId = ClientAbilities
+                .GroupBy(row => row.EffectId)
+                .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).ToList());
+            _binaryAbilitiesById = BinaryAbilities
+                .GroupBy(row => row.AbilityId)
+                .ToDictionary(group => group.Key, group => group.OrderBy(row => row.RecordIndex).ToList());
         }
 
         private List<ClientAbilityRecord> LoadAbilities(string relativePath)
@@ -75,8 +123,9 @@ namespace ClientDataMatrix.Model
                         continue;
 
                     List<string> columns = SplitCsvLine(line);
-                    uint abilityId;
-                    if (!TryParseUInt(GetColumn(columns, 0), out abilityId))
+                    // The ID column is an effect id, not an ability id -- see ClientAbilityRecord.
+                    uint effectId;
+                    if (!TryParseUInt(GetColumn(columns, 0), out effectId))
                         continue;
 
                     rows.Add(new ClientAbilityRecord
@@ -84,16 +133,16 @@ namespace ClientDataMatrix.Model
                         SourceFamily = "client_csv",
                         TableName = "abilities.csv",
                         SourcePath = fullPath,
-                        RowKey = "line=" + (index + 1).ToString(CultureInfo.InvariantCulture) + ";AbilityId=" + abilityId.ToString(CultureInfo.InvariantCulture),
+                        RowKey = "line=" + (index + 1).ToString(CultureInfo.InvariantCulture) + ";EffectId=" + effectId.ToString(CultureInfo.InvariantCulture),
                         LineNumber = index + 1,
                         RawRow = line,
-                        AbilityId = abilityId,
+                        EffectId = effectId,
                         Name = GetColumn(columns, 1),
                         Description = GetColumn(columns, 2),
                         Notes = GetColumn(columns, 3),
                         IconId = ParseInt(GetColumn(columns, 4)),
                         AnimationId = ParseInt(GetColumn(columns, 7)),
-                        EffectId = ParseInt(GetColumn(columns, 8)),
+                        SpecialEffectId = ParseInt(GetColumn(columns, 8)),
                         PlaybackAnimationId = ParseNullableInt(GetColumn(columns, 9)),
                         ActivateAggro = ParseNullableInt(GetColumn(columns, 12))
                     });

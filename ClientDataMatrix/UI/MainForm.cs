@@ -97,7 +97,6 @@ namespace ClientDataMatrix.UI
         private Button _openConflictMarkdownButton;
         private Button _openConflictFolderButton;
         private CheckBox _hideBlankStringConflictCheckBox;
-        private CheckBox _hideMirrorEffectIdConflictCheckBox;
         private CheckBox _highSignalConflictsOnlyCheckBox;
         private TextBox _conflictSummaryTextBox;
         private DataGridView _conflictDomainGrid;
@@ -357,9 +356,10 @@ namespace ClientDataMatrix.UI
             _openAbilityFolderButton.Click += (sender, args) => OpenPath(string.IsNullOrWhiteSpace(_lastAbilityMarkdownPath) ? null : Path.GetDirectoryName(_lastAbilityMarkdownPath));
             actions.Controls.Add(_openAbilityFolderButton);
 
-            // The ability's own icon, straight from the client. abilities.csv carries an Icon column
-            // that indexes icons.xml directly -- ability 1 "Ard Noggin" is icon 2626 is
-            // abi_squig_ArdNoggin.dds -- so no objects.csv hop, unlike items.
+            // The ability's own icon, straight from the client. The ability's abilityexport.bin
+            // EffectId selects its abilities.csv row -- that sheet is keyed by effect id -- and the
+            // row's Icon column indexes icons.xml directly, with no objects.csv hop unlike items:
+            // ability 692 Rampaging Siphon is effect 232, icon 23154, Archetype_Healer_rampagingsiphon.dds.
             _abilityIconBox = new PictureBox
             {
                 Width = 48,
@@ -426,9 +426,6 @@ namespace ClientDataMatrix.UI
             _hideBlankStringConflictCheckBox = new CheckBox { Text = "Hide Blank String Noise", AutoSize = true };
             _hideBlankStringConflictCheckBox.CheckedChanged += (sender, args) => RefreshConflictView();
             actions.Controls.Add(_hideBlankStringConflictCheckBox);
-            _hideMirrorEffectIdConflictCheckBox = new CheckBox { Text = "Hide AbilityId-Mirror EffectId Pattern", AutoSize = true, Checked = true };
-            _hideMirrorEffectIdConflictCheckBox.CheckedChanged += (sender, args) => RefreshConflictView();
-            actions.Controls.Add(_hideMirrorEffectIdConflictCheckBox);
             _highSignalConflictsOnlyCheckBox = new CheckBox { Text = "High-Signal Only", AutoSize = true };
             _highSignalConflictsOnlyCheckBox.CheckedChanged += (sender, args) => RefreshConflictView();
             actions.Controls.Add(_highSignalConflictsOnlyCheckBox);
@@ -1093,7 +1090,6 @@ namespace ClientDataMatrix.UI
                 _openConflictMarkdownButton.Enabled = false;
                 _openConflictFolderButton.Enabled = false;
                 _hideBlankStringConflictCheckBox.Checked = false;
-                _hideMirrorEffectIdConflictCheckBox.Checked = true;
                 _highSignalConflictsOnlyCheckBox.Checked = false;
 
                 _statusGrid.DataSource = _session.Dataset.TableStatuses.OrderBy(x => x.SourceFamily).ThenBy(x => x.TableName).ToList();
@@ -1209,7 +1205,6 @@ namespace ClientDataMatrix.UI
                 _openConflictMarkdownButton.Enabled = false;
                 _openConflictFolderButton.Enabled = false;
                 _hideBlankStringConflictCheckBox.Checked = false;
-                _hideMirrorEffectIdConflictCheckBox.Checked = true;
                 _highSignalConflictsOnlyCheckBox.Checked = false;
                 AppendLog("Dataset load failed: " + ex.Message);
                 SetBusy(false, "Dataset load failed.");
@@ -1754,15 +1749,16 @@ namespace ClientDataMatrix.UI
                 foreach (string warning in report.Warnings)
                     warnings.Nodes.Add(warning);
 
-            TreeNode csv = root.Nodes.Add("abilities.csv");
+            TreeNode csv = root.Nodes.Add("abilities.csv (keyed by the BIN EffectId)");
             if (report.ClientAbilityRows.Count == 0)
-                csv.Nodes.Add("No client CSV row found.");
+                csv.Nodes.Add("No abilities.csv row for this ability's EffectId.");
             foreach (ClientAbilityRecord row in report.ClientAbilityRows)
             {
-                TreeNode node = csv.Nodes.Add("Line " + row.LineNumber.ToString(CultureInfo.InvariantCulture));
+                TreeNode node = csv.Nodes.Add("Effect " + row.EffectId.ToString(CultureInfo.InvariantCulture) + ", line " + row.LineNumber.ToString(CultureInfo.InvariantCulture));
                 node.Nodes.Add("Name: " + NullToPlaceholder(row.Name));
                 node.Nodes.Add("Description: " + NullToPlaceholder(row.Description));
-                node.Nodes.Add("EffectId: " + row.EffectId.ToString(CultureInfo.InvariantCulture));
+                node.Nodes.Add("Icon: " + row.IconId.ToString(CultureInfo.InvariantCulture));
+                node.Nodes.Add("Special Effect: " + row.SpecialEffectId.ToString(CultureInfo.InvariantCulture));
             }
 
             TreeNode bin = root.Nodes.Add("abilityexport.bin");
@@ -1987,8 +1983,6 @@ namespace ClientDataMatrix.UI
                 : _lastConflictReport.Conflicts;
             if (_hideBlankStringConflictCheckBox != null && _hideBlankStringConflictCheckBox.Checked)
                 conflicts = conflicts.Where(conflict => !conflict.IsNoise);
-            if (_hideMirrorEffectIdConflictCheckBox != null && _hideMirrorEffectIdConflictCheckBox.Checked)
-                conflicts = conflicts.Where(conflict => !string.Equals(conflict.TriageCategory, "AbilityIdMirrorEffectId", StringComparison.OrdinalIgnoreCase));
             if (_highSignalConflictsOnlyCheckBox != null && _highSignalConflictsOnlyCheckBox.Checked)
                 conflicts = conflicts.Where(conflict => string.Equals(conflict.TriageBucket, "Critical", StringComparison.OrdinalIgnoreCase) || string.Equals(conflict.TriageBucket, "High", StringComparison.OrdinalIgnoreCase));
             return conflicts.ToList();
@@ -2334,7 +2328,7 @@ namespace ClientDataMatrix.UI
             builder.AppendLine("Extracted root: " + _session.ExtractedRootPath);
             builder.AppendLine("Loaded sources: " + loaded.ToString(CultureInfo.InvariantCulture) + " / " + _session.Dataset.TableStatuses.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("Failed sources: " + failed.ToString(CultureInfo.InvariantCulture));
-            builder.AppendLine("Client abilities: " + _session.Dataset.ClientAbilities.Count.ToString(CultureInfo.InvariantCulture));
+            builder.AppendLine("abilities.csv rows (keyed by effect id): " + _session.Dataset.ClientAbilities.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("BIN abilities: " + _session.Dataset.BinaryAbilities.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("BIN components: " + _session.Dataset.BinaryComponents.Count.ToString(CultureInfo.InvariantCulture));
             builder.AppendLine("BIN requirements: " + _session.Dataset.BinaryRequirements.Count.ToString(CultureInfo.InvariantCulture));
@@ -2373,8 +2367,6 @@ namespace ClientDataMatrix.UI
             int placeholderStringCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "PlaceholderStringMismatch", StringComparison.OrdinalIgnoreCase));
             int internalAbilityNameCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "InternalAbilityNameMismatch", StringComparison.OrdinalIgnoreCase));
             int internalOnlyAbilityNameCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "InternalOnlyAbilityNameMismatch", StringComparison.OrdinalIgnoreCase));
-            int mirrorEffectIdCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "AbilityIdMirrorEffectId", StringComparison.OrdinalIgnoreCase));
-            int mountOverlayCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "MountOverlayEffectId", StringComparison.OrdinalIgnoreCase));
             int zeroVsEffectCount = report.Conflicts.Count(x => string.Equals(x.TriageCategory, "ZeroVsEffectIdGap", StringComparison.OrdinalIgnoreCase));
             int resolvedEffectSuggestions = report.Conflicts.Count(x => string.Equals(x.Domain, "EffectId", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(x.CanonicalValue));
             int resolvedAbilityNameSuggestions = report.Conflicts.Count(x => string.Equals(x.Domain, "AbilityName", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(x.CanonicalValue));
@@ -2389,8 +2381,6 @@ namespace ClientDataMatrix.UI
                 + "Placeholder/Test String Cases: " + placeholderStringCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
                 + "Internal-vs-Player Ability Name Cases: " + internalAbilityNameCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
                 + "Internal-Only Ability Name Cases: " + internalOnlyAbilityNameCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
-                + "AbilityId-Mirror EffectId Cases: " + mirrorEffectIdCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
-                + "Mount Overlay EffectId Cases: " + mountOverlayCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
                 + "Zero-vs-EffectId Gaps: " + zeroVsEffectCount.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
                 + "EffectId Rows With Canonical Suggestion: " + resolvedEffectSuggestions.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
                 + "AbilityName Rows With Canonical Suggestion: " + resolvedAbilityNameSuggestions.ToString(CultureInfo.InvariantCulture) + Environment.NewLine
@@ -2716,11 +2706,13 @@ namespace ClientDataMatrix.UI
                 if (_iconService == null)
                     _iconService = new ClientItemArtService(_rootPathTextBox.Text);
 
-                ClientAbilityRecord record = _session == null
+                // abilities.csv is keyed by effect id, so the icon is found through the ability's
+                // abilityexport.bin record, never by looking the ability id up in the sheet.
+                ClientAbilityRecord record = _session == null || abilityId > ushort.MaxValue
                     ? null
-                    : _session.Dataset.ClientAbilities.FirstOrDefault(a => a.AbilityId == abilityId);
+                    : _session.Dataset.GetClientAbilityRowsForAbility((ushort)abilityId).FirstOrDefault(a => a.IconId > 0);
 
-                if (record == null || record.IconId <= 0)
+                if (record == null)
                     return;
 
                 string textureName;
@@ -2882,11 +2874,8 @@ namespace ClientDataMatrix.UI
                 int effectId;
                 if (int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out effectId))
                 {
-                    List<string> parts = new List<string> { LookupEffectMeaning(effectId) };
-                    int subjectAbilityId;
-                    if (TryParseAbilityId(conflict.SubjectKey, out subjectAbilityId) && effectId == subjectAbilityId)
-                        parts.Add("matches AbilityId");
-                    return string.Join(" | ", parts.Where(value => !string.IsNullOrWhiteSpace(value)));
+                    string meaning = LookupEffectMeaning(effectId);
+                    return string.IsNullOrWhiteSpace(meaning) ? string.Empty : meaning;
                 }
             }
 
@@ -2909,19 +2898,6 @@ namespace ClientDataMatrix.UI
             List<string> notes = new List<string>();
             if (representative != null && !string.IsNullOrWhiteSpace(representative.FieldName))
                 notes.Add("field " + representative.FieldName);
-
-            if (string.Equals(conflict == null ? string.Empty : conflict.TriageCategory, "AbilityIdMirrorEffectId", StringComparison.OrdinalIgnoreCase))
-            {
-                int subjectAbilityId;
-                int value;
-                string rawValue = representative == null || string.IsNullOrWhiteSpace(representative.RawValue) ? string.Empty : representative.RawValue;
-                if (TryParseAbilityId(conflict == null ? null : conflict.SubjectKey, out subjectAbilityId)
-                    && int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
-                    && value == subjectAbilityId)
-                    notes.Add("mirrors subject AbilityId");
-                else
-                    notes.Add("non-mirror target value");
-            }
 
             string sourceFiles = string.Join(", ", claims.Select(claim => claim.TableName).Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(value => value, StringComparer.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(sourceFiles))
@@ -2970,17 +2946,9 @@ namespace ClientDataMatrix.UI
         private static DataGridViewTextBoxColumn CreateTextColumn(string headerText, string propertyName, int width) { return new DataGridViewTextBoxColumn { HeaderText = headerText, DataPropertyName = propertyName, Width = width, MinimumWidth = Math.Min(width, 60), SortMode = DataGridViewColumnSortMode.Automatic }; }
         private static GroupBox WrapInGroup(string title, Control content) { GroupBox group = new GroupBox { Text = title, Dock = DockStyle.Fill, Padding = new Padding(10) }; group.Controls.Add(content); return group; }
         private static void SelectFirstRow(DataGridView grid) { if (grid != null && grid.Rows.Count > 0 && grid.CurrentCell == null) grid.CurrentCell = grid.Rows[0].Cells[0]; }
-        private static string GetAbilityName(AbilityAnalysisResult report) { ClientAbilityRecord client = report.ClientAbilityRows.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Name)); if (client != null) return client.Name; IndexedStringRecord name = report.AbilityNameRows.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.NormalizedValue)); return name == null ? "Ability" : name.NormalizedValue; }
+        private static string GetAbilityName(AbilityAnalysisResult report) { IndexedStringRecord name = report.AbilityNameRows.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.NormalizedValue)); return name == null ? "Ability" : name.NormalizedValue; }
         private static string EffectName(AbilityAnalysisResult report, int effectId) { ClientEffectRecord row = report.ClientEffectRows.FirstOrDefault(x => x.EffectId == effectId); return row == null ? "Unknown effect" : NullToPlaceholder(row.Name); }
         private static string ResolveSubjectKind(string subjectKey) { if (string.IsNullOrWhiteSpace(subjectKey)) return string.Empty; int separator = subjectKey.IndexOf(':'); return separator <= 0 ? subjectKey : subjectKey.Substring(0, separator); }
-        private static bool TryParseAbilityId(string subjectKey, out int abilityId)
-        {
-            abilityId = 0;
-            if (string.IsNullOrWhiteSpace(subjectKey) || !subjectKey.StartsWith("Ability:", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return int.TryParse(subjectKey.Substring("Ability:".Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out abilityId);
-        }
         private static bool TryParseAbilityIdFromSubjectKey(string subjectKey, out ushort abilityId)
         {
             abilityId = 0;

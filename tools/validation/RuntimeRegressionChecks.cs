@@ -22,6 +22,9 @@ using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.World.Objects.Instances;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Positions;
 
 // Standalone net48 checks against the built server; no services or databases are started.
 internal static class RuntimeRegressionChecks
@@ -51,6 +54,8 @@ internal static class RuntimeRegressionChecks
             CheckOverlays(root);
             CheckRegionMembership();
             CheckInfluence();
+            CheckChannelRange();
+            CheckStaleChannelCallback();
             CheckDungeonPackets();
             CheckDeferredPublicQuestStart();
             CheckOrdinaryCreatureQuestCredit();
@@ -95,6 +100,71 @@ internal static class RuntimeRegressionChecks
     private static void Assert(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
+    }
+
+    private static void CheckStaleChannelCallback()
+    {
+        var host = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var handler = new NewChannelHandler(null, host);
+        var cancelled = new AbilityInfo();
+        var current = new AbilityInfo();
+        var staleBuff = new WorldServer.World.Abilities.Buffs.NewBuff();
+        var currentBuff = new WorldServer.World.Abilities.Buffs.NewBuff();
+        const BindingFlags fields = BindingFlags.Instance | BindingFlags.NonPublic;
+        typeof(NewChannelHandler).GetField("_channelInfo", fields).SetValue(handler, current);
+        var buffField = typeof(NewChannelHandler).GetField("_channelBuff", fields);
+        buffField.SetValue(handler, currentBuff);
+        var callback = typeof(NewChannelHandler).GetMethod("ChannelInitialization", fields);
+        callback.Invoke(handler, new object[] { staleBuff, cancelled });
+        Assert(staleBuff.BuffHasExpired && staleBuff.ChannelHandler == null,
+            "A cancelled cast's delayed buff must expire without joining the current channel");
+        Assert(ReferenceEquals(buffField.GetValue(handler), currentBuff) && handler.HasInfo(),
+            "A stale callback must preserve the current channel and its buff");
+        callback.Invoke(handler, new object[] { null, cancelled });
+        Assert(handler.HasInfo(), "A stale failed callback must not cancel the current channel");
+        handler.NotifyBuffStarted(staleBuff);
+        Assert(handler.HasInfo(), "A stale buff start must not emit a packet for the current channel");
+        // A late callback after cancellation with no replacement is rejected too.
+        typeof(NewChannelHandler).GetField("_channelInfo", fields).SetValue(handler, null);
+        var lateBuff = new WorldServer.World.Abilities.Buffs.NewBuff();
+        callback.Invoke(handler, new object[] { lateBuff, current });
+        Assert(lateBuff.BuffHasExpired && !handler.HasInfo(), "Late callback must not resurrect a channel");
+        Console.WriteLine("PASS: cancelled/replaced channel callbacks cannot affect a newer cast.");
+    }
+
+    private static void CheckChannelRange()
+    {
+        // Exercise a real channel tick with inert units, without starting a buff or a server.
+        var host = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var target = (Unit)FormatterServices.GetUninitializedObject(typeof(Unit));
+        target.Health = 1;
+        var position = typeof(WorldServer.World.Objects.Object).GetField("WorldPosition");
+        position.SetValue(host, new Point3D());
+        position.SetValue(target, new Point3D { X = 1200 });
+        Assert(!host.IsInCastRange(target, 25), "Channel fixture must exceed the old 25-foot limit");
+
+        var channel = new NewChannelHandler(null, host);
+        var info = new AbilityInfo
+        {
+            ConstantInfo = new AbilityConstants { ChannelDuration = 60000, ChannelInterval = 2000 },
+            Range = 0
+        };
+        const BindingFlags fields = BindingFlags.Instance | BindingFlags.NonPublic;
+        typeof(NewChannelHandler).GetField("_channelInfo", fields).SetValue(channel, info);
+        typeof(NewChannelHandler).GetField("_target", fields).SetValue(channel, target);
+        typeof(NewChannelHandler).GetField("_channelStartTime", fields).SetValue(channel, TCPManager.GetTimeStampMS());
+        var nextTick = typeof(NewChannelHandler).GetField("_nextTickTime", fields);
+        nextTick.SetValue(channel, 0L);
+        channel.Update(TCPManager.GetTimeStampMS());
+        Assert(channel.HasInfo() && (long)nextTick.GetValue(channel) == 2000,
+            "A targeted zero-range channel must continue beyond 25 feet and advance its tick");
+
+        info.Range = 150;
+        nextTick.SetValue(channel, 0L);
+        channel.Update(TCPManager.GetTimeStampMS());
+        Assert(channel.HasInfo() && (long)nextTick.GetValue(channel) == 2000,
+            "A nonzero-range channel must continue when its target is within range");
+        Console.WriteLine("PASS: zero-range and in-range channel ticks.");
     }
 
     private static void SaveRaster(string root, int zone, string name, int width, int height, Color color)

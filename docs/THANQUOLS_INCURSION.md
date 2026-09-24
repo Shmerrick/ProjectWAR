@@ -1,5 +1,11 @@
 # Thanquol's Incursion — reference and test guide
 
+Current validation (2026-09-24): `Test-ThanquolEncounter.ps1` passes its stage,
+population-presence and loot-coverage checks, reporting 478 gold-bag rows. It does
+not test admission, boss gating, rewards in play or a full encounter. Counts and
+behavioral expectations below are historical; see the
+[fresh audit](handoffs/2026-09-24-repository-audit.md) before treating them as verified.
+
 Zone 410, `Thanquuol's Incursion` (the DB name carries that typo — do not "fix" it, name
 lookups depend on it). Region 410, Tier 4, `Type` 3.
 

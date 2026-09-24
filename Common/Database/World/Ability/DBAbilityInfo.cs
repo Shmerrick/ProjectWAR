@@ -22,6 +22,14 @@ namespace Common
         [DataElement]
         public ushort Range { get; set; }
 
+        /// <summary>
+        /// The client's TargetType for this ability (data/bin/abilityexport.bin), NULL where the client has
+        /// no record of it. It decides who a cast lands on: 0 and 3 the caster, anything else a target.
+        /// Migration 09 added it.
+        /// </summary>
+        [DataElement]
+        public byte? TargetType { get; set; }
+
         [DataElement]
         public ushort CastTime { get; set; }
 
@@ -76,6 +84,23 @@ namespace Common
         [DataElement]
         public ushort ChannelID { get; set; }
 
+        /// <summary>
+        /// How long a channel lasts, in milliseconds: the duration of the ability's first timed component in
+        /// data/bin/abilitycomponentexport.bin, which is the length the live server sent when a channel
+        /// started. <see cref="CastTime"/> is the client's own, so for a channel it is 0 or the cast that
+        /// comes before it. Migration 10 added it.
+        /// </summary>
+        [DataElement]
+        public uint ChannelDuration { get; set; }
+
+        /// <summary>
+        /// The client's ChannelInterval (data/bin/abilityexport.bin), in milliseconds: how often a channel
+        /// spends <see cref="ApCost"/>. 0 where the client gives none, which means once a second.
+        /// Migration 10 added it.
+        /// </summary>
+        [DataElement]
+        public ushort ChannelInterval { get; set; }
+
         [DataElement]
         public ushort CastAngle { get; set; }
 
@@ -119,6 +144,14 @@ namespace Common
 
         [DataElement]
         public ushort AIRange { get; set; }
+
+        /// <summary>
+        /// How often creature and pet AI may use the ability, in seconds. <see cref="Cooldown"/> mirrors
+        /// the client; the AI paces itself by the larger of the two, so conforming a cooldown to the
+        /// client does not change how often a creature casts. Migration 03 moved the old values here.
+        /// </summary>
+        [DataElement]
+        public ushort AICooldown { get; set; }
 
         /// <summary>
         /// if this is set it will ignore any modifications to the cooldown

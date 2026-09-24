@@ -1,0 +1,21 @@
+﻿Id,Kind,Key,Label,Properties
+ability:28974,ability,28974,Ability 28974,
+component:15590,component,15590,Component 15590,
+component:18526,component,18526,Component 18526,
+component:212,component,212,Component 212,
+component:28974,component,28974,Component 28974,
+effect:3701,effect,3701,Effect 3701,
+effect:3770,effect,3770,Effect 3770,
+row:abilities.csv|line=3910;EffectId=3770,row,abilities.csv|line=3910;EffectId=3770,abilities.csv line=3910;EffectId=3770,line_number=3910 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
+row:abilitycomponentexport.bin|record=10744;ComponentId=18526;offset=1827599,row,abilitycomponentexport.bin|record=10744;ComponentId=18526;offset=1827599,abilitycomponentexport.bin record=10744;ComponentId=18526;offset=1827599,byte_offset=1827599 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=11488;ComponentId=28974;offset=1947704,row,abilitycomponentexport.bin|record=11488;ComponentId=28974;offset=1947704,abilitycomponentexport.bin record=11488;ComponentId=28974;offset=1947704,byte_offset=1947704 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,row,abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,abilitycomponentexport.bin record=6673;ComponentId=212;offset=1169435,byte_offset=1169435 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=9989;ComponentId=15590;offset=1708506,row,abilitycomponentexport.bin|record=9989;ComponentId=15590;offset=1708506,abilitycomponentexport.bin record=9989;ComponentId=15590;offset=1708506,byte_offset=1708506 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitydesc.txt|line=28975;EntryId=28974,row,abilitydesc.txt|line=28975;EntryId=28974,abilitydesc.txt line=28975;EntryId=28974,line_number=28975 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt
+row:abilityexport.bin|record=5397;AbilityId=28974;offset=1077060,row,abilityexport.bin|record=5397;AbilityId=28974;offset=1077060,abilityexport.bin record=5397;AbilityId=28974;offset=1077060,byte_offset=1077060 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin
+row:abilitynames.txt|line=28975;EntryId=28974,row,abilitynames.txt|line=28975;EntryId=28974,abilitynames.txt line=28975;EntryId=28974,line_number=28975 | normalized_value=Summon Mount | raw_value=Summon Mount^n | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt
+row:componenteffects.txt|line=15591;EntryId=15590,row,componenteffects.txt|line=15591;EntryId=15590,componenteffects.txt line=15591;EntryId=15590,line_number=15591 | normalized_value=Movement speed increased by <<1>>%. | raw_value=Movement speed increased by <<1>>%. | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=18527;EntryId=18526,row,componenteffects.txt|line=18527;EntryId=18526,componenteffects.txt line=18527;EntryId=18526,line_number=18527 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=213;EntryId=212,row,componenteffects.txt|line=213;EntryId=212,componenteffects.txt line=213;EntryId=212,line_number=213 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=28975;EntryId=28974,row,componenteffects.txt|line=28975;EntryId=28974,componenteffects.txt line=28975;EntryId=28974,line_number=28975 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:effects.csv|line=3719;EffectId=3701,row,effects.csv|line=3719;EffectId=3701,effects.csv line=3719;EffectId=3701,line_number=3719 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv

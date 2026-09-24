@@ -2,6 +2,11 @@
 
 Goal: make `war_world` the most faithful reconstruction of live 1.4.8 that the evidence supports.
 
+Current review: [September 24 audit](handoffs/2026-09-24-repository-audit.md).
+Migrations 00–10 and the outstanding crosswalk counts were freshly verified. The
+next changes need client acceptance and component/consumer mapping; this document's
+historical measurements are not a claim that every listed gap is still unchanged.
+
 This is a measurement, not a proposal. Every number below was counted on 2026-09-08 against the
 local Release database, the extracted client at `C:\Users\Admin\Downloads\myps`, the 1,027 packet
 captures, and the Londo dump. Regenerate any of them with `ClientDataMatrix crosswalk items` or the
@@ -21,6 +26,14 @@ row. So a gap is only closed when a source says what belongs there, in this orde
 | 3 | **Londo's dump** — the best-developed contributed layer, per the repository owner, from his connection with the Mythic developers | Strong. Settles a question when no capture covers it; still yields to one that does. See `docs/LONDO_DATA_AUDIT.md`. |
 | 3b | WarEmu / Return of Reckoning layers | Weaker corroboration. |
 | 4 | Our own database | The thing being corrected. |
+
+**Where the client holds a value, it wins -- balance values included.** The repository owner's rule,
+2026-09-14: *"I want to go with what the client says always. We should always be conforming to the
+client unless we are physically unable to."* A tier 1 value is taken for cooldowns, ranges, costs,
+damage and durations as much as for names, and over a capture that disagrees. Where the server reads
+a field differently from the client, the server changes rather than the number being bent to fit
+(migration 09 moved cast targeting onto the client's `TargetType`). Whatever cannot be conformed yet
+is queued work with its reason written down, not a decision -- see [Progress](#progress).
 
 **Art existing is not evidence that an item existed.** WAR shipped art for cut content, per-career
 armour variants that were never itemised, and dev scratch. Creating 2,051 items because 2,051
@@ -151,8 +164,13 @@ and is not a data-entry job.
 2. **Gap 1's 199 items** — bounded, each one checked against captures before writing.
 3. **Gap 3**: parse the COM tokens and build the ability crosswalk. No preliminary decode is needed —
    the ordered component list is already parsed into the `Components` column of the ability row.
+   *Done by 2026-09-08. Since 2026-09-13 the lists are read from `abilityexport.bin` itself, because
+   the toolkit import differs from it on 60 abilities.*
 4. Widen it beyond damage: cast time, cooldown, range, duration, interval and radius are all
-   addressable by the same tokens and the same component rows.
+   addressable by the same tokens and the same component rows. *Done 2026-09-13 for cast time,
+   cooldown, range, AP cost, effect id, career line, duration and interval — the first six from the
+   ability record, the last two from tokens; see `docs/ABILITY_DAMAGE_MODEL.md`. Radius is not
+   compared: no mapping from `RADI` to our `EffectRadius` columns holds (268 of 384 tokens differ).*
 5. Only then, migrations against what that report shows.
 
 Steps 1 and 2 are days of careful checking. Step 3 onward is the real restoration, and it is where
@@ -166,9 +184,11 @@ report that names every ability whose numbers disagree with the client, before a
 Added 2026-09-08 after the ability crosswalk landed, because the crosswalk answers a narrower
 question than it appears to.
 
-**The tooltip is a contract with the player.** It is rendered from client files and says what it
-says regardless of the server. If it reads 500 and the hit lands for 400, the server is wrong by
-definition — there is no "our value is also defensible" here.
+**Compare equivalent values.** A tooltip value and a final hit are different stages:
+`CombatManager` applies combat modifiers and mitigation after
+`AbilityDamageInfo.GetDamageForLevel`. A 500 tooltip and 400 hit alone do not prove
+a scaling defect. Validate the base, level/stat scaling and final combat stages
+separately; the client remains the authority for fields it actually establishes.
 
 `MinDamage` is not the tooltip number. It is a base the server scales
 (`WorldServer/World/Abilities/Components/AbilityDamageInfo.cs`):
@@ -263,3 +283,63 @@ Armour rows carry a value there with Speed 0, which is the shape our own `Item.B
 imported with 1188 DPS.
 
 The remaining 104 have Londo only. Left out deliberately.
+
+**Gap 3 (ability crosswalk) -- migrations 00-10 (2026-09-14).** The widened crosswalk and a decode of
+the live `F_USE_ABILITY` frames (`tools/captures/extract_use_ability.awk`) give two independent
+witnesses for an ability's EffectID and cast time. They agree with each other on EffectID for 1,435
+of 1,435 captured abilities and on cast time for 1,298 of 1,312, which also validates the
+crosswalk's reading of `abilityexport.bin`. Migrations 00-02 took what both witnesses agreed on;
+03-10 then took the client's value everywhere else a column can hold it, under the rule above.
+
+| Migration | Rows | Evidence |
+|---|---:|---|
+| `00_fix_ability_timing_units.sql` | 26 cooldowns, 3 cast times | the client's figure stored in the other unit (BUG-166) |
+| `01_restore_ability_effect_ids_from_client.sql` | 22 EffectIDs | tier 1, and the captures wherever they cover the ability |
+| `02_restore_ability_cast_times_from_client_and_captures.sql` | 119 cast times | tiers 1 and 2 agreeing; channels excluded (BUG-167) |
+| `03_conform_ability_cooldowns_to_client.sql` | 1,007 cooldowns | tier 1; the old value moves to `AICooldown`, which creature and pet AI still paces by (BUG-169) |
+| `04_conform_ability_cast_times_to_client.sql` | 524 cast times | tier 1; channels excluded |
+| `05_conform_ability_ap_costs_to_client.sql` | 1,309 AP costs | tier 1; channels excluded |
+| `06_clear_ability_effect_ids_the_client_lacks.sql` | 9 EffectIDs | tier 1 holds none |
+| `07_conform_ability_damage_to_client.sql` | 12 base damage values | tier 1 tooltip token, only where one damage row pairs with one damage token |
+| `08_conform_buff_durations_to_client.sql` | 10 buff durations | tier 1, only where the ability has a single candidate duration |
+| `09_conform_ability_targeting_and_ranges_to_client.sql` | `TargetType` on 5,864 rows, 2,122 ranges | tier 1; who a cast lands on follows `TargetType`, as tier 2 shows the live server did (BUG-168) |
+| `10_conform_ability_channels_to_client.sql` | 87 channels' length, tick, cast time and AP cost; 13 channel buff durations | tier 1 channel flag, component duration and `ChannelInterval`; tier 2 agrees on all 64 captured lengths (BUG-170) |
+
+Afterwards the crosswalk reads, as differ / ours empty / client empty / not representable: cast time
+0 / 0 / 0 / 0, cooldown 0 / 24 / 0 / 25, range 0 / 0 / 0 / 574, AP cost 0 / 8 / 0 / 0, channel flag
+0 / 127 / 0 / 0, channel length 0 / 0 / 5 / 0, channel interval 0 / 0 / 0 / 0, EffectID 0 / 0 / 0 / 0,
+buff duration 5 differing, damage 15 of 408 comparable.
+
+**Conformance queue -- the client disagreements still open.** None of these is a question of whether
+to follow the client. Each needs code or a mapping first, and every row is in
+`docs/data-matrix/crosswalk/ability-crosswalk.csv`.
+
+- *Channels the client flags and we do not: 127* (`FlagsRaw` bit 22; the 8 AP costs still open are
+  among them). 112 have no buff row and no commands at all; the rest carry ability commands, while
+  the channel handler runs only a channel buff, so converting them -- the teleport scrolls
+  14478-14480, and 4980 and 14420, which the captures show channelling -- needs channel-end command
+  execution first. Five pet channels (421, 425, 436, 446, 447) have no client component duration
+  and keep their length.
+- *Channel setbacks and channel buff ticks.* The captures carry type-0x23 timer frames with a falling
+  remaining time on channels, which look like setbacks the emulator never applies to a channel; and
+  several channel buffs tick at a different interval from their component, which needs the
+  component mapping before an interval is taken.
+- *Cooldowns below a second: 49.* `Cooldown` is whole seconds and the client holds 4,500 ms and the
+  like. The column has to move to milliseconds, which touches every `Cooldown * 1000` site and the
+  item cooldowns that read it as seconds.
+- *Ranges finer than a foot: 574.* Taken to the nearest foot, because the server measures distance
+  in whole feet (`GetDistanceToObject`). Exact conformance needs distance checks in the client's
+  twelfth-of-a-foot units.
+- *Damage: 15.* Abilities with several damage rows or several damage tokens -- 12, 1381, 1824, 1848,
+  8003, 8012, 8110, 8220, 8252, 8272, 8392, 8565, 9105, 9562, 9576 -- need the component-to-row
+  mapping before a number can be assigned to a row.
+- *Buff durations: 5.* 1677, 8481, 8494, 10780 and 14245 each have more than one candidate component
+  duration and need the buff-to-component mapping. (8177 and 9485 were channels; migration 10 took
+  their buff duration from the channel's own component.)
+- *Career lines: 402 client-empty, 91 ours-empty, 2 differing* (1713, 9063). The server grants
+  abilities by the `CareerLine` mask, and the client's granting data for shared, tactic and morale
+  abilities has not been found; zeroing the mask without it would ungrant them.
+- *Import checks:* 72 component lists and 3 upgrade-table items where the toolkit import
+  (`mythic_bin_*`, read by the Mythic graph translator) differs from the client.
+- *One capture disagreement on targeting:* 5238 Whirl an' Twirl is TargetType 0 in the client and
+  was cast on another unit in the captures. The client is followed.

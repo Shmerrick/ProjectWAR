@@ -3,6 +3,11 @@
 How the server's ability data lines up with the client's, what was wrong with it, where the wrong
 data came from, and what is still missing. Measured 2026-09-07 against the Release database.
 
+Fresh loader/alignment and direct BIN checks are recorded in the
+[September 24 audit](handoffs/2026-09-24-repository-audit.md). Imported identity-row
+counts below are historical; empty imported component links are not proof of absent
+client components (the Skaven control records are a concrete counterexample).
+
 The premise, from `CLAUDE.md` hard rule 3: **the client is the record of what the real 1.4.8 server
 did.** The emulator computes; the client executes. If the server names, numbers or describes an
 ability differently from the client, the server is wrong by definition.
@@ -22,27 +27,37 @@ caused the damage below. Four sources, checked against each other:
 
 `abilitynames.txt` is the localized string table the client's UI actually renders from, keyed by the
 runtime ability id, so it settles the id space. `mythic_bin_ability` reproduces it at 99.5% — the 69
-exceptions are encoding artifacts and trailing whitespace — and is therefore usable as client truth
-for the columns the string table does not carry.
+exceptions are encoding artifacts and trailing whitespace. This agreement does not
+make the import authoritative for other columns: the direct BIN crosswalk finds
+component-list and upgrade-item differences. Read the client files for those fields.
 
 **`data/gamedata/abilities.csv` is not in that id space.** It is an art and animation authoring
-sheet — its columns are Icon, Animation Build Up, Animation Action, Effect Special, Animation Play,
-Mount Build, ActivateAgro — and its ID column is a row key of its own, drifted by the `;` comment
-rows scattered through it. It agrees with the client's real ability ids on **13 of 3,115**. The
-worked example:
+sheet — its columns are Icon, Buff Icon, the Build Up, Action and Play animations, Special Effect,
+the Mount Build and Mount Action animations, ActivateAgro — and its ID column is an **effect id**: the
+`EffectId` each `abilityexport.bin` record carries, not the ability id. It agrees with the client's
+real ability ids on **13 of 3,115**. The worked example, with the column that explains it:
 
-| id | `abilitynames.txt` (client UI) | `data/gamedata/abilities.csv` |
-| --- | --- | --- |
-| 245 | Flee | Word of Command |
-| 585 | Divine Fury | Avalanche |
-| 692 | Rampaging Siphon | Hip Shot |
-| 695 | Focused Mind | Firebomb |
-| 841 | Dark Blessings | Da Greenest |
+| id | `abilitynames.txt` (client UI) | `data/gamedata/abilities.csv` | whose `abilityexport.bin` `EffectId` it is |
+| --- | --- | --- | --- |
+| 245 | Flee | Word of Command | 14919 Word of Command |
+| 585 | Divine Fury | Avalanche | 1409 Avalanche |
+| 692 | Rampaging Siphon | Hip Shot | 1520 Hip Shot |
+| 695 | Focused Mind | Firebomb | 1523 Firebomb |
+| 841 | Dark Blessings | Da Greenest | 1675 Da Greenest, 3065 Da Greenest, and more |
 
-The left column is one career's action bar — a Disciple of Khaine's, matching a real bar read off
-the wire. The right column is an Engineer/Black Orc/Warrior Priest mix, which no character can have.
-"Hip Shot" is genuinely ability **1520** to the client; row 692 of that CSV is a different thing
-entirely.
+The second column is one career's action bar — a Disciple of Khaine's, matching a real bar read off
+the wire. The third is an Engineer/Black Orc/Warrior Priest mix, which no character can have. Yet every
+row of it is correct *as an effect*: "Hip Shot" is ability **1520** to the client, and 1520's record
+names effect 692. Rampaging Siphon itself is effect 232, whose row is "Rampaging Siphon" with icon
+23154 (`Archetype_Healer_rampagingsiphon.dds`).
+
+So the sheet is usable through exactly one join: ability → `abilityexport.bin` `EffectId` →
+`abilities.csv` row. Joined that way its names match the ability's on 3,767 of 10,094, and it names
+each effect exactly as `effects.csv` does on 3,400 of the 3,705 ids both sheets name. The first figure
+is not higher because one effect often serves several abilities — 1,655 effect ids cover 8,147
+abilities — so a row names the effect rather than every ability that plays it; keep
+`abilitynames.txt` for names. Measured 2026-09-13. ClientDataMatrix itself joined the sheet on ability
+id for names, icons and coverage until then (BUG-165).
 
 ## Which table the server reads
 
@@ -95,13 +110,35 @@ the 2,441 provably CSV-derived values the client says should be none, and cleare
 
 Ability data is cached at boot, so a restart is required.
 
+**`01_restore_ability_effect_ids_from_client.sql`** (2026-09-14) — migration 77 trusted
+`mythic_bin_ability`, and that import is itself wrong or empty on a handful of rows. Read from
+`abilityexport.bin` directly, 12 more EffectIDs were taken: 696, 1712, 3608 and 15981 named effects
+the client does not have or another ability's; 425, 445 and 446 named earlier authored effects; the
+five Puncture ranks had none. Ten CSV-derived "Mount Effects" values were cleared, in a signature
+form migration 77 did not match. The live packet captures confirm the value on every one of these
+they cover with a cast start, and across all 1,435 abilities they cover that way the live EffectID
+equals `abilityexport.bin` without exception. Agreement, counted against the import corrected on
+those rows (`tools/validation/AbilityAlignmentChecks.cs`): `mythic_src_abilities` **8,363**,
+`abilities` **4,168**.
+
+**`06_clear_ability_effect_ids_the_client_lacks.sql`** (2026-09-14) -- under the repository owner's
+rule that the client wins wherever it holds a value (`docs/DATABASE_FIDELITY_PLAN.md`), the nine
+EffectIDs the client record has none of were cleared. Agreement: `mythic_src_abilities` **8,372**,
+`abilities` **4,177**, and every row that still differs is an id `abilityexport.bin` has no record
+of. Migrations 03-09 conformed the rest of the ability row the same way and added two columns to both
+tables: `AICooldown`, the server-only pacing creature and pet AI keeps, and `TargetType`, the
+client's, which now decides who a cast lands on (BUG-168).
+
 ### What was deliberately not changed
 
 - **67 rows (`mythic_src_abilities`) / 57 (`abilities`) where the server carries an `EffectID` and
   the client record has none**, without the CSV signature. Most are unnamed emulator-authored rows —
-  2701 through 2709 all share EffectID 2751. A zero in the client record is equally consistent with
-  the import not having captured one, so there is no evidence to act on. Taking them out would be
-  the same guessing that caused the original problem.
+  2701 through 2709 all share EffectID 2751 -- and most have no `abilityexport.bin` record at all, so
+  there is no client value to take. Migration 01 revisited the ones `abilityexport.bin` does hold: ten
+  carried the CSV signature after all, and 425, 445 and 446 were the import missing the client's
+  value. The last nine (5025, 5240, 5347, 10327, 10328, 10332, 10696, 20649, 27999) were first left
+  alone as unproven; migration 06 cleared them, because the client's empty record is the client's
+  answer.
 - **The 324 remaining name differences.** Mounts, where the client uses one generic "Summon Mount"
   for rows the server names individually ("Blue Roan Elven Mare", "Black Timber Wolf"); emulator
   disambiguation ("Enfeebling Strike Self AP", "Obsessive Focus Debuff", "Burn Away Lies 2");

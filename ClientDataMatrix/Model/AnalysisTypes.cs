@@ -26,15 +26,33 @@ namespace ClientDataMatrix.Model
         public string RawRow { get; set; }
     }
 
+    /// <summary>
+    /// A row of `data/gamedata/abilities.csv`, the client's ability art sheet.
+    ///
+    /// THE SHEET IS KEYED BY EFFECT ID, NOT ABILITY ID. Its `ID` column holds the `EffectId` an
+    /// `abilityexport.bin` record carries, so an ability reaches its row only through that record
+    /// (<see cref="AbilityDataset.GetClientAbilityRowsForAbility"/>). Joined on ability id, names
+    /// agree on 13 of the 2,443 ids where both files carry one; joined through the BIN EffectId they
+    /// agree on 3,767 of 10,094, and the sheet names an effect the same way `effects.csv` does on
+    /// 3,400 of the 3,705 ids both name. One effect often serves several abilities -- 1,655 effect
+    /// ids cover 8,147 abilities -- so `Name` names the effect; `abilitynames.txt` names abilities.
+    /// </summary>
     public sealed class ClientAbilityRecord : SourceRowBase
     {
-        public uint AbilityId { get; set; }
+        /// <summary>`ID` -- an effect id.</summary>
+        public uint EffectId { get; set; }
         public string Name { get; set; }
+
+        /// <summary>`Description` -- authoring notes (row 1 reads `ok`), not tooltip text.</summary>
         public string Description { get; set; }
         public string Notes { get; set; }
+
+        /// <summary>`Icon` -- an `icons.xml` id.</summary>
         public int IconId { get; set; }
         public int AnimationId { get; set; }
-        public int EffectId { get; set; }
+
+        /// <summary>`Special Effect` -- equal to the row's own `ID` on 5,086 of 5,209 rows.</summary>
+        public int SpecialEffectId { get; set; }
         public int? PlaybackAnimationId { get; set; }
         public int? ActivateAggro { get; set; }
     }
@@ -151,6 +169,8 @@ namespace ClientDataMatrix.Model
         public bool RequiresPet { get; set; }
         public bool IsStatsBuff { get; set; }
         public bool IsBuffDebuff { get; set; }
+        // FlagsRaw bit 22: set on all 99 abilities the live captures show channelling, 1 of 1,663 they show casting.
+        public bool IsChanneled { get; set; }
     }
 
     public sealed class BinaryComponentRecord : SourceRowBase
@@ -183,6 +203,38 @@ namespace ClientDataMatrix.Model
         public uint Header { get; set; }
         public ushort RequirementId { get; set; }
         public List<BinaryExtDataRecord> ExtData { get; set; }
+    }
+
+    /// <summary>
+    /// A record of `data/bin/upgradetableexport.bin`: a uint16 id, then 20 items of 16 bytes. The
+    /// client's constructor reads an item as three 32-bit fields and four bytes -- field 0 a float
+    /// (V1 low, V2 high), field 1 `V3 | V4 &lt;&lt; 16`, field 2 `V5 | V6 &lt;&lt; 16`, then V7 and V8 --
+    /// but what fields 1 and 2 select is undecoded (BUG-151). The V names follow the toolkit's
+    /// import, `mythic_bin_abilityupgradeentry`, which joins to <see cref="UpgradeId"/> through
+    /// `mythic_bin_abilityupgradebin.UpgradeID`.
+    /// </summary>
+    public sealed class BinaryUpgradeTableRecord : SourceRowBase
+    {
+        public int RecordIndex { get; set; }
+        public uint Header { get; set; }
+        public ushort UpgradeId { get; set; }
+        public List<BinaryUpgradeItemRecord> Items { get; set; }
+    }
+
+    public sealed class BinaryUpgradeItemRecord
+    {
+        public int Index { get; set; }
+        public ushort V1 { get; set; }
+        public ushort V2 { get; set; }
+        public ushort V3 { get; set; }
+        public ushort V4 { get; set; }
+        public ushort V5 { get; set; }
+        public ushort V6 { get; set; }
+        public ushort V7 { get; set; }
+        public ushort V8 { get; set; }
+
+        /// <summary>Field 0: V1 and V2 read as one 32-bit float -- 43713/15914 is 0.166667.</summary>
+        public float Scalar { get; set; }
     }
 
     public sealed class GraphNode

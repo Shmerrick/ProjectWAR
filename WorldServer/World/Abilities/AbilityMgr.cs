@@ -1012,7 +1012,7 @@ namespace WorldServer.World.Abilities
                 AbilityInfo abInfo = GetAbilityInfo(cAb.AbilityId);
                 if (abInfo != null)
                 {
-                    temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, Math.Max(abInfo.Cooldown, cAb.Cooldown), true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange));
+                    temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, Math.Max(Math.Max(abInfo.Cooldown, abInfo.AICooldown), cAb.Cooldown), true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange));
                     Log.Dump("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + " ~ Loaded");
                 }
                 else

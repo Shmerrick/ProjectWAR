@@ -256,7 +256,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                 SendStart(null);
 
-                ChannelHandler?.NotifyBuffStarted();
+                ChannelHandler?.NotifyBuffStarted(this);
             }
             else
             {

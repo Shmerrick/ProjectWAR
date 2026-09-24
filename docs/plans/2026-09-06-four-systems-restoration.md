@@ -1,5 +1,13 @@
 # Creature abilities, item pets, Thanquol, and playable Skaven
 
+**September 24 review:** this is the historical implementation plan, not a current
+absence inventory. NPC/vanity lifecycle repairs and Thanquol/Skaven scaffolding now
+have passing checks; full gameplay remains unverified. Direct client BIN records
+confirm the Skaven control components, and a Pack Master capture exists. Follow the
+[fresh audit and remaining gates](../handoffs/2026-09-24-repository-audit.md) and
+[corrected Skaven evidence](../SKAVEN_PLAY_AS_MONSTER.md) before implementing a step
+below. Do not repeat work solely because the initial plan calls it missing.
+
 Status: **approved by the user's “Go ahead”; implementation in progress**.
 Scope authority: the user's September 6 request and subsequent approval. The
 original planning pass below used SELECTs and source inspection only. The

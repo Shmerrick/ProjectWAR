@@ -1,6 +1,6 @@
 ﻿# Remaining Work Control Literal Crosswalk
 
-Generated UTC: `2026-03-28T07:55:47.7200699Z`
+Generated UTC: `2026-09-14T19:42:02.8903680Z`
 
 Extracted root: `C:\Users\Admin\Downloads\myps`
 
@@ -12,28 +12,28 @@ Literals: 24
 
 | Rank | Score | RawValue | Obs | Sources | Abilities | Requirements | Interpretation | Contexts | SourceKeys |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 609147 | 1016 | 22 | 6 | 165 | 5 | Root-side control/status literal | CrowdControl, Damage, Disarm, Heal, Immunity, Knockback, Root, Silence, Snare, Stagger | CC ExtData[*].Val6, IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0] |
-| 2 | 503418 | 708 | 43 | 5 | 95 | 1 | Movement-control profile with strongest knockback usage | Damage, Heal, Knockback, Snare, Stun | KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0], Requirements ExtData[*].Val6 |
+| 1 | 609147 | 1016 | 22 | 6 | 165 | 5 | Root-side control/status literal | CrowdControl, Damage, Disarm, Immunity, Knockback, Root, Silence, Snare, Stagger | CC ExtData[*].Val6, IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0] |
+| 2 | 503418 | 708 | 43 | 5 | 95 | 1 | Movement-control profile with strongest knockback usage | Damage, Knockback, Snare, Stun | KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0], Requirements ExtData[*].Val6 |
 | 3 | 454207 | 100 | 432 | 4 | 431 | 43 |  | Damage, Disarm, Heal, Silence, Snare | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, KNOCKBACK ExtData[*].Val6 |
 | 4 | 426178 | 445 | 53 | 4 | 5 | 26 | Hatred threshold selector family | Damage, Knockback | Requirements ExtData[*].Val6, CC ExtData[*].Val6, KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6 |
-| 5 | 413192 | 48 | 17 | 4 | 367 | 4 |  | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Root, Silence, Snare, Stagger, Stun | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0] |
+| 5 | 413192 | 48 | 17 | 4 | 367 | 4 |  | Damage, Disarm, Heal, Immunity, Knockdown, Root, Silence, Stagger, Stun | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0] |
 | 6 | 412668 | 1 | 168 | 4 | 140 | 9 |  | Damage, Heal, Immunity, Knockdown, Root, Snare, Stun | CC FlagsRaw, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0], Requirements ExtData[*].Val6 |
-| 7 | 406635 | 2 | 60 | 4 | 23 | 6 |  | Damage, Heal, Knockdown | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, CC FlagsRaw |
+| 7 | 406635 | 2 | 60 | 4 | 23 | 6 |  | Damage, Heal | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, CC FlagsRaw |
 | 8 | 404019 | 1030 | 44 | 4 | 39 | 3 | Stun control/status literal | CrowdControl, Damage, Snare, Stagger | IMMUNITY ExtData[*].Val6, KNOCKBACK ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0] |
 | 9 | 403361 | 1019 | 11 | 4 | 14 | 3 | Snare control/status literal | CrowdControl, Damage, Disarm, Immunity, Root, Snare, Stun | IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0], APPLY_ABILITY ExtData[*].Val6 |
 | 10 | 402949 | 21 | 24 | 4 | 77 | 1 |  | Damage, Immunity, Knockback, Knockdown, Root, Silence, Snare, Stun | CC ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0], Requirements ExtData[*].Val6 |
 | 11 | 401260 | 1014 | 10 | 4 | 10 | 1 | Knockback-side control/status literal | CrowdControl, Immunity, Knockback, Knockdown, Root, Stagger | IMMUNITY ExtData[*].Val6, IMMUNITY Value[0], APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6 |
 | 12 | 308235 | 1002 | 10 | 3 | 9 | 8 |  | Damage | Requirements ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0] |
 | 13 | 307184 | 1001 | 9 | 3 | 7 | 7 |  | Damage | Requirements ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0] |
-| 14 | 305492 | 3 | 42 | 3 | 18 | 5 |  | Damage, Heal, Knockdown | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0] |
-| 15 | 305456 | 4 | 31 | 3 | 17 | 5 |  | Damage, Heal, Knockdown | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC FlagsRaw |
+| 14 | 305492 | 3 | 42 | 3 | 18 | 5 |  | Damage, Heal | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0] |
+| 15 | 305456 | 4 | 31 | 3 | 17 | 5 |  | Damage, Heal | APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC FlagsRaw |
 | 16 | 305351 | 12 | 76 | 3 | 51 | 4 |  | CrowdControl, Immunity, Knockback, Knockdown, Root, Snare, Stagger | IMMUNITY Value[0], Requirements ExtData[*].Val6, CC FlagsRaw |
 | 17 | 305241 | 1018 | 41 | 3 | 48 | 4 |  | CrowdControl, Damage, Disarm, Root, Silence | IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0] |
 | 18 | 304515 | 24 | 15 | 3 | 60 | 3 |  | CrowdControl, Immunity, Knockback, Knockdown, Root, Silence, Stagger | IMMUNITY Value[0], CC FlagsRaw, Requirements ExtData[*].Val6 |
 | 19 | 303916 | 1015 | 41 | 3 | 35 | 3 | Knockdown control/status literal | CrowdControl | IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0] |
 | 20 | 303184 | 1020 | 9 | 3 | 7 | 3 |  | Immunity | IMMUNITY Value[0], Requirements ExtData[*].Val6, IMMUNITY ExtData[*].Val6 |
 | 21 | 301079 | 1023 | 4 | 3 | 3 | 1 |  |  | IMMUNITY Value[0], CC FlagsRaw, Requirements ExtData[*].Val6 |
-| 22 | 300320 | 38 | 20 | 3 | 12 | 0 |  | Damage, Disarm, Snare | CC FlagsRaw, IMMUNITY Value[0], KNOCKBACK Value[0] |
+| 22 | 300320 | 38 | 20 | 3 | 12 | 0 |  | Damage, Disarm | CC FlagsRaw, IMMUNITY Value[0], KNOCKBACK Value[0] |
 | 23 | 206182 | 1004 | 7 | 2 | 7 | 6 |  | Damage | Requirements ExtData[*].Val6, IMMUNITY Value[0] |
 | 24 | 206139 | 420 | 14 | 2 | 5 | 6 |  | Damage | Requirements ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6 |
 
@@ -50,7 +50,7 @@ Literals: 24
 - Sample requirement ids: `9093, 9214, 9410, 9441, 9487`
 - Interpretation: Root-side control/status literal
 - Notes: High-confidence from `Immovable`, breakable-root CC families, paired APPLY_ABILITY control overlays, and requirement `9093`.
-- Contexts: CrowdControl, Damage, Disarm, Heal, Immunity, Knockback, Root, Silence, Snare, Stagger
+- Contexts: CrowdControl, Damage, Disarm, Immunity, Knockback, Root, Silence, Snare, Stagger
 
 Summary: Observed 22 time(s) across 6 source group(s): CC ExtData[*].Val6, IMMUNITY ExtData[*].Val6, Requirements ExtData[*].Val6, KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, IMMUNITY Value[0]
 
@@ -62,7 +62,7 @@ Summary: Observed 22 time(s) across 6 source group(s): CC ExtData[*].Val6, IMMUN
 | IMMUNITY ExtData[*].Val6 | 6 | 6 | 7 | 0 | 408, 411, 3255, 8408, 9173, 14271, 27832 |  | OnApply, OnPreviousComponentApplied | CrowdControl, Immunity, Root, Snare | Val1=7 (6), Val2=8 (6), Val3=6 (6), Value[0]=12 (6), Value[1]=100 (6) |
 | Requirements ExtData[*].Val6 | 5 | 0 | 12 | 5 | 122, 1377, 1740, 3631, 4800, 5209, 8019, 8330, 9016, 9186, 9330, 13003 | 9093, 9214, 9410, 9441, 9487 |  | Damage, Disarm, Root | Val1=1 (5), Val2=6 (4), Val3=1 (3), Val3=6 (2), Val4=8 (2) |
 | KNOCKBACK ExtData[*].Val6 | 3 | 3 | 4 | 0 | 1831, 8094, 9092, 9396 |  | OnApply, OnPreviousComponentApplied | Damage, Snare, Stagger | Val1=2 (3), Val2=6 (3), Val3=1 (3), Val4=8 (3), Value[0]=25180 (2) |
-| APPLY_ABILITY ExtData[*].Val6 | 1 | 1 | 141 | 0 | 5, 608, 648, 670, 672, 1365, 1370, 1418, 1519, 1520, 1531, 1540 |  | OnBuffEnded, OnPreviousComponentApplied | Damage, Heal, Knockback, Root, Silence, Snare | Val1=2 (1), Val2=8 (1), Val3=6 (1), Val4=9 (1), Val9=1 (1) |
+| APPLY_ABILITY ExtData[*].Val6 | 1 | 1 | 141 | 0 | 5, 608, 648, 670, 672, 1365, 1370, 1418, 1519, 1520, 1531, 1540 |  | OnBuffEnded, OnPreviousComponentApplied | Damage, Knockback, Root, Silence, Snare | Val1=2 (1), Val2=8 (1), Val3=6 (1), Val4=9 (1), Val9=1 (1) |
 | IMMUNITY Value[0] | 1 | 1 | 1 | 0 | 13196 |  | OnApply |  | FlagsRaw=1 (1), Value[1]=100 (1) |
 
 ## Literal `708`
@@ -78,7 +78,7 @@ Summary: Observed 22 time(s) across 6 source group(s): CC ExtData[*].Val6, IMMUN
 - Sample requirement ids: `9091`
 - Interpretation: Movement-control profile with strongest knockback usage
 - Notes: Anchored by generic `Knockback`, `Triumphant Blasting`, `Exile`, `Snare Net`, and `Boss Immunities`. Safe reading: reused movement-control/displacement family spanning `KNOCKBACK`, `VELOCITY`, and `CC`; exact retail enum name is still unresolved.
-- Contexts: Damage, Heal, Knockback, Snare, Stun
+- Contexts: Damage, Knockback, Snare, Stun
 
 Summary: Observed 43 time(s) across 5 source group(s): KNOCKBACK ExtData[*].Val6, APPLY_ABILITY ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0], Requirements ExtData[*].Val6
 
@@ -86,7 +86,7 @@ Summary: Observed 43 time(s) across 5 source group(s): KNOCKBACK ExtData[*].Val6
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| KNOCKBACK ExtData[*].Val6 | 39 | 38 | 92 | 0 | 4651, 4652, 4653, 4654, 4655, 4656, 4657, 4658, 4659, 4660, 4661, 4662 |  | OnApply, OnBuffEnded, OnPreviousComponentApplied | Heal, Knockback, Stun | Val2=6 (39), Val3=1 (39), Val4=8 (39), Val9=1 (38), Val1=2 (25) |
+| KNOCKBACK ExtData[*].Val6 | 39 | 38 | 92 | 0 | 4651, 4652, 4653, 4654, 4655, 4656, 4657, 4658, 4659, 4660, 4661, 4662 |  | OnApply, OnBuffEnded, OnPreviousComponentApplied | Knockback, Stun | Val2=6 (39), Val3=1 (39), Val4=8 (39), Val9=1 (38), Val1=2 (25) |
 | APPLY_ABILITY ExtData[*].Val6 | 1 | 1 | 1 | 0 | 9514 |  | OnEventTriggered |  | Val1=2 (1), Val2=6 (1), Val3=1 (1), Val4=8 (1), Val9=1 (1) |
 | CC ExtData[*].Val6 | 1 | 1 | 1 | 0 | 24824 |  | OnPreviousComponentTick | Damage, Snare | Val1=2 (1), Val2=6 (1), Val3=6 (1), Val4=8 (1), Val7=1 (1) |
 | IMMUNITY Value[0] | 1 | 1 | 1 | 0 | 23894 |  | OnApply |  | FlagsRaw=1 (1), Val1=3 (1), Val2=11 (1), Val3=1 (1), Val4=8 (1) |
@@ -153,7 +153,7 @@ Summary: Observed 53 time(s) across 4 source group(s): Requirements ExtData[*].V
 - Distinct requirements: `4`
 - Sample ability ids: `3, 6, 230, 379, 885, 906, 1369, 1384, 1443, 1494, 1525, 1536`
 - Sample requirement ids: `9092, 9094, 9095, 9096`
-- Contexts: Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Root, Silence, Snare, Stagger, Stun
+- Contexts: Damage, Disarm, Heal, Immunity, Knockdown, Root, Silence, Stagger, Stun
 
 Summary: Observed 17 time(s) across 4 source group(s): APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, IMMUNITY Value[0]
 
@@ -161,7 +161,7 @@ Summary: Observed 17 time(s) across 4 source group(s): APPLY_ABILITY ExtData[*].
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| APPLY_ABILITY ExtData[*].Val6 | 9 | 9 | 362 | 0 | 3, 6, 230, 379, 1369, 1384, 1443, 1494, 1525, 1536, 1607, 1613 |  | OnPreviousComponentApplied | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Root, Silence, Snare, Stagger, Stun | Val1=2 (9), Val2=6 (9), Val3=1 (9), Val4=8 (9), Val9=1 (9) |
+| APPLY_ABILITY ExtData[*].Val6 | 9 | 9 | 362 | 0 | 3, 6, 230, 379, 1369, 1384, 1443, 1494, 1525, 1536, 1607, 1613 |  | OnPreviousComponentApplied | Damage, Disarm, Heal, Immunity, Knockdown, Root, Silence, Stagger, Stun | Val1=2 (9), Val2=6 (9), Val3=1 (9), Val4=8 (9), Val9=1 (9) |
 | Requirements ExtData[*].Val6 | 4 | 0 | 17 | 4 | 6, 885, 906, 1443, 1755, 3218, 3650, 8405, 8412, 8423, 8607, 9253 | 9092, 9094, 9095, 9096 |  | Damage, Disarm, Silence | Val1=1 (4), Val2=6 (4), Val3=1 (4), Val4=8 (4) |
 | CC ExtData[*].Val6 | 3 | 3 | 8 | 0 | 3581, 3582, 3583, 3584, 3585, 9028, 27749, 27773 |  | OnApply, OnPreviousComponentApplied | Damage, Disarm, Immunity, Knockdown, Silence, Stun | FlagsRaw=2175 (3), Val1=2 (3), Val2=6 (3), Val3=1 (3), Val4=8 (3) |
 | IMMUNITY Value[0] | 1 | 1 | 1 | 0 | 23894 |  | OnApply |  | FlagsRaw=1 (1), Val1=3 (1), Val2=11 (1), Val3=1 (1), Val4=8 (1) |
@@ -186,7 +186,7 @@ Summary: Observed 168 time(s) across 4 source group(s): CC FlagsRaw, APPLY_ABILI
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CC FlagsRaw | 73 | 73 | 82 | 0 | 122, 608, 1370, 1418, 1519, 1681, 3631, 3941, 4023, 4032, 4093, 4196 |  | OnApply, OnBuffEnded, OnPreviousComponentApplied | Damage, Immunity, Knockdown, Root, Snare, Stun | Value15=4 (65), Val3=1 (55), Val4=8 (55), Val7=1 (53), Val1=2 (50) |
-| APPLY_ABILITY ExtData[*].Val6 | 60 | 60 | 22 | 0 | 264, 334, 1602, 1734, 1748, 3263, 3270, 3313, 3330, 5499, 9035, 9166 |  | OnApply, OnPreviousComponentApplied | Damage, Heal, Knockdown | Val1=1 (59), Val2=17 (59), Val4=8 (58), Val3=1 (54), FlagsRaw=16 (40) |
+| APPLY_ABILITY ExtData[*].Val6 | 60 | 60 | 22 | 0 | 264, 334, 1602, 1734, 1748, 3263, 3270, 3313, 3330, 5499, 9035, 9166 |  | OnApply, OnPreviousComponentApplied | Damage, Heal | Val1=1 (59), Val2=17 (59), Val4=8 (58), Val3=1 (54), FlagsRaw=16 (40) |
 | IMMUNITY Value[0] | 26 | 26 | 32 | 0 | 4499, 5197, 5262, 5853, 10777, 10781, 10782, 13055, 13162, 13163, 13164, 13165 |  | OnApply, OnPreviousComponentApplied | Damage, Immunity | Value[1]=100 (24), Val4=8 (19), Val3=1 (15), Val7=1 (11), Val1=7 (9) |
 | Requirements ExtData[*].Val6 | 9 | 0 | 4 | 9 | 1444, 1756, 3915, 9258 | 9166, 9253, 9254, 9255, 9298, 9403, 9407, 9416, 9554 |  | Heal | Val1=1 (9), Val3=6 (5), Val2=17 (4), Val3=1 (4), Val4=8 (4) |
 
@@ -201,7 +201,7 @@ Summary: Observed 168 time(s) across 4 source group(s): CC FlagsRaw, APPLY_ABILI
 - Distinct requirements: `6`
 - Sample ability ids: `1465, 1690, 1748, 1906, 3313, 3330, 3915, 4132, 5469, 5499, 8081, 9032`
 - Sample requirement ids: `9076, 9295, 9403, 9407, 9438, 9554`
-- Contexts: Damage, Heal, Knockdown
+- Contexts: Damage, Heal
 
 Summary: Observed 60 time(s) across 4 source group(s): APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC ExtData[*].Val6, CC FlagsRaw
 
@@ -209,7 +209,7 @@ Summary: Observed 60 time(s) across 4 source group(s): APPLY_ABILITY ExtData[*].
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| APPLY_ABILITY ExtData[*].Val6 | 52 | 50 | 16 | 0 | 1465, 1748, 1906, 3313, 3330, 5499, 8081, 9250, 24552, 24553, 24554, 24555 |  | OnApply, OnPreviousComponentApplied | Damage, Heal, Knockdown | Val1=1 (51), Val4=8 (50), Val2=17 (46), Val3=1 (46), FlagsRaw=16 (32) |
+| APPLY_ABILITY ExtData[*].Val6 | 52 | 50 | 16 | 0 | 1465, 1748, 1906, 3313, 3330, 5499, 8081, 9250, 24552, 24553, 24554, 24555 |  | OnApply, OnPreviousComponentApplied | Damage, Heal | Val1=1 (51), Val4=8 (50), Val2=17 (46), Val3=1 (46), FlagsRaw=16 (32) |
 | Requirements ExtData[*].Val6 | 6 | 0 | 5 | 6 | 1690, 3915, 9032, 9258, 9321 | 9076, 9295, 9403, 9407, 9438, 9554 |  | Damage, Heal | Val1=1 (6), Val3=6 (5), Val4=9 (5), Val2=17 (3), Val2=82 (3) |
 | CC ExtData[*].Val6 | 1 | 1 | 1 | 0 | 5469 |  | OnApply |  | FlagsRaw=2559 (1), Val1=2 (1), Val2=68 (1), Val3=6 (1), Val4=8 (1) |
 | CC FlagsRaw | 1 | 1 | 1 | 0 | 4132 |  | OnApply |  | Val1=2 (1), Val2=2 (1), Val3=1 (1), Val4=8 (1), Val7=1 (1) |
@@ -373,7 +373,7 @@ Summary: Observed 9 time(s) across 3 source group(s): Requirements ExtData[*].Va
 - Distinct requirements: `5`
 - Sample ability ids: `1465, 1748, 3313, 3330, 3915, 5499, 9250, 9258, 10320, 24552, 24553, 24554`
 - Sample requirement ids: `9152, 9213, 9403, 9407, 9554`
-- Contexts: Damage, Heal, Knockdown
+- Contexts: Damage, Heal
 
 Summary: Observed 42 time(s) across 3 source group(s): APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, IMMUNITY Value[0]
 
@@ -381,7 +381,7 @@ Summary: Observed 42 time(s) across 3 source group(s): APPLY_ABILITY ExtData[*].
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| APPLY_ABILITY ExtData[*].Val6 | 36 | 36 | 15 | 0 | 1465, 1748, 3313, 3330, 5499, 9250, 10320, 24552, 24553, 24554, 24555, 24556 |  | OnApply | Damage, Heal, Knockdown | Val1=1 (35), Val4=8 (34), Val3=1 (32), Val2=17 (30), FlagsRaw=16 (24) |
+| APPLY_ABILITY ExtData[*].Val6 | 36 | 36 | 15 | 0 | 1465, 1748, 3313, 3330, 5499, 9250, 10320, 24552, 24553, 24554, 24555, 24556 |  | OnApply | Damage, Heal | Val1=1 (35), Val4=8 (34), Val3=1 (32), Val2=17 (30), FlagsRaw=16 (24) |
 | Requirements ExtData[*].Val6 | 5 | 0 | 2 | 5 | 3915, 9258 | 9152, 9213, 9403, 9407, 9554 |  | Heal | Val1=1 (5), Val3=6 (4), Val4=9 (4), Val2=17 (3), Val2=82 (2) |
 | IMMUNITY Value[0] | 1 | 1 | 1 | 0 | 24830 |  | OnApply |  | Val1=7 (1), Val2=8 (1), Val3=6 (1), Val4=8 (1), Val6=4211 (1) |
 
@@ -396,7 +396,7 @@ Summary: Observed 42 time(s) across 3 source group(s): APPLY_ABILITY ExtData[*].
 - Distinct requirements: `5`
 - Sample ability ids: `1748, 3313, 3330, 3915, 4043, 5499, 9032, 9250, 9258, 24552, 24553, 24554`
 - Sample requirement ids: `9295, 9403, 9407, 9438, 9554`
-- Contexts: Damage, Heal, Knockdown
+- Contexts: Damage, Heal
 
 Summary: Observed 31 time(s) across 3 source group(s): APPLY_ABILITY ExtData[*].Val6, Requirements ExtData[*].Val6, CC FlagsRaw
 
@@ -404,7 +404,7 @@ Summary: Observed 31 time(s) across 3 source group(s): APPLY_ABILITY ExtData[*].
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| APPLY_ABILITY ExtData[*].Val6 | 25 | 25 | 13 | 0 | 1748, 3313, 3330, 5499, 9250, 24552, 24553, 24554, 24555, 24556, 24557, 24558 |  | OnApply | Damage, Heal, Knockdown | Val1=1 (24), Val4=8 (24), Val3=1 (22), Val2=17 (21), FlagsRaw=16 (16) |
+| APPLY_ABILITY ExtData[*].Val6 | 25 | 25 | 13 | 0 | 1748, 3313, 3330, 5499, 9250, 24552, 24553, 24554, 24555, 24556, 24557, 24558 |  | OnApply | Damage, Heal | Val1=1 (24), Val4=8 (24), Val3=1 (22), Val2=17 (21), FlagsRaw=16 (16) |
 | Requirements ExtData[*].Val6 | 5 | 0 | 3 | 5 | 3915, 9032, 9258 | 9295, 9403, 9407, 9438, 9554 |  | Damage, Heal | Val1=1 (5), Val4=9 (5), Val3=6 (4), Val2=17 (3), Val2=82 (2) |
 | CC FlagsRaw | 1 | 1 | 1 | 0 | 4043 |  | OnApply |  |  |
 
@@ -559,7 +559,7 @@ Summary: Observed 4 time(s) across 3 source group(s): IMMUNITY Value[0], CC Flag
 - Distinct requirements: `0`
 - Sample ability ids: `1536, 1837, 1865, 3628, 3713, 4129, 8086, 8405, 8495, 9098, 9482, 23034`
 - Sample requirement ids: ``
-- Contexts: Damage, Disarm, Snare
+- Contexts: Damage, Disarm
 
 Summary: Observed 20 time(s) across 3 source group(s): CC FlagsRaw, IMMUNITY Value[0], KNOCKBACK Value[0]
 
@@ -567,7 +567,7 @@ Summary: Observed 20 time(s) across 3 source group(s): CC FlagsRaw, IMMUNITY Val
 
 | Source | Obs | Components | Abilities | Requirements | AbilityIds | RequirementIds | Triggers | Contexts | Companions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CC FlagsRaw | 18 | 18 | 12 | 0 | 1536, 1837, 1865, 3628, 3713, 4129, 8086, 8405, 8495, 9098, 9482, 23034 |  | OnApply, OnEventTriggered, OnPreviousComponentApplied | Damage, Disarm, Snare | Val1=2 (14), Val2=2 (14), Val3=1 (14), Val4=8 (14), Val7=1 (14) |
+| CC FlagsRaw | 18 | 18 | 12 | 0 | 1536, 1837, 1865, 3628, 3713, 4129, 8086, 8405, 8495, 9098, 9482, 23034 |  | OnApply, OnEventTriggered, OnPreviousComponentApplied | Damage, Disarm | Val1=2 (14), Val2=2 (14), Val3=1 (14), Val4=8 (14), Val7=1 (14) |
 | IMMUNITY Value[0] | 1 | 1 | 0 | 0 |  |  |  |  |  |
 | KNOCKBACK Value[0] | 1 | 1 | 0 | 0 |  |  |  |  | Val1=2 (1), Val2=2 (1), Val3=1 (1), Val4=8 (1), Val7=1 (1) |
 

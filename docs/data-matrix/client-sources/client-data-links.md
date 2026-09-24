@@ -22,8 +22,9 @@ named `tk_soultalisman_intelligence` and the item carrying it grants Intelligenc
 the names, not the percentages.
 
 And the standing warning: `data/gamedata/abilities.csv` agrees with the client's real
-ability ids on 13 of 3,115 while looking entirely plausible by these measures. Joining on
-it is what filled `mythic_src_abilities` with another ability's names and effect ids.
+ability ids on 13 of 3,115 while looking entirely plausible by these measures. Its ID column
+is an effect id -- the `EffectId` an `abilityexport.bin` record carries -- and joining on it as
+an ability id is what filled `mythic_src_abilities` with another ability's names and effect ids.
 
 Thresholds: at least 50 distinct values, at least 90% resolving. Column 0 is never treated as a source, being the row id in these files.
 
@@ -262,6 +263,16 @@ Thresholds: at least 50 distinct values, at least 90% resolving. Column 0 is nev
 | `data/gamedata/effectlists.csv` | `ID 2` [3] | `data/gamedata/anim_db.csv` | 261 | 95.0% | 9% | 2 = DEM_Un_Int_wobble; 9 = Root_R45; 10 = orc_run_upper |
 | `data/gamedata/effectlists.csv` | `ID 2` [3] | `data/gamedata/items.csv` | 261 | 93.5% | 99% | 2 = WORLD OBJ or_roadwall_pillar; 9 = WORLD OBJ or_banner06; 10 = WORLD OBJ em_crate_01 |
 | `data/gamedata/effectlists.csv` | `ID 2` [3] | `data/gamedata/effects.csv` | 261 | 92.7% | 82% | 2 = Big Claw; 9 = Poisoned Spine; 10 = Gore |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/gamedata/itemdata.csv` | 244 | 100.0% | 100% | 661 = 0; 1004 = 481; 1016 = 394 |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/gamedata/objects.csv` | 244 | 100.0% | 100% | 649 = DW_Cloth_Start_01_Boots; 651 = DW_Cloth_Start_01_Belt; 653 = DW_Cloth_Start_01_Boots |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/gamedata/packages.csv` | 244 | 100.0% | 100% | 649 = 1705; 651 = 1705; 653 = 1705 |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/abilitydesc.txt` | 244 | 100.0% | 100% | 649 = A cold unyielding focus causes all your attacks to deal {COM_0_VAL1}% more damage for {COM_0_DURA_SECONDS}.; 651 = You focus on a spot on the ground, shooting arrows at that spot every {COM_1_FREQ_SECONDS} for {COM_1_DURA_SECONDS}, hitting all enemies within {COM_1_RADI_FEET} of that area for {COM_1_VAL0_DAMAGE} as long as you maintain your concentration.; 653 = For the next 10 seconds, you will remove and ignore any silencing, disarming, rooting, snaring effects and your abilities will build 50% faster and may not be set back. |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/abilitynames.txt` | 244 | 100.0% | 100% | 649 = Unshakable Focus^n; 651 = Hail of Doom^n; 653 = Focused Mind^n |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/componenteffects.txt` | 244 | 100.0% | 100% | 1372 = Corporeal resistance increased by <<1>>.; 1466 = Periodically suffering <<1>> Damage.; 1616 = Weapon is skill increased by <<1>>. |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/packageinfo.txt` | 244 | 100.0% | 100% | 649 = Increases Strength and Weapon Skill by 3; 651 = Increases Strength and Weapon Skill by 9; 653 = Increases Strength and Weapon Skill by 21 |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/packagenames.txt` | 244 | 100.0% | 100% | 649 = Assault I; 651 = Assault III; 653 = Assault V |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/strings/english/objectivenames.txt` | 244 | 95.5% | 71% | 651 = Grimwood; 653 = Reaper's Field; 5063 = Sari' Daroir |
+| `data/gamedata/pregame_chars.xml` | `id` [1] | `data/gamedata/anim_db.csv` | 244 | 92.6% | 9% | 649 = Or_Un_Int_mood_dance; 661 = Or_Un_Int_talk_charge; 687 = Or_Un_Int_Rest_Kneel-Out |
 | `data/gamedata/effects.csv` | `Effect` [4] | `data/gamedata/effectlists.csv` | 243 | 100.0% | 100% | 3 = flash hit with spiky bits; 5 = Big Heal; 6 = Green skin ZAP |
 | `data/gamedata/effects.csv` | `Effect` [4] | `data/gamedata/effectnifs.csv` | 243 | 100.0% | 100% | 3 = vfx_Cast_GS_Staff; 5 = vfx_orc_CastingLoop_L2; 6 = vfx_orc_CastingLoop_Heals |
 | `data/gamedata/effects.csv` | `Effect` [4] | `data/gamedata/itemdata.csv` | 243 | 100.0% | 100% | 3 = 0; 5 = 2488; 6 = 0 |
@@ -421,16 +432,6 @@ Thresholds: at least 50 distinct values, at least 90% resolving. Column 0 is nev
 | `data/gamedata/emotedata.csv` | `StringTable Id` [4] | `data/strings/english/abilityresults.txt` | 208 | 94.7% | 96% | 102 = Requires Shield; 107 = You can not Guard yourself; 112 = Your Oath Runes are already at their maximum amount, or the target already has 2 |
 | `data/gamedata/emotedata.csv` | `StringTable Id` [5] | `data/strings/english/abilityresults.txt` | 208 | 94.7% | 96% | 103 = That is a passive ability; 108 = Requires Great Weapon; 113 = Your Master Runes are already at their maximum amount |
 | `data/gamedata/emotedata.csv` | `StringTable Id` [6] | `data/strings/english/abilityresults.txt` | 208 | 94.7% | 96% | 104 = You must be wielding a hammer; 109 = You must be a member of a group; 114 = Requires an active pet |
-| `data/gamedata/emotedata.csv` | `StringTable Id` [7] | `data/strings/english/abilityresults.txt` | 208 | 94.7% | 96% | 100 = You are not Berserk; 105 = You must be Guarding your target; 110 = You have reached your limit on bombs |
-| `data/gamedata/emotedata.csv` | `StringTable Id` [6] | `data/gamedata/effects.csv` | 208 | 93.3% | 82% | 9 = Poisoned Spine; 14 = Gas Squig Autoattack; 19 = Git Em! |
-| `data/gamedata/emotedata.csv` | `StringTable Id` [7] | `data/gamedata/effects.csv` | 208 | 93.3% | 82% | 5 = KABOOM!; 10 = Gore; 15 = Spiked Squig Autoattack |
-| `data/gamedata/emotedata.csv` | `StringTable Id` [4] | `data/gamedata/effects.csv` | 208 | 92.3% | 82% | 2 = Big Claw; 7 = Death From Above; 12 = Goop Shootin' |
-| `data/gamedata/emotedata.csv` | `StringTable Id` [5] | `data/gamedata/effects.csv` | 208 | 90.4% | 82% | 3 = Bounce; 8 = Spine Fling; 13 = Spore Cloud |
-| `data/gamedata/jumppoints.csv` | `col6` [6] | `data/gamedata/abilities.csv` | 193 | 100.0% | 96% | 2 = Big Claw; 3 = Bounce; 5 = KABOOM! |
-| `data/gamedata/jumppoints.csv` | `col6` [6] | `data/gamedata/anim_scripts.csv` | 193 | 100.0% | 100% | 2 = Aggro; 3 = die; 4 = Cheer |
-| `data/gamedata/jumppoints.csv` | `col6` [6] | `data/gamedata/anim_statedef.csv` | 193 | 100.0% | 16% | 2 = Portrait-st; 3 = Die for Wyrd (164); 4 = Look |
-| `data/gamedata/jumppoints.csv` | `col6` [6] | `data/gamedata/itemdata.csv` | 193 | 100.0% | 100% | 2 = 0; 3 = 0; 4 = 2486 |
-| `data/gamedata/jumppoints.csv` | `col6` [6] | `data/gamedata/objects.csv` | 193 | 100.0% | 100% | 2 = WORLD OBJ or_roadwall_pillar; 3 = WORLD OBJ dw_mine_wallsupport; 4 = WORLD OBJ dw_ropecoil01 |
 
-_1,658 further candidates below this cut, all less specific than those above._
+_1,668 further candidates below this cut, all less specific than those above._
 

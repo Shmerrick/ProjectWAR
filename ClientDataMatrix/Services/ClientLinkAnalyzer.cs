@@ -18,7 +18,8 @@ namespace ClientDataMatrix.Services
     /// id spaces overlap by coincidence, which is why the thresholds below demand both a high rate
     /// AND a decent number of distinct values, and why the report prints those numbers instead of a
     /// verdict. abilities.csv agrees with the client's real ability ids on 13 of 3,115 -- a link
-    /// that looked plausible and was catastrophically wrong -- so a candidate is a lead to check,
+    /// that looked plausible and was catastrophically wrong, because its ID column is an effect id
+    /// (the `EffectId` an abilityexport.bin record carries) -- so a candidate is a lead to check,
     /// never a conclusion to act on.
     /// </summary>
     public sealed class ClientLinkAnalyzer

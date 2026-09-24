@@ -62,16 +62,25 @@ namespace WorldServer.World.Abilities
             return _channelInfo != null;
         }
 
+        /// <summary>
+        /// How often the channel spends its AP and re-checks range and sight: the client's ChannelInterval,
+        /// whose ApCost is the amount per tick, or once a second where the client gives none.
+        /// </summary>
+        private uint TickInterval
+        {
+            get { return _channelInfo.ConstantInfo.ChannelInterval > 0 ? _channelInfo.ConstantInfo.ChannelInterval : 1000u; }
+        }
+
         #endregion
 
         #region Init
 
         private void StartChannel()
         {
-            if (_channelInfo.CastTime == 0)
-                throw new InvalidOperationException("A channel's cast time must never be zero.");
+            if (_channelInfo.ConstantInfo.ChannelDuration == 0)
+                throw new InvalidOperationException("A channel's duration must never be zero.");
             _channelStartTime = TCPManager.GetTimeStampMS();
-            _nextTickTime = _channelStartTime + 1000;
+            _nextTickTime = _channelStartTime + TickInterval;
             InvokeChannelBuff();
             _host.AbtInterface.SetCooldown(_baseEntry, _channelInfo.Cooldown * 1000);
             if (_playerHost != null && _channelInfo.SpecialCost > 5)
@@ -101,14 +110,14 @@ namespace WorldServer.World.Abilities
 
             if (_target != null && !(_target is GroundTarget))
                 Out.WriteUInt16(_target.Oid);
-            else if (_channelInfo.Range == 0)
+            else if (_channelInfo.TargetsCaster)
                 Out.WriteUInt16(_host.Oid);
             else Out.WriteUInt16(0);
 
             Out.WriteByte(3); // channel
             Out.WriteByte(1);
 
-            Out.WriteUInt32(_channelInfo.CastTime);
+            Out.WriteUInt32(_channelInfo.ConstantInfo.ChannelDuration);
 
             Out.WriteByte(_castSequence);
             Out.WriteUInt16(0);
@@ -146,7 +155,7 @@ namespace WorldServer.World.Abilities
             // Cast finishes
             if (_channelInfo != null)
             {
-                if (TCPManager.GetTimeStampMS() >= _channelStartTime + _channelInfo.CastTime)
+                if (TCPManager.GetTimeStampMS() >= _channelStartTime + _channelInfo.ConstantInfo.ChannelDuration)
                 {
                     SendChannelEnd();
                     _parent.NotifyChannelEnded();
@@ -160,12 +169,14 @@ namespace WorldServer.World.Abilities
                         _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_AP);
                     else if (_playerHost != null && _channelInfo.SpecialCost > 3 && !_playerHost.CrrInterface.ConsumeResource((byte) _channelInfo.SpecialCost, true))
                         _parent.CancelCast(1);
-                    else if (_target != _host && !_host.IsInCastRange(_target, Math.Max((uint) 25, _channelInfo.Range)))
+                    // As at cast start, a targeted ability with range zero has no range limit.
+                    // See migration 09's client TargetType/range and official-capture evidence.
+                    else if (_target != _host && _channelInfo.Range > 0 && !_host.IsInCastRange(_target, Math.Max((uint) 25, _channelInfo.Range)))
                         _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_OUTOFRANGE);
                     else if (_checkVisibility && !_host.LOSHit(_target))
                         _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_NOT_VISIBLE);
                     else
-                        _nextTickTime += 1000;
+                        _nextTickTime += TickInterval;
                 }
             }
         }
@@ -199,16 +210,26 @@ namespace WorldServer.World.Abilities
 			}
 
             BuffInfo buffInfo = AbilityMgr.GetBuffInfo(_channelInfo.Entry, _host, _target);
+            // QueueBuff can complete after cancellation and a subsequent cast. Bind the
+            // callback to this cast's cloned definition, not the handler's mutable state.
+            AbilityInfo pendingChannel = _channelInfo;
+            BuffQueueInfo.BuffCallbackDelegate initialized = buff => ChannelInitialization(buff, pendingChannel);
             if (!string.IsNullOrEmpty(buffInfo.AuraPropagation))
-                _target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, desiredLevel, buffInfo, BuffEffectInvoker.CreateAura, ChannelInitialization));
-            else _target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, desiredLevel, buffInfo, ChannelInitialization));
+                _target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, desiredLevel, buffInfo, BuffEffectInvoker.CreateAura, initialized));
+            else _target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, desiredLevel, buffInfo, initialized));
         }
 
         /// <summary>
         /// Callback to start the channel proper
         /// </summary>
-        public void ChannelInitialization(NewBuff channelBuff)
+        private void ChannelInitialization(NewBuff channelBuff, AbilityInfo pendingChannel)
         {
+            if (!ReferenceEquals(_channelInfo, pendingChannel))
+            {
+                if (channelBuff != null)
+                    channelBuff.BuffHasExpired = true;
+                return;
+            }
 			// Was cancelled before the channel callback
             if (_channelInfo == null || _host == null || _host.IsDead)
             {
@@ -236,9 +257,9 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        public void NotifyBuffStarted()
+        public void NotifyBuffStarted(NewBuff channelBuff)
         {
-            if (_channelInfo != null)  
+            if (_channelInfo != null && ReferenceEquals(_channelBuff, channelBuff))
                 SendChannelStart();
         }
 
@@ -252,7 +273,7 @@ namespace WorldServer.World.Abilities
 
             if (_target != null && !(_target is GroundTarget))
                 Out.WriteUInt16(_target.Oid);
-            else if (_channelInfo?.Range == 0)
+            else if (_channelInfo?.TargetsCaster == true)
                 Out.WriteUInt16(_host.Oid);
             else Out.WriteUInt16(0);
 

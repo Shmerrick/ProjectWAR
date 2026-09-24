@@ -54,10 +54,10 @@ Default roots:
    - browse conflict counts grouped by domain
    - use the `High` column in the domain grid to see which domains still contain real critical/high work after filters are applied
    - inspect the first 500 conflicts for the selected domain, ordered by triage score instead of raw subject order
-   - toggle `Hide Blank String Noise` to suppress the high-volume blank-vs-localized text mismatches while triaging stronger conflicts like `EffectId`
-   - leave `Hide AbilityId-Mirror EffectId Pattern` enabled when you want to suppress the routine `abilities.csv EffectId == AbilityId` cases and focus on the narrower `EffectId` disagreements that do not follow that mirror pattern
+   - toggle `Hide Blank String Noise` to suppress the high-volume blank-vs-localized text mismatches while triaging stronger conflicts
    - toggle `High-Signal Only` when you want the tab to collapse to just `Critical` and `High` conflicts after the other filters have been applied
-   - use the summary panel and category column to separate the remaining `EffectId` work into `AbilityIdMirrorEffectId`, `MountOverlayEffectId`, and `ZeroVsEffectIdGap`, and to split string mismatches into `PlaceholderStringMismatch`, `InternalAbilityNameMismatch`, and `InternalOnlyAbilityNameMismatch` instead of treating every text disagreement as the same problem
+   - use the summary panel and category column to separate `ZeroVsEffectIdGap` from other `EffectId` disagreements, and to split string mismatches into `PlaceholderStringMismatch`, `InternalAbilityNameMismatch`, and `InternalOnlyAbilityNameMismatch` instead of treating every text disagreement as the same problem
+   - read `abilities.csv` names as claims about **effects**: that sheet is keyed by effect id, so its names are compared with `effects.csv` at the same id and it never supplies an ability's name or `EffectId`. The former `AbilityIdMirrorEffectId` and `MountOverlayEffectId` categories, and the checkbox that hid the first, were artifacts of joining it on ability id and have been removed
    - use the `Resolve To` column when you want the tab to show the current canonical recommendation directly in the grid, including the preferred source family, raw value, and decoded effect name when available
    - inspect the `Conflict Profile` panel for the selected row to see the decoded subject, triage category, and source pattern without manually reading every claim first
    - inspect the `Value Meanings` grid to compare raw conflict values against decoded effect names or unit renderings before dropping to claim-level evidence
@@ -407,8 +407,10 @@ proves `ModelId` means art; what proves it is that 8334 is named `tk_soultalisma
 the item carrying it grants Intelligence. Read the names.
 
 The standing warning is in the report itself: `data/gamedata/abilities.csv` agrees with the client's
-real ability ids on 13 of 3,115 while looking entirely plausible by these measures, and joining on it
-is what filled `mythic_src_abilities` with another ability's names and effect ids.
+real ability ids on 13 of 3,115 while looking entirely plausible by these measures, because its ID
+column is an effect id — the `EffectId` an `abilityexport.bin` record carries. Joining on it as an
+ability id is what filled `mythic_src_abilities` with another ability's names and effect ids, and
+ClientDataMatrix itself made the same join for names, icons and coverage until BUG-165.
 
 ### Notes on the readers
 
@@ -593,8 +595,9 @@ data/strings/english/abilitynames.txt   692   Text   Rampaging Siphon
 data/gamedata/abilities.csv             692   Name   Hip Shot
 ```
 
-That is the `mythic_src_abilities` corruption in two lines — an art-authoring sheet and the client's
-real ability ids, disagreeing at the same number. Seeing it costs 70 ms now.
+That is the `mythic_src_abilities` corruption in two lines — two files disagreeing at the same number
+because they number different things. `abilities.csv` is keyed by effect id: its 692 is the effect of
+ability 1520 *Hip Shot*, while Rampaging Siphon's own effect is 232. Seeing it costs 70 ms now.
 
 **Why the third column is the client's own header.** The exporter used to take column 1 as "the
 name", and that was wrong wherever column 1 is not a name. In `zones/*/fixtures.csv` column 1 is
@@ -722,6 +725,43 @@ version of this report called all of them suspect. They are authentic: on every 
 packet capture covers, the live server sent the space too — 36 of 36. Flagging them would invite the
 same "cleanup" that once stripped the `^m`/`^f`/`^n` caret suffixes from 5,210 rows and had to be
 reverted out of the base dump. A *leading* space would still be suspicious; there are none.
+
+## crosswalk abilities — the client's ability data against ours
+
+```powershell
+.\bin\Release\ClientDataMatrix.exe crosswalk abilities
+```
+
+Reads `abilityexport.bin`, `abilitycomponentexport.bin`, `upgradetableexport.bin`, `abilitydesc.txt`
+and `abilitynames.txt` straight from the extracted client, then the ability tables the server loads,
+and writes `docs/data-matrix/crosswalk/ability-crosswalk.md` plus an uncapped `ability-crosswalk.csv`.
+Read-only like the item crosswalk, and it takes the same `--connection`. The **Ability Crosswalk** tab
+runs the same report and explains the reading on screen.
+
+It answers three questions and keeps them apart:
+
+| Section | Tests | Current state |
+|---|---|---|
+| Does the reading hold? | the COM-token logic | 1,368 of 1,414 damage tokens resolve; the 46 failures are named |
+| Does our data match? | `mythic_src_ability_damage_heals`, then eleven `mythic_src_abilities` / `mythic_src_buff_infos` columns under measured unit rules, channels included | damage 393 of 408 agree; per-column counts in `docs/ABILITY_DAMAGE_MODEL.md` |
+| Is the toolkit import faithful? | `mythic_bin_ability` and `mythic_bin_abilityupgradeentry` against the client files | 60 of 11,692 component lists and 3 of 2,760 upgrade items differ |
+
+Column findings are split by kind, and only **value differs from client** — both sides carry a value
+and they disagree — is candidate drift. *Ours carries no value* and *client carries no value* are
+listed separately because a zero on one side is often a convention, and *not representable* marks a
+client value our column's unit cannot hold (a 4,500 ms cooldown in whole seconds). Findings are
+ordered by the distance between the two values in the client's unit, which is how 26 cooldowns
+stored in milliseconds in a seconds column surfaced at the top of their group (BUG-166, fixed by
+migration 00).
+
+Three of those columns are channels (2026-09-14, with migration 10). **Channel** compares the
+client's channel flag — `FlagsRaw` bit 22 of `abilityexport.bin`, set on all 99 abilities the live
+captures show channelling and on 1 of the 1,663 they show casting, and exposed by the parser as
+`BinaryAbilityRecord.IsChanneled` — with `ChannelID` being set. **ChannelDuration** compares the
+Duration of the ability's first timed component, the length the live server sent when a channel
+started, and **ChannelInterval** the client's AP tick; those two are compared only where both sides
+channel. The 127 *ours carries no value* rows under Channel are the client's channels the conformance
+queue in `docs/DATABASE_FIDELITY_PLAN.md` has not converted yet.
 
 ## Item Art tab — icons and 3D identity
 

@@ -1,0 +1,20 @@
+﻿Id,Kind,Key,Label,Properties
+ability:227,ability,227,Ability 227,
+component:14342,component,14342,Component 14342,
+component:212,component,212,Component 212,
+component:3088,component,3088,Component 3088,
+component:3089,component,3089,Component 3089,
+effect:2907,effect,2907,Effect 2907,
+row:abilities.csv|line=3033;EffectId=2907,row,abilities.csv|line=3033;EffectId=2907,abilities.csv line=3033;EffectId=2907,line_number=3033 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
+row:abilitycomponentexport.bin|record=1582;ComponentId=3088;offset=272288,row,abilitycomponentexport.bin|record=1582;ComponentId=3088;offset=272288,abilitycomponentexport.bin record=1582;ComponentId=3088;offset=272288,byte_offset=272288 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=1583;ComponentId=3089;offset=272421,row,abilitycomponentexport.bin|record=1583;ComponentId=3089;offset=272421,abilitycomponentexport.bin record=1583;ComponentId=3089;offset=272421,byte_offset=272421 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,row,abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,abilitycomponentexport.bin record=6673;ComponentId=212;offset=1169435,byte_offset=1169435 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=9049;ComponentId=14342;offset=1544810,row,abilitycomponentexport.bin|record=9049;ComponentId=14342;offset=1544810,abilitycomponentexport.bin record=9049;ComponentId=14342;offset=1544810,byte_offset=1544810 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitydesc.txt|line=228;EntryId=227,row,abilitydesc.txt|line=228;EntryId=227,abilitydesc.txt line=228;EntryId=227,line_number=228 | normalized_value=Summons a Pretty Pretty Test Unicorn! Yay! Activate again to remove the PPTU. | raw_value=Summons a Pretty Pretty Test Unicorn! Yay! Activate again to remove the PPTU. | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt
+row:abilityexport.bin|record=1120;AbilityId=227;offset=218183,row,abilityexport.bin|record=1120;AbilityId=227;offset=218183,abilityexport.bin record=1120;AbilityId=227;offset=218183,byte_offset=218183 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin
+row:abilitynames.txt|line=228;EntryId=227,row,abilitynames.txt|line=228;EntryId=227,abilitynames.txt line=228;EntryId=227,line_number=228 | normalized_value=Test Mount Ability | raw_value=Test Mount Ability^n | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt
+row:componenteffects.txt|line=14343;EntryId=14342,row,componenteffects.txt|line=14343;EntryId=14342,componenteffects.txt line=14343;EntryId=14342,line_number=14343 | normalized_value=Movement speed increased by <<1>>%. | raw_value=Movement speed increased by <<1>>%. | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=213;EntryId=212,row,componenteffects.txt|line=213;EntryId=212,componenteffects.txt line=213;EntryId=212,line_number=213 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=3089;EntryId=3088,row,componenteffects.txt|line=3089;EntryId=3088,componenteffects.txt line=3089;EntryId=3088,line_number=3089 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=3090;EntryId=3089,row,componenteffects.txt|line=3090;EntryId=3089,componenteffects.txt line=3090;EntryId=3089,line_number=3090 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:effects.csv|line=3007;EffectId=2907,row,effects.csv|line=3007;EffectId=2907,effects.csv line=3007;EffectId=2907,line_number=3007 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv

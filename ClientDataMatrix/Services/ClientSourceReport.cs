@@ -229,8 +229,9 @@ namespace ClientDataMatrix.Services
             text.AppendLine("the names, not the percentages.");
             text.AppendLine();
             text.AppendLine("And the standing warning: `data/gamedata/abilities.csv` agrees with the client's real");
-            text.AppendLine("ability ids on 13 of 3,115 while looking entirely plausible by these measures. Joining on");
-            text.AppendLine("it is what filled `mythic_src_abilities` with another ability's names and effect ids.");
+            text.AppendLine("ability ids on 13 of 3,115 while looking entirely plausible by these measures. Its ID column");
+            text.AppendLine("is an effect id -- the `EffectId` an `abilityexport.bin` record carries -- and joining on it as");
+            text.AppendLine("an ability id is what filled `mythic_src_abilities` with another ability's names and effect ids.");
             text.AppendLine();
             text.AppendLine("Thresholds: at least " + ClientLinkAnalyzer.MinimumDistinctValues
                 + " distinct values, at least "

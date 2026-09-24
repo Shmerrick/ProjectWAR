@@ -4,6 +4,8 @@ $BuildRoot = (Resolve-Path -LiteralPath $BuildRoot).Path
 [xml]$config = Get-Content -LiteralPath (Join-Path $BuildRoot 'Configs/World.xml')
 $db = $config.DocumentElement.WorldDatabase
 if ($db.ConnectionType -ne 'DATABASE_MYSQL') { throw 'This audit requires the configured MySQL database.' }
+$assemblyResolver = & (Join-Path $PSScriptRoot 'Use-BuildAssemblies.ps1') -BuildRoot $BuildRoot
+try {
 [void][Reflection.Assembly]::LoadFrom((Join-Path $BuildRoot 'libs/MySql.Data.dll'))
 $builder = New-Object MySql.Data.MySqlClient.MySqlConnectionStringBuilder
 $builder.set_ConnectionString([string]$db.Custom)
@@ -104,3 +106,4 @@ try {
     }
     Write-Output 'PASS: all 24 archive records match every original column; no live placements; empty-objective audit detects the negative fixture.'
 } finally { $connection.Dispose() }
+} finally { $assemblyResolver.Dispose() }

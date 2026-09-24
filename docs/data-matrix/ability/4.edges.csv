@@ -1,5 +1,3 @@
 ﻿Id,Kind,FromNodeId,ToNodeId,Label,ClaimId
-edge:1,declared_by,ability:4,row:abilities.csv|line=9;AbilityId=4,abilities.csv,
-edge:2,declared_by,effect:4,row:effects.csv|line=9;EffectId=4,effects.csv,
-edge:4,localized_description,ability:4,row:abilitydesc.txt|line=5;EntryId=4,abilitydesc.txt,claim:5
-edge:3,localized_name,ability:4,row:abilitynames.txt|line=5;EntryId=4,abilitynames.txt,claim:4
+edge:2,localized_description,ability:4,row:abilitydesc.txt|line=5;EntryId=4,abilitydesc.txt,claim:2
+edge:1,localized_name,ability:4,row:abilitynames.txt|line=5;EntryId=4,abilitynames.txt,claim:1

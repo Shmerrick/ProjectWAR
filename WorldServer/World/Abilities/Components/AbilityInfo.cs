@@ -24,6 +24,7 @@ namespace WorldServer.World.Abilities.Components
             Range = dbObj.Range;
             CastTime = dbObj.CastTime;
             Cooldown = dbObj.Cooldown;
+            AICooldown = dbObj.AICooldown;
             ApCost = dbObj.ApCost;
             SpecialCost = dbObj.SpecialCost;
             CanCastWhileMoving = dbObj.MoveCast;
@@ -128,6 +129,9 @@ namespace WorldServer.World.Abilities.Components
 
         public ushort Cooldown;
 
+        /// <summary>AI pacing in seconds; the AI uses the larger of this and Cooldown.</summary>
+        public ushort AICooldown;
+
         public byte ApCost;
 
         /// <summary>
@@ -138,6 +142,24 @@ namespace WorldServer.World.Abilities.Components
         public bool CanCastWhileMoving;
 
         public CommandTargetTypes TargetType { get; set; }
+
+        /// <summary>
+        /// True when a cast of this ability lands on its caster. The live server decided that by the
+        /// client's TargetType, not by range: in the packet captures, TargetType 0 and 3 abilities were cast
+        /// on their caster whatever their range, and TargetType 1 abilities on another unit even at range 0.
+        /// Abilities the client has no record of keep the emulator's older rule, a range of 0.
+        /// </summary>
+        public bool TargetsCaster
+        {
+            get
+            {
+                byte? clientTargetType = ConstantInfo?.ClientTargetType;
+                if (clientTargetType.HasValue)
+                    return clientTargetType.Value == 0 || clientTargetType.Value == 3;
+                return Range == 0;
+            }
+        }
+
         public float FlightTimeMod = 1.0f;
 
         public Unit Instigator;

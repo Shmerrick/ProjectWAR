@@ -1,6 +1,6 @@
 ﻿# Requirement Ledger
 
-Generated UTC: `2026-03-28T06:57:05.0904183Z`
+Generated UTC: `2026-09-14T19:41:59.5553845Z`
 
 Extracted root: `C:\Users\Admin\Downloads\myps`
 
@@ -16,6 +16,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | client_bin | abilitycomponentexport.bin | True | 18526 | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin |  |
 | client_bin | abilityexport.bin | True | 11736 | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin |  |
 | client_bin | abilityrequirementexport.bin | True | 655 | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin |  |
+| client_bin | upgradetableexport.bin | True | 138 | C:\Users\Admin\Downloads\myps\data\bin\upgradetableexport.bin |  |
 | client_csv | abilities.csv | True | 5210 | C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv |  |
 | client_csv | effects.csv | True | 4445 | C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv |  |
 | client_strings | abilitydesc.txt | True | 29001 | C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt |  |
@@ -38,11 +39,11 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9006 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9007 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9008 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9009 | 1 | 17 | 21 | 4 | 0 | 0 | Damage | 241 (Caustic Torrent), 611 (Onslaught), 1361 (Yer A Weaklin'), 1369 (Lookit What I Did!), 1378 (Leaky Brainz), 1382 (You Really Got Nothin), 1405 (Stand Strong!), 1669 (Exalted Defenses) | Observed in Damage contexts; direct ability usage 21; component sources 4. |
+| 9009 | 1 | 17 | 21 | 4 | 0 | 0 | Damage | 241 (Hold The Line!), 611 (Shield Wall), 1361 (Shield Sweep), 1369 (Shield of Reprisal), 1378 (Hold The Line!), 1382 (Oathstone), 1405 (Shield Mastery), 1669 (Tuffer 'n Nails) | Observed in Damage contexts; direct ability usage 21; component sources 4. |
 | 9010 | 1 | 4 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9011 | 1 | 4 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9012 | 1 | 4 | 1 | 1 | 0 | 0 |  | 3514 (Old Sovereign GIAB - Marauder - Sadist) | direct ability usage 1; component sources 1. |
-| 9013 | 1 | 9 | 1 | 1 | 0 | 0 | Damage | 565 (Earthshatter) | Observed in Damage contexts; direct ability usage 1; component sources 1. |
+| 9012 | 1 | 4 | 1 | 1 | 0 | 0 |  | 3514 (Distracting Bellow +Threat) | direct ability usage 1; component sources 1. |
+| 9013 | 1 | 9 | 1 | 1 | 0 | 0 | Damage | 565 (I Stand Alone) | Observed in Damage contexts; direct ability usage 1; component sources 1. |
 | 9014 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9015 | 1 | 10 | 0 | 1 | 1 | 0 |  |  | component sources 1. |
 | 9016 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -67,7 +68,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9035 | 1 | 18 | 0 | 0 | 0 | 3 |  |  | child requirement ids 9032, 9033, 9034. |
 | 9036 | 1 | 35 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9037 | 1 | 35 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9038 | 1 | 11 | 6 | 1 | 0 | 2 | Damage, Snare | 1450 (;Knight Spec Tactics), 1463 (No Escape), 1465 (Guardian Of Light), 1762 (Warping Embrace), 1774 (Wot's Da Rush?), 1776 (Flail) | Observed in Damage, Snare contexts; direct ability usage 6; component sources 1; child requirement ids 9036, 9037. |
+| 9038 | 1 | 11 | 6 | 1 | 0 | 2 | Damage, Snare | 1450 (Retribution), 1463 (No Escape), 1465 (Inevitable Doom), 1762 (Bring It On), 1774 (Wot's Da Rush?), 1776 (Git To Da Choppa) | Observed in Damage, Snare contexts; direct ability usage 6; component sources 1; child requirement ids 9036, 9037. |
 | 9039 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9040 | 1 | 4 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9041 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
@@ -86,7 +87,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9054 | 1 | 23 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9055 | 1 | 14 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9054. |
 | 9056 | 1 | 14 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9057 | 1 | 10 | 1 | 5 | 1 | 0 |  | 3860 (Drunken Blow) | direct ability usage 1; component sources 5. |
+| 9057 | 1 | 10 | 1 | 5 | 1 | 0 |  | 3860 (Transference) | direct ability usage 1; component sources 5. |
 | 9058 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9059 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9060 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -94,7 +95,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9062 | 1 | 9 | 0 | 0 | 0 | 2 |  |  | child requirement ids 9060, 9061. |
 | 9063 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9064 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9065 | 1 | 9 | 1 | 1 | 0 | 0 |  | 3948 (Leadbelcher Melee) | direct ability usage 1; component sources 1. |
+| 9065 | 1 | 9 | 1 | 1 | 0 | 0 |  | 3948 (Taunt Events) | direct ability usage 1; component sources 1. |
 | 9066 | 1 | 3 | 4 | 0 | 1 | 0 | Damage, Disarm | 8086 (Confess!), 8405 (Death Grip), 8414 (Gut Ripper), 9400 (Sever Limb) | Observed in Damage, Disarm contexts; direct ability usage 4. |
 | 9067 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9068 | 1 | 15 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9069. |
@@ -105,32 +106,32 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9073 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9074 | 1 | 12 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9069. |
 | 9075 | 1 | 10 | 0 | 0 | 0 | 2 |  |  | child requirement ids 9068, 9074. |
-| 9076 | 1 | 4 | 2 | 0 | 1 | 0 | Damage | 1690 (Divine Aegis), 9321 (Spiteful Slam) | Observed in Damage contexts; direct ability usage 2. |
+| 9076 | 1 | 4 | 2 | 0 | 1 | 0 | Damage | 1690 (Ya Missed Me), 9321 (Spiteful Slam) | Observed in Damage contexts; direct ability usage 2. |
 | 9077 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9078 | 1 | 15 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9079. |
-| 9079 | 1 | 10 | 8 | 16 | 2 | 0 | Damage | 1367 (Dat Makes Me Dizzy), 1372 (Watch An' Learn), 1380 (Mork's Touch), 1383 (Ere We Goes Again), 1386 (Runic Shield), 3821 (Raking Claws), 3822 (Pounce), 3825 (Brute Force) | Observed in Damage contexts; direct ability usage 8; component sources 16. |
+| 9079 | 1 | 10 | 8 | 16 | 2 | 0 | Damage | 1367 (Stubborn As Stone), 1372 (Watch An' Learn), 1380 (Oathbound), 1383 (Ancestor's Fury), 1386 (Runic Shield), 3821 (Guarded Attack), 3822 (Vengeful Strike), 3825 (Avenging The Debt) | Observed in Damage contexts; direct ability usage 8; component sources 16. |
 | 9080 | 1 | 9 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9081 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9082 | 1 | 11 | 0 | 0 | 0 | 2 |  |  | child requirement ids 9080, 9081. |
 | 9083 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9084 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9085 | 1 | 4 | 1 | 0 | 0 | 0 | Damage | 8412 (Mutated Energy) | Observed in Damage contexts; direct ability usage 1. |
-| 9086 | 1 | 11 | 1 | 2 | 0 | 0 |  | 843 (Savin' Me Hide) | direct ability usage 1; component sources 2. |
+| 9086 | 1 | 11 | 1 | 2 | 0 | 0 |  | 843 (Focused Insanity) | direct ability usage 1; component sources 2. |
 | 9087 | 1 | 5 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9077. |
-| 9088 | 1 | 5 | 20 | 0 | 0 | 0 | Damage, Heal, Silence, Snare | 1820 (Scything Talons), 1821 (Exhaustive Strikes), 1822 (Deadly Clutch), 1823 (Corrupted Edge), 1825 (Unstable Convulsions), 1826 (Hulking Brute), 1829 (Cut Ya!), 1833 (Tzeentch's Reversal) | Observed in Damage, Heal, Silence, Snare contexts; direct ability usage 20. |
+| 9088 | 1 | 5 | 20 | 0 | 0 | 0 | Damage, Heal, Silence, Snare | 1820 (Stabbity), 1821 (Plink), 1822 (Yer Bleedin'!), 1823 (What Blocka?), 1825 (Stop Runnin!), 1826 (Run 'n Shoot), 1829 (Cut Ya!), 1833 (Explodin' Arrer) | Observed in Damage, Heal, Silence, Snare contexts; direct ability usage 20. |
 | 9089 | 1 | 15 | 0 | 2 | 0 | 0 |  |  | component sources 2. |
 | 9090 | 1 | 33 | 1 | 1 | 0 | 0 |  | 3665 (Stay Focused!) | direct ability usage 1; component sources 1. |
 | 9091 | 1 | 5 | 4 | 3 | 0 | 0 |  | 14157 (Fireball), 14301 (Fireball), 14302 (Shot), 14303 (Arrow) | direct ability usage 4; component sources 3. |
-| 9092 | 1 | 5 | 8 | 10 | 0 | 0 | Damage | 6 (;/end), 1443 (Sun's Blessing), 1755 (Embrace The Winds), 3650 (Oath Rune of Sanctuary), 8412 (Mutated Energy), 8423 (Concussive Jolt), 13262 (Smash), 15509 (Ground Stomp) | Observed in Damage contexts; direct ability usage 8; component sources 10. |
-| 9093 | 1 | 5 | 5 | 5 | 0 | 0 | Root | 122 (Claw Sweep), 3631 (Crippling Bomb), 4800 (Solar Flare), 5209 (Dissipating Buffer), 13003 (Grasp of the Dead) | Observed in Root contexts; direct ability usage 5; component sources 5. |
-| 9094 | 1 | 9 | 8 | 11 | 1 | 0 | Damage, Silence | 885 (Quit Yer Squabblin'), 906 (Fling Choppa), 3218 (Grave Dust), 8607 (Suppressing The Fragile Unbelievers), 9253 (Law of Gold), 9304 (Arcane Suppression), 27677 (Silence!), 27709 (Silence!) | Observed in Damage, Silence contexts; direct ability usage 8; component sources 11. |
+| 9092 | 1 | 5 | 8 | 10 | 0 | 0 | Damage | 6 (Death From Above), 1443 (Incapacitate), 1755 (Sit Down!), 3650 (Oath Rune of Sanctuary), 8412 (Mutated Energy), 8423 (Concussive Jolt), 13262 (Smash), 15509 (Ground Stomp) | Observed in Damage contexts; direct ability usage 8; component sources 10. |
+| 9093 | 1 | 5 | 5 | 5 | 0 | 0 | Root | 122 (Grasp of the Dead), 3631 (Crippling Bomb), 4800 (Grasp of the Dead), 5209 (Rattling Bones), 13003 (Grasp of the Dead) | Observed in Root contexts; direct ability usage 5; component sources 5. |
+| 9094 | 1 | 9 | 8 | 11 | 1 | 0 | Damage, Silence | 885 (Deafening Waaagh!), 906 (Deafening Waaagh!), 3218 (You Got Nuthin!), 8607 (Suppressing The Fragile Unbelievers), 9253 (Law of Gold), 9304 (Arcane Suppression), 27677 (Silence!), 27709 (Silence!) | Observed in Damage, Silence contexts; direct ability usage 8; component sources 11. |
 | 9095 | 1 | 5 | 1 | 1 | 1 | 0 | Disarm | 8405 (Death Grip) | Observed in Disarm contexts; direct ability usage 1; component sources 1. |
 | 9096 | 1 | 5 | 0 | 3 | 0 | 0 |  |  | component sources 3. |
 | 9097 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9098 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9099 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9100 | 1 | 15 | 172 | 212 | 0 | 0 | Damage, Heal, Immunity, Stun | 12 (Goop Shootin'), 74 (Pay No Mind), 97 (Clever Recovery), 694 (Flashbang Grenade), 1409 (Taunt), 1488 (Feinted Positioning), 1544 (Bugman's Best), 1586 (Power From The Ashes) | Observed in Damage, Heal, Immunity, Stun contexts; direct ability usage 172; component sources 212. |
-| 9101 | 1 | 6 | 11 | 9 | 0 | 0 | Damage, Heal, Knockdown | 697 (Self-Destruct), 1598 (Burn Through), 1619 (Grimnir's Fury), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Observed in Damage, Heal, Knockdown contexts; direct ability usage 11; component sources 9. |
+| 9100 | 1 | 15 | 172 | 212 | 0 | 0 | Damage, Heal | 12 (Spore Cloud), 74 (Sub Test), 97 (Channel Test: Maintain), 694 (Divine Favor), 1409 (Avalanche), 1488 (Takin' Chances), 1544 (Bugman's Best), 1586 (Rune of Striking) | Observed in Damage, Heal contexts; direct ability usage 172; component sources 212. |
+| 9101 | 1 | 6 | 11 | 9 | 0 | 0 | Damage, Heal | 697 (Alter Fate), 1598 (Rune of Life), 1619 (Grimnir's Fury), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Observed in Damage, Heal contexts; direct ability usage 11; component sources 9. |
 | 9102 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9103 | 1 | 29 | 0 | 1 | 0 | 0 |  |  | component sources 1. |
 | 9104 | 1 | 14 | 0 | 1 | 0 | 0 |  |  | component sources 1. |
@@ -148,9 +149,9 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9116 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9117 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9118 | 1 | 11 | 0 | 4 | 0 | 2 |  |  | component sources 4; child requirement ids 9116, 9117. |
-| 9119 | 1 | 11 | 5 | 1 | 3 | 0 | Damage, Heal | 3041 (Bleed), 8401 (Tainted Claw), 8414 (Gut Ripper), 8418 (Cutting Claw), 8419 (Draining Swipe) | Observed in Damage, Heal contexts; direct ability usage 5; component sources 1. |
-| 9120 | 1 | 11 | 5 | 1 | 3 | 0 | Damage, Heal | 3042 (Sacellum Small Peff), 8399 (Impale), 8406 (Convulsive Slashing), 8420 (Guillotine), 8422 (Wave of Terror) | Observed in Damage, Heal contexts; direct ability usage 5; component sources 1. |
-| 9121 | 1 | 11 | 3 | 1 | 3 | 0 | Damage | 3043 (Sacellum Big Peff), 8409 (Demolition), 8425 (Wrecking Ball) | Observed in Damage contexts; direct ability usage 3; component sources 1. |
+| 9119 | 1 | 11 | 5 | 1 | 3 | 0 | Damage, Heal | 3041 (Gift of Savagery), 8401 (Tainted Claw), 8414 (Gut Ripper), 8418 (Cutting Claw), 8419 (Draining Swipe) | Observed in Damage, Heal contexts; direct ability usage 5; component sources 1. |
+| 9120 | 1 | 11 | 5 | 1 | 3 | 0 | Damage, Heal | 3042 (Gift of Brutality), 8399 (Impale), 8406 (Convulsive Slashing), 8420 (Guillotine), 8422 (Wave of Terror) | Observed in Damage, Heal contexts; direct ability usage 5; component sources 1. |
+| 9121 | 1 | 11 | 3 | 1 | 3 | 0 | Damage | 3043 (Gift of Monstrosity), 8409 (Demolition), 8425 (Wrecking Ball) | Observed in Damage contexts; direct ability usage 3; component sources 1. |
 | 9122 | 1 | 17 | 4 | 2 | 0 | 3 | Damage | 3615 (Chaotic Disruption), 8392 (Flail), 8415 (Gift of Release), 8439 (Exhaustive Strikes) | Observed in Damage contexts; direct ability usage 4; component sources 2; child requirement ids 9119, 9120, 9121. |
 | 9123 | 1 | 5 | 0 | 3 | 0 | 0 |  |  | component sources 3. |
 | 9124 | 1 | 5 | 0 | 4 | 0 | 0 |  |  | component sources 4. |
@@ -164,13 +165,13 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9132 | 1 | 15 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9133 | 1 | 16 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9134 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9135 | 1 | 11 | 2 | 2 | 0 | 2 | Disarm, Silence | 124 (Lion's Roar), 4802 (Personal Preparation) | Observed in Disarm, Silence contexts; direct ability usage 2; component sources 2; child requirement ids 9094, 9095. |
+| 9135 | 1 | 11 | 2 | 2 | 0 | 2 | Disarm, Silence | 124 (Raven’s Bite), 4802 (Ravens Bite) | Observed in Disarm, Silence contexts; direct ability usage 2; component sources 2; child requirement ids 9094, 9095. |
 | 9136 | 1 | 10 | 1 | 1 | 0 | 0 | Damage | 994 (Shared Fate) | Observed in Damage contexts; direct ability usage 1; component sources 1. |
 | 9137 | 1 | 10 | 1 | 1 | 0 | 0 | Damage, Heal | 973 (Bond Of Desperation) | Observed in Damage, Heal contexts; direct ability usage 1; component sources 1. |
 | 9138 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9139 | 1 | 16 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9140. |
 | 9140 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9141 | 1 | 10 | 1 | 1 | 0 | 0 |  | 490 (Isha's Balance) | direct ability usage 1; component sources 1. |
+| 9141 | 1 | 10 | 1 | 1 | 0 | 0 |  | 490 (Shared Badge Components) | direct ability usage 1; component sources 1. |
 | 9142 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9143 | 1 | 10 | 1 | 5 | 0 | 1 |  | 9128 (Leading Shots) | direct ability usage 1; component sources 5; child requirement ids 9153. |
 | 9144 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
@@ -185,38 +186,38 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9153 | 1 | 9 | 1 | 3 | 1 | 1 |  | 1550 (Hand-Crafted Scope) | direct ability usage 1; component sources 3; child requirement ids 9159. |
 | 9154 | 1 | 29 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9155 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9156 | 1 | 10 | 1 | 1 | 0 | 0 |  | 490 (Isha's Balance) | direct ability usage 1; component sources 1. |
+| 9156 | 1 | 10 | 1 | 1 | 0 | 0 |  | 490 (Shared Badge Components) | direct ability usage 1; component sources 1. |
 | 9157 | 1 | 14 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9158. |
 | 9158 | 1 | 8 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9159 | 1 | 23 | 1 | 1 | 3 | 0 |  | 482 (Fire Brew) | direct ability usage 1; component sources 1. |
+| 9159 | 1 | 23 | 1 | 1 | 3 | 0 |  | 482 (White Lion's Badge) | direct ability usage 1; component sources 1. |
 | 9160 | 1 | 10 | 0 | 1 | 0 | 2 |  |  | component sources 1; child requirement ids 9154, 9159. |
 | 9161 | 1 | 18 | 2 | 0 | 0 | 0 | Damage | 1854 (Behind Ya!), 9086 (Brutal Assault) | Observed in Damage contexts; direct ability usage 2. |
 | 9162 | 1 | 11 | 2 | 0 | 0 | 2 | Damage | 8397 (Mouth of Tzeentch), 8404 (Touch of Rot) | Observed in Damage contexts; direct ability usage 2; child requirement ids 9119, 9121. |
 | 9163 | 1 | 11 | 2 | 0 | 0 | 2 | Damage | 8411 (Ferocious Assault), 8413 (Pulverize) | Observed in Damage contexts; direct ability usage 2; child requirement ids 9120, 9121. |
 | 9164 | 1 | 11 | 2 | 0 | 0 | 2 | Damage | 8395 (Rend), 8407 (Touch of Instability) | Observed in Damage contexts; direct ability usage 2; child requirement ids 9119, 9120. |
-| 9165 | 1 | 10 | 1 | 1 | 1 | 0 |  | 3744 (Mount - Heavy - Chaos) | direct ability usage 1; component sources 1. |
-| 9166 | 1 | 9 | 2 | 0 | 0 | 1 |  | 1444 (Well-Trained), 1756 (Inevitable Changing) | direct ability usage 2; child requirement ids 9152. |
+| 9165 | 1 | 10 | 1 | 1 | 1 | 0 |  | 3744 (Gut Ripper) | direct ability usage 1; component sources 1. |
+| 9166 | 1 | 9 | 2 | 0 | 0 | 1 |  | 1444 (Numbing Strike), 1756 (Drop Da Basha) | direct ability usage 2; child requirement ids 9152. |
 | 9167 | 1 | 10 | 1 | 3 | 0 | 0 |  | 3789 (Dreadful Fear) | direct ability usage 1; component sources 3. |
-| 9168 | 1 | 17 | 5 | 14 | 0 | 0 | Damage | 3536 (Ensorcelled Blow), 3537 (Understanding the New Threat Epic Quest), 3540 (Warpforged Vanquisher), 3579 (Intimidating Blow), 3735 (Mount - Dumpy Horse - Order) | Observed in Damage contexts; direct ability usage 5; component sources 14. |
+| 9168 | 1 | 17 | 5 | 14 | 0 | 0 | Damage | 3536 (Ensorcelled Blow), 3537 (Ether Dance), 3540 (Dazzling Strike), 3579 (Intimidating Blow), 3735 (Gusting Wind) | Observed in Damage contexts; direct ability usage 5; component sources 14. |
 | 9169 | 1 | 12 | 0 | 1 | 1 | 0 |  |  | component sources 1. |
-| 9170 | 1 | 9 | 1 | 1 | 0 | 0 |  | 1942 (Bolster) | direct ability usage 1; component sources 1. |
+| 9170 | 1 | 9 | 1 | 1 | 0 | 0 |  | 1942 (Mork Is Watchin') | direct ability usage 1; component sources 1. |
 | 9171 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9172 | 1 | 10 | 1 | 0 | 0 | 0 | Damage | 8186 (Stop, Drop, And Roll) | Observed in Damage contexts; direct ability usage 1. |
-| 9173 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
-| 9174 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
-| 9175 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
-| 9176 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
-| 9177 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
+| 9173 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Combustion), 301 (Explosion), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
+| 9174 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Combustion), 301 (Explosion), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
+| 9175 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Combustion), 301 (Explosion), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
+| 9176 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Combustion), 301 (Explosion), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
+| 9177 | 1 | 11 | 3 | 5 | 1 | 0 | Damage | 299 (Combustion), 301 (Explosion), 8179 (Meltdown) | Observed in Damage contexts; direct ability usage 3; component sources 5. |
 | 9178 | 1 | 11 | 20 | 1 | 0 | 1 | Damage, Silence | 8158 (Ignite), 8159 (Fireball), 8160 (Sear), 8163 (Scorched Earth), 8165 (Boiling Blood), 8166 (Fiery Blast), 8169 (Pyroclastic Surge), 8170 (Detonate) | Observed in Damage, Silence contexts; direct ability usage 20; component sources 1; child requirement ids 9173. |
 | 9179 | 1 | 11 | 20 | 1 | 0 | 1 | Damage, Silence | 8158 (Ignite), 8159 (Fireball), 8160 (Sear), 8163 (Scorched Earth), 8165 (Boiling Blood), 8166 (Fiery Blast), 8169 (Pyroclastic Surge), 8170 (Detonate) | Observed in Damage, Silence contexts; direct ability usage 20; component sources 1; child requirement ids 9174. |
 | 9180 | 1 | 11 | 20 | 1 | 0 | 1 | Damage, Silence | 8158 (Ignite), 8159 (Fireball), 8160 (Sear), 8163 (Scorched Earth), 8165 (Boiling Blood), 8166 (Fiery Blast), 8169 (Pyroclastic Surge), 8170 (Detonate) | Observed in Damage, Silence contexts; direct ability usage 20; component sources 1; child requirement ids 9175. |
 | 9181 | 1 | 11 | 20 | 1 | 0 | 1 | Damage, Silence | 8158 (Ignite), 8159 (Fireball), 8160 (Sear), 8163 (Scorched Earth), 8165 (Boiling Blood), 8166 (Fiery Blast), 8169 (Pyroclastic Surge), 8170 (Detonate) | Observed in Damage, Silence contexts; direct ability usage 20; component sources 1; child requirement ids 9176. |
 | 9182 | 1 | 11 | 20 | 1 | 0 | 1 | Damage, Silence | 8158 (Ignite), 8159 (Fireball), 8160 (Sear), 8163 (Scorched Earth), 8165 (Boiling Blood), 8166 (Fiery Blast), 8169 (Pyroclastic Surge), 8170 (Detonate) | Observed in Damage, Silence contexts; direct ability usage 20; component sources 1; child requirement ids 9177. |
-| 9183 | 1 | 11 | 5 | 6 | 2 | 0 | Damage | 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
-| 9184 | 1 | 11 | 5 | 6 | 0 | 0 | Damage | 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
-| 9185 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
-| 9186 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
-| 9187 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
+| 9183 | 1 | 11 | 5 | 6 | 2 | 0 | Damage | 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
+| 9184 | 1 | 11 | 5 | 6 | 0 | 0 | Damage | 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
+| 9185 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
+| 9186 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
+| 9187 | 1 | 11 | 5 | 6 | 1 | 0 | Damage | 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind) | Observed in Damage contexts; direct ability usage 5; component sources 6. |
 | 9188 | 1 | 17 | 21 | 1 | 0 | 2 | Damage, Disarm, Heal, Snare | 9470 (Doombolt), 9471 (Chillwind), 9472 (Gloomburst), 9475 (Word of Pain), 9478 (Vision of Torment), 9479 (Arctic Blast), 9480 (Shattered Shadows), 9482 (Frostbite) | Observed in Damage, Disarm, Heal, Snare contexts; direct ability usage 21; component sources 1; child requirement ids 9183, 9586. |
 | 9189 | 1 | 17 | 21 | 1 | 0 | 2 | Damage, Disarm, Heal, Snare | 9470 (Doombolt), 9471 (Chillwind), 9472 (Gloomburst), 9475 (Word of Pain), 9478 (Vision of Torment), 9479 (Arctic Blast), 9480 (Shattered Shadows), 9482 (Frostbite) | Observed in Damage, Disarm, Heal, Snare contexts; direct ability usage 21; component sources 1; child requirement ids 9183, 9586. |
 | 9190 | 1 | 17 | 21 | 1 | 0 | 2 | Damage, Disarm, Heal, Snare | 9470 (Doombolt), 9471 (Chillwind), 9472 (Gloomburst), 9475 (Word of Pain), 9478 (Vision of Torment), 9479 (Arctic Blast), 9480 (Shattered Shadows), 9482 (Frostbite) | Observed in Damage, Disarm, Heal, Snare contexts; direct ability usage 21; component sources 1; child requirement ids 9185, 9586. |
@@ -241,7 +242,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9209 | 1 | 20 | 1 | 1 | 0 | 0 |  | 14163 (High Elf Lineage) | direct ability usage 1; component sources 1. |
 | 9210 | 1 | 20 | 1 | 1 | 0 | 0 |  | 14164 (Dark Elf Lineage) | direct ability usage 1; component sources 1. |
 | 9211 | 1 | 19 | 1 | 1 | 0 | 0 |  | 14160 (Orcish Camaraderie) | direct ability usage 1; component sources 1. |
-| 9212 | 1 | 11 | 3 | 0 | 0 | 2 | Damage | 1369 (Lookit What I Did!), 8347 (Oppression), 9342 (Blade of Ruin) | Observed in Damage contexts; direct ability usage 3; child requirement ids 9066, 9076. |
+| 9212 | 1 | 11 | 3 | 0 | 0 | 2 | Damage | 1369 (Shield of Reprisal), 8347 (Oppression), 9342 (Blade of Ruin) | Observed in Damage contexts; direct ability usage 3; child requirement ids 9066, 9076. |
 | 9213 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9214 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9215 | 1 | 4 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
@@ -260,10 +261,10 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9228 | 1 | 12 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9229 | 1 | 11 | 6 | 7 | 0 | 0 | Damage, Silence | 8085 (Torment), 8100 (Silence The Heretic), 8115 (Pistol Whip), 8139 (Vitriolic Judgement), 9408 (Agonizing Wound), 9409 (Throat Slitter) | Observed in Damage, Silence contexts; direct ability usage 6; component sources 7. |
 | 9230 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9231 | 1 | 17 | 1 | 1 | 0 | 0 |  | 3872 (Rabit Bite) | direct ability usage 1; component sources 1. |
+| 9231 | 1 | 17 | 1 | 1 | 0 | 0 |  | 3872 (Earth's Shielding) | direct ability usage 1; component sources 1. |
 | 9232 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9233 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9234 | 1 | 10 | 1 | 1 | 0 | 0 | Heal | 3017 (Flame Thrower) | Observed in Heal contexts; direct ability usage 1; component sources 1. |
+| 9234 | 1 | 10 | 1 | 1 | 0 | 0 | Heal | 3017 (Rune of Serenity) | Observed in Heal contexts; direct ability usage 1; component sources 1. |
 | 9235 | 1 | 17 | 0 | 0 | 0 | 3 |  |  | child requirement ids 9236, 9237, 9238. |
 | 9236 | 1 | 17 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9237 | 1 | 18 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -290,11 +291,11 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9258 | 1 | 15 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9259. |
 | 9259 | 1 | 16 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9260 | 1 | 9 | 72 | 70 | 0 | 0 | Damage, Heal | 14545 (Enhanced Brawn I), 14546 (Enhanced Brawn II), 14547 (Enhanced Brawn III), 14548 (Enhanced Knowledge I), 14549 (Enhanced Knowledge II), 14550 (Enhanced Knowledge III), 14551 (Enhanced Wisdom I), 14552 (Enhanced Wisdom II) | Observed in Damage, Heal contexts; direct ability usage 72; component sources 70. |
-| 9261 | 1 | 10 | 2 | 0 | 0 | 0 |  | 1008 (Enguage), 15518 (Guard TEST) | direct ability usage 2. |
+| 9261 | 1 | 10 | 2 | 0 | 0 | 0 |  | 1008 (Guard), 15518 (Guard TEST) | direct ability usage 2. |
 | 9262 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9263 | 1 | 10 | 0 | 1 | 0 | 1 |  |  | component sources 1; child requirement ids 9262. |
 | 9264 | 1 | 12 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9265 | 1 | 11 | 2 | 2 | 0 | 1 |  | 264 (Cunning Rumination ), 266 (Quell Suffering) | direct ability usage 2; component sources 2; child requirement ids 9169. |
+| 9265 | 1 | 11 | 2 | 2 | 0 | 1 | Damage, Heal | 264 (Waaagh! Heal Counter), 266 (Waaagh! Damage Counter) | Observed in Damage, Heal contexts; direct ability usage 2; component sources 2; child requirement ids 9169. |
 | 9266 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9267 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9268 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -306,7 +307,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9274 | 1 | 10 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9266. |
 | 9275 | 1 | 10 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9267. |
 | 9276 | 1 | 10 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9268. |
-| 9277 | 1 | 11 | 2 | 6 | 0 | 1 | Damage | 1367 (Dat Makes Me Dizzy), 3823 (Boney Fist) | Observed in Damage contexts; direct ability usage 2; component sources 6; child requirement ids 9079. |
+| 9277 | 1 | 11 | 2 | 6 | 0 | 1 | Damage | 1367 (Stubborn As Stone), 3823 (Inspiring Attack) | Observed in Damage contexts; direct ability usage 2; component sources 6; child requirement ids 9079. |
 | 9278 | 1 | 8 | 8 | 15 | 0 | 1 |  | 14310 (Bolster), 14313 (Bolster), 14314 (Bolster), 14315 (Bolster), 14316 (Bolster), 23580 (Bolster), 23589 (Bolster), 23596 (Bolster) | direct ability usage 8; component sources 15; child requirement ids 9279. |
 | 9279 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9280 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -329,14 +330,14 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9297 | 1 | 9 | 18 | 3 | 0 | 0 |  | 14378 (Cannon), 14379 (Organ Gun), 14380 (Catapult), 14382 (Spear Chukka), 14383 (Cannon), 14384 (Rock Lobba), 14386 (Cannon), 14387 (Hellblaster) | direct ability usage 18; component sources 3. |
 | 9298 | 1 | 8 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9299 | 1 | 17 | 2 | 0 | 0 | 0 | Heal | 8248 (Breath of Sigmar), 9558 (Stand, Coward!) | Observed in Heal contexts; direct ability usage 2. |
-| 9300 | 1 | 11 | 2 | 0 | 0 | 0 | Damage | 1602 (Explosive Force), 1906 (Bomb Explode Monster Ability) | Observed in Damage contexts; direct ability usage 2. |
+| 9300 | 1 | 11 | 2 | 0 | 0 | 0 | Damage | 1602 (Rune of Cleansing), 1906 (Greener 'n Cleaner) | Observed in Damage contexts; direct ability usage 2. |
 | 9301 | 1 | 11 | 1 | 0 | 0 | 0 |  | 8554 (Glimpse of Chaos) | direct ability usage 1. |
 | 9302 | 1 | 11 | 2 | 0 | 0 | 0 | Damage | 9244 (Cleansing Light), 9556 (Patch Wounds) | Observed in Damage contexts; direct ability usage 2. |
 | 9303 | 1 | 17 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9304 | 1 | 10 | 1 | 3 | 0 | 0 | Damage | 8494 (Dissolving Mist) | Observed in Damage contexts; direct ability usage 1; component sources 3. |
-| 9305 | 1 | 10 | 3 | 3 | 0 | 0 | Heal | 1601 (Ignition), 3017 (Flame Thrower), 8557 (Leaping Alteration) | Observed in Heal contexts; direct ability usage 3; component sources 3. |
+| 9305 | 1 | 10 | 3 | 3 | 0 | 0 | Heal | 1601 (Rune of Serenity), 3017 (Rune of Serenity), 8557 (Leaping Alteration) | Observed in Heal contexts; direct ability usage 3; component sources 3. |
 | 9306 | 1 | 10 | 1 | 6 | 0 | 0 | Damage | 1537 (Napalm Grenade) | Observed in Damage contexts; direct ability usage 1; component sources 6. |
-| 9307 | 1 | 13 | 14 | 6 | 0 | 1 | Damage, Knockback, Root, Stun | 400 (Slam), 3027 (Wynyssa's Gratitude), 3028 (Throcane Essence), 3029 (Spit Bomb), 3030 (Hard Stomp), 3031 (Corrosive Vomit), 3032 (Slimy Vomit), 3033 (Gunbad Buff) | Observed in Damage, Knockback, Root, Stun contexts; direct ability usage 14; component sources 6; child requirement ids 9593. |
+| 9307 | 1 | 13 | 14 | 6 | 0 | 1 | Damage, Root, Stun | 400 (Root Ward), 3027 (Aethyric Shock), 3028 (Rune of Binding), 3029 (Instill Fear), 3030 (Heaven's Fury), 3031 (Quake), 3032 (Agile Escape), 3033 (Declare Anathema) | Observed in Damage, Root, Stun contexts; direct ability usage 14; component sources 6; child requirement ids 9593. |
 | 9308 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9309 | 1 | 5 | 0 | 0 | 6 | 1 |  |  | child requirement ids 9257. |
 | 9310 | 1 | 8 | 1 | 3 | 0 | 0 |  | 14721 (Force Cast from Keep 1) | direct ability usage 1; component sources 3. |
@@ -371,10 +372,10 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9339 | 1 | 8 | 1 | 3 | 0 | 0 |  | 14750 (Force Cast from Keep 30) | direct ability usage 1; component sources 3. |
 | 9340 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9341 | 1 | 8 | 3 | 3 | 0 | 0 | Damage, Heal | 9402 (Kiss of Agony), 9407 (Kiss of Death), 9412 (Kiss of Betrayal) | Observed in Damage, Heal contexts; direct ability usage 3; component sources 3. |
-| 9342 | 1 | 6 | 1 | 2 | 0 | 0 |  | 492 (Portable Camp) | direct ability usage 1; component sources 2. |
-| 9343 | 1 | 6 | 1 | 2 | 0 | 0 |  | 492 (Portable Camp) | direct ability usage 1; component sources 2. |
-| 9344 | 1 | 4 | 1 | 2 | 1 | 0 |  | 492 (Portable Camp) | direct ability usage 1; component sources 2. |
-| 9345 | 1 | 4 | 1 | 2 | 1 | 0 |  | 492 (Portable Camp) | direct ability usage 1; component sources 2. |
+| 9342 | 1 | 6 | 1 | 2 | 0 | 0 |  | 492 (Low-population bonuses) | direct ability usage 1; component sources 2. |
+| 9343 | 1 | 6 | 1 | 2 | 0 | 0 |  | 492 (Low-population bonuses) | direct ability usage 1; component sources 2. |
+| 9344 | 1 | 4 | 1 | 2 | 1 | 0 |  | 492 (Low-population bonuses) | direct ability usage 1; component sources 2. |
+| 9345 | 1 | 4 | 1 | 2 | 1 | 0 |  | 492 (Low-population bonuses) | direct ability usage 1; component sources 2. |
 | 9346 | 1 | 10 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9344. |
 | 9347 | 1 | 10 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9345. |
 | 9348 | 1 | 9 | 0 | 0 | 0 | 2 |  |  | child requirement ids 9346, 9347. |
@@ -434,26 +435,26 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9402 | 1 | 11 | 2 | 3 | 0 | 0 | Damage | 9323 (Monstrous Rending), 9342 (Blade of Ruin) | Observed in Damage contexts; direct ability usage 2; component sources 3. |
 | 9403 | 1 | 30 | 1 | 1 | 0 | 0 | Heal | 9258 (Funnel Essence) | Observed in Heal contexts; direct ability usage 1; component sources 1. |
 | 9404 | 1 | 19 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9405 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3269 (Indecision) | direct ability usage 1; component sources 1. |
+| 9405 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3269 (Taunt VFX Dispel Sub) | direct ability usage 1; component sources 1. |
 | 9406 | 1 | 19 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9407 | 1 | 34 | 0 | 1 | 0 | 0 |  |  | component sources 1. |
 | 9408 | 1 | 18 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9409 | 1 | 25 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9410 | 1 | 19 | 6 | 0 | 0 | 0 | Disarm, Root | 1377 (Pass It On), 1740 (Quickened Discord), 8019 (Juggernaut), 8330 (Juggernaut), 9016 (Juggernaut), 9330 (Juggernaut) | Observed in Disarm, Root contexts; direct ability usage 6. |
+| 9410 | 1 | 19 | 6 | 0 | 0 | 0 | Disarm, Root | 1377 (Juggernaut), 1740 (Juggernaut), 8019 (Juggernaut), 8330 (Juggernaut), 9016 (Juggernaut), 9330 (Juggernaut) | Observed in Disarm, Root contexts; direct ability usage 6. |
 | 9411 | 1 | 13 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9412 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9413 | 1 | 12 | 0 | 1 | 0 | 1 |  |  | component sources 1; child requirement ids 9412. |
-| 9414 | 1 | 12 | 1 | 1 | 1 | 1 |  | 1758 (Sprout Carapace) | direct ability usage 1; component sources 1; child requirement ids 9415. |
+| 9414 | 1 | 12 | 1 | 1 | 1 | 1 |  | 1758 (Come and Git It!) | direct ability usage 1; component sources 1; child requirement ids 9415. |
 | 9415 | 1 | 13 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9416 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9417 | 1 | 11 | 4 | 7 | 0 | 0 | Damage, Heal | 1750 (Dire Shielding), 1751 (Mixed Defenses), 1759 (Wild Choppin'), 1773 (No More Helpin') | Observed in Damage, Heal contexts; direct ability usage 4; component sources 7. |
-| 9418 | 1 | 9 | 2 | 6 | 0 | 2 |  | 1053 (Bottle of Seein' Stars), 1054 (Jar of Pummeling) | direct ability usage 2; component sources 6; child requirement ids 9404, 9408. |
-| 9419 | 1 | 11 | 3 | 3 | 0 | 0 | Damage | 1438 (Enervating Blow), 1439 (Deathblow), 1447 (Destroy Confidence) | Observed in Damage contexts; direct ability usage 3; component sources 3. |
+| 9417 | 1 | 11 | 4 | 7 | 0 | 0 | Damage, Heal | 1750 (Try An' Hurt Me), 1751 (Weaklin' Killa), 1759 (Wild Choppin'), 1773 (No More Helpin') | Observed in Damage, Heal contexts; direct ability usage 4; component sources 7. |
+| 9418 | 1 | 9 | 2 | 6 | 0 | 2 |  | 1053 (Berserk), 1054 (Berserk) | direct ability usage 2; component sources 6; child requirement ids 9404, 9408. |
+| 9419 | 1 | 11 | 3 | 3 | 0 | 0 | Damage | 1438 (Enervating Blow), 1439 (Deathblow), 1447 (Wild Swing) | Observed in Damage contexts; direct ability usage 3; component sources 3. |
 | 9420 | 1 | 13 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9421 | 1 | 12 | 2 | 4 | 0 | 2 |  | 1064 (Bloodlust), 1065 (Bloodswell) | direct ability usage 2; component sources 4; child requirement ids 9406, 9430. |
+| 9421 | 1 | 12 | 2 | 4 | 0 | 2 |  | 1064 (Enrage), 1065 (Enrage) | direct ability usage 2; component sources 4; child requirement ids 9406, 9430. |
 | 9422 | 1 | 9 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9423 | 1 | 9 | 18 | 20 | 0 | 2 | Damage, Heal | 3401 (I'm On Fire), 3402 (Stillness of Time), 3403 (Damage Font), 3407 (Tentacle Boss AE spit), 3409 (Chaos Hound Howl), 3485 (Smash 'Em 'Ard), 3486 (Wing 1 Gating Ability), 3487 (Centigor Killing Blow) | Observed in Damage, Heal contexts; direct ability usage 18; component sources 20; child requirement ids 9240, 9422. |
-| 9424 | 1 | 10 | 2 | 2 | 0 | 1 |  | 1446 (Bellow Commands), 1758 (Sprout Carapace) | direct ability usage 2; component sources 2; child requirement ids 9414. |
+| 9423 | 1 | 9 | 18 | 20 | 0 | 2 | Heal | 3401 (Dreadful Fear), 3402 (Corrupting Wrath), 3403 (Discordant Instability), 3407 (Dreadful Terror), 3409 (Discordant Turbulence), 3485 (Press The Attack!), 3486 (Stand Strong!), 3487 (Gather Your Resolve!) | Observed in Heal contexts; direct ability usage 18; component sources 20; child requirement ids 9240, 9422. |
+| 9424 | 1 | 10 | 2 | 2 | 0 | 1 |  | 1446 (Even the Odds), 1758 (Come and Git It!) | direct ability usage 2; component sources 2; child requirement ids 9414. |
 | 9425 | 1 | 14 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9426 | 1 | 10 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9425. |
 | 9427 | 1 | 4 | 2 | 2 | 0 | 0 |  | 15972 (Apprenticeship), 15975 (Indenture) | direct ability usage 2; component sources 2. |
@@ -465,13 +466,13 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9433 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9434 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9435 | 1 | 10 | 1 | 4 | 0 | 0 | Damage | 8025 (Shield of the Sun) | Observed in Damage contexts; direct ability usage 1; component sources 4. |
-| 9436 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3458 (Gorger Melee Cone DD) | direct ability usage 1; component sources 1. |
-| 9437 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3479 (Rock Skin) | direct ability usage 1; component sources 1. |
+| 9436 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3458 (On Your Guard!) | direct ability usage 1; component sources 1. |
+| 9437 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3479 (Discordant Fluctuation) | direct ability usage 1; component sources 1. |
 | 9438 | 1 | 18 | 1 | 0 | 0 | 0 | Damage | 9032 (Redirected Force) | Observed in Damage contexts; direct ability usage 1. |
-| 9439 | 1 | 10 | 2 | 2 | 0 | 0 | Damage | 1450 (;Knight Spec Tactics), 1762 (Warping Embrace) | Observed in Damage contexts; direct ability usage 2; component sources 2. |
+| 9439 | 1 | 10 | 2 | 2 | 0 | 0 | Damage | 1450 (Retribution), 1762 (Bring It On) | Observed in Damage contexts; direct ability usage 2; component sources 2. |
 | 9440 | 1 | 9 | 3 | 3 | 0 | 1 | Damage | 8091 (Burn Armor), 8404 (Touch of Rot), 9406 (Vehement Blades) | Observed in Damage contexts; direct ability usage 3; component sources 3; child requirement ids 9147. |
 | 9441 | 1 | 11 | 1 | 0 | 0 | 0 | Damage | 9186 (Pounce) | Observed in Damage contexts; direct ability usage 1. |
-| 9442 | 1 | 11 | 5 | 0 | 0 | 1 | Damage, Heal | 1437 (Heaven's Fury), 1749 (Oppressing Blows), 9110 (Flanking Shot), 9427 (Heart Seeker), 9428 (Sacrificial Stab) | Observed in Damage, Heal contexts; direct ability usage 5; child requirement ids 9204. |
+| 9442 | 1 | 11 | 5 | 0 | 0 | 1 | Damage, Heal | 1437 (Spine Crusher), 1749 (Go For Da Soft Spot), 9110 (Flanking Shot), 9427 (Heart Seeker), 9428 (Sacrificial Stab) | Observed in Damage, Heal contexts; direct ability usage 5; child requirement ids 9204. |
 | 9443 | 1 | 10 | 1 | 0 | 0 | 0 | Damage | 864 (Shred) | Observed in Damage contexts; direct ability usage 1. |
 | 9444 | 1 | 10 | 2 | 0 | 0 | 0 | Damage, Heal | 9161 (Blindside), 9191 (Thin The Herd) | Observed in Damage, Heal contexts; direct ability usage 2. |
 | 9445 | 1 | 17 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
@@ -484,7 +485,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9452 | 1 | 10 | 1 | 1 | 0 | 1 | Damage | 8177 (Rain of Fire) | Observed in Damage contexts; direct ability usage 1; component sources 1; child requirement ids 9449. |
 | 9453 | 1 | 10 | 1 | 1 | 0 | 1 | Damage | 9485 (Pit of Shades) | Observed in Damage contexts; direct ability usage 1; component sources 1; child requirement ids 9450. |
 | 9454 | 1 | 17 | 1 | 1 | 0 | 0 |  | 27826 (Cleansing Wind) | direct ability usage 1; component sources 1. |
-| 9455 | 1 | 10 | 2 | 1 | 0 | 0 | Damage | 1069 (Force Target Kneel), 1071 (Simple Throw Cast) | Observed in Damage contexts; direct ability usage 2; component sources 1. |
+| 9455 | 1 | 10 | 2 | 1 | 0 | 0 | Damage | 1069 (Improvised Upgrades), 1071 (Unholy Empowerment) | Observed in Damage contexts; direct ability usage 2; component sources 1. |
 | 9456 | 1 | 9 | 1 | 1 | 0 | 0 |  | 15146 (Exalted Glory of War) | direct ability usage 1; component sources 1. |
 | 9457 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9458 | 1 | 9 | 1 | 3 | 0 | 1 |  | 15146 (Exalted Glory of War) | direct ability usage 1; component sources 3; child requirement ids 9457. |
@@ -498,14 +499,14 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9466 | 1 | 0 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9467 | 1 | 0 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9468 | 1 | 0 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9469 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9461. |
-| 9470 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9462. |
-| 9471 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9463. |
-| 9472 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9464. |
-| 9473 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9465. |
-| 9474 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9466. |
-| 9475 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9467. |
-| 9476 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9468. |
+| 9469 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9461. |
+| 9470 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9462. |
+| 9471 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9463. |
+| 9472 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9464. |
+| 9473 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9465. |
+| 9474 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9466. |
+| 9475 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9467. |
+| 9476 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9468. |
 | 9477 | 1 | 24 | 0 | 0 | 0 | 4 |  |  | child requirement ids 9478, 9479, 9480, 9481. |
 | 9478 | 1 | 24 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9479 | 1 | 18 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -515,41 +516,41 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9483 | 1 | 17 | 1 | 0 | 0 | 0 |  | 14415 (Cleanse War Engine) | direct ability usage 1. |
 | 9484 | 1 | 0 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9485 | 1 | 0 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9486 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9485. |
+| 9486 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9485. |
 | 9487 | 1 | 24 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9488 | 1 | 9 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9490 | 1 | 0 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9491 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Sabertooth's Tarot) | direct ability usage 1; component sources 1; child requirement ids 9490. |
+| 9491 | 1 | 7 | 1 | 1 | 0 | 1 |  | 493 (Progression Pack Boost) | direct ability usage 1; component sources 1; child requirement ids 9490. |
 | 9492 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9493 | 1 | 4 | 1 | 1 | 0 | 0 | Damage | 9110 (Flanking Shot) | Observed in Damage contexts; direct ability usage 1; component sources 1. |
 | 9494 | 1 | 11 | 6 | 0 | 0 | 0 | Damage | 27603 (Shattering Attack), 27635 (Shattering Attack), 27667 (Shattering Swing), 27699 (Shattering Attack), 27731 (Shattering Attack), 27763 (Shattering Attack) | Observed in Damage contexts; direct ability usage 6. |
 | 9495 | 1 | 11 | 1 | 0 | 0 | 0 |  | 24826 (Sabotage) | direct ability usage 1. |
 | 9553 | 1 | 11 | 0 | 0 | 0 | 1 |  |  | child requirement ids 9593. |
-| 9554 | 1 | 34 | 1 | 2 | 0 | 0 | Heal | 3915 (Soul Call) | Observed in Heal contexts; direct ability usage 1; component sources 2. |
+| 9554 | 1 | 34 | 1 | 2 | 0 | 0 | Heal | 3915 (Scatter the Winds) | Observed in Heal contexts; direct ability usage 1; component sources 2. |
 | 9555 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9556 | 1 | 5 | 0 | 0 | 1 | 1 |  |  | child requirement ids 9555. |
-| 9557 | 1 | 10 | 1 | 1 | 0 | 1 |  | 3266 (VFX - perm only - Sh - anim 32 and no icon) | direct ability usage 1; component sources 1; child requirement ids 9556. |
+| 9557 | 1 | 10 | 1 | 1 | 0 | 1 |  | 3266 (Challenge Permission Tracker) | direct ability usage 1; component sources 1; child requirement ids 9556. |
 | 9558 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9559 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9560 | 1 | 12 | 1 | 2 | 0 | 0 |  | 8246 (Purify) | direct ability usage 1; component sources 2. |
 | 9561 | 1 | 9 | 2 | 3 | 0 | 0 |  | 15972 (Apprenticeship), 15975 (Indenture) | direct ability usage 2; component sources 3. |
-| 9562 | 1 | 13 | 2 | 4 | 0 | 0 |  | 3359 (Channeled DoT), 3360 (Essence Gather (Spider Queen Minion Enter)) | direct ability usage 2; component sources 4. |
+| 9562 | 1 | 13 | 2 | 4 | 0 | 0 |  | 3359 (Rod of Service), 3360 (Lash of Servitude) | direct ability usage 2; component sources 4. |
 | 9563 | 1 | 10 | 24 | 4 | 0 | 2 |  | 10770 (Cannon), 10771 (Spear Chukka), 10772 (Cannon), 10773 (Hellcannon), 10774 (Ballista), 10775 (Ballista), 14437 (Spear Chukka), 14442 (Cannon) | direct ability usage 24; component sources 4; child requirement ids 9565, 9566. |
 | 9564 | 1 | 10 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9565 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9566 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9567 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3367 (Delicious Excruciation 1) | direct ability usage 1; component sources 1. |
+| 9567 | 1 | 10 | 1 | 1 | 0 | 0 |  | 3367 (Devour Essence) | direct ability usage 1; component sources 1. |
 | 9568 | 1 | 14 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9569 | 1 | 14 | 1 | 1 | 0 | 1 | Damage | 8177 (Rain of Fire) | Observed in Damage contexts; direct ability usage 1; component sources 1; child requirement ids 9568. |
 | 9571 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9572 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9573 | 1 | 11 | 1 | 0 | 0 | 2 | Damage, Heal | 697 (Self-Destruct) | Observed in Damage, Heal contexts; direct ability usage 1; child requirement ids 9571, 9572. |
+| 9573 | 1 | 11 | 1 | 0 | 0 | 2 | Damage, Heal | 697 (Alter Fate) | Observed in Damage, Heal contexts; direct ability usage 1; child requirement ids 9571, 9572. |
 | 9574 | 1 | 10 | 4 | 4 | 0 | 0 |  | 10806 (Elixir of Tahoth), 10807 (Elixir of Tahoth), 10808 (Elixir of Tahoth), 10809 (Elixir of Tahoth) | direct ability usage 4; component sources 4. |
 | 9575 | 1 | 12 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9576 | 1 | 6 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9577 | 1 | 11 | 9 | 5 | 0 | 2 | Damage, Heal, Snare | 3651 (Prayer of Devotion), 3652 (Prayer of Absolution), 3653 (Prayer of Righteousness), 8242 (Prayer of Absolution), 8243 (Prayer of Righteousness), 8249 (Prayer of Devotion), 9559 (Covenant of Celerity), 9563 (Covenant of Tenacity) | Observed in Damage, Heal, Snare contexts; direct ability usage 9; component sources 5; child requirement ids 9575, 9576. |
-| 9578 | 1 | 7 | 5 | 1 | 0 | 0 | Damage, Heal, Knockdown | 697 (Self-Destruct), 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life) | Observed in Damage, Heal, Knockdown contexts; direct ability usage 5; component sources 1. |
-| 9579 | 1 | 9 | 6 | 1 | 0 | 0 | Heal, Knockdown | 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Observed in Heal, Knockdown contexts; direct ability usage 6; component sources 1. |
+| 9578 | 1 | 7 | 5 | 1 | 0 | 0 | Damage, Heal | 697 (Alter Fate), 1598 (Rune of Life), 1908 (Gedup!), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life) | Observed in Damage, Heal contexts; direct ability usage 5; component sources 1. |
+| 9579 | 1 | 9 | 6 | 1 | 0 | 0 | Heal | 1598 (Rune of Life), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Observed in Heal contexts; direct ability usage 6; component sources 1. |
 | 9580 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9581 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9582 | 1 | 5 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
@@ -557,22 +558,22 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9584 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 9585 | 1 | 9 | 4 | 4 | 0 | 0 |  | 14268 (Apprentice -Bolster Up), 14269 (Apprentice - Bolster Down), 15972 (Apprenticeship), 15975 (Indenture) | direct ability usage 4; component sources 4. |
 | 9586 | 1 | 9 | 0 | 0 | 5 | 0 |  |  | referenced from 5 parent requirement row(s). |
-| 9587 | 1 | 10 | 2 | 1 | 0 | 0 | Damage | 3490 (Lightning Font), 8022 (All Out Assault!) | Observed in Damage contexts; direct ability usage 2; component sources 1. |
+| 9587 | 1 | 10 | 2 | 1 | 0 | 0 | Damage | 3490 (All Out Assault!), 8022 (All Out Assault!) | Observed in Damage contexts; direct ability usage 2; component sources 1. |
 | 9588 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9589 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9590 | 1 | 11 | 1 | 1 | 0 | 2 | Damage | 8164 (Flames of Rhuin) | Observed in Damage contexts; direct ability usage 1; component sources 1; child requirement ids 9588, 9589. |
-| 9591 | 1 | 10 | 32 | 57 | 0 | 0 | Damage, Heal | 3401 (I'm On Fire), 3402 (Stillness of Time), 3403 (Damage Font), 3404 (Buff Font), 3405 (Debuff Font), 3407 (Tentacle Boss AE spit), 3485 (Smash 'Em 'Ard), 3486 (Wing 1 Gating Ability) | Observed in Damage, Heal contexts; direct ability usage 32; component sources 57. |
+| 9591 | 1 | 10 | 32 | 57 | 0 | 0 | Damage, Heal | 3401 (Dreadful Fear), 3402 (Corrupting Wrath), 3403 (Discordant Instability), 3404 (Discordant Fluctuation), 3405 (Corrupting Retribution), 3407 (Dreadful Terror), 3485 (Press The Attack!), 3486 (Stand Strong!) | Observed in Damage, Heal contexts; direct ability usage 32; component sources 57. |
 | 9592 | 1 | 0 | 1 | 2 | 0 | 0 |  | 14263 (Apprentice - Message "OOR" or Group Req Term) | direct ability usage 1; component sources 2. |
 | 9593 | 1 | 8 | 1 | 1 | 2 | 0 |  | 24892 (Constant Agro) | direct ability usage 1; component sources 1. |
 | 9594 | 1 | 8 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9595 | 1 | 8 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9596 | 1 | 11 | 3 | 14 | 0 | 2 | CrowdControl, Immunity, Knockback, Knockdown, Root, Stagger | 14271 (Resolute Defense), 27832 (Resolute Defense), 28300 (Inexorable Force) | Observed in CrowdControl, Immunity, Knockback, Knockdown contexts; direct ability usage 3; component sources 14; child requirement ids 9594, 9595. |
-| 9597 | 1 | 10 | 3 | 2 | 1 | 0 |  | 3051 (Generic Boss Mark), 3491 (Keeper Knock Up), 8030 (To Glory!) | direct ability usage 3; component sources 2. |
-| 9598 | 1 | 10 | 4 | 6 | 0 | 1 |  | 3407 (Tentacle Boss AE spit), 3491 (Keeper Knock Up), 8030 (To Glory!), 8342 (Dreadful Terror) | direct ability usage 4; component sources 6; child requirement ids 9597. |
-| 9599 | 1 | 10 | 3 | 2 | 1 | 0 | Heal | 3052 (Pillar Heal), 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror) | Observed in Heal contexts; direct ability usage 3; component sources 2. |
-| 9600 | 1 | 10 | 2 | 2 | 0 | 1 |  | 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror) | direct ability usage 2; component sources 2; child requirement ids 9599. |
+| 9597 | 1 | 10 | 3 | 2 | 1 | 0 |  | 3051 (To Glory Blocker), 3491 (To Glory!), 8030 (To Glory!) | direct ability usage 3; component sources 2. |
+| 9598 | 1 | 10 | 4 | 6 | 0 | 1 |  | 3407 (Dreadful Terror), 3491 (To Glory!), 8030 (To Glory!), 8342 (Dreadful Terror) | direct ability usage 4; component sources 6; child requirement ids 9597. |
+| 9599 | 1 | 10 | 3 | 2 | 1 | 0 |  | 3052 (Dreadful Terror Blocker), 3407 (Dreadful Terror), 8342 (Dreadful Terror) | direct ability usage 3; component sources 2. |
+| 9600 | 1 | 10 | 2 | 2 | 0 | 1 |  | 3407 (Dreadful Terror), 8342 (Dreadful Terror) | direct ability usage 2; component sources 2; child requirement ids 9599. |
 | 9601 | 1 | 10 | 1 | 1 | 1 | 0 | Damage, Heal | 9316 (Feeding On Weakness) | Observed in Damage, Heal contexts; direct ability usage 1; component sources 1. |
-| 9602 | 1 | 11 | 2 | 8 | 0 | 1 | Damage, Heal | 3073 (Purity of Faith), 9316 (Feeding On Weakness) | Observed in Damage, Heal contexts; direct ability usage 2; component sources 8; child requirement ids 9601. |
+| 9602 | 1 | 11 | 2 | 8 | 0 | 1 | Damage, Heal | 3073 (Brutal Smash), 9316 (Feeding On Weakness) | Observed in Damage, Heal contexts; direct ability usage 2; component sources 8; child requirement ids 9601. |
 | 9603 | 1 | 17 | 1 | 0 | 0 | 0 |  | 8167 (Cauterize) | direct ability usage 1. |
 | 9604 | 1 | 13 | 1 | 5 | 0 | 0 |  | 10786 (Poisoned) | direct ability usage 1; component sources 5. |
 | 9605 | 1 | 0 | 2 | 2 | 0 | 0 |  | 14025 (Battle Fatigue), 14976 (Battle Fatigue) | direct ability usage 2; component sources 2. |
@@ -580,7 +581,7 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9607 | 1 | 12 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9608 | 1 | 11 | 1 | 1 | 0 | 1 | Damage | 8502 (Indigo Fire of Change) | Observed in Damage contexts; direct ability usage 1; component sources 1; child requirement ids 9607. |
 | 9609 | 1 | 11 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
-| 9610 | 1 | 0 | 2 | 0 | 0 | 0 | Damage | 1932 (Ballista), 9268 (Shield of Saphery) | Observed in Damage contexts; direct ability usage 2. |
+| 9610 | 1 | 0 | 2 | 0 | 0 | 0 | Damage | 1932 (Don' Feel Nuthin), 9268 (Shield of Saphery) | Observed in Damage contexts; direct ability usage 2. |
 | 9611 | 1 | 10 | 1 | 1 | 0 | 0 | Damage | 1543 (Lightning Rod) | Observed in Damage contexts; direct ability usage 1; component sources 1. |
 | 9612 | 1 | 10 | 1 | 1 | 0 | 0 | Heal | 1544 (Bugman's Best) | Observed in Heal contexts; direct ability usage 1; component sources 1. |
 | 9613 | 1 | 19 | 1 | 1 | 0 | 0 | Heal | 1544 (Bugman's Best) | Observed in Heal contexts; direct ability usage 1; component sources 1. |
@@ -588,10 +589,10 @@ Extracted root: `C:\Users\Admin\Downloads\myps`
 | 9615 | 1 | 10 | 1 | 1 | 0 | 0 | Immunity, Knockback, Knockdown, Root, Stagger | 28300 (Inexorable Force) | Observed in Immunity, Knockback, Knockdown, Root contexts; direct ability usage 1; component sources 1. |
 | 9620 | 1 | 11 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9621 | 1 | 9 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9622 | 1 | 11 | 420 | 485 | 0 | 2 | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun | 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury) | Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9620, 9621. |
+| 9622 | 1 | 11 | 420 | 485 | 0 | 2 | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun | 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)) | Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9620, 9621. |
 | 9623 | 1 | 9 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
 | 9624 | 1 | 10 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
-| 9625 | 1 | 11 | 420 | 485 | 0 | 2 | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun | 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury) | Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9623, 9624. |
+| 9625 | 1 | 11 | 420 | 485 | 0 | 2 | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun | 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)) | Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9623, 9624. |
 | 23739 | 1 | 8 | 0 | 0 | 0 | 0 |  |  | No direct ability or component context is decoded yet. |
 | 24868 | 1 | 11 | 10 | 10 | 1 | 2 |  | 24703 (Pass Curse), 24704 (Pass Curse), 24705 (Pass Curse), 24706 (Pass Curse), 24707 (Pass Curse), 24708 (Pass Curse), 24709 (Pass Curse), 24710 (Pass Curse) | direct ability usage 10; component sources 10; child requirement ids 24869, 24870. |
 | 24869 | 1 | 4 | 0 | 0 | 1 | 0 |  |  | referenced from 1 parent requirement row(s). |
@@ -913,7 +914,7 @@ No rows found.
 ## Requirement 9009
 
 - Summary: Observed in Damage contexts; direct ability usage 21; component sources 4.
-- Notes: Requirement rows: 1; direct abilities: 21; direct components: 4; parent requirements: 0; sample abilities: 241 (Caustic Torrent), 611 (Onslaught), 1361 (Yer A Weaklin'), 1369 (Lookit What I Did!), 1378 (Leaky Brainz), 1382 (You Really Got Nothin), 1405 (Stand Strong!), 1669 (Exalted Defenses); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 21; direct components: 4; parent requirements: 0; sample abilities: 241 (Hold The Line!), 611 (Shield Wall), 1361 (Shield Sweep), 1369 (Shield of Reprisal), 1378 (Hold The Line!), 1382 (Oathstone), 1405 (Shield Mastery), 1669 (Tuffer 'n Nails); context tags: Damage.
 
 ## Rows
 
@@ -947,16 +948,16 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 241 | Ability 241 (Caustic Torrent) | ExtData[0].Val6 | 241 (Caustic Torrent) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 220383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 611 | Ability 611 (Onslaught) | ExtData[0].Val6 | 611 (Onslaught) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 271227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1361 | Ability 1361 (Yer A Weaklin') | ExtData[1].Val6 | 1361 (Yer A Weaklin') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1084625 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1369 | Ability 1369 (Lookit What I Did!) | ExtData[0].Val6 | 1369 (Lookit What I Did!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1086408 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1378 | Ability 1378 (Leaky Brainz) | ExtData[0].Val6 | 1378 (Leaky Brainz) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1087964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1382 | Ability 1382 (You Really Got Nothin) | ExtData[1].Val6 | 1382 (You Really Got Nothin) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1088645 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1669 | Ability 1669 (Exalted Defenses) | ExtData[0].Val6 | 1669 (Exalted Defenses) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1129669 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 241 | Ability 241 (Hold The Line!) | ExtData[0].Val6 | 241 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 220383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 611 | Ability 611 (Shield Wall) | ExtData[0].Val6 | 611 (Shield Wall) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 271227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1361 | Ability 1361 (Shield Sweep) | ExtData[1].Val6 | 1361 (Shield Sweep) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1084625 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1369 | Ability 1369 (Shield of Reprisal) | ExtData[0].Val6 | 1369 (Shield of Reprisal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1086408 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1378 | Ability 1378 (Hold The Line!) | ExtData[0].Val6 | 1378 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1087964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1382 | Ability 1382 (Oathstone) | ExtData[1].Val6 | 1382 (Oathstone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1088645 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1669 | Ability 1669 (Tuffer 'n Nails) | ExtData[0].Val6 | 1669 (Tuffer 'n Nails) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1129669 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1685 | Ability 1685 (Hold The Line!) | ExtData[0].Val6 | 1685 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1133235 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1692 | Ability 1692 (Penance) | ExtData[0].Val6 | 1692 (Penance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1134564 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1728 | Ability 1728 (Dreadful Terror) | ExtData[1].Val6 | 1728 (Dreadful Terror) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1139513 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1692 | Ability 1692 (Can't Hit Me!) | ExtData[0].Val6 | 1692 (Can't Hit Me!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1134564 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1728 | Ability 1728 (Cant' Touch Us) | ExtData[1].Val6 | 1728 (Cant' Touch Us) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1139513 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8011 | Ability 8011 (Shield Rush) | ExtData[0].Val6 | 8011 (Shield Rush) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1176673 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8014 | Ability 8014 (Hold The Line!) | ExtData[0].Val6 | 8014 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1177387 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8326 | Ability 8326 (Hold The Line!) | ExtData[0].Val6 | 8326 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1221461 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -966,7 +967,7 @@ No rows found.
 | Ability | 9326 | Ability 9326 (Hold The Line!) | ExtData[0].Val6 | 9326 (Hold The Line!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1313179 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9345 | Ability 9345 (None Shall Pass) | ExtData[0].Val6 | 9345 (None Shall Pass) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1316712 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 15510 | Ability 15510 (Shield Spikes) | ExtData[0].Val6 | 15510 (Shield Spikes) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 844310 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1448 | Component 1448 (DAMAGE_CHANGE) | ExtData[0].Val6 | 1405 (Stand Strong!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 159289 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1448 | Component 1448 (DAMAGE_CHANGE) | ExtData[0].Val6 | 1405 (Shield Mastery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 159289 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8311 | Component 8311 (DEFENSIVE_STAT_CHANGE) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 493580 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8347 | Component 8347 (EVENT_LISTENER) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 499160 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9642 | Component 9642 (DEFENSIVE_STAT_CHANGE) | ExtData[0].Val6 | 8042 (Gilded Shield) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 723921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -1034,7 +1035,7 @@ No rows found.
 ## Requirement 9012
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3514 (Old Sovereign GIAB - Marauder - Sadist).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3514 (Distracting Bellow +Threat).
 
 ## Rows
 
@@ -1055,7 +1056,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1029 | Component 1029 (HATE) | ExtData[1].Val6 | 3514 (Old Sovereign GIAB - Marauder - Sadist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 88976 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1029 | Component 1029 (HATE) | ExtData[1].Val6 | 3514 (Distracting Bellow +Threat) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 88976 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -1064,7 +1065,7 @@ No rows found.
 ## Requirement 9013
 
 - Summary: Observed in Damage contexts; direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 565 (Earthshatter); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 565 (I Stand Alone); context tags: Damage.
 
 ## Rows
 
@@ -1090,7 +1091,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 781 | Component 781 (DAMAGE_CHANGE) | ExtData[0].Val6 | 565 (Earthshatter) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 46917 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 781 | Component 781 (DAMAGE_CHANGE) | ExtData[0].Val6 | 565 (I Stand Alone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 46917 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -1113,7 +1114,7 @@ No rows found.
 | --- | --- | --- | --- | --- | --- | --- |
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 6 | AbilityOperation: 6=BuffGroupCount. | Confirmed |  |
-| ExtData[0].Val3 | 1 | 1 | 3 |  | Unknown |  |
+| ExtData[0].Val3 | 1 | 1 | 3 | AbilityCondition: 3=Unk3. | Confirmed |  |
 | ExtData[0].Val4 | 1 | 1 | 8 | AbilityLogicOperator: 8=And. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 50 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[0].Val7 | 1 | 1 | 7 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
@@ -1719,7 +1720,7 @@ No rows found.
 | --- | --- | --- | --- | --- | --- | --- |
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
-| ExtData[0].Val3 | 1 | 1 | 3 |  | Unknown |  |
+| ExtData[0].Val3 | 1 | 1 | 3 | AbilityCondition: 3=Unk3. | Confirmed |  |
 | ExtData[0].Val4 | 1 | 1 | 9 | AbilityLogicOperator: 9=Or. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 59 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[0].Val7 | 1 | 1 | 10 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
@@ -2008,7 +2009,7 @@ No rows found.
 ## Requirement 9038
 
 - Summary: Observed in Damage, Snare contexts; direct ability usage 6; component sources 1; child requirement ids 9036, 9037.
-- Notes: Requirement rows: 1; direct abilities: 6; direct components: 1; parent requirements: 0; child requirements: 9036, 9037; sample abilities: 1450 (;Knight Spec Tactics), 1463 (No Escape), 1465 (Guardian Of Light), 1762 (Warping Embrace), 1774 (Wot's Da Rush?), 1776 (Flail); context tags: Damage, Snare.
+- Notes: Requirement rows: 1; direct abilities: 6; direct components: 1; parent requirements: 0; child requirements: 9036, 9037; sample abilities: 1450 (Retribution), 1463 (No Escape), 1465 (Inevitable Doom), 1762 (Bring It On), 1774 (Wot's Da Rush?), 1776 (Git To Da Choppa); context tags: Damage, Snare.
 
 ## Rows
 
@@ -2036,12 +2037,12 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1450 | Ability 1450 (;Knight Spec Tactics) | ExtData[0].Val6 | 1450 (;Knight Spec Tactics) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1098774 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1450 | Ability 1450 (Retribution) | ExtData[0].Val6 | 1450 (Retribution) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1098774 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1463 | Ability 1463 (No Escape) | ExtData[2].Val6 | 1463 (No Escape) | Snare, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1100330 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1465 | Ability 1465 (Guardian Of Light) | ExtData[2].Val6 | 1465 (Guardian Of Light) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1100784 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1762 | Ability 1762 (Warping Embrace) | ExtData[0].Val6 | 1762 (Warping Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1144726 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1465 | Ability 1465 (Inevitable Doom) | ExtData[2].Val6 | 1465 (Inevitable Doom) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1100784 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1762 | Ability 1762 (Bring It On) | ExtData[0].Val6 | 1762 (Bring It On) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1144726 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1774 | Ability 1774 (Wot's Da Rush?) | ExtData[2].Val6 | 1774 (Wot's Da Rush?) | Snare, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1146282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1776 | Ability 1776 (Flail) | ExtData[2].Val6 | 1776 (Flail) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1146736 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1776 | Ability 1776 (Git To Da Choppa) | ExtData[2].Val6 | 1776 (Git To Da Choppa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1146736 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11729 | Component 11729 (HEAL) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 916293 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -2370,7 +2371,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 81 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -2403,7 +2404,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 82 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -2436,7 +2437,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 81 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 53 | AbilityOperation: 53=Unk53. | Confirmed |  |
@@ -2477,7 +2478,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 82 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 53 | AbilityOperation: 53=Unk53. | Confirmed |  |
@@ -2514,7 +2515,7 @@ No rows found.
 | ExtData[0].Val6 | 1 | 1 | 88 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
-| ExtData[1].Val3 | 1 | 1 | 3 |  | Unknown |  |
+| ExtData[1].Val3 | 1 | 1 | 3 | AbilityCondition: 3=Unk3. | Confirmed |  |
 | ExtData[1].Val6 | 1 | 1 | 59 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val7 | 1 | 1 | 15 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 
@@ -2551,7 +2552,7 @@ No rows found.
 | ExtData[0].Val7 | 1 | 1 | 1 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 26 | AbilityOperation: 26=ApPercent. | Confirmed |  |
-| ExtData[1].Val3 | 1 | 1 | 3 |  | Unknown |  |
+| ExtData[1].Val3 | 1 | 1 | 3 | AbilityCondition: 3=Unk3. | Confirmed |  |
 | ExtData[1].Val7 | 1 | 1 | 100 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 
 ## Referenced By
@@ -2692,7 +2693,7 @@ No rows found.
 ## Requirement 9057
 
 - Summary: direct ability usage 1; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 5; parent requirements: 1; sample abilities: 3860 (Drunken Blow).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 5; parent requirements: 1; sample abilities: 3860 (Transference).
 
 ## Rows
 
@@ -2721,7 +2722,7 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 8723 | Component 8723 (DAMAGE_CHANGE) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 566295 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9152 | Component 9152 (EVENT_LISTENER) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 639718 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9154 | Component 9154 (DAMAGE) | ExtData[2].Val6 | 3860 (Drunken Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 640182 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9154 | Component 9154 (DAMAGE) | ExtData[2].Val6 | 3860 (Transference) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 640182 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9171 | Component 9171 (EFFECT_BUFF) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 643004 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9195 | Component 9195 (DISPEL_BUFF) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 647152 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9245 | Requirement 9245 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 24311 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -2784,7 +2785,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 105 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 53 | AbilityOperation: 53=Unk53. | Confirmed |  |
@@ -2963,7 +2964,7 @@ No rows found.
 ## Requirement 9065
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3948 (Leadbelcher Melee).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3948 (Taunt Events).
 
 ## Rows
 
@@ -2989,7 +2990,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 397 | Component 397 (HATE) | ExtData[1].Val6 | 3948 (Leadbelcher Melee) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1196370 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 397 | Component 397 (HATE) | ExtData[1].Val6 | 3948 (Taunt Events) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1196370 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -3046,7 +3047,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 143 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -3079,7 +3080,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 142 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 53 | AbilityOperation: 53=Unk53. | Confirmed |  |
@@ -3329,7 +3330,7 @@ No rows found.
 | --- | --- | --- | --- | --- | --- | --- |
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 6 | AbilityOperation: 6=BuffGroupCount. | Confirmed |  |
-| ExtData[0].Val3 | 1 | 1 | 3 |  | Unknown |  |
+| ExtData[0].Val3 | 1 | 1 | 3 | AbilityCondition: 3=Unk3. | Confirmed |  |
 | ExtData[0].Val4 | 1 | 1 | 9 | AbilityLogicOperator: 9=Or. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 1 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[0].Val6 | 1 | 1 | 154 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
@@ -3392,7 +3393,7 @@ No rows found.
 ## Requirement 9076
 
 - Summary: Observed in Damage contexts; direct ability usage 2.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 1; sample abilities: 1690 (Divine Aegis), 9321 (Spiteful Slam); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 1; sample abilities: 1690 (Ya Missed Me), 9321 (Spiteful Slam); context tags: Damage.
 
 ## Rows
 
@@ -3413,7 +3414,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1690 | Ability 1690 (Divine Aegis) | ExtData[0].Val6 | 1690 (Divine Aegis) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1134110 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1690 | Ability 1690 (Ya Missed Me) | ExtData[0].Val6 | 1690 (Ya Missed Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1134110 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9321 | Ability 9321 (Spiteful Slam) | ExtData[0].Val6 | 9321 (Spiteful Slam) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1312011 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9212 | Requirement 9212 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 21077 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
@@ -3475,7 +3476,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 157 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 53 | AbilityOperation: 53=Unk53. | Confirmed |  |
@@ -3501,7 +3502,7 @@ No rows found.
 ## Requirement 9079
 
 - Summary: Observed in Damage contexts; direct ability usage 8; component sources 16.
-- Notes: Requirement rows: 1; direct abilities: 8; direct components: 16; parent requirements: 2; sample abilities: 1367 (Dat Makes Me Dizzy), 1372 (Watch An' Learn), 1380 (Mork's Touch), 1383 (Ere We Goes Again), 1386 (Runic Shield), 3821 (Raking Claws), 3822 (Pounce), 3825 (Brute Force); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 8; direct components: 16; parent requirements: 2; sample abilities: 1367 (Stubborn As Stone), 1372 (Watch An' Learn), 1380 (Oathbound), 1383 (Ancestor's Fury), 1386 (Runic Shield), 3821 (Guarded Attack), 3822 (Vengeful Strike), 3825 (Avenging The Debt); context tags: Damage.
 
 ## Rows
 
@@ -3530,19 +3531,19 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 551 | Component 551 (EVENT_LISTENER) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 9331 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 552 | Component 552 (EVENT_LISTENER) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 9596 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1226 | Component 1226 (ARMOR_CHANGE) | ExtData[0].Val6 | 3821 (Raking Claws) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 120622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1226 | Component 1226 (ARMOR_CHANGE) | ExtData[0].Val6 | 3821 (Guarded Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 120622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1248 | Component 1248 (STAT_CHANGE) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 124670 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1342 | Component 1342 (STAT_CHANGE) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 140571 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1372 | Component 1372 (STAT_CHANGE) | ExtData[0].Val6 | 1367 (Dat Makes Me Dizzy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1372 | Component 1372 (STAT_CHANGE) | ExtData[0].Val6 | 1367 (Stubborn As Stone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1382 | Component 1382 (AP_CHANGE) | ExtData[0].Val6 | 1372 (Watch An' Learn) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 147673 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1384 | Component 1384 (STAT_CHANGE) | ExtData[0].Val6 | 1380 (Mork's Touch) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 148005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1386 | Component 1386 (DEFENSIVE_STAT_CHANGE) | ExtData[0].Val6 | 1380 (Mork's Touch) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 148337 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1392 | Component 1392 (HEAL) | ExtData[0].Val6 | 3825 (Brute Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 149201 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1412 | Component 1412 (STAT_CHANGE) | ExtData[0].Val6 | 1383 (Ere We Goes Again) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 152719 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1414 | Component 1414 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 1383 (Ere We Goes Again) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 153051 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1384 | Component 1384 (STAT_CHANGE) | ExtData[0].Val6 | 1380 (Oathbound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 148005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1386 | Component 1386 (DEFENSIVE_STAT_CHANGE) | ExtData[0].Val6 | 1380 (Oathbound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 148337 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1392 | Component 1392 (HEAL) | ExtData[0].Val6 | 3825 (Avenging The Debt) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 149201 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1412 | Component 1412 (STAT_CHANGE) | ExtData[0].Val6 | 1383 (Ancestor's Fury) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 152719 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1414 | Component 1414 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 1383 (Ancestor's Fury) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 153051 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1432 | Component 1432 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 1386 (Runic Shield) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 156633 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3141 | Component 3141 (EFFECT_BUFF) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 281548 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3166 | Component 3166 (STAT_CHANGE) | ExtData[0].Val6 | 3822 (Pounce) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 286259 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3166 | Component 3166 (STAT_CHANGE) | ExtData[0].Val6 | 3822 (Vengeful Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 286259 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3167 | Component 3167 (ARMOR_CHANGE) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 286458 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9078 | Requirement 9078 | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 7132 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9277 | Requirement 9277 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 27684 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -3758,7 +3759,7 @@ No rows found.
 ## Requirement 9086
 
 - Summary: direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 843 (Savin' Me Hide).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 843 (Focused Insanity).
 
 ## Rows
 
@@ -3787,7 +3788,7 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 1003 | Component 1003 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 84693 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1303 | Component 1303 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 843 (Savin' Me Hide) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 134130 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1303 | Component 1303 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 843 (Focused Insanity) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 134130 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -3827,7 +3828,7 @@ No rows found.
 ## Requirement 9088
 
 - Summary: Observed in Damage, Heal, Silence, Snare contexts; direct ability usage 20.
-- Notes: Requirement rows: 1; direct abilities: 20; direct components: 0; parent requirements: 0; sample abilities: 1820 (Scything Talons), 1821 (Exhaustive Strikes), 1822 (Deadly Clutch), 1823 (Corrupted Edge), 1825 (Unstable Convulsions), 1826 (Hulking Brute), 1829 (Cut Ya!), 1833 (Tzeentch's Reversal); context tags: Damage, Heal, Silence, Snare.
+- Notes: Requirement rows: 1; direct abilities: 20; direct components: 0; parent requirements: 0; sample abilities: 1820 (Stabbity), 1821 (Plink), 1822 (Yer Bleedin'!), 1823 (What Blocka?), 1825 (Stop Runnin!), 1826 (Run 'n Shoot), 1829 (Cut Ya!), 1833 (Explodin' Arrer); context tags: Damage, Heal, Silence, Snare.
 
 ## Rows
 
@@ -3849,17 +3850,17 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1820 | Ability 1820 (Scything Talons) | ExtData[1].Val6 | 1820 (Scything Talons) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151425 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1821 | Ability 1821 (Exhaustive Strikes) | ExtData[1].Val6 | 1821 (Exhaustive Strikes) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151652 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1822 | Ability 1822 (Deadly Clutch) | ExtData[1].Val6 | 1822 (Deadly Clutch) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1823 | Ability 1823 (Corrupted Edge) | ExtData[1].Val6 | 1823 (Corrupted Edge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152106 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1825 | Ability 1825 (Unstable Convulsions) | ExtData[1].Val6 | 1825 (Unstable Convulsions) | Snare, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1826 | Ability 1826 (Hulking Brute) | ExtData[1].Val6 | 1826 (Hulking Brute) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1820 | Ability 1820 (Stabbity) | ExtData[1].Val6 | 1820 (Stabbity) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151425 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1821 | Ability 1821 (Plink) | ExtData[1].Val6 | 1821 (Plink) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151652 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1822 | Ability 1822 (Yer Bleedin'!) | ExtData[1].Val6 | 1822 (Yer Bleedin'!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1151879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1823 | Ability 1823 (What Blocka?) | ExtData[1].Val6 | 1823 (What Blocka?) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152106 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1825 | Ability 1825 (Stop Runnin!) | ExtData[1].Val6 | 1825 (Stop Runnin!) | Snare, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1826 | Ability 1826 (Run 'n Shoot) | ExtData[1].Val6 | 1826 (Run 'n Shoot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1152787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1829 | Ability 1829 (Cut Ya!) | ExtData[1].Val6 | 1829 (Cut Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1153435 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1833 | Ability 1833 (Tzeentch's Reversal) | ExtData[1].Val6 | 1833 (Tzeentch's Reversal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1154343 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1833 | Ability 1833 (Explodin' Arrer) | ExtData[1].Val6 | 1833 (Explodin' Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1154343 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1834 | Ability 1834 (Lots o' Arrers) | ExtData[1].Val6 | 1834 (Lots o' Arrers) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1154570 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1835 | Ability 1835 (;Marauder Spec Morale) | ExtData[1].Val6 | 1835 (;Marauder Spec Morale) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1154797 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1838 | Ability 1838 (Energy Ripple) | ExtData[1].Val6 | 1838 (Energy Ripple) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1155511 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1835 | Ability 1835 (Not So Fast!) | ExtData[1].Val6 | 1835 (Not So Fast!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1154797 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1838 | Ability 1838 (Don't Hit Me!) | ExtData[1].Val6 | 1838 (Don't Hit Me!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1155511 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1839 | Ability 1839 (Choking Arrer) | ExtData[1].Val6 | 1839 (Choking Arrer) | Silence, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1155738 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1840 | Ability 1840 (Shoot Thru Ya) | ExtData[1].Val6 | 1840 (Shoot Thru Ya) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1155965 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1846 | Ability 1846 (Shrapnel Arrer) | ExtData[1].Val6 | 1846 (Shrapnel Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1156968 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -3868,7 +3869,7 @@ No rows found.
 | Ability | 1852 | Ability 1852 (Run Away!) | ExtData[1].Val6 | 1852 (Run Away!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1158297 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1853 | Ability 1853 (Rotten Arrer) | ExtData[1].Val6 | 1853 (Rotten Arrer) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1158557 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 1854 | Ability 1854 (Behind Ya!) | ExtData[1].Val6 | 1854 (Behind Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1158817 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1865 | Ability 1865 (Fungal Fetish) | ExtData[1].Val6 | 1865 (Fungal Fetish) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1160629 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1865 | Ability 1865 (Drop That!!) | ExtData[1].Val6 | 1865 (Drop That!!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1160629 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -4011,7 +4012,7 @@ No rows found.
 ## Requirement 9092
 
 - Summary: Observed in Damage contexts; direct ability usage 8; component sources 10.
-- Notes: Requirement rows: 1; direct abilities: 8; direct components: 10; parent requirements: 0; sample abilities: 6 (;/end), 1443 (Sun's Blessing), 1755 (Embrace The Winds), 3650 (Oath Rune of Sanctuary), 8412 (Mutated Energy), 8423 (Concussive Jolt), 13262 (Smash), 15509 (Ground Stomp); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 8; direct components: 10; parent requirements: 0; sample abilities: 6 (Death From Above), 1443 (Incapacitate), 1755 (Sit Down!), 3650 (Oath Rune of Sanctuary), 8412 (Mutated Energy), 8423 (Concussive Jolt), 13262 (Smash), 15509 (Ground Stomp); context tags: Damage.
 
 ## Rows
 
@@ -4035,15 +4036,15 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Ability | 8412 | Ability 8412 (Mutated Energy) | ExtData[1].Val6 | 8412 (Mutated Energy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1235024 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3288 | Component 3288 (CC) | ExtData[1].Val6 | 3650 (Oath Rune of Sanctuary) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 305719 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3446 | Component 3446 (CC) | ExtData[1].Val6 | 6 (;/end) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 331518 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3715 | Component 3715 (CC) | ExtData[1].Val6 | 1443 (Sun's Blessing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 383227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3446 | Component 3446 (CC) | ExtData[1].Val6 | 6 (Death From Above) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 331518 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3715 | Component 3715 (CC) | ExtData[1].Val6 | 1443 (Incapacitate) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 383227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8358 | Component 8358 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 501085 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8456 | Component 8456 (CC) | ExtData[1].Val6 | 8412 (Mutated Energy), 8423 (Concussive Jolt), 13262 (Smash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 518079 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9821 | Component 9821 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 754988 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11023 | Component 11023 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 793263 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12375 | Component 12375 (CC) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1031637 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 15516 | Component 15516 (CC) | ExtData[1].Val6 | 15509 (Ground Stomp) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1697581 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18273 | Component 18273 (CC) | ExtData[1].Val6 | 1755 (Embrace The Winds) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 422900 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18273 | Component 18273 (CC) | ExtData[1].Val6 | 1755 (Sit Down!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 422900 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -4052,7 +4053,7 @@ No rows found.
 ## Requirement 9093
 
 - Summary: Observed in Root contexts; direct ability usage 5; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 5; parent requirements: 0; sample abilities: 122 (Claw Sweep), 3631 (Crippling Bomb), 4800 (Solar Flare), 5209 (Dissipating Buffer), 13003 (Grasp of the Dead); context tags: Root.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 5; parent requirements: 0; sample abilities: 122 (Grasp of the Dead), 3631 (Crippling Bomb), 4800 (Grasp of the Dead), 5209 (Rattling Bones), 13003 (Grasp of the Dead); context tags: Root.
 
 ## Rows
 
@@ -4075,9 +4076,9 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 602 | Component 602 (CC) | ExtData[1].Val6 | 3631 (Crippling Bomb) | Root | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 17797 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1194 | Component 1194 (CC) | ExtData[1].Val6 | 122 (Claw Sweep) | Root | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 115376 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 4800 | Component 4800 (CC) | ExtData[1].Val6 | 4800 (Solar Flare) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2063389 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 5204 | Component 5204 (CC) | ExtData[1].Val6 | 5209 (Dissipating Buffer) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2119138 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1194 | Component 1194 (CC) | ExtData[1].Val6 | 122 (Grasp of the Dead) | Root | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 115376 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 4800 | Component 4800 (CC) | ExtData[1].Val6 | 4800 (Grasp of the Dead) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2063389 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 5204 | Component 5204 (CC) | ExtData[1].Val6 | 5209 (Rattling Bones) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2119138 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 13007 | Component 13007 (CC) | ExtData[1].Val6 | 13003 (Grasp of the Dead) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2414485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -4087,7 +4088,7 @@ No rows found.
 ## Requirement 9094
 
 - Summary: Observed in Damage, Silence contexts; direct ability usage 8; component sources 11.
-- Notes: Requirement rows: 1; direct abilities: 8; direct components: 11; parent requirements: 1; sample abilities: 885 (Quit Yer Squabblin'), 906 (Fling Choppa), 3218 (Grave Dust), 8607 (Suppressing The Fragile Unbelievers), 9253 (Law of Gold), 9304 (Arcane Suppression), 27677 (Silence!), 27709 (Silence!); context tags: Damage, Silence.
+- Notes: Requirement rows: 1; direct abilities: 8; direct components: 11; parent requirements: 1; sample abilities: 885 (Deafening Waaagh!), 906 (Deafening Waaagh!), 3218 (You Got Nuthin!), 8607 (Suppressing The Fragile Unbelievers), 9253 (Law of Gold), 9304 (Arcane Suppression), 27677 (Silence!), 27709 (Silence!); context tags: Damage, Silence.
 
 ## Rows
 
@@ -4113,9 +4114,9 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 992 | Component 992 (CC) | ExtData[1].Val6 | 885 (Quit Yer Squabblin'), 906 (Fling Choppa) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 82834 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 992 | Component 992 (CC) | ExtData[1].Val6 | 885 (Deafening Waaagh!), 906 (Deafening Waaagh!) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 82834 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1619 | Component 1619 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 187508 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3202 | Component 3202 (CC) | ExtData[1].Val6 | 3218 (Grave Dust) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 291938 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3202 | Component 3202 (CC) | ExtData[1].Val6 | 3218 (You Got Nuthin!) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 291938 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8152 | Component 8152 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 466559 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8366 | Component 8366 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 502578 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8411 | Component 8411 (CC) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 510147 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4299,8 +4300,8 @@ No rows found.
 
 ## Requirement 9100
 
-- Summary: Observed in Damage, Heal, Immunity, Stun contexts; direct ability usage 172; component sources 212.
-- Notes: Requirement rows: 1; direct abilities: 172; direct components: 212; parent requirements: 0; sample abilities: 12 (Goop Shootin'), 74 (Pay No Mind), 97 (Clever Recovery), 694 (Flashbang Grenade), 1409 (Taunt), 1488 (Feinted Positioning), 1544 (Bugman's Best), 1586 (Power From The Ashes); context tags: Damage, Heal, Immunity, Stun.
+- Summary: Observed in Damage, Heal contexts; direct ability usage 172; component sources 212.
+- Notes: Requirement rows: 1; direct abilities: 172; direct components: 212; parent requirements: 0; sample abilities: 12 (Spore Cloud), 74 (Sub Test), 97 (Channel Test: Maintain), 694 (Divine Favor), 1409 (Avalanche), 1488 (Takin' Chances), 1544 (Bugman's Best), 1586 (Rune of Striking); context tags: Damage, Heal.
 
 ## Rows
 
@@ -4332,80 +4333,80 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1593 | Ability 1593 (Fueled From Within) | ExtData[0].Val6 | 1593 (Fueled From Within) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1118021 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11 | Component 11 (HEAL) | ExtData[2].Val6 | 74 (Pay No Mind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1136990 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1593 | Ability 1593 (Rune of Shielding) | ExtData[0].Val6 | 1593 (Rune of Shielding) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1118021 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11 | Component 11 (HEAL) | ExtData[2].Val6 | 74 (Sub Test) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1136990 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12 | Component 12 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137189 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 13 | Component 13 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137388 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 14 | Component 14 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137587 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 15 | Component 15 (HEAL) | ExtData[2].Val6 | 4065 (RvRD - Audette - Hierophant Aura), 27629 (Mending Wounds), 27661 (Mending Wounds), 27693 (Mending Wounds), 27725 (Mending Wounds), 27757 (Mending Wounds), 27789 (Mending Wounds) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 15 | Component 15 (HEAL) | ExtData[2].Val6 | 4065 (Healing Energy), 27629 (Mending Wounds), 27661 (Mending Wounds), 27693 (Mending Wounds), 27725 (Mending Wounds), 27757 (Mending Wounds), 27789 (Mending Wounds) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 16 | Component 16 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1137985 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 17 | Component 17 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138184 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18 | Component 18 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 19 | Component 19 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138582 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 20 | Component 20 (HEAL) | ExtData[2].Val6 | 27629 (Mending Wounds), 27661 (Mending Wounds), 27693 (Mending Wounds), 27725 (Mending Wounds), 27757 (Mending Wounds), 27789 (Mending Wounds) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138781 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 21 | Component 21 (HEAL) | ExtData[2].Val6 | 1596 (Draining Burn), 1904 (Bow Auto Attack 1), 8566 (Elixir Of Dark Blessings), 9242 (Boon of Hysh), 27628 (Greater Restore Ally), 27660 (Greater Repair Ally), 27692 (Greater Repair Ally), 27724 (Greater Repair Ally) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138980 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 21 | Component 21 (HEAL) | ExtData[2].Val6 | 1596 (Rune of Restoration), 1904 (Bigger, Better, An' Greener), 8566 (Elixir Of Dark Blessings), 9242 (Boon of Hysh), 27628 (Greater Restore Ally), 27660 (Greater Repair Ally), 27692 (Greater Repair Ally), 27724 (Greater Repair Ally) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1138980 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 205 | Component 205 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1168174 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 206 | Component 206 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1168340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 208 | Component 208 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1168705 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 209 | Component 209 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1168904 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 380 | Component 380 (HEAL) | ExtData[2].Val6 | 694 (Flashbang Grenade) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1193548 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 388 | Component 388 (HEAL) | ExtData[2].Val6 | 3884 (Ripping Gnash) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1194810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 380 | Component 380 (HEAL) | ExtData[2].Val6 | 694 (Divine Favor) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1193548 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 388 | Component 388 (HEAL) | ExtData[2].Val6 | 3884 (Alter Fate) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1194810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 611 | Component 611 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 19291 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 620 | Component 620 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 20818 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 622 | Component 622 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 21183 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 628 | Component 628 (HEAL) | ExtData[2].Val6 | 1907 (Bomb (Coil)) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 22179 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 628 | Component 628 (HEAL) | ExtData[2].Val6 | 1907 (Gather Round) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 22179 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 638 | Component 638 (HEAL) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 23806 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 757 | Component 757 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 43296 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 841 | Component 841 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 56910 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 864 | Component 864 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 61223 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1055 | Component 1055 (HEAL) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 93259 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1654 | Component 1654 (HEAL) | ExtData[2].Val6 | 1970 (AnimTest_CC (SmashHit Stun) BASH) | Damage, Heal, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 193252 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1654 | Component 1654 (HEAL) | ExtData[2].Val6 | 1970 (Feelz No Pain) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 193252 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1666 | Component 1666 (HEAL) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 195409 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1711 | Component 1711 (HEAL) | ExtData[1].Val6 | 1930 (Boiling Oil) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 202449 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1717 | Component 1717 (HEAL) | ExtData[2].Val6 | 1590 (Fan The Flames) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 203478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1711 | Component 1711 (HEAL) | ExtData[1].Val6 | 1930 (I'll Take That!) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 202449 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1717 | Component 1717 (HEAL) | ExtData[2].Val6 | 1590 (Rune of Regeneration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 203478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1718 | Component 1718 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 203677 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1720 | Component 1720 (HEAL) | ExtData[2].Val6 | 1593 (Fueled From Within) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 204075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1720 | Component 1720 (HEAL) | ExtData[2].Val6 | 1593 (Rune of Shielding) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 204075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1721 | Component 1721 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 204274 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1723 | Component 1723 (APPLY_ABILITY) | ExtData[2].Val6 | 1599 (Fuel To The Fire) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 204639 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1725 | Component 1725 (HEAL) | ExtData[2].Val6 | 1604 (Fiery Reserves) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 205004 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1727 | Component 1727 (HEAL) | ExtData[2].Val6 | 1611 (The Burning Head), 8573 (Boon of Tzeentch) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 205369 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1723 | Component 1723 (APPLY_ABILITY) | ExtData[2].Val6 | 1599 (Rune of Mending) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 204639 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1725 | Component 1725 (HEAL) | ExtData[2].Val6 | 1604 (Blessing of Valaya) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 205004 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1727 | Component 1727 (HEAL) | ExtData[2].Val6 | 1611 (Rune of Fortune), 8573 (Boon of Tzeentch) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 205369 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1749 | Component 1749 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 209120 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1753 | Component 1753 (HEAL) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 209784 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1758 | Component 1758 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 210713 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1760 | Component 1760 (HEAL) | ExtData[1].Val6 | 1616 (Rune of Fate) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 211177 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1761 | Component 1761 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 211376 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1762 | Component 1762 (HEAL) | ExtData[1].Val6 | 3551 (Healer Reactive B) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 211608 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1762 | Component 1762 (HEAL) | ExtData[1].Val6 | 3551 (Lingering Rune of Mending) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 211608 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1763 | Component 1763 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 211807 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1782 | Component 1782 (HEAL) | ExtData[2].Val6 | 1645 (Weight Of Guilt) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215093 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1783 | Component 1783 (HEAL) | ExtData[2].Val6 | 1645 (Weight Of Guilt) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215259 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1786 | Component 1786 (HEAL) | ExtData[2].Val6 | 3001 (Mortar Stike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215724 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1788 | Component 1788 (HEAL) | ExtData[2].Val6 | 1649 (Valaya's Shield), 3588 (Grenade/Dynamite), 3591 (Gyrocaptain's Pocket Watch) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216056 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1796 | Component 1796 (HEAL) | ExtData[0].Val6 | 3878 (Shredding Talons) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 217615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1796 | Component 1796 (HEAL) | ExtData[1].Val6 | 3878 (Shredding Talons) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 217615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1782 | Component 1782 (HEAL) | ExtData[2].Val6 | 1645 (Rune of Rebirth) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215093 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1783 | Component 1783 (HEAL) | ExtData[2].Val6 | 1645 (Rune of Rebirth) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215259 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1786 | Component 1786 (HEAL) | ExtData[2].Val6 | 3001 (Rune of Ending) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 215724 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1788 | Component 1788 (HEAL) | ExtData[2].Val6 | 1649 (Valaya's Shield), 3588 (Runic Fortitude), 3591 (Swift Changes) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216056 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1796 | Component 1796 (HEAL) | ExtData[0].Val6 | 3878 (On your Feet!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 217615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1796 | Component 1796 (HEAL) | ExtData[1].Val6 | 3878 (On your Feet!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 217615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1799 | Component 1799 (HEAL) | ExtData[2].Val6 | 1618 (Master Rune of Adamant) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 218080 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1863 | Component 1863 (HEAL) | ExtData[2].Val6 | 1606 (Magic Dart) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 229693 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1863 | Component 1863 (HEAL) | ExtData[2].Val6 | 1606 (Protection of the Ancestors) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 229693 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1875 | Component 1875 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 231553 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1937 | Component 1937 (APPLY_ABILITY) | ExtData[2].Val6 | 1901 (Melee Auto Attack 2) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242272 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1938 | Component 1938 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242471 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1939 | Component 1939 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242835 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1940 | Component 1940 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243067 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1941 | Component 1941 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1942 | Component 1942 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1943 | Component 1943 (HEAL) | ExtData[7].Val6 | 3908 (Caladryan 1) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3055 | Component 3055 (HEAL) | ExtData[2].Val6 | 3416 (Captain Syrkin's Corpse) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 266249 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3060 | Component 3060 (MORALE_CHANGE) | ExtData[2].Val6 | 3420 (Devastating Blows ) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 267178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3075 | Component 3075 (HEAL) | ExtData[1].Val6 | 3578 (Ignore the Sparklies), 3993 (Tzeentch's Fire Storm) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 269866 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3095 | Component 3095 (HEAL) | ExtData[1].Val6 | 1951 (AnimTest_Auto2) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 273450 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3142 | Component 3142 (HEAL) | ExtData[2].Val6 | 1409 (Taunt) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 281780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3179 | Component 3179 (HEAL) | ExtData[2].Val6 | 3552 (Tank Proc A), 3553 (Tank Proc B), 3554 (Tank Reactive A), 3558 (Melee DPS Reactive A), 3695 (Lingering Restore Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 288582 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3303 | Component 3303 (HEAL) | ExtData[1].Val6 | 12 (Goop Shootin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 308242 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3304 | Component 3304 (HEAL) | ExtData[1].Val6 | 12 (Goop Shootin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 308474 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3427 | Component 3427 (HEAL) | ExtData[2].Val6 | 1863 (Bestial Stamina) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 328562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3442 | Component 3442 (APPLY_ABILITY) | ExtData[1].Val6 | 1926 (Brimstone Bauble) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 330821 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3497 | Component 3497 (HEAL) | ExtData[2].Val6 | 1794 (Terrible Embrace) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 341169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3498 | Component 3498 (HEAL) | ExtData[2].Val6 | 1794 (Terrible Embrace) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 341401 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3725 | Component 3725 (HEAL) | ExtData[2].Val6 | 1488 (Feinted Positioning) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384952 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3726 | Component 3726 (HEAL) | ExtData[2].Val6 | 1488 (Feinted Positioning) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 385184 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1937 | Component 1937 (APPLY_ABILITY) | ExtData[2].Val6 | 1901 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242272 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1938 | Component 1938 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242471 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1939 | Component 1939 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 242835 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1940 | Component 1940 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243067 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1941 | Component 1941 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1942 | Component 1942 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1943 | Component 1943 (HEAL) | ExtData[7].Val6 | 3908 ('Ey, Quit Bleedin') | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 243763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3055 | Component 3055 (HEAL) | ExtData[2].Val6 | 3416 (Sigmar's Favor) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 266249 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3060 | Component 3060 (MORALE_CHANGE) | ExtData[2].Val6 | 3420 (Strength In Numbas) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 267178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3075 | Component 3075 (HEAL) | ExtData[1].Val6 | 3578 (Ignore the Sparklies), 3993 (Cleansing Vitality) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 269866 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3095 | Component 3095 (HEAL) | ExtData[1].Val6 | 1951 (Pass It On) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 273450 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3142 | Component 3142 (HEAL) | ExtData[2].Val6 | 1409 (Avalanche) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 281780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3179 | Component 3179 (HEAL) | ExtData[2].Val6 | 3552 (Lingering Gork'll Fix It), 3553 (Lingering Divine Aid), 3554 (Lingering Dark Medicine), 3558 (Lingering Healing Energy), 3695 (Lingering Restore Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 288582 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3303 | Component 3303 (HEAL) | ExtData[1].Val6 | 12 (Spore Cloud) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 308242 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3304 | Component 3304 (HEAL) | ExtData[1].Val6 | 12 (Spore Cloud) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 308474 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3427 | Component 3427 (HEAL) | ExtData[2].Val6 | 1863 (Da Smell Don't Bother Me) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 328562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3442 | Component 3442 (APPLY_ABILITY) | ExtData[1].Val6 | 1926 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 330821 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3497 | Component 3497 (HEAL) | ExtData[2].Val6 | 1794 (Longer and Stronger) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 341169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3498 | Component 3498 (HEAL) | ExtData[2].Val6 | 1794 (Longer and Stronger) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 341401 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3725 | Component 3725 (HEAL) | ExtData[2].Val6 | 1488 (Takin' Chances) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384952 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3726 | Component 3726 (HEAL) | ExtData[2].Val6 | 1488 (Takin' Chances) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 385184 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8045 | Component 8045 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 449325 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8056 | Component 8056 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 451250 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8057 | Component 8057 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 451449 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4417,15 +4418,15 @@ No rows found.
 | Component | 8176 | Component 8176 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 470576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8177 | Component 8177 (HEAL) | ExtData[2].Val6 | 8562 (Dust of Pandemonium) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 470775 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8178 | Component 8178 (HEAL) | ExtData[2].Val6 | 8558 (Tzeentch's Cordial) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 471007 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 8179 | Component 8179 (HEAL) | ExtData[2].Val6 | 97 (Clever Recovery) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 471206 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8179 | Component 8179 (HEAL) | ExtData[2].Val6 | 97 (Channel Test: Maintain) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 471206 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8387 | Component 8387 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 506031 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8702 | Component 8702 (HEAL) | ExtData[2].Val6 | 8558 (Tzeentch's Cordial) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 562479 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 8718 | Component 8718 (STAT_CHANGE) | ExtData[2].Val6 | 1606 (Magic Dart), 8561 (Daemonic Fortitude) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 565366 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8718 | Component 8718 (STAT_CHANGE) | ExtData[2].Val6 | 1606 (Protection of the Ancestors), 8561 (Daemonic Fortitude) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 565366 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8719 | Component 8719 (HEAL) | ExtData[2].Val6 | 8561 (Daemonic Fortitude) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 565565 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8720 | Component 8720 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 565764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8721 | Component 8721 (AP_CHANGE) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 565930 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8722 | Component 8722 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 8564 (Veil of Chaos) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 566096 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 8738 | Component 8738 (HEAL) | ExtData[0].Val6 | 3860 (Drunken Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 568785 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8738 | Component 8738 (HEAL) | ExtData[0].Val6 | 3860 (Transference) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 568785 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8753 | Component 8753 (HEAL) | ExtData[3].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 571770 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8768 | Component 8768 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 574392 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8772 | Component 8772 (HEAL) | ExtData[2].Val6 | 8247 (Touch of the Divine) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 575023 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4434,29 +4435,29 @@ No rows found.
 | Component | 8856 | Component 8856 (EVENT_LISTENER) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 588471 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8987 | Component 8987 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 611603 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9119 | Component 9119 (HEAL) | ExtData[1].Val6 | 8266 (Martyr's Blessing) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 634108 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9121 | Component 9121 (HEAL) | ExtData[0].Val6 | 3752 (Mount - Heavy - Magus 5) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 634473 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9129 | Component 9129 (HEAL) | ExtData[1].Val6 | 3016 (Hurlesson's Explosive Run), 3998 (Mocking Cry) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635735 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9130 | Component 9130 (HEAL) | ExtData[2].Val6 | 3017 (Flame Thrower) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9121 | Component 9121 (HEAL) | ExtData[0].Val6 | 3752 (Sigmar's Shield) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 634473 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9129 | Component 9129 (HEAL) | ExtData[1].Val6 | 3016 (Rune of Serenity), 3998 (Leaping Alteration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635735 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9130 | Component 9130 (HEAL) | ExtData[2].Val6 | 3017 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9153 | Component 9153 (HEAL) | ExtData[3].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 639917 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9175 | Component 9175 (HEAL) | ExtData[2].Val6 | 1599 (Fuel To The Fire), 1898 (Duration Pulsing AOE - VFX), 8238 (Divine Aid), 8549 (Dark Medicine), 9236 (Healing Energy), 9548 (Restore Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 643635 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9175 | Component 9175 (HEAL) | ExtData[2].Val6 | 1599 (Rune of Mending), 1898 (Gork'll Fix It), 8238 (Divine Aid), 8549 (Dark Medicine), 9236 (Healing Energy), 9548 (Restore Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 643635 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9297 | Component 9297 (HEAL) | ExtData[2].Val6 | 8244 (Divine Assault), 9554 (Rend Soul) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 663819 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9480 | Component 9480 (APPLY_ABILITY) | ExtData[2].Val6 | 8557 (Leaping Alteration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 696469 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9482 | Component 9482 (APPLY_ABILITY) | ExtData[1].Val6 | 8557 (Leaping Alteration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 696900 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9486 | Component 9486 (HEAL) | ExtData[2].Val6 | 3999 (Blood Fuel) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 697597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9486 | Component 9486 (HEAL) | ExtData[2].Val6 | 3999 (Tzeentch's Grip) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 697597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9619 | Component 9619 (HEAL) | ExtData[3].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 720070 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9634 | Component 9634 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 722659 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9682 | Component 9682 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 8068 (Guardian of Light) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 732376 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9895 | Component 9895 (HEAL) | ExtData[2].Val6 | 1586 (Power From The Ashes), 8548 (Scourge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 768361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9895 | Component 9895 (HEAL) | ExtData[2].Val6 | 1586 (Rune of Striking), 8548 (Scourge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 768361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 10152 | Component 10152 (HEAL) | ExtData[2].Val6 | 10392 (Caretaker) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1385848 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 10153 | Component 10153 (HEAL) | ExtData[2].Val6 | 10703 (Martyr) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1386080 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 10642 | Component 10642 (HEAL) | ExtData[1].Val6 | 10776 (Divine Favor) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1475273 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11218 | Component 11218 (HEAL) | ExtData[2].Val6 | 3803 (Ursine Roar), 9557 (Khaine's Embrace) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 827646 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11218 | Component 11218 (HEAL) | ExtData[2].Val6 | 3803 (Khaine's Embrace), 9557 (Khaine's Embrace) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 827646 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11219 | Component 11219 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 827878 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11245 | Component 11245 (HEAL) | ExtData[2].Val6 | 3802 (Maul) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 832293 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11245 | Component 11245 (HEAL) | ExtData[2].Val6 | 3802 (Khaine's Vigor) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 832293 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11246 | Component 11246 (HEAL) | ExtData[2].Val6 | 3672 (Oath Rune Of Healing) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 832525 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11247 | Component 11247 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 832724 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11251 | Component 11251 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 833454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11360 | Component 11360 (HEAL) | ExtData[2].Val6 | 3365 (Splitting Pain), 3366 (Taunt Immunity) | Heal, Immunity | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 853693 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11360 | Component 11360 (HEAL) | ExtData[2].Val6 | 3365 (Healing Hand), 3366 (Soul Infusion) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 853693 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11364 | Component 11364 (HEAL) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 854423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11367 | Component 11367 (HEAL) | ExtData[2].Val6 | 9245 (Blessing of Isha) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 854987 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11389 | Component 11389 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 858705 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4465,42 +4466,42 @@ No rows found.
 | Component | 11949 | Component 11949 (HEAL) | ExtData[3].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 953897 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11958 | Component 11958 (HEAL) | ExtData[1].Val6 | 9579 (Khaine's Refreshment) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 955424 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11969 | Component 11969 (HEAL) | ExtData[0].Val6 | 9257 (Balance Essence) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 957117 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12006 | Component 12006 (HEAL) | ExtData[1].Val6 | 3367 (Delicious Excruciation 1) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 963556 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12006 | Component 12006 (HEAL) | ExtData[1].Val6 | 3367 (Devour Essence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 963556 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12096 | Component 12096 (APPLY_ABILITY) | ExtData[1].Val6 | 9238 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 980637 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12097 | Component 12097 (HEAL) | ExtData[6].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 980836 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12098 | Component 12098 (HEAL) | ExtData[2].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981200 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12099 | Component 12099 (HEAL) | ExtData[2].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981432 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12100 | Component 12100 (HEAL) | ExtData[2].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981664 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12101 | Component 12101 (HEAL) | ExtData[2].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981896 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12102 | Component 12102 (HEAL) | ExtData[2].Val6 | 3914 (Enthralling Cloud) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 982128 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12118 | Component 12118 (HEAL) | ExtData[6].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 985708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12119 | Component 12119 (HEAL) | ExtData[2].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986072 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12120 | Component 12120 (HEAL) | ExtData[2].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986304 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12121 | Component 12121 (HEAL) | ExtData[2].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986536 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12122 | Component 12122 (HEAL) | ExtData[2].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986768 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12123 | Component 12123 (HEAL) | ExtData[2].Val6 | 3917 (Lash of Change), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 987000 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12097 | Component 12097 (HEAL) | ExtData[6].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 980836 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12098 | Component 12098 (HEAL) | ExtData[2].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981200 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12099 | Component 12099 (HEAL) | ExtData[2].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981432 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12100 | Component 12100 (HEAL) | ExtData[2].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981664 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12101 | Component 12101 (HEAL) | ExtData[2].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 981896 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12102 | Component 12102 (HEAL) | ExtData[2].Val6 | 3914 (Lambent Aura) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 982128 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12118 | Component 12118 (HEAL) | ExtData[6].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 985708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12119 | Component 12119 (HEAL) | ExtData[2].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986072 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12120 | Component 12120 (HEAL) | ExtData[2].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986304 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12121 | Component 12121 (HEAL) | ExtData[2].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986536 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12122 | Component 12122 (HEAL) | ExtData[2].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 986768 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12123 | Component 12123 (HEAL) | ExtData[2].Val6 | 3917 (Funnel Essence), 9258 (Funnel Essence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 987000 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12124 | Component 12124 (APPLY_ABILITY) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 987232 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12132 | Component 12132 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12133 | Component 12133 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989518 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12134 | Component 12134 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989783 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12135 | Component 12135 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990048 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12136 | Component 12136 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990313 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12137 | Component 12137 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Morathi's Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990578 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12290 | Component 12290 (HEAL) | ExtData[0].Val6 | 3909 (Caladryan 2), 3910 (Grasping Bones), 3968 (EvC SH - Stomp - Stun), 3969 (EvC SH - Stomp - DoT) | Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1016141 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12132 | Component 12132 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12133 | Component 12133 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989518 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12134 | Component 12134 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 989783 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12135 | Component 12135 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990048 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12136 | Component 12136 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990313 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12137 | Component 12137 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3919 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 990578 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12290 | Component 12290 (HEAL) | ExtData[0].Val6 | 3909 (Bleed Fer' Me), 3910 (Bleed Fer' Me), 3968 (Transfer Force), 3969 (Transfer Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1016141 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12710 | Component 12710 (HEAL) | ExtData[3].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088194 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12711 | Component 12711 (HEAL) | ExtData[3].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088459 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12712 | Component 12712 (HEAL) | ExtData[3].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088724 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12779 | Component 12779 (APPLY_ABILITY) | ExtData[2].Val6 | 8241 (Healing Hand) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1100009 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12780 | Component 12780 (APPLY_ABILITY) | ExtData[2].Val6 | 9550 (Soul Infusion) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1100208 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12781 | Component 12781 (APPLY_ABILITY) | ExtData[2].Val6 | 9443 (Sharpened Edge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1100407 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12782 | Component 12782 (EFFECT_BUFF) | ExtData[2].Val6 | 3356 (Portal Channeler Nuke) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1100573 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12865 | Component 12865 (HEAL) | ExtData[1].Val6 | 3172 (Bile Eruption), 3175 (Cleaving Whirlwind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1113620 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12874 | Component 12874 (HEAL) | ExtData[0].Val6 | 3909 (Caladryan 2), 3968 (EvC SH - Stomp - Stun) | Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115015 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12875 | Component 12875 (HEAL) | ExtData[0].Val6 | 3909 (Caladryan 2), 3968 (EvC SH - Stomp - Stun) | Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115181 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12876 | Component 12876 (HEAL) | ExtData[0].Val6 | 3909 (Caladryan 2), 3968 (EvC SH - Stomp - Stun) | Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115347 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12877 | Component 12877 (HEAL) | ExtData[0].Val6 | 3909 (Caladryan 2), 3968 (EvC SH - Stomp - Stun) | Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115513 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12782 | Component 12782 (EFFECT_BUFF) | ExtData[2].Val6 | 3356 (Sharpened Edge BLOCKER) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1100573 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12865 | Component 12865 (HEAL) | ExtData[1].Val6 | 3172 (Fury of Da Green), 3175 (Energy of Vaul) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1113620 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12874 | Component 12874 (HEAL) | ExtData[0].Val6 | 3909 (Bleed Fer' Me), 3968 (Transfer Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115015 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12875 | Component 12875 (HEAL) | ExtData[0].Val6 | 3909 (Bleed Fer' Me), 3968 (Transfer Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115181 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12876 | Component 12876 (HEAL) | ExtData[0].Val6 | 3909 (Bleed Fer' Me), 3968 (Transfer Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115347 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12877 | Component 12877 (HEAL) | ExtData[0].Val6 | 3909 (Bleed Fer' Me), 3968 (Transfer Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1115513 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12968 | Component 12968 (HEAL) | ExtData[2].Val6 | 8239 (Divine Mend), 9553 (Khaine's Invigoration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1129954 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 14556 | Component 14556 (Unknown component operation (29)) | ExtData[1].Val6 | 14220 (Skull Tossing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1582446 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 14556 | Component 14556 (SERVER_OP_29) | ExtData[1].Val6 | 14220 (Skull Tossing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1582446 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 15274 | Component 15274 (HEAL) | ExtData[2].Val6 | 15157 (Portable Camp) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1686291 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 15506 | Component 15506 (HEAL) | ExtData[2].Val6 | 15537 (Transference TEST), 15538 (TEST - Attach Points) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1695888 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 15541 | Component 15541 (HEAL) | ExtData[2].Val6 | 15538 (TEST - Attach Points) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1701235 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4529,20 +4530,20 @@ No rows found.
 | Component | 15975 | Component 15975 (HEAL) | ExtData[7].Val6 | 15902 (Restoration XI), 15956 (Aid XI) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1758025 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18230 | Component 18230 (HEAL) | ExtData[7].Val6 | 18070 (Restoration XII) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1800424 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18260 | Component 18260 (HEAL) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 421006 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18285 | Component 18285 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 424560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18286 | Component 18286 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 424924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18287 | Component 18287 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425156 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18288 | Component 18288 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425388 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18289 | Component 18289 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425620 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18290 | Component 18290 (HEAL) | ExtData[7].Val6 | 3274 (Warpwind Ague) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425852 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18324 | Component 18324 (APPLY_ABILITY) | ExtData[1].Val6 | 1601 (Ignition) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18325 | Component 18325 (APPLY_ABILITY) | ExtData[2].Val6 | 1601 (Ignition) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18349 | Component 18349 (HEAL) | ExtData[2].Val6 | 1587 (Lingering Fires), 8569 (Flash of Chaos) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 436141 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18285 | Component 18285 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 424560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18286 | Component 18286 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 424924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18287 | Component 18287 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425156 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18288 | Component 18288 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425388 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18289 | Component 18289 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425620 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18290 | Component 18290 (HEAL) | ExtData[7].Val6 | 3274 (Do Sumfin Useful) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 425852 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18324 | Component 18324 (APPLY_ABILITY) | ExtData[1].Val6 | 1601 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18325 | Component 18325 (APPLY_ABILITY) | ExtData[2].Val6 | 1601 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18349 | Component 18349 (HEAL) | ExtData[2].Val6 | 1587 (Grungni's Gift), 8569 (Flash of Chaos) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 436141 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18572 | Component 18572 (HEAL) | ExtData[0].Val6 | 18815 (Pain and Pleasure) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1833609 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18572 | Component 18572 (HEAL) | ExtData[2].Val6 | 18815 (Pain and Pleasure) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1833609 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18697 | Component 18697 (HEAL) | ExtData[2].Val6 | 3045 (Eldazar Cone KB/DD) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 775237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18697 | Component 18697 (HEAL) | ExtData[2].Val6 | 3045 (Gift of Monstrosity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 775237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 19208 | Component 19208 (APPLY_ABILITY) | ExtData[0].Val6 | 1544 (Bugman's Best) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 437668 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 19215 | Component 19215 (HEAL) | ExtData[2].Val6 | 3077 (Flames of Retribution), 3078 (Pillars of Fire) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 438896 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 19215 | Component 19215 (HEAL) | ExtData[2].Val6 | 3077 (Efficient Runecarving), 3078 (Transference) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 438896 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27622 | Component 27622 (HEAL) | ExtData[2].Val6 | 27626 (Restore Ally), 27658 (Repair Ally), 27690 (Repair Ally), 27722 (Repair Ally), 27754 (Repair Ally), 27786 (Repair Ally) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1859416 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27648 | Component 27648 (HEAL) | ExtData[0].Val6 | 27695 (Pool of Health), 27727 (Pool of Health) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1863666 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27654 | Component 27654 (HEAL) | ExtData[0].Val6 | 27758 (Repair and Repeat), 27790 (Repair and Repeat) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1864761 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -4554,8 +4555,8 @@ No rows found.
 
 ## Requirement 9101
 
-- Summary: Observed in Damage, Heal, Knockdown contexts; direct ability usage 11; component sources 9.
-- Notes: Requirement rows: 1; direct abilities: 11; direct components: 9; parent requirements: 0; sample abilities: 697 (Self-Destruct), 1598 (Burn Through), 1619 (Grimnir's Fury), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!); context tags: Damage, Heal, Knockdown.
+- Summary: Observed in Damage, Heal contexts; direct ability usage 11; component sources 9.
+- Notes: Requirement rows: 1; direct abilities: 11; direct components: 9; parent requirements: 0; sample abilities: 697 (Alter Fate), 1598 (Rune of Life), 1619 (Grimnir's Fury), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!); context tags: Damage, Heal.
 
 ## Rows
 
@@ -4578,10 +4579,10 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 10 | Component 10 (RESSURRECT) | ExtData[2].Val6 | 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!), 14526 (Rally), 15981 (Nepenthean Tonic) | Heal, Knockdown | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1136725 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 10 | Component 10 (RESSURRECT) | ExtData[2].Val6 | 1598 (Rune of Life), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!), 14526 (Rally), 15981 (Nepenthean Tonic) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1136725 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1111 | Component 1111 (RESSURRECT) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 102423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1734 | Component 1734 (RESSURRECT) | ExtData[1].Val6 | 697 (Self-Destruct), 1619 (Grimnir's Fury) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 206564 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1792 | Component 1792 (EVENT_LISTENER) | ExtData[1].Val6 | 697 (Self-Destruct) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1734 | Component 1734 (RESSURRECT) | ExtData[1].Val6 | 697 (Alter Fate), 1619 (Grimnir's Fury) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 206564 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1792 | Component 1792 (EVENT_LISTENER) | ExtData[1].Val6 | 697 (Alter Fate) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 8153 | Component 8153 (RESSURRECT) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 466758 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18055 | Component 18055 (RESSURRECT) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1789497 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18319 | Component 18319 (EVENT_LISTENER) | ExtData[1].Val6 | 1619 (Grimnir's Fury) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 431161 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -5249,7 +5250,7 @@ No rows found.
 ## Requirement 9119
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 5; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 3; sample abilities: 3041 (Bleed), 8401 (Tainted Claw), 8414 (Gut Ripper), 8418 (Cutting Claw), 8419 (Draining Swipe); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 3; sample abilities: 3041 (Gift of Savagery), 8401 (Tainted Claw), 8414 (Gut Ripper), 8418 (Cutting Claw), 8419 (Draining Swipe); context tags: Damage, Heal.
 
 ## Rows
 
@@ -5281,7 +5282,7 @@ No rows found.
 | Ability | 8414 | Ability 8414 (Gut Ripper) | ExtData[1].Val6 | 8414 (Gut Ripper) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1235511 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8418 | Ability 8418 (Cutting Claw) | ExtData[0].Val6 | 8418 (Cutting Claw) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1236192 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8419 | Ability 8419 (Draining Swipe) | ExtData[0].Val6 | 8419 (Draining Swipe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1236419 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18693 | Component 18693 (EVENT_LISTENER) | ExtData[1].Val6 | 3041 (Bleed) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 774639 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18693 | Component 18693 (EVENT_LISTENER) | ExtData[1].Val6 | 3041 (Gift of Savagery) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 774639 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9122 | Requirement 9122 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 11246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9162 | Requirement 9162 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9164 | Requirement 9164 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -5293,7 +5294,7 @@ No rows found.
 ## Requirement 9120
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 5; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 3; sample abilities: 3042 (Sacellum Small Peff), 8399 (Impale), 8406 (Convulsive Slashing), 8420 (Guillotine), 8422 (Wave of Terror); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 3; sample abilities: 3042 (Gift of Brutality), 8399 (Impale), 8406 (Convulsive Slashing), 8420 (Guillotine), 8422 (Wave of Terror); context tags: Damage, Heal.
 
 ## Rows
 
@@ -5325,7 +5326,7 @@ No rows found.
 | Ability | 8406 | Ability 8406 (Convulsive Slashing) | ExtData[0].Val6 | 8406 (Convulsive Slashing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1233695 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8420 | Ability 8420 (Guillotine) | ExtData[0].Val6 | 8420 (Guillotine) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1236646 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8422 | Ability 8422 (Wave of Terror) | ExtData[0].Val6 | 8422 (Wave of Terror) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1237100 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18704 | Component 18704 (EVENT_LISTENER) | ExtData[1].Val6 | 3042 (Sacellum Small Peff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 776300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18704 | Component 18704 (EVENT_LISTENER) | ExtData[1].Val6 | 3042 (Gift of Brutality) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 776300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9122 | Requirement 9122 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 11246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9163 | Requirement 9163 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15348 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9164 | Requirement 9164 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -5337,7 +5338,7 @@ No rows found.
 ## Requirement 9121
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 1; parent requirements: 3; sample abilities: 3043 (Sacellum Big Peff), 8409 (Demolition), 8425 (Wrecking Ball); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 1; parent requirements: 3; sample abilities: 3043 (Gift of Monstrosity), 8409 (Demolition), 8425 (Wrecking Ball); context tags: Damage.
 
 ## Rows
 
@@ -5367,7 +5368,7 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Ability | 8409 | Ability 8409 (Demolition) | ExtData[0].Val6 | 8409 (Demolition) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1234343 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8425 | Ability 8425 (Wrecking Ball) | ExtData[0].Val6 | 8425 (Wrecking Ball) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1237715 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18692 | Component 18692 (EVENT_LISTENER) | ExtData[1].Val6 | 3043 (Sacellum Big Peff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 774440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18692 | Component 18692 (EVENT_LISTENER) | ExtData[1].Val6 | 3043 (Gift of Monstrosity) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 774440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9122 | Requirement 9122 | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 11246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9162 | Requirement 9162 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9163 | Requirement 9163 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15348 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -5866,7 +5867,7 @@ No rows found.
 ## Requirement 9135
 
 - Summary: Observed in Disarm, Silence contexts; direct ability usage 2; component sources 2; child requirement ids 9094, 9095.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9094, 9095; sample abilities: 124 (Lion's Roar), 4802 (Personal Preparation); context tags: Disarm, Silence.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9094, 9095; sample abilities: 124 (Raven’s Bite), 4802 (Ravens Bite); context tags: Disarm, Silence.
 
 ## Rows
 
@@ -5894,8 +5895,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1196 | Component 1196 (CC) | ExtData[1].Val6 | 124 (Lion's Roar) | Disarm, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 115741 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 4802 | Component 4802 (CC) | ExtData[1].Val6 | 4802 (Personal Preparation) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2063754 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1196 | Component 1196 (CC) | ExtData[1].Val6 | 124 (Raven’s Bite) | Disarm, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 115741 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 4802 | Component 4802 (CC) | ExtData[1].Val6 | 4802 (Ravens Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 2063754 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -6093,7 +6094,7 @@ No rows found.
 ## Requirement 9141
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 490 (Isha's Balance).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 490 (Shared Badge Components).
 
 ## Rows
 
@@ -6120,7 +6121,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1337 | Component 1337 (DISPEL_BUFF) | ExtData[1].Val6 | 490 (Isha's Balance) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 139609 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1337 | Component 1337 (DISPEL_BUFF) | ExtData[1].Val6 | 490 (Shared Badge Components) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 139609 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -6252,7 +6253,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 9 | AbilityOperation: 9=Random. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 120 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 9 | AbilityOperation: 9=Random. | Confirmed |  |
@@ -6285,7 +6286,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 9 | AbilityOperation: 9=Random. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 100 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -6639,7 +6640,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 9 | AbilityOperation: 9=Random. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 100 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -6657,7 +6658,7 @@ No rows found.
 ## Requirement 9156
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 490 (Isha's Balance).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 490 (Shared Badge Components).
 
 ## Rows
 
@@ -6684,7 +6685,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1340 | Component 1340 (DISPEL_BUFF) | ExtData[1].Val6 | 490 (Isha's Balance) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 140173 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1340 | Component 1340 (DISPEL_BUFF) | ExtData[1].Val6 | 490 (Shared Badge Components) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 140173 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -6748,7 +6749,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
@@ -6767,7 +6768,7 @@ No rows found.
 ## Requirement 9159
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 3; sample abilities: 482 (Fire Brew).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 3; sample abilities: 482 (White Lion's Badge).
 
 ## Rows
 
@@ -6807,7 +6808,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 12141 | Component 12141 (SERVER_COMMAND) | ExtData[1].Val6 | 482 (Fire Brew) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 991308 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12141 | Component 12141 (SERVER_COMMAND) | ExtData[1].Val6 | 482 (White Lion's Badge) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 991308 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9147 | Requirement 9147 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 13612 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9153 | Requirement 9153 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 14131 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9160 | Requirement 9160 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 15039 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -7026,7 +7027,7 @@ No rows found.
 ## Requirement 9165
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 1; sample abilities: 3744 (Mount - Heavy - Chaos).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 1; sample abilities: 3744 (Gut Ripper).
 
 ## Rows
 
@@ -7053,7 +7054,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8523 | Component 8523 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3744 (Mount - Heavy - Chaos) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 529696 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8523 | Component 8523 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3744 (Gut Ripper) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 529696 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9460 | Requirement 9460 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 45477 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7063,7 +7064,7 @@ No rows found.
 ## Requirement 9166
 
 - Summary: direct ability usage 2; child requirement ids 9152.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; child requirements: 9152; sample abilities: 1444 (Well-Trained), 1756 (Inevitable Changing).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; child requirements: 9152; sample abilities: 1444 (Numbing Strike), 1756 (Drop Da Basha).
 
 ## Rows
 
@@ -7089,8 +7090,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1444 | Ability 1444 (Well-Trained) | ExtData[0].Val6 | 1444 (Well-Trained) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1097511 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1756 | Ability 1756 (Inevitable Changing) | ExtData[0].Val6 | 1756 (Inevitable Changing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1143463 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1444 | Ability 1444 (Numbing Strike) | ExtData[0].Val6 | 1444 (Numbing Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1097511 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1756 | Ability 1756 (Drop Da Basha) | ExtData[0].Val6 | 1756 (Drop Da Basha) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1143463 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -7139,7 +7140,7 @@ No rows found.
 ## Requirement 9168
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 14.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 14; parent requirements: 0; sample abilities: 3536 (Ensorcelled Blow), 3537 (Understanding the New Threat Epic Quest), 3540 (Warpforged Vanquisher), 3579 (Intimidating Blow), 3735 (Mount - Dumpy Horse - Order); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 14; parent requirements: 0; sample abilities: 3536 (Ensorcelled Blow), 3537 (Ether Dance), 3540 (Dazzling Strike), 3579 (Intimidating Blow), 3735 (Gusting Wind); context tags: Damage.
 
 ## Rows
 
@@ -7177,15 +7178,15 @@ No rows found.
 | Component | 11097 | Component 11097 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806108 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11098 | Component 11098 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806373 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11099 | Component 11099 (DAMAGE) | ExtData[1].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806638 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11102 | Component 11102 (DAMAGE) | ExtData[1].Val6 | 3537 (Understanding the New Threat Epic Quest) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11123 | Component 11123 (DAMAGE) | ExtData[1].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11124 | Component 11124 (DAMAGE) | ExtData[1].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11102 | Component 11102 (DAMAGE) | ExtData[1].Val6 | 3537 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11123 | Component 11123 (DAMAGE) | ExtData[1].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11124 | Component 11124 (DAMAGE) | ExtData[1].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11200 | Component 11200 (APPLY_ABILITY) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 824394 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11700 | Component 11700 (DAMAGE) | ExtData[1].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11700 | Component 11700 (DAMAGE) | ExtData[1].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11701 | Component 11701 (DAMAGE) | ExtData[1].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911416 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11702 | Component 11702 (DAMAGE) | ExtData[1].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911681 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11921 | Component 11921 (DAMAGE) | ExtData[1].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11922 | Component 11922 (DAMAGE) | ExtData[1].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11922 | Component 11922 (DAMAGE) | ExtData[1].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11926 | Component 11926 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 950444 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7234,7 +7235,7 @@ No rows found.
 ## Requirement 9170
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 1942 (Bolster).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 1942 (Mork Is Watchin').
 
 ## Rows
 
@@ -7260,7 +7261,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1664 | Component 1664 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 1942 (Bolster) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 195110 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1664 | Component 1664 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 1942 (Mork Is Watchin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 195110 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -7284,7 +7285,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 9 | AbilityOperation: 9=Random. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 100 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 3 | AbilityOperation: 3=BuffGroupCounterSum. | Confirmed |  |
@@ -7338,7 +7339,7 @@ No rows found.
 ## Requirement 9173
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Combustion), 301 (Explosion), 8179 (Meltdown); context tags: Damage.
 
 ## Rows
 
@@ -7366,11 +7367,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8920 | Component 8920 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 599986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9551 | Component 9551 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708188 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9556 | Component 9556 (DAMAGE) | ExtData[0].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8920 | Component 8920 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 599986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9551 | Component 9551 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708188 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9556 | Component 9556 (DAMAGE) | ExtData[0].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9565 | Component 9565 (DAMAGE) | ExtData[1].Val6 | 8179 (Meltdown) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 710380 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9584 | Component 9584 (DAMAGE) | ExtData[1].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 713864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9584 | Component 9584 (DAMAGE) | ExtData[1].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 713864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9178 | Requirement 9178 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 16761 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7380,7 +7381,7 @@ No rows found.
 ## Requirement 9174
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Combustion), 301 (Explosion), 8179 (Meltdown); context tags: Damage.
 
 ## Rows
 
@@ -7408,11 +7409,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8921 | Component 8921 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600152 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9552 | Component 9552 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708354 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9557 | Component 9557 (DAMAGE) | ExtData[0].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709184 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8921 | Component 8921 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600152 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9552 | Component 9552 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708354 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9557 | Component 9557 (DAMAGE) | ExtData[0].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709184 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9566 | Component 9566 (DAMAGE) | ExtData[1].Val6 | 8179 (Meltdown) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 710579 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9585 | Component 9585 (DAMAGE) | ExtData[1].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714096 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9585 | Component 9585 (DAMAGE) | ExtData[1].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714096 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9179 | Requirement 9179 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 16853 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7422,7 +7423,7 @@ No rows found.
 ## Requirement 9175
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Combustion), 301 (Explosion), 8179 (Meltdown); context tags: Damage.
 
 ## Rows
 
@@ -7450,11 +7451,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8922 | Component 8922 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9553 | Component 9553 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708520 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9558 | Component 9558 (DAMAGE) | ExtData[0].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709350 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8922 | Component 8922 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9553 | Component 9553 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708520 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9558 | Component 9558 (DAMAGE) | ExtData[0].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709350 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9567 | Component 9567 (DAMAGE) | ExtData[1].Val6 | 8179 (Meltdown) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 710778 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9586 | Component 9586 (DAMAGE) | ExtData[1].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714328 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9586 | Component 9586 (DAMAGE) | ExtData[1].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714328 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9180 | Requirement 9180 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 16945 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7464,7 +7465,7 @@ No rows found.
 ## Requirement 9176
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Combustion), 301 (Explosion), 8179 (Meltdown); context tags: Damage.
 
 ## Rows
 
@@ -7492,11 +7493,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8923 | Component 8923 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600484 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9554 | Component 9554 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708686 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9559 | Component 9559 (DAMAGE) | ExtData[0].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709516 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8923 | Component 8923 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600484 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9554 | Component 9554 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708686 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9559 | Component 9559 (DAMAGE) | ExtData[0].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709516 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9568 | Component 9568 (DAMAGE) | ExtData[1].Val6 | 8179 (Meltdown) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 710977 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9587 | Component 9587 (DAMAGE) | ExtData[1].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9587 | Component 9587 (DAMAGE) | ExtData[1].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9181 | Requirement 9181 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 17037 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7506,7 +7507,7 @@ No rows found.
 ## Requirement 9177
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 5.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Baleful Affliction), 301 (Rite of Vengence), 8179 (Meltdown); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 5; parent requirements: 1; sample abilities: 299 (Combustion), 301 (Explosion), 8179 (Meltdown); context tags: Damage.
 
 ## Rows
 
@@ -7534,11 +7535,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 8924 | Component 8924 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600650 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9555 | Component 9555 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Baleful Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708852 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9560 | Component 9560 (DAMAGE) | ExtData[0].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709682 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 8924 | Component 8924 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 600650 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9555 | Component 9555 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 299 (Combustion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 708852 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9560 | Component 9560 (DAMAGE) | ExtData[0].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 709682 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9569 | Component 9569 (DAMAGE) | ExtData[1].Val6 | 8179 (Meltdown) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 711176 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9588 | Component 9588 (DAMAGE) | ExtData[1].Val6 | 301 (Rite of Vengence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714792 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9588 | Component 9588 (DAMAGE) | ExtData[1].Val6 | 301 (Explosion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 714792 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9182 | Requirement 9182 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 17129 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7743,7 +7744,7 @@ No rows found.
 ## Requirement 9183
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 6.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 2; sample abilities: 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 2; sample abilities: 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind); context tags: Damage.
 
 ## Rows
 
@@ -7773,10 +7774,10 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11842 | Component 11842 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 936800 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12490 | Component 12490 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1050459 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12495 | Component 12495 (DAMAGE) | ExtData[0].Val6 | 291 (Too Smart For Dat), 292 (Much Good Green) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051289 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12495 | Component 12495 (DAMAGE) | ExtData[0].Val6 | 291 (Backlash), 292 (Miscast!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051289 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12504 | Component 12504 (DAMAGE) | ExtData[1].Val6 | 9490 (Dhar Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1052651 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12525 | Component 12525 (DAMAGE) | ExtData[1].Val6 | 291 (Too Smart For Dat), 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12583 | Component 12583 (DAMAGE) | ExtData[0].Val6 | 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1066820 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12525 | Component 12525 (DAMAGE) | ExtData[1].Val6 | 291 (Backlash), 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12583 | Component 12583 (DAMAGE) | ExtData[0].Val6 | 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1066820 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9188 | Requirement 9188 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 17681 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9189 | Requirement 9189 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 17806 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
@@ -7787,7 +7788,7 @@ No rows found.
 ## Requirement 9184
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 6.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 0; sample abilities: 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 0; sample abilities: 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind); context tags: Damage.
 
 ## Rows
 
@@ -7817,10 +7818,10 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11843 | Component 11843 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 936966 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12491 | Component 12491 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1050625 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12496 | Component 12496 (DAMAGE) | ExtData[0].Val6 | 291 (Too Smart For Dat), 292 (Much Good Green) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051455 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12496 | Component 12496 (DAMAGE) | ExtData[0].Val6 | 291 (Backlash), 292 (Miscast!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051455 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12505 | Component 12505 (DAMAGE) | ExtData[1].Val6 | 9490 (Dhar Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1052850 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12526 | Component 12526 (DAMAGE) | ExtData[1].Val6 | 291 (Too Smart For Dat), 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056699 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12584 | Component 12584 (DAMAGE) | ExtData[0].Val6 | 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1066986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12526 | Component 12526 (DAMAGE) | ExtData[1].Val6 | 291 (Backlash), 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056699 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12584 | Component 12584 (DAMAGE) | ExtData[0].Val6 | 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1066986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -7829,7 +7830,7 @@ No rows found.
 ## Requirement 9185
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 6.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind); context tags: Damage.
 
 ## Rows
 
@@ -7859,10 +7860,10 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11844 | Component 11844 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 937132 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12492 | Component 12492 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1050791 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12497 | Component 12497 (DAMAGE) | ExtData[0].Val6 | 291 (Too Smart For Dat), 292 (Much Good Green) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051621 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12497 | Component 12497 (DAMAGE) | ExtData[0].Val6 | 291 (Backlash), 292 (Miscast!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051621 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12506 | Component 12506 (DAMAGE) | ExtData[1].Val6 | 9490 (Dhar Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1053049 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12527 | Component 12527 (DAMAGE) | ExtData[1].Val6 | 291 (Too Smart For Dat), 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056931 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12585 | Component 12585 (DAMAGE) | ExtData[0].Val6 | 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067152 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12527 | Component 12527 (DAMAGE) | ExtData[1].Val6 | 291 (Backlash), 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1056931 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12585 | Component 12585 (DAMAGE) | ExtData[0].Val6 | 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067152 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9190 | Requirement 9190 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 17931 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7872,7 +7873,7 @@ No rows found.
 ## Requirement 9186
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 6.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind); context tags: Damage.
 
 ## Rows
 
@@ -7902,10 +7903,10 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11845 | Component 11845 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 937298 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12493 | Component 12493 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1050957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12498 | Component 12498 (DAMAGE) | ExtData[0].Val6 | 291 (Too Smart For Dat), 292 (Much Good Green) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12498 | Component 12498 (DAMAGE) | ExtData[0].Val6 | 291 (Backlash), 292 (Miscast!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12507 | Component 12507 (DAMAGE) | ExtData[1].Val6 | 9490 (Dhar Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1053248 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12528 | Component 12528 (DAMAGE) | ExtData[1].Val6 | 291 (Too Smart For Dat), 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1057163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12586 | Component 12586 (DAMAGE) | ExtData[0].Val6 | 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12528 | Component 12528 (DAMAGE) | ExtData[1].Val6 | 291 (Backlash), 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1057163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12586 | Component 12586 (DAMAGE) | ExtData[0].Val6 | 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9191 | Requirement 9191 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 18056 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -7915,7 +7916,7 @@ No rows found.
 ## Requirement 9187
 
 - Summary: Observed in Damage contexts; direct ability usage 5; component sources 6.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Too Smart For Dat), 292 (Much Good Green), 3436 (Butcher Melee Cone), 9490 (Dhar Wind); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 6; parent requirements: 1; sample abilities: 287 (Dark Magic), 291 (Backlash), 292 (Miscast!), 3436 (Backlash), 9490 (Dhar Wind); context tags: Damage.
 
 ## Rows
 
@@ -7945,10 +7946,10 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11846 | Component 11846 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 937464 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12494 | Component 12494 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 287 (Dark Magic) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051123 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12499 | Component 12499 (DAMAGE) | ExtData[0].Val6 | 291 (Too Smart For Dat), 292 (Much Good Green) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051953 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12499 | Component 12499 (DAMAGE) | ExtData[0].Val6 | 291 (Backlash), 292 (Miscast!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1051953 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12508 | Component 12508 (DAMAGE) | ExtData[1].Val6 | 9490 (Dhar Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1053447 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12529 | Component 12529 (DAMAGE) | ExtData[1].Val6 | 291 (Too Smart For Dat), 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1057395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12587 | Component 12587 (DAMAGE) | ExtData[0].Val6 | 3436 (Butcher Melee Cone) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067484 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12529 | Component 12529 (DAMAGE) | ExtData[1].Val6 | 291 (Backlash), 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1057395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12587 | Component 12587 (DAMAGE) | ExtData[0].Val6 | 3436 (Backlash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067484 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9192 | Requirement 9192 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 18181 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -9020,7 +9021,7 @@ No rows found.
 ## Requirement 9212
 
 - Summary: Observed in Damage contexts; direct ability usage 3; child requirement ids 9066, 9076.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 0; parent requirements: 0; child requirements: 9066, 9076; sample abilities: 1369 (Lookit What I Did!), 8347 (Oppression), 9342 (Blade of Ruin); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 0; parent requirements: 0; child requirements: 9066, 9076; sample abilities: 1369 (Shield of Reprisal), 8347 (Oppression), 9342 (Blade of Ruin); context tags: Damage.
 
 ## Rows
 
@@ -9048,7 +9049,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1369 | Ability 1369 (Lookit What I Did!) | ExtData[1].Val6 | 1369 (Lookit What I Did!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1086408 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1369 | Ability 1369 (Shield of Reprisal) | ExtData[1].Val6 | 1369 (Shield of Reprisal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1086408 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8347 | Ability 8347 (Oppression) | ExtData[0].Val6 | 8347 (Oppression) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1225279 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9342 | Ability 9342 (Blade of Ruin) | ExtData[1].Val6 | 9342 (Blade of Ruin) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1315998 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
@@ -9710,7 +9711,7 @@ No rows found.
 ## Requirement 9231
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3872 (Rabit Bite).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3872 (Earth's Shielding).
 
 ## Rows
 
@@ -9744,7 +9745,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1766 | Component 1766 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3872 (Rabit Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 212404 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1766 | Component 1766 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3872 (Earth's Shielding) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 212404 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -9821,7 +9822,7 @@ No rows found.
 ## Requirement 9234
 
 - Summary: Observed in Heal contexts; direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3017 (Flame Thrower); context tags: Heal.
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3017 (Rune of Serenity); context tags: Heal.
 
 ## Rows
 
@@ -9848,7 +9849,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9130 | Component 9130 (HEAL) | ExtData[1].Val6 | 3017 (Flame Thrower) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9130 | Component 9130 (HEAL) | ExtData[1].Val6 | 3017 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -10901,7 +10902,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val9 | 1 | 1 | 1 | Binary flag byte. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -10990,7 +10991,7 @@ No rows found.
 ## Requirement 9261
 
 - Summary: direct ability usage 2.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1008 (Enguage), 15518 (Guard TEST).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1008 (Guard), 15518 (Guard TEST).
 
 ## Rows
 
@@ -11017,7 +11018,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1008 | Ability 1008 (Enguage) | ExtData[2].Val6 | 1008 (Enguage) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 297776 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1008 | Ability 1008 (Guard) | ExtData[2].Val6 | 1008 (Guard) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 297776 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 15518 | Ability 15518 (Guard TEST) | ExtData[2].Val6 | 15518 (Guard TEST) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 845895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -11136,8 +11137,8 @@ No rows found.
 
 ## Requirement 9265
 
-- Summary: direct ability usage 2; component sources 2; child requirement ids 9169.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9169; sample abilities: 264 (Cunning Rumination ), 266 (Quell Suffering).
+- Summary: Observed in Damage, Heal contexts; direct ability usage 2; component sources 2; child requirement ids 9169.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9169; sample abilities: 264 (Waaagh! Heal Counter), 266 (Waaagh! Damage Counter); context tags: Damage, Heal.
 
 ## Rows
 
@@ -11165,8 +11166,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1909 | Component 1909 (DISPEL_BUFF) | ExtData[2].Val6 | 264 (Cunning Rumination ) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1912 | Component 1912 (DISPEL_BUFF) | ExtData[2].Val6 | 266 (Quell Suffering) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237859 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1909 | Component 1909 (DISPEL_BUFF) | ExtData[2].Val6 | 264 (Waaagh! Heal Counter) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1912 | Component 1912 (DISPEL_BUFF) | ExtData[2].Val6 | 266 (Waaagh! Damage Counter) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237859 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -11665,7 +11666,7 @@ No rows found.
 ## Requirement 9277
 
 - Summary: Observed in Damage contexts; direct ability usage 2; component sources 6; child requirement ids 9079.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 6; parent requirements: 0; child requirements: 9079; sample abilities: 1367 (Dat Makes Me Dizzy), 3823 (Boney Fist); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 6; parent requirements: 0; child requirements: 9079; sample abilities: 1367 (Stubborn As Stone), 3823 (Inspiring Attack); context tags: Damage.
 
 ## Rows
 
@@ -11693,12 +11694,12 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 1373 | Component 1373 (EVENT_LISTENER) | ExtData[1].Val6 | 1367 (Dat Makes Me Dizzy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1999 | Component 1999 (STAT_CHANGE) | ExtData[0].Val6 | 3823 (Boney Fist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254049 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3010 | Component 3010 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Boney Fist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256535 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3011 | Component 3011 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Boney Fist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256767 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3012 | Component 3012 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Boney Fist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3013 | Component 3013 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Boney Fist) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 257231 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1373 | Component 1373 (EVENT_LISTENER) | ExtData[1].Val6 | 1367 (Stubborn As Stone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1999 | Component 1999 (STAT_CHANGE) | ExtData[0].Val6 | 3823 (Inspiring Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254049 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3010 | Component 3010 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Inspiring Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256535 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3011 | Component 3011 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Inspiring Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256767 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3012 | Component 3012 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Inspiring Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3013 | Component 3013 (STAT_CHANGE) | ExtData[2].Val6 | 3823 (Inspiring Attack) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 257231 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -12554,7 +12555,7 @@ No rows found.
 ## Requirement 9300
 
 - Summary: Observed in Damage contexts; direct ability usage 2.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1602 (Explosive Force), 1906 (Bomb Explode Monster Ability); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1602 (Rune of Cleansing), 1906 (Greener 'n Cleaner); context tags: Damage.
 
 ## Rows
 
@@ -12582,8 +12583,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1602 | Ability 1602 (Explosive Force) | ExtData[0].Val6 | 1602 (Explosive Force) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119998 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1906 | Ability 1906 (Bomb Explode Monster Ability) | ExtData[0].Val6 | 1906 (Bomb Explode Monster Ability) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165351 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1602 | Ability 1602 (Rune of Cleansing) | ExtData[0].Val6 | 1602 (Rune of Cleansing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119998 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1906 | Ability 1906 (Greener 'n Cleaner) | ExtData[0].Val6 | 1906 (Greener 'n Cleaner) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165351 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -12746,7 +12747,7 @@ No rows found.
 ## Requirement 9305
 
 - Summary: Observed in Heal contexts; direct ability usage 3; component sources 3.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 3; parent requirements: 0; sample abilities: 1601 (Ignition), 3017 (Flame Thrower), 8557 (Leaping Alteration); context tags: Heal.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 3; parent requirements: 0; sample abilities: 1601 (Rune of Serenity), 3017 (Rune of Serenity), 8557 (Leaping Alteration); context tags: Heal.
 
 ## Rows
 
@@ -12773,9 +12774,9 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9130 | Component 9130 (HEAL) | ExtData[3].Val6 | 3017 (Flame Thrower) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9130 | Component 9130 (HEAL) | ExtData[3].Val6 | 3017 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 635934 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9480 | Component 9480 (APPLY_ABILITY) | ExtData[3].Val6 | 8557 (Leaping Alteration) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 696469 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18325 | Component 18325 (APPLY_ABILITY) | ExtData[3].Val6 | 1601 (Ignition) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18325 | Component 18325 (APPLY_ABILITY) | ExtData[3].Val6 | 1601 (Rune of Serenity) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 432256 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -12824,8 +12825,8 @@ No rows found.
 
 ## Requirement 9307
 
-- Summary: Observed in Damage, Knockback, Root, Stun contexts; direct ability usage 14; component sources 6; child requirement ids 9593.
-- Notes: Requirement rows: 1; direct abilities: 14; direct components: 6; parent requirements: 0; child requirements: 9593; sample abilities: 400 (Slam), 3027 (Wynyssa's Gratitude), 3028 (Throcane Essence), 3029 (Spit Bomb), 3030 (Hard Stomp), 3031 (Corrosive Vomit), 3032 (Slimy Vomit), 3033 (Gunbad Buff); context tags: Damage, Knockback, Root, Stun.
+- Summary: Observed in Damage, Root, Stun contexts; direct ability usage 14; component sources 6; child requirement ids 9593.
+- Notes: Requirement rows: 1; direct abilities: 14; direct components: 6; parent requirements: 0; child requirements: 9593; sample abilities: 400 (Root Ward), 3027 (Aethyric Shock), 3028 (Rune of Binding), 3029 (Instill Fear), 3030 (Heaven's Fury), 3031 (Quake), 3032 (Agile Escape), 3033 (Declare Anathema); context tags: Damage, Root, Stun.
 
 ## Rows
 
@@ -12855,12 +12856,12 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 338 | Component 338 (EVENT_LISTENER) | ExtData[1].Val6 | 400 (Slam) | Damage, Knockback, Root | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1187105 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 2055 | Component 2055 (EVENT_LISTENER) | ExtData[0].Val6 | 3030 (Hard Stomp), 3031 (Corrosive Vomit), 3034 (Lord Porus), 3167 (Kulen Rampager) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221257 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 338 | Component 338 (EVENT_LISTENER) | ExtData[1].Val6 | 400 (Root Ward) | Damage, Root | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1187105 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 2055 | Component 2055 (EVENT_LISTENER) | ExtData[0].Val6 | 3030 (Heaven's Fury), 3031 (Quake), 3034 (Detonation), 3167 (Detonation) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221257 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 2056 | Component 2056 (EVENT_LISTENER) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 2057 | Component 2057 (EVENT_LISTENER) | ExtData[0].Val6 | 3027 (Wynyssa's Gratitude), 3028 (Throcane Essence), 3029 (Spit Bomb), 3032 (Slimy Vomit), 3033 (Gunbad Buff), 3035 (Moonflare), 3707 (Mount - Basic - Magus 1), 24840 (In Shock) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221589 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 2057 | Component 2057 (EVENT_LISTENER) | ExtData[0].Val6 | 3027 (Aethyric Shock), 3028 (Rune of Binding), 3029 (Instill Fear), 3032 (Agile Escape), 3033 (Declare Anathema), 3035 (Penance), 3707 (Universal Confusion), 24840 (In Shock) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221589 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 2058 | Component 2058 (EVENT_LISTENER) | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221755 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 2059 | Component 2059 (EVENT_LISTENER) | ExtData[0].Val6 | 3168 (Kulen Knockback) | Damage, Knockback | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 2059 | Component 2059 (EVENT_LISTENER) | ExtData[0].Val6 | 3168 (Scintillating Energy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1221921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -12958,7 +12959,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 1 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -12994,7 +12995,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 2 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13030,7 +13031,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 3 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13066,7 +13067,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 4 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13102,7 +13103,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 5 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13138,7 +13139,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 6 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13174,7 +13175,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 7 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13210,7 +13211,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 8 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13246,7 +13247,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 9 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13282,7 +13283,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 10 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13318,7 +13319,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 11 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13354,7 +13355,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 12 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13390,7 +13391,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 13 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13426,7 +13427,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 14 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13462,7 +13463,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 15 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13498,7 +13499,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 16 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13534,7 +13535,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 17 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13570,7 +13571,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 18 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13606,7 +13607,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 19 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13642,7 +13643,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 20 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13678,7 +13679,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 21 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13714,7 +13715,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 22 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13750,7 +13751,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 23 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13786,7 +13787,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 24 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13822,7 +13823,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 25 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13858,7 +13859,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 26 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13894,7 +13895,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 27 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13930,7 +13931,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 28 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -13966,7 +13967,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 29 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -14002,7 +14003,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 87 | AbilityOperation: 87=Unk87. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 30 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 27 | AbilityOperation: 27=TargetRandom. | Confirmed |  |
@@ -14094,7 +14095,7 @@ No rows found.
 ## Requirement 9342
 
 - Summary: direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 492 (Portable Camp).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 492 (Low-population bonuses).
 
 ## Rows
 
@@ -14117,8 +14118,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 28 | Component 28 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1139810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 29 | Component 29 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140009 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 28 | Component 28 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1139810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 29 | Component 29 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140009 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -14127,7 +14128,7 @@ No rows found.
 ## Requirement 9343
 
 - Summary: direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 492 (Portable Camp).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 492 (Low-population bonuses).
 
 ## Rows
 
@@ -14150,8 +14151,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 30 | Component 30 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140208 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 31 | Component 31 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140407 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 30 | Component 30 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140208 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 31 | Component 31 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140407 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -14160,7 +14161,7 @@ No rows found.
 ## Requirement 9344
 
 - Summary: direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 1; sample abilities: 492 (Portable Camp).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 1; sample abilities: 492 (Low-population bonuses).
 
 ## Rows
 
@@ -14181,8 +14182,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 28 | Component 28 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1139810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 29 | Component 29 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140009 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 28 | Component 28 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1139810 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 29 | Component 29 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140009 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9346 | Requirement 9346 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 34032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -14192,7 +14193,7 @@ No rows found.
 ## Requirement 9345
 
 - Summary: direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 1; sample abilities: 492 (Portable Camp).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 1; sample abilities: 492 (Low-population bonuses).
 
 ## Rows
 
@@ -14213,8 +14214,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 30 | Component 30 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140208 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 31 | Component 31 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Portable Camp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140407 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 30 | Component 30 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140208 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 31 | Component 31 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 492 (Low-population bonuses) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1140407 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9347 | Requirement 9347 | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 34124 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -16488,7 +16489,7 @@ No rows found.
 ## Requirement 9405
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3269 (Indecision).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3269 (Taunt VFX Dispel Sub).
 
 ## Rows
 
@@ -16515,7 +16516,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 458 | Component 458 (DISPEL_BUFF) | ExtData[0].Val6 | 3269 (Indecision) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1205967 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 458 | Component 458 (DISPEL_BUFF) | ExtData[0].Val6 | 3269 (Taunt VFX Dispel Sub) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1205967 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -16722,7 +16723,7 @@ No rows found.
 ## Requirement 9410
 
 - Summary: Observed in Disarm, Root contexts; direct ability usage 6.
-- Notes: Requirement rows: 1; direct abilities: 6; direct components: 0; parent requirements: 0; sample abilities: 1377 (Pass It On), 1740 (Quickened Discord), 8019 (Juggernaut), 8330 (Juggernaut), 9016 (Juggernaut), 9330 (Juggernaut); context tags: Disarm, Root.
+- Notes: Requirement rows: 1; direct abilities: 6; direct components: 0; parent requirements: 0; sample abilities: 1377 (Juggernaut), 1740 (Juggernaut), 8019 (Juggernaut), 8330 (Juggernaut), 9016 (Juggernaut), 9330 (Juggernaut); context tags: Disarm, Root.
 
 ## Rows
 
@@ -16758,8 +16759,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1377 | Ability 1377 (Pass It On) | ExtData[0].Val6 | 1377 (Pass It On) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1087737 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1740 | Ability 1740 (Quickened Discord) | ExtData[0].Val6 | 1740 (Quickened Discord) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1140355 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1377 | Ability 1377 (Juggernaut) | ExtData[0].Val6 | 1377 (Juggernaut) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1087737 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1740 | Ability 1740 (Juggernaut) | ExtData[0].Val6 | 1740 (Juggernaut) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1140355 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8019 | Ability 8019 (Juggernaut) | ExtData[0].Val6 | 8019 (Juggernaut) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1178423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8330 | Ability 8330 (Juggernaut) | ExtData[0].Val6 | 8330 (Juggernaut) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1222270 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9016 | Ability 9016 (Juggernaut) | ExtData[0].Val6 | 9016 (Juggernaut) | Root, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1267768 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -16885,7 +16886,7 @@ No rows found.
 ## Requirement 9414
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9415.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 1; child requirements: 9415; sample abilities: 1758 (Sprout Carapace).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 1; child requirements: 9415; sample abilities: 1758 (Come and Git It!).
 
 ## Rows
 
@@ -16914,7 +16915,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 3628 | Component 3628 (STAT_CHANGE) | ExtData[0].Val6 | 1758 (Sprout Carapace) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 366545 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3628 | Component 3628 (STAT_CHANGE) | ExtData[0].Val6 | 1758 (Come and Git It!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 366545 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9424 | Requirement 9424 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 42000 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9424 | Requirement 9424 | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 42000 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
@@ -16997,7 +16998,7 @@ No rows found.
 ## Requirement 9417
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 4; component sources 7.
-- Notes: Requirement rows: 1; direct abilities: 4; direct components: 7; parent requirements: 0; sample abilities: 1750 (Dire Shielding), 1751 (Mixed Defenses), 1759 (Wild Choppin'), 1773 (No More Helpin'); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 4; direct components: 7; parent requirements: 0; sample abilities: 1750 (Try An' Hurt Me), 1751 (Weaklin' Killa), 1759 (Wild Choppin'), 1773 (No More Helpin'); context tags: Damage, Heal.
 
 ## Rows
 
@@ -17027,8 +17028,8 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 3462 | Component 3462 (DAMAGE) | ExtData[1].Val6 | 1773 (No More Helpin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333941 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3463 | Component 3463 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 334206 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3472 | Component 3472 (DAMAGE) | ExtData[1].Val6 | 1750 (Dire Shielding) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3475 | Component 3475 (DAMAGE) | ExtData[1].Val6 | 1751 (Mixed Defenses) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3472 | Component 3472 (DAMAGE) | ExtData[1].Val6 | 1750 (Try An' Hurt Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3475 | Component 3475 (DAMAGE) | ExtData[1].Val6 | 1751 (Weaklin' Killa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3542 | Component 3542 (APPLY_ABILITY) | ExtData[0].Val6 | 1759 (Wild Choppin') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351147 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3666 | Component 3666 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374305 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3668 | Component 3668 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374802 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -17040,7 +17041,7 @@ No rows found.
 ## Requirement 9418
 
 - Summary: direct ability usage 2; component sources 6; child requirement ids 9404, 9408.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 6; parent requirements: 0; child requirements: 9404, 9408; sample abilities: 1053 (Bottle of Seein' Stars), 1054 (Jar of Pummeling).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 6; parent requirements: 0; child requirements: 9404, 9408; sample abilities: 1053 (Berserk), 1054 (Berserk).
 
 ## Rows
 
@@ -17069,8 +17070,8 @@ No rows found.
 | Component | 3458 | Component 3458 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333079 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3459 | Component 3459 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333344 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3473 | Component 3473 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336493 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3491 | Component 3491 (DAMAGE_CHANGE) | ExtData[2].Val6 | 1053 (Bottle of Seein' Stars) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 339942 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3494 | Component 3494 (DAMAGE_CHANGE) | ExtData[3].Val6 | 1054 (Jar of Pummeling) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 340572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3491 | Component 3491 (DAMAGE_CHANGE) | ExtData[2].Val6 | 1053 (Berserk) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 339942 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3494 | Component 3494 (DAMAGE_CHANGE) | ExtData[3].Val6 | 1054 (Berserk) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 340572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3675 | Component 3675 (EFFECT_BUFF) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 376360 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -17083,7 +17084,7 @@ No rows found.
 ## Requirement 9419
 
 - Summary: Observed in Damage contexts; direct ability usage 3; component sources 3.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 3; parent requirements: 0; sample abilities: 1438 (Enervating Blow), 1439 (Deathblow), 1447 (Destroy Confidence); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 3; parent requirements: 0; sample abilities: 1438 (Enervating Blow), 1439 (Deathblow), 1447 (Wild Swing); context tags: Damage.
 
 ## Rows
 
@@ -17113,7 +17114,7 @@ No rows found.
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 3761 | Component 3761 (DAMAGE) | ExtData[1].Val6 | 1438 (Enervating Blow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 391819 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3764 | Component 3764 (DAMAGE) | ExtData[1].Val6 | 1439 (Deathblow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 392515 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3788 | Component 3788 (APPLY_ABILITY) | ExtData[0].Val6 | 1447 (Destroy Confidence) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 396862 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3788 | Component 3788 (APPLY_ABILITY) | ExtData[0].Val6 | 1447 (Wild Swing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 396862 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17159,7 +17160,7 @@ No rows found.
 ## Requirement 9421
 
 - Summary: direct ability usage 2; component sources 4; child requirement ids 9406, 9430.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 4; parent requirements: 0; child requirements: 9406, 9430; sample abilities: 1064 (Bloodlust), 1065 (Bloodswell).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 4; parent requirements: 0; child requirements: 9406, 9430; sample abilities: 1064 (Enrage), 1065 (Enrage).
 
 ## Rows
 
@@ -17188,8 +17189,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 3721 | Component 3721 (DAMAGE_CHANGE) | ExtData[2].Val6 | 1064 (Bloodlust) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3724 | Component 3724 (DAMAGE_CHANGE) | ExtData[3].Val6 | 1065 (Bloodswell) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384687 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3721 | Component 3721 (DAMAGE_CHANGE) | ExtData[2].Val6 | 1064 (Enrage) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3724 | Component 3724 (DAMAGE_CHANGE) | ExtData[3].Val6 | 1065 (Enrage) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 384687 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3762 | Component 3762 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 392084 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3772 | Component 3772 (DAMAGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
@@ -17237,8 +17238,8 @@ No rows found.
 
 ## Requirement 9423
 
-- Summary: Observed in Damage, Heal contexts; direct ability usage 18; component sources 20; child requirement ids 9240, 9422.
-- Notes: Requirement rows: 1; direct abilities: 18; direct components: 20; parent requirements: 0; child requirements: 9240, 9422; sample abilities: 3401 (I'm On Fire), 3402 (Stillness of Time), 3403 (Damage Font), 3407 (Tentacle Boss AE spit), 3409 (Chaos Hound Howl), 3485 (Smash 'Em 'Ard), 3486 (Wing 1 Gating Ability), 3487 (Centigor Killing Blow); context tags: Damage, Heal.
+- Summary: Observed in Heal contexts; direct ability usage 18; component sources 20; child requirement ids 9240, 9422.
+- Notes: Requirement rows: 1; direct abilities: 18; direct components: 20; parent requirements: 0; child requirements: 9240, 9422; sample abilities: 3401 (Dreadful Fear), 3402 (Corrupting Wrath), 3403 (Discordant Instability), 3407 (Dreadful Terror), 3409 (Discordant Turbulence), 3485 (Press The Attack!), 3486 (Stand Strong!), 3487 (Gather Your Resolve!); context tags: Heal.
 
 ## Rows
 
@@ -17265,25 +17266,25 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 9370 | Component 9370 (STAT_CHANGE) | ExtData[2].Val6 | 8004 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 675672 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9372 | Component 9372 (STAT_CHANGE) | ExtData[2].Val6 | 3485 (Smash 'Em 'Ard) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9372 | Component 9372 (STAT_CHANGE) | ExtData[2].Val6 | 3485 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9374 | Component 9374 (STAT_CHANGE) | ExtData[2].Val6 | 8006 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676666 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9376 | Component 9376 (STAT_CHANGE) | ExtData[2].Val6 | 3486 (Wing 1 Gating Ability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9376 | Component 9376 (STAT_CHANGE) | ExtData[2].Val6 | 3486 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9378 | Component 9378 (STAT_CHANGE) | ExtData[2].Val6 | 8008 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9380 | Component 9380 (STAT_CHANGE) | ExtData[2].Val6 | 3487 (Centigor Killing Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678157 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9403 | Component 9403 (STAT_CHANGE) | ExtData[2].Val6 | 3401 (I'm On Fire) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9405 | Component 9405 (STAT_CHANGE) | ExtData[2].Val6 | 3402 (Stillness of Time) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9410 | Component 9410 (STAT_CHANGE) | ExtData[2].Val6 | 3403 (Damage Font) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9380 | Component 9380 (STAT_CHANGE) | ExtData[2].Val6 | 3487 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678157 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9403 | Component 9403 (STAT_CHANGE) | ExtData[2].Val6 | 3401 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9405 | Component 9405 (STAT_CHANGE) | ExtData[2].Val6 | 3402 (Corrupting Wrath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9410 | Component 9410 (STAT_CHANGE) | ExtData[2].Val6 | 3403 (Discordant Instability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9417 | Component 9417 (AP_CHANGE) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 685750 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9419 | Component 9419 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3409 (Chaos Hound Howl) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 686181 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9419 | Component 9419 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3409 (Discordant Turbulence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 686181 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9423 | Component 9423 (STAT_CHANGE) | ExtData[2].Val6 | 8316 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 686844 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9425 | Component 9425 (STAT_CHANGE) | ExtData[2].Val6 | 8318 (Corrupting Wrath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 687341 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9430 | Component 9430 (STAT_CHANGE) | ExtData[2].Val6 | 8321 (Discordant Instability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 688270 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9437 | Component 9437 (AP_CHANGE) | ExtData[1].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 689729 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9439 | Component 9439 (BONUS_TYPE_ADJUST) | ExtData[4].Val6 | 8348 (Discordant Turbulence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 690226 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18717 | Component 18717 (EFFECT_BUFF) | ExtData[2].Val6 | 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778425 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[2].Val6 | 3491 (Keeper Knock Up) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[2].Val6 | 3491 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18725 | Component 18725 (EFFECT_BUFF) | ExtData[2].Val6 | 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779984 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[2].Val6 | 3407 (Tentacle Boss AE spit) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[2].Val6 | 3407 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17295,7 +17296,7 @@ No rows found.
 ## Requirement 9424
 
 - Summary: direct ability usage 2; component sources 2; child requirement ids 9414.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9414; sample abilities: 1446 (Bellow Commands), 1758 (Sprout Carapace).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9414; sample abilities: 1446 (Even the Odds), 1758 (Come and Git It!).
 
 ## Rows
 
@@ -17310,7 +17311,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 10 | AbilityOperation: 10=RequirmentGroupCheck. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 2 | AbilityCondition: 2=Unk2. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 9414 | Every distinct observed value in this field matches a known RequirementId row. | Inferred | Example requirement ids: 9414. |
 | ExtData[0].Val7 | 1 | 1 | 6 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[2].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
@@ -17322,8 +17323,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 3550 | Component 3550 (STAT_CHANGE) | ExtData[0].Val6 | 1758 (Sprout Carapace) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352541 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3768 | Component 3768 (STAT_CHANGE) | ExtData[0].Val6 | 1446 (Bellow Commands) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 393410 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3550 | Component 3550 (STAT_CHANGE) | ExtData[0].Val6 | 1758 (Come and Git It!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352541 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3768 | Component 3768 (STAT_CHANGE) | ExtData[0].Val6 | 1446 (Even the Odds) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 393410 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17428,7 +17429,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 
 ## Referenced By
 
@@ -17615,7 +17616,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 10 | AbilityOperation: 10=RequirmentGroupCheck. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 2 | AbilityCondition: 2=Unk2. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 9433 | Every distinct observed value in this field matches a known RequirementId row. | Inferred | Example requirement ids: 9433. |
 | ExtData[0].Val7 | 1 | 1 | 3 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[2].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
@@ -17749,7 +17750,7 @@ No rows found.
 ## Requirement 9436
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3458 (Gorger Melee Cone DD).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3458 (On Your Guard!).
 
 ## Rows
 
@@ -17776,7 +17777,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9382 | Component 9382 (DAMAGE) | ExtData[1].Val6 | 3458 (Gorger Melee Cone DD) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678720 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9382 | Component 9382 (DAMAGE) | ExtData[1].Val6 | 3458 (On Your Guard!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678720 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17785,7 +17786,7 @@ No rows found.
 ## Requirement 9437
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3479 (Rock Skin).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3479 (Discordant Fluctuation).
 
 ## Rows
 
@@ -17812,7 +17813,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9412 | Component 9412 (DAMAGE) | ExtData[1].Val6 | 3479 (Rock Skin) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9412 | Component 9412 (DAMAGE) | ExtData[1].Val6 | 3479 (Discordant Fluctuation) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17865,7 +17866,7 @@ No rows found.
 ## Requirement 9439
 
 - Summary: Observed in Damage contexts; direct ability usage 2; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; sample abilities: 1450 (;Knight Spec Tactics), 1762 (Warping Embrace); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; sample abilities: 1450 (Retribution), 1762 (Bring It On); context tags: Damage.
 
 ## Rows
 
@@ -17892,8 +17893,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 3545 | Component 3545 (DAMAGE) | ExtData[1].Val6 | 1762 (Warping Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3775 | Component 3775 (DAMAGE) | ExtData[1].Val6 | 1450 (;Knight Spec Tactics) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3545 | Component 3545 (DAMAGE) | ExtData[1].Val6 | 1762 (Bring It On) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3775 | Component 3775 (DAMAGE) | ExtData[1].Val6 | 1450 (Retribution) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -17978,7 +17979,7 @@ No rows found.
 ## Requirement 9442
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 5; child requirement ids 9204.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 0; parent requirements: 0; child requirements: 9204; sample abilities: 1437 (Heaven's Fury), 1749 (Oppressing Blows), 9110 (Flanking Shot), 9427 (Heart Seeker), 9428 (Sacrificial Stab); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 0; parent requirements: 0; child requirements: 9204; sample abilities: 1437 (Spine Crusher), 1749 (Go For Da Soft Spot), 9110 (Flanking Shot), 9427 (Heart Seeker), 9428 (Sacrificial Stab); context tags: Damage, Heal.
 
 ## Rows
 
@@ -18006,8 +18007,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1437 | Ability 1437 (Heaven's Fury) | ExtData[0].Val6 | 1437 (Heaven's Fury) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1095988 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1749 | Ability 1749 (Oppressing Blows) | ExtData[0].Val6 | 1749 (Oppressing Blows) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1141940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1437 | Ability 1437 (Spine Crusher) | ExtData[0].Val6 | 1437 (Spine Crusher) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1095988 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1749 | Ability 1749 (Go For Da Soft Spot) | ExtData[0].Val6 | 1749 (Go For Da Soft Spot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1141940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9110 | Ability 9110 (Flanking Shot) | ExtData[1].Val6 | 9110 (Flanking Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1283799 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9427 | Ability 9427 (Heart Seeker) | ExtData[0].Val6 | 9427 (Heart Seeker) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1328492 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9428 | Ability 9428 (Sacrificial Stab) | ExtData[0].Val6 | 9428 (Sacrificial Stab) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1328719 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -18475,7 +18476,7 @@ No rows found.
 ## Requirement 9455
 
 - Summary: Observed in Damage contexts; direct ability usage 2; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 1; parent requirements: 0; sample abilities: 1069 (Force Target Kneel), 1071 (Simple Throw Cast); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 1; parent requirements: 0; sample abilities: 1069 (Improvised Upgrades), 1071 (Unholy Empowerment); context tags: Damage.
 
 ## Rows
 
@@ -18502,7 +18503,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 18607 | Component 18607 (EFFECT_BUFF) | ExtData[0].Val6 | 1069 (Force Target Kneel), 1071 (Simple Throw Cast) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1838957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18607 | Component 18607 (EFFECT_BUFF) | ExtData[0].Val6 | 1069 (Improvised Upgrades), 1071 (Unholy Empowerment) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1838957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -18636,12 +18637,12 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 10 | AbilityOperation: 10=RequirmentGroupCheck. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 6 | AbilityCondition: 6=LessThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 9204 | Every distinct observed value in this field matches a known RequirementId row. | Inferred | Example requirement ids: 9204. |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 74 | AbilityOperation: 74=AbilityLevel. | Confirmed |  |
 | ExtData[1].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[1].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[1].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[1].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val6 | 1 | 1 | 8399 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 
@@ -18676,12 +18677,12 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 10 | AbilityOperation: 10=RequirmentGroupCheck. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 6 | AbilityCondition: 6=LessThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val6 | 1 | 1 | 9204 | Every distinct observed value in this field matches a known RequirementId row. | Inferred | Example requirement ids: 9204. |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 74 | AbilityOperation: 74=AbilityLevel. | Confirmed |  |
 | ExtData[1].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[1].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[1].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[1].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val6 | 1 | 1 | 9165 | Every distinct observed value in this field matches a known RequirementId row. | Inferred | Example requirement ids: 9165. |
 
@@ -18899,7 +18900,7 @@ No rows found.
 ## Requirement 9469
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9461.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9461; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9461; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -18923,7 +18924,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27877 | Component 27877 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878365 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27877 | Component 27877 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878365 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -18934,7 +18935,7 @@ No rows found.
 ## Requirement 9470
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9462.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9462; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9462; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -18958,7 +18959,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27878 | Component 27878 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27878 | Component 27878 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -18969,7 +18970,7 @@ No rows found.
 ## Requirement 9471
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9463.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9463; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9463; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -18993,7 +18994,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27879 | Component 27879 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878697 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27879 | Component 27879 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878697 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19004,7 +19005,7 @@ No rows found.
 ## Requirement 9472
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9464.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9464; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9464; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19028,7 +19029,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27880 | Component 27880 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878863 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27880 | Component 27880 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1878863 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19039,7 +19040,7 @@ No rows found.
 ## Requirement 9473
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9465.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9465; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9465; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19063,7 +19064,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27881 | Component 27881 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879029 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27881 | Component 27881 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879029 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19074,7 +19075,7 @@ No rows found.
 ## Requirement 9474
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9466.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9466; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9466; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19098,7 +19099,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27882 | Component 27882 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879195 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27882 | Component 27882 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879195 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19109,7 +19110,7 @@ No rows found.
 ## Requirement 9475
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9467.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9467; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9467; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19133,7 +19134,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27883 | Component 27883 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27883 | Component 27883 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879361 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19144,7 +19145,7 @@ No rows found.
 ## Requirement 9476
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9468.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9468; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9468; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19168,7 +19169,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27884 | Component 27884 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879527 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27884 | Component 27884 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879527 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19510,7 +19511,7 @@ No rows found.
 ## Requirement 9486
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9485.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9485; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9485; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19534,7 +19535,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27886 | Component 27886 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879826 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27886 | Component 27886 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879826 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19651,7 +19652,7 @@ No rows found.
 ## Requirement 9491
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9490.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9490; sample abilities: 493 (Sabertooth's Tarot).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9490; sample abilities: 493 (Progression Pack Boost).
 
 ## Rows
 
@@ -19675,7 +19676,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 27887 | Component 27887 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Sabertooth's Tarot) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879992 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 27887 | Component 27887 (BONUS_TYPE_ADJUST) | ExtData[0].Val6 | 493 (Progression Pack Boost) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1879992 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19861,7 +19862,7 @@ No rows found.
 ## Requirement 9554
 
 - Summary: Observed in Heal contexts; direct ability usage 1; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 3915 (Soul Call); context tags: Heal.
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 2; parent requirements: 0; sample abilities: 3915 (Scatter the Winds); context tags: Heal.
 
 ## Rows
 
@@ -19913,7 +19914,7 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 11368 | Component 11368 (DAMAGE) | ExtData[2].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 855219 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11369 | Component 11369 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3915 (Soul Call) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 855451 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11369 | Component 11369 (BONUS_TYPE_ADJUST) | ExtData[1].Val6 | 3915 (Scatter the Winds) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 855451 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -19992,7 +19993,7 @@ No rows found.
 ## Requirement 9557
 
 - Summary: direct ability usage 1; component sources 1; child requirement ids 9556.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9556; sample abilities: 3266 (VFX - perm only - Sh - anim 32 and no icon).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; child requirements: 9556; sample abilities: 3266 (Challenge Permission Tracker).
 
 ## Rows
 
@@ -20019,7 +20020,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 443 | Component 443 (UPDATE_COUNTER) | ExtData[7].Val6 | 3266 (VFX - perm only - Sh - anim 32 and no icon) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1203576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 443 | Component 443 (UPDATE_COUNTER) | ExtData[7].Val6 | 3266 (Challenge Permission Tracker) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1203576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20149,7 +20150,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
@@ -20171,7 +20172,7 @@ No rows found.
 ## Requirement 9562
 
 - Summary: direct ability usage 2; component sources 4.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 4; parent requirements: 0; sample abilities: 3359 (Channeled DoT), 3360 (Essence Gather (Spider Queen Minion Enter)).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 4; parent requirements: 0; sample abilities: 3359 (Rod of Service), 3360 (Lash of Servitude).
 
 ## Rows
 
@@ -20201,10 +20202,10 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 15680 | Component 15680 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3359 (Channeled DoT) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1721234 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 15681 | Component 15681 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3359 (Channeled DoT) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1721532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 15685 | Component 15685 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3360 (Essence Gather (Spider Queen Minion Enter)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1722493 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 15686 | Component 15686 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3360 (Essence Gather (Spider Queen Minion Enter)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1722791 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 15680 | Component 15680 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3359 (Rod of Service) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1721234 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 15681 | Component 15681 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3359 (Rod of Service) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1721532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 15685 | Component 15685 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3360 (Lash of Servitude) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1722493 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 15686 | Component 15686 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3360 (Lash of Servitude) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1722791 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20361,7 +20362,7 @@ No rows found.
 ## Requirement 9567
 
 - Summary: direct ability usage 1; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3367 (Delicious Excruciation 1).
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 1; parent requirements: 0; sample abilities: 3367 (Devour Essence).
 
 ## Rows
 
@@ -20388,7 +20389,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 12006 | Component 12006 (HEAL) | ExtData[0].Val6 | 3367 (Delicious Excruciation 1) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 963556 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12006 | Component 12006 (HEAL) | ExtData[0].Val6 | 3367 (Devour Essence) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 963556 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20552,7 +20553,7 @@ No rows found.
 ## Requirement 9573
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 1; child requirement ids 9571, 9572.
-- Notes: Requirement rows: 1; direct abilities: 1; direct components: 0; parent requirements: 0; child requirements: 9571, 9572; sample abilities: 697 (Self-Destruct); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 1; direct components: 0; parent requirements: 0; child requirements: 9571, 9572; sample abilities: 697 (Alter Fate); context tags: Damage, Heal.
 
 ## Rows
 
@@ -20580,7 +20581,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 697 | Ability 697 (Self-Destruct) | ExtData[0].Val6 | 697 (Self-Destruct) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 277889 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 697 | Ability 697 (Alter Fate) | ExtData[0].Val6 | 697 (Alter Fate) | Heal, Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 277889 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20744,8 +20745,8 @@ No rows found.
 
 ## Requirement 9578
 
-- Summary: Observed in Damage, Heal, Knockdown contexts; direct ability usage 5; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 0; sample abilities: 697 (Self-Destruct), 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life); context tags: Damage, Heal, Knockdown.
+- Summary: Observed in Damage, Heal contexts; direct ability usage 5; component sources 1.
+- Notes: Requirement rows: 1; direct abilities: 5; direct components: 1; parent requirements: 0; sample abilities: 697 (Alter Fate), 1598 (Rune of Life), 1908 (Gedup!), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life); context tags: Damage, Heal.
 
 ## Rows
 
@@ -20769,11 +20770,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1598 | Ability 1598 (Burn Through) | ExtData[0].Val6 | 1598 (Burn Through) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119024 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1908 | Ability 1908 (AE Knockdown - Explosion) | ExtData[0].Val6 | 1908 (AE Knockdown - Explosion) | Knockdown, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1598 | Ability 1598 (Rune of Life) | ExtData[0].Val6 | 1598 (Rune of Life) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119024 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1908 | Ability 1908 (Gedup!) | ExtData[0].Val6 | 1908 (Gedup!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8555 | Ability 8555 (Tzeentch Shall Remake You) | ExtData[0].Val6 | 8555 (Tzeentch Shall Remake You) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1254952 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9246 | Ability 9246 (Gift of Life) | ExtData[0].Val6 | 9246 (Gift of Life) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1301626 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1792 | Component 1792 (EVENT_LISTENER) | ExtData[4].Val6 | 697 (Self-Destruct) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1792 | Component 1792 (EVENT_LISTENER) | ExtData[4].Val6 | 697 (Alter Fate) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20781,8 +20782,8 @@ No rows found.
 
 ## Requirement 9579
 
-- Summary: Observed in Heal, Knockdown contexts; direct ability usage 6; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 6; direct components: 1; parent requirements: 0; sample abilities: 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!); context tags: Heal, Knockdown.
+- Summary: Observed in Heal contexts; direct ability usage 6; component sources 1.
+- Notes: Requirement rows: 1; direct abilities: 6; direct components: 1; parent requirements: 0; sample abilities: 1598 (Rune of Life), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!); context tags: Heal.
 
 ## Rows
 
@@ -20808,11 +20809,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1598 | Ability 1598 (Burn Through) | ExtData[1].Val6 | 1598 (Burn Through) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119024 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Ability | 1908 | Ability 1908 (AE Knockdown - Explosion) | ExtData[1].Val6 | 1908 (AE Knockdown - Explosion) | Knockdown, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1598 | Ability 1598 (Rune of Life) | ExtData[1].Val6 | 1598 (Rune of Life) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1119024 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1908 | Ability 1908 (Gedup!) | ExtData[1].Val6 | 1908 (Gedup!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1165772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 8555 | Ability 8555 (Tzeentch Shall Remake You) | ExtData[1].Val6 | 8555 (Tzeentch Shall Remake You) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1254952 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9246 | Ability 9246 (Gift of Life) | ExtData[1].Val6 | 9246 (Gift of Life) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1301626 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1791 | Component 1791 (EVENT_LISTENER) | ExtData[1].Val6 | 1598 (Burn Through), 1908 (AE Knockdown - Explosion), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Heal, Knockdown | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216587 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1791 | Component 1791 (EVENT_LISTENER) | ExtData[1].Val6 | 1598 (Rune of Life), 1908 (Gedup!), 8248 (Breath of Sigmar), 8555 (Tzeentch Shall Remake You), 9246 (Gift of Life), 9558 (Stand, Coward!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 216587 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -20935,7 +20936,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
@@ -21006,7 +21007,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 11 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 11 | AbilityLogicOperator: 11=Unk11. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 77 | AbilityOperation: 77=BolsterLevel. | Confirmed |  |
@@ -21068,7 +21069,7 @@ No rows found.
 ## Requirement 9587
 
 - Summary: Observed in Damage contexts; direct ability usage 2; component sources 1.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 1; parent requirements: 0; sample abilities: 3490 (Lightning Font), 8022 (All Out Assault!); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 1; parent requirements: 0; sample abilities: 3490 (All Out Assault!), 8022 (All Out Assault!); context tags: Damage.
 
 ## Rows
 
@@ -21095,7 +21096,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9388 | Component 9388 (DAMAGE) | ExtData[2].Val6 | 3490 (Lightning Font), 8022 (All Out Assault!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 679980 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9388 | Component 9388 (DAMAGE) | ExtData[2].Val6 | 3490 (All Out Assault!), 8022 (All Out Assault!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 679980 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -21218,7 +21219,7 @@ No rows found.
 ## Requirement 9591
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 32; component sources 57.
-- Notes: Requirement rows: 1; direct abilities: 32; direct components: 57; parent requirements: 0; sample abilities: 3401 (I'm On Fire), 3402 (Stillness of Time), 3403 (Damage Font), 3404 (Buff Font), 3405 (Debuff Font), 3407 (Tentacle Boss AE spit), 3485 (Smash 'Em 'Ard), 3486 (Wing 1 Gating Ability); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 32; direct components: 57; parent requirements: 0; sample abilities: 3401 (Dreadful Fear), 3402 (Corrupting Wrath), 3403 (Discordant Instability), 3404 (Discordant Fluctuation), 3405 (Corrupting Retribution), 3407 (Dreadful Terror), 3485 (Press The Attack!), 3486 (Stand Strong!); context tags: Damage, Heal.
 
 ## Rows
 
@@ -21246,35 +21247,35 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 9370 | Component 9370 (STAT_CHANGE) | ExtData[3].Val6 | 8004 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 675672 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9371 | Component 9371 (STAT_CHANGE) | ExtData[2].Val6 | 3485 (Smash 'Em 'Ard) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 675937 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9372 | Component 9372 (STAT_CHANGE) | ExtData[3].Val6 | 3485 (Smash 'Em 'Ard) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9371 | Component 9371 (STAT_CHANGE) | ExtData[2].Val6 | 3485 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 675937 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9372 | Component 9372 (STAT_CHANGE) | ExtData[3].Val6 | 3485 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676169 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9373 | Component 9373 (STAT_CHANGE) | ExtData[2].Val6 | 8006 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676434 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9374 | Component 9374 (STAT_CHANGE) | ExtData[3].Val6 | 8006 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676666 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9375 | Component 9375 (STAT_CHANGE) | ExtData[2].Val6 | 3486 (Wing 1 Gating Ability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676931 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9376 | Component 9376 (STAT_CHANGE) | ExtData[3].Val6 | 3486 (Wing 1 Gating Ability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9375 | Component 9375 (STAT_CHANGE) | ExtData[2].Val6 | 3486 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 676931 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9376 | Component 9376 (STAT_CHANGE) | ExtData[3].Val6 | 3486 (Stand Strong!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9377 | Component 9377 (STAT_CHANGE) | ExtData[2].Val6 | 8008 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677428 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9378 | Component 9378 (STAT_CHANGE) | ExtData[3].Val6 | 8008 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9379 | Component 9379 (STAT_CHANGE) | ExtData[2].Val6 | 3487 (Centigor Killing Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677925 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9380 | Component 9380 (STAT_CHANGE) | ExtData[3].Val6 | 3487 (Centigor Killing Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678157 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9379 | Component 9379 (STAT_CHANGE) | ExtData[2].Val6 | 3487 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 677925 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9380 | Component 9380 (STAT_CHANGE) | ExtData[3].Val6 | 3487 (Gather Your Resolve!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678157 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9381 | Component 9381 (EVENT_LISTENER) | ExtData[4].Val6 | 8015 (On Your Guard!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678422 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9383 | Component 9383 (EVENT_LISTENER) | ExtData[4].Val6 | 3488 (Centigor Frontal AOE) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678919 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9383 | Component 9383 (EVENT_LISTENER) | ExtData[4].Val6 | 3488 (On Your Guard!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 678919 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9384 | Component 9384 (EVENT_LISTENER) | ExtData[3].Val6 | 8020 (Stay Focused!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 679217 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9386 | Component 9386 (EVENT_LISTENER) | ExtData[2].Val6 | 3489 (Fire Font) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 679615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9391 | Component 9391 (AP_CHANGE) | ExtData[2].Val6 | 3491 (Keeper Knock Up), 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 680478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9386 | Component 9386 (EVENT_LISTENER) | ExtData[2].Val6 | 3489 (Stay Focused!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 679615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9391 | Component 9391 (AP_CHANGE) | ExtData[2].Val6 | 3491 (To Glory!), 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 680478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9393 | Component 9393 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 8033 (To Victory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 680876 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9394 | Component 9394 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 8033 (To Victory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681108 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9395 | Component 9395 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3492 (Worm Erupt) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9396 | Component 9396 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3492 (Worm Erupt) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9395 | Component 9395 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3492 (To Victory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9396 | Component 9396 (BONUS_TYPE_ADJUST) | ExtData[2].Val6 | 3492 (To Victory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9397 | Component 9397 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 8036 (Now's Our Chance!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 681804 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9398 | Component 9398 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3493 (Circle of Pain) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9402 | Component 9402 (STAT_CHANGE) | ExtData[2].Val6 | 3401 (I'm On Fire) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682666 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9403 | Component 9403 (STAT_CHANGE) | ExtData[3].Val6 | 3401 (I'm On Fire) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9404 | Component 9404 (STAT_CHANGE) | ExtData[2].Val6 | 3402 (Stillness of Time) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9405 | Component 9405 (STAT_CHANGE) | ExtData[3].Val6 | 3402 (Stillness of Time) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9409 | Component 9409 (STAT_CHANGE) | ExtData[2].Val6 | 3403 (Damage Font) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684092 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9410 | Component 9410 (STAT_CHANGE) | ExtData[3].Val6 | 3403 (Damage Font) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9411 | Component 9411 (EVENT_LISTENER) | ExtData[3].Val6 | 3404 (Buff Font) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684589 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9413 | Component 9413 (EVENT_LISTENER) | ExtData[2].Val6 | 3405 (Debuff Font) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 685053 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9398 | Component 9398 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3493 (Now's Our Chance!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9402 | Component 9402 (STAT_CHANGE) | ExtData[2].Val6 | 3401 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682666 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9403 | Component 9403 (STAT_CHANGE) | ExtData[3].Val6 | 3401 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 682898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9404 | Component 9404 (STAT_CHANGE) | ExtData[2].Val6 | 3402 (Corrupting Wrath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683163 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9405 | Component 9405 (STAT_CHANGE) | ExtData[3].Val6 | 3402 (Corrupting Wrath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 683395 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9409 | Component 9409 (STAT_CHANGE) | ExtData[2].Val6 | 3403 (Discordant Instability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684092 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9410 | Component 9410 (STAT_CHANGE) | ExtData[3].Val6 | 3403 (Discordant Instability) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9411 | Component 9411 (EVENT_LISTENER) | ExtData[3].Val6 | 3404 (Discordant Fluctuation) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 684589 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9413 | Component 9413 (EVENT_LISTENER) | ExtData[2].Val6 | 3405 (Corrupting Retribution) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 685053 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9422 | Component 9422 (STAT_CHANGE) | ExtData[2].Val6 | 8316 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 686612 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9423 | Component 9423 (STAT_CHANGE) | ExtData[3].Val6 | 8316 (Dreadful Fear) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 686844 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9424 | Component 9424 (STAT_CHANGE) | ExtData[2].Val6 | 8318 (Corrupting Wrath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 687109 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -21289,18 +21290,18 @@ No rows found.
 | Component | 9438 | Component 9438 (CASTTIME_CHANGE) | ExtData[3].Val6 | 8345 (Corrupting Horror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 689961 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9439 | Component 9439 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 8348 (Discordant Turbulence) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 690226 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9663 | Component 9663 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 8004 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 727704 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9664 | Component 9664 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3485 (Smash 'Em 'Ard) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 727969 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9664 | Component 9664 (BONUS_TYPE_ADJUST) | ExtData[3].Val6 | 3485 (Press The Attack!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 727969 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9670 | Component 9670 (BONUS_TYPE_ADJUST) | ExtData[4].Val6 | 8020 (Stay Focused!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 729328 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9671 | Component 9671 (BONUS_TYPE_ADJUST) | ExtData[4].Val6 | 3489 (Fire Font) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 729626 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9671 | Component 9671 (BONUS_TYPE_ADJUST) | ExtData[4].Val6 | 3489 (Stay Focused!) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 729626 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9689 | Component 9689 (DEFENSIVE_STAT_CHANGE) | ExtData[1].Val6 | 8075 (Flawless Defense) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 733505 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9858 | Component 9858 (EFFECT_BUFF) | ExtData[2].Val6 | 3491 (Keeper Knock Up) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761427 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9858 | Component 9858 (EFFECT_BUFF) | ExtData[2].Val6 | 3491 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761427 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9859 | Component 9859 (EFFECT_BUFF) | ExtData[2].Val6 | 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761725 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18717 | Component 18717 (EFFECT_BUFF) | ExtData[3].Val6 | 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778425 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[3].Val6 | 3491 (Keeper Knock Up) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18723 | Component 18723 (AP_CHANGE) | ExtData[2].Val6 | 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779586 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[3].Val6 | 3491 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18723 | Component 18723 (AP_CHANGE) | ExtData[2].Val6 | 3407 (Dreadful Terror), 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779586 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18725 | Component 18725 (EFFECT_BUFF) | ExtData[3].Val6 | 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779984 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[3].Val6 | 3407 (Tentacle Boss AE spit) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18730 | Component 18730 (EFFECT_BUFF) | ExtData[2].Val6 | 3407 (Tentacle Boss AE spit) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[3].Val6 | 3407 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18730 | Component 18730 (EFFECT_BUFF) | ExtData[2].Val6 | 3407 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18731 | Component 18731 (EFFECT_BUFF) | ExtData[2].Val6 | 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 781177 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -21493,7 +21494,7 @@ No rows found.
 ## Requirement 9597
 
 - Summary: direct ability usage 3; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 2; parent requirements: 1; sample abilities: 3051 (Generic Boss Mark), 3491 (Keeper Knock Up), 8030 (To Glory!).
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 2; parent requirements: 1; sample abilities: 3051 (To Glory Blocker), 3491 (To Glory!), 8030 (To Glory!).
 
 ## Rows
 
@@ -21520,8 +21521,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9391 | Component 9391 (AP_CHANGE) | ExtData[3].Val6 | 3491 (Keeper Knock Up), 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 680478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18720 | Component 18720 (EFFECT_BUFF) | ExtData[0].Val6 | 3051 (Generic Boss Mark) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779154 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9391 | Component 9391 (AP_CHANGE) | ExtData[3].Val6 | 3491 (To Glory!), 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 680478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18720 | Component 18720 (EFFECT_BUFF) | ExtData[0].Val6 | 3051 (To Glory Blocker) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779154 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9598 | Requirement 9598 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 51722 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -21531,7 +21532,7 @@ No rows found.
 ## Requirement 9598
 
 - Summary: direct ability usage 4; component sources 6; child requirement ids 9597.
-- Notes: Requirement rows: 1; direct abilities: 4; direct components: 6; parent requirements: 0; child requirements: 9597; sample abilities: 3407 (Tentacle Boss AE spit), 3491 (Keeper Knock Up), 8030 (To Glory!), 8342 (Dreadful Terror).
+- Notes: Requirement rows: 1; direct abilities: 4; direct components: 6; parent requirements: 0; child requirements: 9597; sample abilities: 3407 (Dreadful Terror), 3491 (To Glory!), 8030 (To Glory!), 8342 (Dreadful Terror).
 
 ## Rows
 
@@ -21558,11 +21559,11 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 9858 | Component 9858 (EFFECT_BUFF) | ExtData[3].Val6 | 3491 (Keeper Knock Up) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761427 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9858 | Component 9858 (EFFECT_BUFF) | ExtData[3].Val6 | 3491 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761427 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9859 | Component 9859 (EFFECT_BUFF) | ExtData[3].Val6 | 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 761725 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18717 | Component 18717 (EFFECT_BUFF) | ExtData[4].Val6 | 8030 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778425 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[4].Val6 | 3491 (Keeper Knock Up) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18730 | Component 18730 (EFFECT_BUFF) | ExtData[3].Val6 | 3407 (Tentacle Boss AE spit) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18718 | Component 18718 (EFFECT_BUFF) | ExtData[4].Val6 | 3491 (To Glory!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 778723 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18730 | Component 18730 (EFFECT_BUFF) | ExtData[3].Val6 | 3407 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780879 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18731 | Component 18731 (EFFECT_BUFF) | ExtData[3].Val6 | 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 781177 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -21573,8 +21574,8 @@ No rows found.
 
 ## Requirement 9599
 
-- Summary: Observed in Heal contexts; direct ability usage 3; component sources 2.
-- Notes: Requirement rows: 1; direct abilities: 3; direct components: 2; parent requirements: 1; sample abilities: 3052 (Pillar Heal), 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror); context tags: Heal.
+- Summary: direct ability usage 3; component sources 2.
+- Notes: Requirement rows: 1; direct abilities: 3; direct components: 2; parent requirements: 1; sample abilities: 3052 (Dreadful Terror Blocker), 3407 (Dreadful Terror), 8342 (Dreadful Terror).
 
 ## Rows
 
@@ -21601,8 +21602,8 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Component | 18723 | Component 18723 (AP_CHANGE) | ExtData[3].Val6 | 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779586 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18728 | Component 18728 (EFFECT_BUFF) | ExtData[0].Val6 | 3052 (Pillar Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780580 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18723 | Component 18723 (AP_CHANGE) | ExtData[3].Val6 | 3407 (Dreadful Terror), 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779586 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18728 | Component 18728 (EFFECT_BUFF) | ExtData[0].Val6 | 3052 (Dreadful Terror Blocker) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780580 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Requirement | 9600 | Requirement 9600 | ExtData[0].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilityrequirementexport.bin | byte 51906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -21612,7 +21613,7 @@ No rows found.
 ## Requirement 9600
 
 - Summary: direct ability usage 2; component sources 2; child requirement ids 9599.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9599; sample abilities: 3407 (Tentacle Boss AE spit), 8342 (Dreadful Terror).
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 2; parent requirements: 0; child requirements: 9599; sample abilities: 3407 (Dreadful Terror), 8342 (Dreadful Terror).
 
 ## Rows
 
@@ -21640,7 +21641,7 @@ No rows found.
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
 | Component | 18725 | Component 18725 (EFFECT_BUFF) | ExtData[4].Val6 | 8342 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 779984 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[4].Val6 | 3407 (Tentacle Boss AE spit) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18726 | Component 18726 (EFFECT_BUFF) | ExtData[4].Val6 | 3407 (Dreadful Terror) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 780282 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -21688,7 +21689,7 @@ No rows found.
 ## Requirement 9602
 
 - Summary: Observed in Damage, Heal contexts; direct ability usage 2; component sources 8; child requirement ids 9601.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 8; parent requirements: 0; child requirements: 9601; sample abilities: 3073 (Purity of Faith), 9316 (Feeding On Weakness); context tags: Damage, Heal.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 8; parent requirements: 0; child requirements: 9601; sample abilities: 3073 (Brutal Smash), 9316 (Feeding On Weakness); context tags: Damage, Heal.
 
 ## Rows
 
@@ -21719,11 +21720,11 @@ No rows found.
 | Component | 12710 | Component 12710 (HEAL) | ExtData[2].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088194 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12711 | Component 12711 (HEAL) | ExtData[2].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088459 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12712 | Component 12712 (HEAL) | ExtData[2].Val6 | 9316 (Feeding On Weakness) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1088724 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12953 | Component 12953 (STAT_CHANGE) | ExtData[0].Val6 | 3073 (Purity of Faith) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1126738 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12954 | Component 12954 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Purity of Faith) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1126904 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12955 | Component 12955 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Purity of Faith) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127136 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12956 | Component 12956 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Purity of Faith) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127368 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12957 | Component 12957 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Purity of Faith) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127600 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12953 | Component 12953 (STAT_CHANGE) | ExtData[0].Val6 | 3073 (Brutal Smash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1126738 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12954 | Component 12954 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Brutal Smash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1126904 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12955 | Component 12955 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Brutal Smash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127136 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12956 | Component 12956 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Brutal Smash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127368 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12957 | Component 12957 (STAT_CHANGE) | ExtData[2].Val6 | 3073 (Brutal Smash) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1127600 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
 
@@ -21993,7 +21994,7 @@ No rows found.
 ## Requirement 9610
 
 - Summary: Observed in Damage contexts; direct ability usage 2.
-- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1932 (Ballista), 9268 (Shield of Saphery); context tags: Damage.
+- Notes: Requirement rows: 1; direct abilities: 2; direct components: 0; parent requirements: 0; sample abilities: 1932 (Don' Feel Nuthin), 9268 (Shield of Saphery); context tags: Damage.
 
 ## Rows
 
@@ -22009,7 +22010,7 @@ No rows found.
 
 | SourceKind | SourceId | SourceLabel | Field | RelatedAbilities | ContextTags | Path | Location | Notes |
 | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| Ability | 1932 | Ability 1932 (Ballista) | ExtData[1].Val6 | 1932 (Ballista) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1169656 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Ability | 1932 | Ability 1932 (Don' Feel Nuthin) | ExtData[1].Val6 | 1932 (Don' Feel Nuthin) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1169656 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Ability | 9268 | Ability 9268 (Shield of Saphery) | ExtData[2].Val6 | 9268 (Shield of Saphery) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin | byte 1304895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 
 ## References To
@@ -22227,7 +22228,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 44 | AbilityOperation: 44=EquippedInventorySlot. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 6 | AbilityCondition: 6=LessThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val5 | 1 | 1 | 3 | Operation-specific threshold or comparison value (semantics depend on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[0].Val6 | 1 | 1 | 12 | Operation-specific reference value (RequirementId child link, ability ID, monster type, or other reference depending on AbilityOperation). Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
@@ -22264,7 +22265,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 7 | AbilityOperation: 7=Unk7. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 44 | AbilityOperation: 44=EquippedInventorySlot. | Confirmed |  |
 | ExtData[1].Val3 | 1 | 1 | 1 | AbilityCondition: 1=Equal. | Confirmed |  |
@@ -22284,7 +22285,7 @@ No rows found.
 ## Requirement 9622
 
 - Summary: Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9620, 9621.
-- Notes: Requirement rows: 1; direct abilities: 420; direct components: 485; parent requirements: 0; child requirements: 9620, 9621; sample abilities: 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury); context tags: Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun.
+- Notes: Requirement rows: 1; direct abilities: 420; direct components: 485; parent requirements: 0; child requirements: 9620, 9621; sample abilities: 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)); context tags: Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun.
 
 ## Rows
 
@@ -22321,13 +22322,13 @@ No rows found.
 | Component | 97 | Component 97 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150098 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 98 | Component 98 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150330 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 99 | Component 99 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 145 | Component 145 (DAMAGE) | ExtData[7].Val6 | 1359 (Don' Feel Nuthin), 1666 (Charged Fury), 1824 (Growing Instability), 8083 (Fervor), 8244 (Divine Assault), 8257 (Castigation), 8338 (Touch of Palsy), 9002 (Graceful Strike) | Damage, Heal, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157367 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 146 | Component 146 (DAMAGE) | ExtData[7].Val6 | 1355 (Shrug it off), 1356 (Geddoff!), 1357 (I'll Take That!), 1362 (Fury of Da Green), 1431 (Staggering Impact), 1434 (Shining Blade), 1465 (Guardian Of Light), 1667 (Shield Of Faith) | Damage, Heal, Snare, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157599 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 147 | Component 147 (DAMAGE) | ExtData[7].Val6 | 1354 (Sticky Feetz), 1364 (Burst O' Waaagh!), 1371 (Nuthin' But Da WAAAGH!), 1664 (Clobber), 1669 (Exalted Defenses), 1772 (Tired Already?), 8017 (Repel Darkness), 8018 (Smashing Counter) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157831 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 148 | Component 148 (DAMAGE) | ExtData[7].Val6 | 1 (Ard Noggin), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury), 1200 (Stream of Corruption) | Damage, Heal, Silence, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158063 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 149 | Component 149 (DAMAGE) | ExtData[7].Val6 | 1369 (Lookit What I Did!), 1381 (Waaagh! Frenzy), 1437 (Heaven's Fury), 1677 (Cleansing Power), 1691 (Divine Replenishment), 1749 (Oppressing Blows), 3498 (Gorger Boss Eat), 9083 (Grim Slash) | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158295 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 145 | Component 145 (DAMAGE) | ExtData[7].Val6 | 1359 (Punishing Blow), 1666 (Wot armor?), 1824 (Git Em!), 8083 (Fervor), 8244 (Divine Assault), 8257 (Castigation), 8338 (Touch of Palsy), 9002 (Graceful Strike) | Damage, Heal, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157367 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 146 | Component 146 (DAMAGE) | ExtData[7].Val6 | 1355 (Grudging Blow), 1356 (Guarded Attack), 1357 (Vengeful Strike), 1362 (Kneecapper), 1431 (Relentless Strike), 1434 (Deep Wound), 1465 (Inevitable Doom), 1667 (Follow 'me Lead) | Damage, Heal, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157599 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 147 | Component 147 (DAMAGE) | ExtData[7].Val6 | 1354 (Heavy Blow), 1364 (Inspiring Attack), 1371 (Stone Breaker), 1664 (Clobber), 1669 (Tuffer 'n Nails), 1772 (Tired Already?), 8017 (Repel Darkness), 8018 (Smashing Counter) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157831 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 148 | Component 148 (DAMAGE) | ExtData[7].Val6 | 1 (Ard Noggin), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)), 1200 (Anim Tag Test - Instant) | Damage, Heal, Silence, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158063 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 149 | Component 149 (DAMAGE) | ExtData[7].Val6 | 1369 (Shield of Reprisal), 1381 (Avenging the Debt), 1437 (Spine Crusher), 1677 (Savin' Me Hide), 1691 (Not in da face!), 1749 (Go For Da Soft Spot), 3498 (Sub Ability), 9083 (Grim Slash) | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158295 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 150 | Component 150 (DAMAGE) | ExtData[7].Val6 | 8086 (Confess!), 8413 (Pulverize), 8424 (Thunderous Blow), 9019 (Dazzling Strike) | Damage, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158527 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 151 | Component 151 (DAMAGE) | ExtData[7].Val6 | 1365 (Ain't Done Yet!), 9108 (Exploit Weakness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 151 | Component 151 (DAMAGE) | ExtData[7].Val6 | 1365 (Away With Ye), 9108 (Exploit Weakness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 152 | Component 152 (DAMAGE) | ExtData[7].Val6 | 8109 (Repel Blasphemy), 8115 (Pistol Whip), 9427 (Heart Seeker) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158991 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 153 | Component 153 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1159223 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 155 | Component 155 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1159455 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22362,7 +22363,7 @@ No rows found.
 | Component | 540 | Component 540 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 7175 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 561 | Component 561 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 11057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 575 | Component 575 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 13348 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 579 | Component 579 (DAMAGE) | ExtData[7].Val6 | 1202 (Throw Fruit and Vegtible), 1203 (Conflag of Doom), 1204 (Pestilent Globule), 1205 (Forked Lightning (louder)), 1206 (Blessing of Khaine), 1207 (Bolt Thrower (HE1 PQ)), 1208 (Sigmar's Will), 1218 (Pestilent Breath - Dreamhive) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 14111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 579 | Component 579 (DAMAGE) | ExtData[7].Val6 | 1202 (Anim Tag Test - Channel), 1203 (Anim Tag Test - Channel), 1204 (Anim Tag Test - Channel), 1205 (Anim Tag Test - Channel), 1206 (Anim Tag Test - Channel), 1207 (Anim Tag Test - Channel), 1208 (Anim Tag Test - Channel), 1218 (Anim Tag Test - Channel) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 14111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 588 | Component 588 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 15473 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 686 | Component 686 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 31576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 705 | Component 705 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 34664 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22372,145 +22373,145 @@ No rows found.
 | Component | 1230 | Component 1230 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121220 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1231 | Component 1231 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1232 | Component 1232 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121783 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1239 | Component 1239 (DAMAGE) | ExtData[7].Val6 | 1361 (Yer A Weaklin') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 123077 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1239 | Component 1239 (DAMAGE) | ExtData[7].Val6 | 1361 (Shield Sweep) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 123077 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1368 | Component 1368 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 144821 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1369 | Component 1369 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1370 | Component 1370 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145384 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1422 | Component 1422 (DAMAGE) | ExtData[7].Val6 | 1385 (Grudge-Born Fury) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 154742 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1464 | Component 1464 (DAMAGE) | ExtData[7].Val6 | 1508 (Exit Wound) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 161846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1464 | Component 1464 (DAMAGE) | ExtData[7].Val6 | 1508 (Gun Blast) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 161846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1471 | Component 1471 (DAMAGE) | ExtData[7].Val6 | 1513 (Friction Burn) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163008 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1475 | Component 1475 (DAMAGE) | ExtData[7].Val6 | 1517 (Righteous Steel) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163771 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1475 | Component 1475 (DAMAGE) | ExtData[7].Val6 | 1517 (Blunderbuss Blast) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163771 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1488 | Component 1488 (DAMAGE) | ExtData[7].Val6 | 1536 (Crack Shot) | Damage, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 165764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1492 | Component 1492 (DAMAGE) | ExtData[7].Val6 | 1538 (Snipe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 166560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1515 | Component 1515 (DAMAGE) | ExtData[7].Val6 | 1672 (Divine Petitioning) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 170180 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1522 | Component 1522 (DAMAGE) | ExtData[7].Val6 | 1678 (Leading The Prayer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 171375 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1515 | Component 1515 (DAMAGE) | ExtData[7].Val6 | 1672 (Big Swing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 170180 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1522 | Component 1522 (DAMAGE) | ExtData[7].Val6 | 1678 (Da Big Un') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 171375 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1527 | Component 1527 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172238 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1528 | Component 1528 (DAMAGE) | ExtData[7].Val6 | 1690 (Divine Aegis) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172470 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1543 | Component 1543 (DAMAGE) | ExtData[7].Val6 | 1680 (Grace Of Sigmar) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175059 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1544 | Component 1544 (DAMAGE) | ExtData[7].Val6 | 1680 (Grace Of Sigmar) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1803 | Component 1803 (DAMAGE) | ExtData[7].Val6 | 1528 (Full Confession) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 218843 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1811 | Component 1811 (DAMAGE) | ExtData[7].Val6 | 1822 (Deadly Clutch) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1528 | Component 1528 (DAMAGE) | ExtData[7].Val6 | 1690 (Ya Missed Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172470 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1543 | Component 1543 (DAMAGE) | ExtData[7].Val6 | 1680 (Big Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175059 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1544 | Component 1544 (DAMAGE) | ExtData[7].Val6 | 1680 (Big Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1803 | Component 1803 (DAMAGE) | ExtData[7].Val6 | 1528 (Focused Fire) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 218843 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1811 | Component 1811 (DAMAGE) | ExtData[7].Val6 | 1822 (Yer Bleedin'!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1812 | Component 1812 (DAMAGE) | ExtData[7].Val6 | 1847 (Poison Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1816 | Component 1816 (DAMAGE) | ExtData[7].Val6 | 1829 (Cut Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221033 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1820 | Component 1820 (DAMAGE) | ExtData[7].Val6 | 1840 (Shoot Thru Ya) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221730 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1821 | Component 1821 (DAMAGE) | ExtData[7].Val6 | 1834 (Lots o' Arrers) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221962 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1823 | Component 1823 (DAMAGE) | ExtData[7].Val6 | 1823 (Corrupted Edge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222360 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1823 | Component 1823 (DAMAGE) | ExtData[7].Val6 | 1823 (What Blocka?) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222360 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1826 | Component 1826 (DAMAGE) | ExtData[7].Val6 | 1848 (Finish 'em Off) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1827 | Component 1827 (DAMAGE) | ExtData[7].Val6 | 1848 (Finish 'em Off) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 223189 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1828 | Component 1828 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 223454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1831 | Component 1831 (DAMAGE) | ExtData[7].Val6 | 1853 (Rotten Arrer) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 224018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1842 | Component 1842 (DAMAGE) | ExtData[7].Val6 | 1833 (Tzeentch's Reversal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1843 | Component 1843 (DAMAGE) | ExtData[7].Val6 | 1833 (Tzeentch's Reversal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1842 | Component 1842 (DAMAGE) | ExtData[7].Val6 | 1833 (Explodin' Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1843 | Component 1843 (DAMAGE) | ExtData[7].Val6 | 1833 (Explodin' Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1858 | Component 1858 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 228764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1880 | Component 1880 (DAMAGE) | ExtData[7].Val6 | 1520 (Vindication) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 232383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1880 | Component 1880 (DAMAGE) | ExtData[7].Val6 | 1520 (Hip Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 232383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1908 | Component 1908 (DAMAGE) | ExtData[7].Val6 | 1846 (Shrapnel Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237129 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1998 | Component 1998 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 253817 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 2293 | Component 2293 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1224972 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3005 | Component 3005 (DAMAGE) | ExtData[7].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254946 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3006 | Component 3006 (DAMAGE) | ExtData[7].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3007 | Component 3007 (DAMAGE) | ExtData[7].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255575 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3008 | Component 3008 (DAMAGE) | ExtData[7].Val6 | 1358 (Da Waaagh! Is Coming), 3590 (Desert Madness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3009 | Component 3009 (DAMAGE) | ExtData[7].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3018 | Component 3018 (DAMAGE) | ExtData[7].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258325 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3019 | Component 3019 (DAMAGE) | ExtData[7].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258623 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3020 | Component 3020 (DAMAGE) | ExtData[7].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3021 | Component 3021 (DAMAGE) | ExtData[7].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259219 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3022 | Component 3022 (DAMAGE) | ExtData[7].Val6 | 3177 (Impale) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259517 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3005 | Component 3005 (DAMAGE) | ExtData[7].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254946 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3006 | Component 3006 (DAMAGE) | ExtData[7].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3007 | Component 3007 (DAMAGE) | ExtData[7].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255575 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3008 | Component 3008 (DAMAGE) | ExtData[7].Val6 | 1358 (Binding Grudge), 3590 (Runic Swiftness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3009 | Component 3009 (DAMAGE) | ExtData[7].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3018 | Component 3018 (DAMAGE) | ExtData[7].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258325 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3019 | Component 3019 (DAMAGE) | ExtData[7].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258623 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3020 | Component 3020 (DAMAGE) | ExtData[7].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3021 | Component 3021 (DAMAGE) | ExtData[7].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259219 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3022 | Component 3022 (DAMAGE) | ExtData[7].Val6 | 3177 (Rune-Etched Axe) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259517 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3042 | Component 3042 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263266 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3043 | Component 3043 (DAMAGE) | ExtData[7].Val6 | 1838 (Energy Ripple) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3044 | Component 3044 (DAMAGE) | ExtData[7].Val6 | 1865 (Fungal Fetish) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3043 | Component 3043 (DAMAGE) | ExtData[7].Val6 | 1838 (Don't Hit Me!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3044 | Component 3044 (DAMAGE) | ExtData[7].Val6 | 1865 (Drop That!!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3045 | Component 3045 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264028 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3046 | Component 3046 (DAMAGE) | ExtData[7].Val6 | 1865 (Fungal Fetish) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264326 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3046 | Component 3046 (DAMAGE) | ExtData[7].Val6 | 1865 (Drop That!!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264326 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3047 | Component 3047 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264624 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3048 | Component 3048 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264922 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3049 | Component 3049 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 265220 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3065 | Component 3065 (DAMAGE) | ExtData[7].Val6 | 1826 (Hulking Brute) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268041 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3066 | Component 3066 (DAMAGE) | ExtData[7].Val6 | 1826 (Hulking Brute) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268273 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3065 | Component 3065 (DAMAGE) | ExtData[7].Val6 | 1826 (Run 'n Shoot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268041 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3066 | Component 3066 (DAMAGE) | ExtData[7].Val6 | 1826 (Run 'n Shoot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268273 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3151 | Component 3151 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 283307 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3152 | Component 3152 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 283572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3160 | Component 3160 (DAMAGE) | ExtData[7].Val6 | 1683 (Guilty Soul) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 284999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3161 | Component 3161 (DAMAGE) | ExtData[7].Val6 | 1683 (Guilty Soul) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 285264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3222 | Component 3222 (DAMAGE) | ExtData[7].Val6 | 1541 (Reversal Of Fortune) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 295324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3160 | Component 3160 (DAMAGE) | ExtData[7].Val6 | 1683 (Shut Yer Face) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 284999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3161 | Component 3161 (DAMAGE) | ExtData[7].Val6 | 1683 (Shut Yer Face) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 285264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3222 | Component 3222 (DAMAGE) | ExtData[7].Val6 | 1541 (Phosphorous Shells) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 295324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3287 | Component 3287 (DAMAGE) | ExtData[7].Val6 | 2 (Big Claw) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 305487 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3297 | Component 3297 (DAMAGE) | ExtData[7].Val6 | 1851 (Big Bouncin!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 307213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3317 | Component 3317 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 310665 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3356 | Component 3356 (DAMAGE) | ExtData[7].Val6 | 1821 (Exhaustive Strikes) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317568 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3356 | Component 3356 (DAMAGE) | ExtData[7].Val6 | 1821 (Plink) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317568 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3357 | Component 3357 (DAMAGE) | ExtData[7].Val6 | 1839 (Choking Arrer) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317800 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3358 | Component 3358 (DAMAGE) | ExtData[7].Val6 | 1825 (Unstable Convulsions), 1835 (;Marauder Spec Morale) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3358 | Component 3358 (DAMAGE) | ExtData[7].Val6 | 1825 (Stop Runnin!), 1835 (Not So Fast!) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3359 | Component 3359 (DAMAGE) | ExtData[7].Val6 | 1854 (Behind Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3412 | Component 3412 (DAMAGE) | ExtData[7].Val6 | 1689 (;Warrior Priest Morale) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 326171 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3412 | Component 3412 (DAMAGE) | ExtData[7].Val6 | 1689 (T'ree Hit Combo) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 326171 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3444 | Component 3444 (DAMAGE) | ExtData[7].Val6 | 1688 (Down Ya Go) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 331153 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3458 | Component 3458 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333079 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3459 | Component 3459 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333344 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3462 | Component 3462 (DAMAGE) | ExtData[7].Val6 | 1773 (No More Helpin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333941 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3463 | Component 3463 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 334206 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3467 | Component 3467 (DAMAGE) | ExtData[7].Val6 | 15523 (Training Ability 1) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335002 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3468 | Component 3468 (DAMAGE) | ExtData[7].Val6 | 3283 (Skull Stone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3469 | Component 3469 (DAMAGE) | ExtData[7].Val6 | 3339 (Spider Queen Web Bolt) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3470 | Component 3470 (DAMAGE) | ExtData[7].Val6 | 3340 (Pleasurevenom) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3471 | Component 3471 (DAMAGE) | ExtData[7].Val6 | 3341 (Painvenom) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335996 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3472 | Component 3472 (DAMAGE) | ExtData[7].Val6 | 1750 (Dire Shielding) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3468 | Component 3468 (DAMAGE) | ExtData[7].Val6 | 3283 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3469 | Component 3469 (DAMAGE) | ExtData[7].Val6 | 3339 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3470 | Component 3470 (DAMAGE) | ExtData[7].Val6 | 3340 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3471 | Component 3471 (DAMAGE) | ExtData[7].Val6 | 3341 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335996 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3472 | Component 3472 (DAMAGE) | ExtData[7].Val6 | 1750 (Try An' Hurt Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3473 | Component 3473 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336493 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3475 | Component 3475 (DAMAGE) | ExtData[7].Val6 | 1751 (Mixed Defenses) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3475 | Component 3475 (DAMAGE) | ExtData[7].Val6 | 1751 (Weaklin' Killa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3476 | Component 3476 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 337222 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3504 | Component 3504 (DAMAGE) | ExtData[7].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3505 | Component 3505 (DAMAGE) | ExtData[7].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342893 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3506 | Component 3506 (DAMAGE) | ExtData[7].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343191 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3504 | Component 3504 (DAMAGE) | ExtData[7].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3505 | Component 3505 (DAMAGE) | ExtData[7].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342893 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3506 | Component 3506 (DAMAGE) | ExtData[7].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343191 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3507 | Component 3507 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343456 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3508 | Component 3508 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343721 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3509 | Component 3509 (DAMAGE) | ExtData[7].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3510 | Component 3510 (DAMAGE) | ExtData[7].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344317 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3511 | Component 3511 (DAMAGE) | ExtData[7].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3512 | Component 3512 (DAMAGE) | ExtData[7].Val6 | 3160 (Kraunel's Affliction), 3163 (Disease Aura) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344880 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3513 | Component 3513 (DAMAGE) | ExtData[7].Val6 | 3160 (Kraunel's Affliction), 3163 (Disease Aura) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 345178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3533 | Component 3533 (DAMAGE) | ExtData[7].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3534 | Component 3534 (DAMAGE) | ExtData[7].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3535 | Component 3535 (DAMAGE) | ExtData[7].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349193 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3509 | Component 3509 (DAMAGE) | ExtData[7].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3510 | Component 3510 (DAMAGE) | ExtData[7].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344317 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3511 | Component 3511 (DAMAGE) | ExtData[7].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3512 | Component 3512 (DAMAGE) | ExtData[7].Val6 | 3160 (Lotsa Choppin), 3163 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344880 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3513 | Component 3513 (DAMAGE) | ExtData[7].Val6 | 3160 (Lotsa Choppin), 3163 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 345178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3533 | Component 3533 (DAMAGE) | ExtData[7].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3534 | Component 3534 (DAMAGE) | ExtData[7].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3535 | Component 3535 (DAMAGE) | ExtData[7].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349193 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3536 | Component 3536 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349491 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3538 | Component 3538 (DAMAGE) | ExtData[7].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349955 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3539 | Component 3539 (DAMAGE) | ExtData[7].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350253 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3540 | Component 3540 (DAMAGE) | ExtData[7].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350551 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3541 | Component 3541 (DAMAGE) | ExtData[7].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3545 | Component 3545 (DAMAGE) | ExtData[7].Val6 | 1762 (Warping Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3551 | Component 3551 (DAMAGE) | ExtData[7].Val6 | 1761 (;Chosen Spec Morale) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352740 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3562 | Component 3562 (EFFECT_BUFF) | ExtData[7].Val6 | 3299 (Sean Test) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3563 | Component 3563 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354732 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3564 | Component 3564 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3565 | Component 3565 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355196 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3566 | Component 3566 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355428 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3567 | Component 3567 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3571 | Component 3571 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3572 | Component 3572 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356655 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3573 | Component 3573 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356887 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3574 | Component 3574 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357119 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3538 | Component 3538 (DAMAGE) | ExtData[7].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349955 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3539 | Component 3539 (DAMAGE) | ExtData[7].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350253 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3540 | Component 3540 (DAMAGE) | ExtData[7].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350551 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3541 | Component 3541 (DAMAGE) | ExtData[7].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3545 | Component 3545 (DAMAGE) | ExtData[7].Val6 | 1762 (Bring It On) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3551 | Component 3551 (DAMAGE) | ExtData[7].Val6 | 1761 (Reckless Blow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352740 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3562 | Component 3562 (EFFECT_BUFF) | ExtData[7].Val6 | 3299 (Bleed Em Out) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3563 | Component 3563 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354732 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3564 | Component 3564 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3565 | Component 3565 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355196 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3566 | Component 3566 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355428 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3567 | Component 3567 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3571 | Component 3571 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3572 | Component 3572 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356655 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3573 | Component 3573 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356887 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3574 | Component 3574 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357119 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3577 | Component 3577 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357716 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3578 | Component 3578 (DAMAGE) | ExtData[7].Val6 | 1774 (Wot's Da Rush?) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 358014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3587 | Component 3587 (DAMAGE) | ExtData[7].Val6 | 1776 (Flail), 3286 (Noxious  Wound) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 359838 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3588 | Component 3588 (DAMAGE) | ExtData[7].Val6 | 3285 (Loyal Sergeant) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 360070 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3587 | Component 3587 (DAMAGE) | ExtData[7].Val6 | 1776 (Git To Da Choppa), 3286 (Git To Da Choppa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 359838 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3588 | Component 3588 (DAMAGE) | ExtData[7].Val6 | 3285 (Git To Da Choppa) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 360070 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3604 | Component 3604 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 362759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3632 | Component 3632 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367275 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3633 | Component 3633 (DAMAGE) | ExtData[7].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367507 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3634 | Component 3634 (DAMAGE) | ExtData[7].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3632 | Component 3632 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367275 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3633 | Component 3633 (DAMAGE) | ExtData[7].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367507 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3634 | Component 3634 (DAMAGE) | ExtData[7].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3638 | Component 3638 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 368667 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3639 | Component 3639 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 368932 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3640 | Component 3640 (DAMAGE) | ExtData[7].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369197 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3641 | Component 3641 (DAMAGE) | ExtData[7].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3642 | Component 3642 (DAMAGE) | ExtData[7].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369760 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3643 | Component 3643 (DAMAGE) | ExtData[7].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370091 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3646 | Component 3646 (DAMAGE) | ExtData[7].Val6 | 1443 (Sun's Blessing), 1755 (Embrace The Winds) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3648 | Component 3648 (EFFECT_BUFF) | ExtData[7].Val6 | 3306 (Fire Arrow Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 371218 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3640 | Component 3640 (DAMAGE) | ExtData[7].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369197 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3641 | Component 3641 (DAMAGE) | ExtData[7].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3642 | Component 3642 (DAMAGE) | ExtData[7].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369760 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3643 | Component 3643 (DAMAGE) | ExtData[7].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370091 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3646 | Component 3646 (DAMAGE) | ExtData[7].Val6 | 1443 (Incapacitate), 1755 (Sit Down!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3648 | Component 3648 (EFFECT_BUFF) | ExtData[7].Val6 | 3306 (Bleed Em Out) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 371218 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3666 | Component 3666 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374305 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3667 | Component 3667 (DAMAGE) | ExtData[7].Val6 | 1744 (Power from the Gods) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374570 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3667 | Component 3667 (DAMAGE) | ExtData[7].Val6 | 1744 (Don't Go Nowhere) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374570 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3668 | Component 3668 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374802 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3672 | Component 3672 (DAMAGE) | ExtData[7].Val6 | 1768 (Furious Choppin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 375730 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3673 | Component 3673 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 375962 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3703 | Component 3703 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 380707 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3704 | Component 3704 (DAMAGE) | ExtData[7].Val6 | 1432 (To Victory!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3704 | Component 3704 (DAMAGE) | ExtData[7].Val6 | 1432 (Slow Down) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3709 | Component 3709 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381868 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3711 | Component 3711 (DAMAGE) | ExtData[7].Val6 | 3346 (Keeper of Secrets Channel 1 - AOE) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3712 | Component 3712 (DAMAGE) | ExtData[7].Val6 | 3347 (Keeper of Secrets Channel 2 - HEAL) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3713 | Component 3713 (DAMAGE) | ExtData[7].Val6 | 3348 (Keeper of Secrets Channel 3 - DMG) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3714 | Component 3714 (DAMAGE) | ExtData[7].Val6 | 3349 (Keeper's Desire Tank Channel) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382995 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3711 | Component 3711 (DAMAGE) | ExtData[7].Val6 | 3346 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3712 | Component 3712 (DAMAGE) | ExtData[7].Val6 | 3347 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3713 | Component 3713 (DAMAGE) | ExtData[7].Val6 | 3348 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3714 | Component 3714 (DAMAGE) | ExtData[7].Val6 | 3349 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382995 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3732 | Component 3732 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 386312 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3760 | Component 3760 (DAMAGE) | ExtData[7].Val6 | 1464 (Shatter Limbs) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 391587 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3761 | Component 3761 (DAMAGE) | ExtData[7].Val6 | 1438 (Enervating Blow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 391819 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22519,30 +22520,30 @@ No rows found.
 | Component | 3765 | Component 3765 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 392780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3771 | Component 3771 (DAMAGE) | ExtData[7].Val6 | 1449 (Precarious Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 393875 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3772 | Component 3772 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3775 | Component 3775 (DAMAGE) | ExtData[7].Val6 | 1450 (;Knight Spec Tactics) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3777 | Component 3777 (DAMAGE) | ExtData[7].Val6 | 1457 (Sunfury) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 395069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3790 | Component 3790 (DAMAGE) | ExtData[7].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3791 | Component 3791 (DAMAGE) | ExtData[7].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397492 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3792 | Component 3792 (DAMAGE) | ExtData[7].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397790 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3793 | Component 3793 (DAMAGE) | ExtData[7].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3794 | Component 3794 (DAMAGE) | ExtData[7].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3795 | Component 3795 (DAMAGE) | ExtData[7].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3796 | Component 3796 (DAMAGE) | ExtData[7].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399114 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3797 | Component 3797 (DAMAGE) | ExtData[7].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399412 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3798 | Component 3798 (DAMAGE) | ExtData[7].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399743 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3799 | Component 3799 (DAMAGE) | ExtData[7].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3775 | Component 3775 (DAMAGE) | ExtData[7].Val6 | 1450 (Retribution) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3777 | Component 3777 (DAMAGE) | ExtData[7].Val6 | 1457 (Rune of Absorption) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 395069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3790 | Component 3790 (DAMAGE) | ExtData[7].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3791 | Component 3791 (DAMAGE) | ExtData[7].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397492 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3792 | Component 3792 (DAMAGE) | ExtData[7].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397790 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3793 | Component 3793 (DAMAGE) | ExtData[7].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3794 | Component 3794 (DAMAGE) | ExtData[7].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3795 | Component 3795 (DAMAGE) | ExtData[7].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3796 | Component 3796 (DAMAGE) | ExtData[7].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399114 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3797 | Component 3797 (DAMAGE) | ExtData[7].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399412 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3798 | Component 3798 (DAMAGE) | ExtData[7].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399743 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3799 | Component 3799 (DAMAGE) | ExtData[7].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3802 | Component 3802 (DAMAGE) | ExtData[7].Val6 | 1460 (Cleft In Twain) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400869 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3803 | Component 3803 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401101 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3804 | Component 3804 (DAMAGE) | ExtData[7].Val6 | 1463 (No Escape) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401333 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3805 | Component 3805 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401565 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3811 | Component 3811 (DAMAGE) | ExtData[7].Val6 | 1461 (Devastate) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 402990 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3813 | Component 3813 (DAMAGE) | ExtData[7].Val6 | 1462 (Spellbreaker) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 403388 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3824 | Component 3824 (DAMAGE) | ExtData[7].Val6 | 3320 (Deathclaw - Mounted Wing Buffet), 3321 (Silvshana Dummy), 3322 (Silvshana Arrow Volley), 3323 (Silvshana Mark), 3325 (Silvshana Creeping Death), 3326 (Silvshana Cleave) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 405940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3824 | Component 3824 (DAMAGE) | ExtData[7].Val6 | 3320 (Inevitable Doom), 3321 (Inevitable Doom), 3322 (Inevitable Doom), 3323 (Inevitable Doom), 3325 (Inevitable Doom), 3326 (Inevitable Doom) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 405940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3825 | Component 3825 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 406172 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3859 | Component 3859 (DAMAGE) | ExtData[7].Val6 | 3342 (Whitefire Webbing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 411981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3860 | Component 3860 (DAMAGE) | ExtData[7].Val6 | 3343 (Whitefire Rage) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3861 | Component 3861 (DAMAGE) | ExtData[7].Val6 | 3344 (Dragon Ogre - Lightning) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412445 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3862 | Component 3862 (DAMAGE) | ExtData[7].Val6 | 3345 (Pain-Fury Whirlwind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412677 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3859 | Component 3859 (DAMAGE) | ExtData[7].Val6 | 3342 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 411981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3860 | Component 3860 (DAMAGE) | ExtData[7].Val6 | 3343 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3861 | Component 3861 (DAMAGE) | ExtData[7].Val6 | 3344 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412445 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3862 | Component 3862 (DAMAGE) | ExtData[7].Val6 | 3345 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412677 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3864 | Component 3864 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 413075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3876 | Component 3876 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 415034 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3892 | Component 3892 (DAMAGE) | ExtData[7].Val6 | 1850 (Bad Gas!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 418053 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22597,17 +22598,17 @@ No rows found.
 | Component | 9012 | Component 9012 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 615951 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9013 | Component 9013 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 616216 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9054 | Component 9054 (DAMAGE) | ExtData[7].Val6 | 8344 (Rending Blade) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 623120 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9097 | Component 9097 (DAMAGE) | ExtData[7].Val6 | 3054 (Claw of Flame), 3055 (Corporeal Mass Silence) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 630390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9097 | Component 9097 (DAMAGE) | ExtData[7].Val6 | 3054 (Lacerate), 3055 (Castigation) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 630390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9112 | Component 9112 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 632913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9181 | Component 9181 (DAMAGE) | ExtData[7].Val6 | 8085 (Torment) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 644432 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9182 | Component 9182 (DAMAGE) | ExtData[7].Val6 | 8085 (Torment) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 644697 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9187 | Component 9187 (DAMAGE) | ExtData[7].Val6 | 8420 (Guillotine) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 645593 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9329 | Component 9329 (DAMAGE) | ExtData[7].Val6 | 8100 (Silence The Heretic) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 668998 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9331 | Component 9331 (DAMAGE) | ExtData[7].Val6 | 3983 (EvC SH - Auto2 (yellow)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9332 | Component 9332 (DAMAGE) | ExtData[7].Val6 | 3984 (Khorne's Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9333 | Component 9333 (DAMAGE) | ExtData[7].Val6 | 3985 (Wrath of Khorne) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9334 | Component 9334 (DAMAGE) | ExtData[7].Val6 | 3986 (Curse of Khorne) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9335 | Component 9335 (DAMAGE) | ExtData[7].Val6 | 3987 (EvC SH - Halt (vamp icon)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9331 | Component 9331 (DAMAGE) | ExtData[7].Val6 | 3983 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9332 | Component 9332 (DAMAGE) | ExtData[7].Val6 | 3984 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9333 | Component 9333 (DAMAGE) | ExtData[7].Val6 | 3985 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9334 | Component 9334 (DAMAGE) | ExtData[7].Val6 | 3986 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9335 | Component 9335 (DAMAGE) | ExtData[7].Val6 | 3987 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9466 | Component 9466 (DAMAGE) | ExtData[7].Val6 | 8005 (Precision Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 693749 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9507 | Component 9507 (DAMAGE) | ExtData[7].Val6 | 8026 (Arcing Swing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 700785 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9508 | Component 9508 (DAMAGE) | ExtData[7].Val6 | 8031 (Myrmidia's Fury) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 701017 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22619,10 +22620,10 @@ No rows found.
 | Component | 9665 | Component 9665 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 728234 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9672 | Component 9672 (DAMAGE) | ExtData[7].Val6 | 8009 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 729924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9673 | Component 9673 (DAMAGE) | ExtData[7].Val6 | 8009 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730189 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9674 | Component 9674 (DAMAGE) | ExtData[7].Val6 | 3214 (Lycithas' Wrath) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9674 | Component 9674 (DAMAGE) | ExtData[7].Val6 | 3214 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9680 | Component 9680 (DAMAGE) | ExtData[7].Val6 | 8037 (Unbalancing Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 731846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9681 | Component 9681 (DAMAGE) | ExtData[7].Val6 | 8037 (Unbalancing Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 732111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9709 | Component 9709 (DAMAGE) | ExtData[7].Val6 | 3002 (Burn), 3783 (Blessed Bullets of Cleansing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 736858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9709 | Component 9709 (DAMAGE) | ExtData[7].Val6 | 3002 (Blessed Bullets of Confession), 3783 (Blessed Bullets of Cleansing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 736858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9784 | Component 9784 (DAMAGE) | ExtData[7].Val6 | 8114 (Van Horstmann's Speculum), 9423 (Elixir of Blades) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 748846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9803 | Component 9803 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 751901 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9804 | Component 9804 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 752166 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22637,12 +22638,12 @@ No rows found.
 | Component | 11097 | Component 11097 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806108 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11098 | Component 11098 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806373 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11099 | Component 11099 (DAMAGE) | ExtData[7].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806638 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11101 | Component 11101 (DAMAGE) | ExtData[7].Val6 | 3537 (Understanding the New Threat Epic Quest), 9026 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11102 | Component 11102 (DAMAGE) | ExtData[7].Val6 | 3537 (Understanding the New Threat Epic Quest) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11101 | Component 11101 (DAMAGE) | ExtData[7].Val6 | 3537 (Ether Dance), 9026 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11102 | Component 11102 (DAMAGE) | ExtData[7].Val6 | 3537 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11103 | Component 11103 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807566 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11122 | Component 11122 (DAMAGE) | ExtData[7].Val6 | 3541 (Generic Set Tactic) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 810786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11123 | Component 11123 (DAMAGE) | ExtData[7].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11124 | Component 11124 (DAMAGE) | ExtData[7].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11122 | Component 11122 (DAMAGE) | ExtData[7].Val6 | 3541 (Crashing Wave) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 810786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11123 | Component 11123 (DAMAGE) | ExtData[7].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11124 | Component 11124 (DAMAGE) | ExtData[7].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11142 | Component 11142 (DAMAGE) | ExtData[7].Val6 | 9025 (Phoenix's Wing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 814601 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11201 | Component 11201 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 824593 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11202 | Component 11202 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 824858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22680,7 +22681,7 @@ No rows found.
 | Component | 11632 | Component 11632 (DAMAGE) | ExtData[7].Val6 | 9421 (Pierce Armor) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 899731 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11672 | Component 11672 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 906338 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11673 | Component 11673 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 906603 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11700 | Component 11700 (DAMAGE) | ExtData[7].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11700 | Component 11700 (DAMAGE) | ExtData[7].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11701 | Component 11701 (DAMAGE) | ExtData[7].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911416 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11702 | Component 11702 (DAMAGE) | ExtData[7].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911681 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11765 | Component 11765 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 921906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22692,7 +22693,7 @@ No rows found.
 | Component | 11784 | Component 11784 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 925687 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11791 | Component 11791 (DAMAGE) | ExtData[7].Val6 | 9100 (Lileath's Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 926915 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11792 | Component 11792 (DAMAGE) | ExtData[7].Val6 | 9101 (Rapid Fire) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927147 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11795 | Component 11795 (DAMAGE) | ExtData[7].Val6 | 3929 (Will of Change), 9103 (Glass Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11795 | Component 11795 (DAMAGE) | ExtData[7].Val6 | 3929 (Glass Arrow), 9103 (Glass Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11796 | Component 11796 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927943 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11797 | Component 11797 (DAMAGE) | ExtData[7].Val6 | 9105 (Fell The Weak) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 928175 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11798 | Component 11798 (DAMAGE) | ExtData[7].Val6 | 9105 (Fell The Weak) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 928440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22706,24 +22707,24 @@ No rows found.
 | Component | 11829 | Component 11829 (DAMAGE) | ExtData[7].Val6 | 9086 (Brutal Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 934576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11830 | Component 11830 (DAMAGE) | ExtData[7].Val6 | 9086 (Brutal Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 934841 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11836 | Component 11836 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 935837 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11882 | Component 11882 (DAMAGE) | ExtData[7].Val6 | 3813 (Crushing Pincer) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 942780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11883 | Component 11883 (DAMAGE) | ExtData[7].Val6 | 3814 (Envenomed Stinger) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943012 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11884 | Component 11884 (DAMAGE) | ExtData[7].Val6 | 3815 (Spider Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11885 | Component 11885 (DAMAGE) | ExtData[7].Val6 | 3816 (Envenomed Fangs) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943476 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11886 | Component 11886 (DAMAGE) | ExtData[7].Val6 | 3817 (Mangling Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11882 | Component 11882 (DAMAGE) | ExtData[7].Val6 | 3813 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 942780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11883 | Component 11883 (DAMAGE) | ExtData[7].Val6 | 3814 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943012 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11884 | Component 11884 (DAMAGE) | ExtData[7].Val6 | 3815 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11885 | Component 11885 (DAMAGE) | ExtData[7].Val6 | 3816 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943476 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11886 | Component 11886 (DAMAGE) | ExtData[7].Val6 | 3817 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11889 | Component 11889 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944239 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11896 | Component 11896 (DAMAGE) | ExtData[7].Val6 | 3931 (Chaos Eternal), 3988 (Putrid Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944936 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11897 | Component 11897 (DAMAGE) | ExtData[7].Val6 | 3932 (Mewling Spawn), 3989 (EvC SH - Shout (body)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945168 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11898 | Component 11898 (DAMAGE) | ExtData[7].Val6 | 3933 (Nature's Bite), 3990 (EvC SH - Shout (plague)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945400 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11899 | Component 11899 (DAMAGE) | ExtData[7].Val6 | 3934 (Nature's Destruction), 3991 (Blazing Inferno) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945632 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11900 | Component 11900 (DAMAGE) | ExtData[7].Val6 | 3935 (Nature's Reclamation), 3992 (Burn Flesh) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11896 | Component 11896 (DAMAGE) | ExtData[7].Val6 | 3931 (Heart Render Toxin), 3988 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944936 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11897 | Component 11897 (DAMAGE) | ExtData[7].Val6 | 3932 (Heart Render Toxin), 3989 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945168 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11898 | Component 11898 (DAMAGE) | ExtData[7].Val6 | 3933 (Heart Render Toxin), 3990 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945400 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11899 | Component 11899 (DAMAGE) | ExtData[7].Val6 | 3934 (Heart Render Toxin), 3991 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945632 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11900 | Component 11900 (DAMAGE) | ExtData[7].Val6 | 3935 (Heart Render Toxin), 3992 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11902 | Component 11902 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 946229 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11908 | Component 11908 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 947126 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11909 | Component 11909 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 947358 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11915 | Component 11915 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 948453 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11921 | Component 11921 (DAMAGE) | ExtData[7].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11922 | Component 11922 (DAMAGE) | ExtData[7].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11923 | Component 11923 (DAMAGE) | ExtData[7].Val6 | 3539 (Green Weapon Glowy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11922 | Component 11922 (DAMAGE) | ExtData[7].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11923 | Component 11923 (DAMAGE) | ExtData[7].Val6 | 3539 (Whispering Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11926 | Component 11926 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 950444 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11978 | Component 11978 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 958545 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11979 | Component 11979 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 958777 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22737,22 +22738,22 @@ No rows found.
 | Component | 12023 | Component 12023 (DAMAGE) | ExtData[7].Val6 | 9409 (Throat Slitter) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 966674 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12025 | Component 12025 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 967072 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12037 | Component 12037 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 968898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12040 | Component 12040 (DAMAGE) | ExtData[7].Val6 | 3581 (Chaos Hound VFX) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12041 | Component 12041 (DAMAGE) | ExtData[7].Val6 | 3581 (Chaos Hound VFX) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12042 | Component 12042 (DAMAGE) | ExtData[7].Val6 | 3582 (Tomb Kings Item Reward Buff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12043 | Component 12043 (DAMAGE) | ExtData[7].Val6 | 3582 (Tomb Kings Item Reward Buff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12044 | Component 12044 (DAMAGE) | ExtData[7].Val6 | 3583 (Shield of Bones) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12045 | Component 12045 (DAMAGE) | ExtData[7].Val6 | 3583 (Shield of Bones) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12046 | Component 12046 (DAMAGE) | ExtData[7].Val6 | 3584 (Repairing Door) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12047 | Component 12047 (DAMAGE) | ExtData[7].Val6 | 3584 (Repairing Door) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12048 | Component 12048 (DAMAGE) | ExtData[7].Val6 | 3585 (Shroud of Imprathepis) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12049 | Component 12049 (DAMAGE) | ExtData[7].Val6 | 3585 (Shroud of Imprathepis) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971550 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12050 | Component 12050 (DAMAGE) | ExtData[7].Val6 | 3931 (Chaos Eternal), 3988 (Putrid Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12051 | Component 12051 (DAMAGE) | ExtData[7].Val6 | 3932 (Mewling Spawn), 3989 (EvC SH - Shout (body)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12052 | Component 12052 (DAMAGE) | ExtData[7].Val6 | 3933 (Nature's Bite), 3990 (EvC SH - Shout (plague)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12053 | Component 12053 (DAMAGE) | ExtData[7].Val6 | 3934 (Nature's Destruction), 3991 (Blazing Inferno) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12054 | Component 12054 (DAMAGE) | ExtData[7].Val6 | 3935 (Nature's Reclamation), 3992 (Burn Flesh) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972710 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12169 | Component 12169 (DAMAGE) | ExtData[7].Val6 | 1824 (Growing Instability), 9163 (Coordinated Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995263 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12040 | Component 12040 (DAMAGE) | ExtData[7].Val6 | 3581 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12041 | Component 12041 (DAMAGE) | ExtData[7].Val6 | 3581 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12042 | Component 12042 (DAMAGE) | ExtData[7].Val6 | 3582 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12043 | Component 12043 (DAMAGE) | ExtData[7].Val6 | 3582 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12044 | Component 12044 (DAMAGE) | ExtData[7].Val6 | 3583 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12045 | Component 12045 (DAMAGE) | ExtData[7].Val6 | 3583 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12046 | Component 12046 (DAMAGE) | ExtData[7].Val6 | 3584 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12047 | Component 12047 (DAMAGE) | ExtData[7].Val6 | 3584 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12048 | Component 12048 (DAMAGE) | ExtData[7].Val6 | 3585 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12049 | Component 12049 (DAMAGE) | ExtData[7].Val6 | 3585 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971550 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12050 | Component 12050 (DAMAGE) | ExtData[7].Val6 | 3931 (Heart Render Toxin), 3988 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12051 | Component 12051 (DAMAGE) | ExtData[7].Val6 | 3932 (Heart Render Toxin), 3989 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12052 | Component 12052 (DAMAGE) | ExtData[7].Val6 | 3933 (Heart Render Toxin), 3990 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12053 | Component 12053 (DAMAGE) | ExtData[7].Val6 | 3934 (Heart Render Toxin), 3991 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12054 | Component 12054 (DAMAGE) | ExtData[7].Val6 | 3935 (Heart Render Toxin), 3992 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972710 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12169 | Component 12169 (DAMAGE) | ExtData[7].Val6 | 1824 (Git Em!), 9163 (Coordinated Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995263 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12173 | Component 12173 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995993 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12174 | Component 12174 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 996258 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12200 | Component 12200 (DAMAGE) | ExtData[7].Val6 | 9176 (Slashing Blade) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1000805 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22773,7 +22774,7 @@ No rows found.
 | Component | 12553 | Component 12553 (DAMAGE) | ExtData[7].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1061411 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12588 | Component 12588 (DAMAGE) | ExtData[7].Val6 | 9093 (Spiral-Fletched Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067650 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12589 | Component 12589 (DAMAGE) | ExtData[7].Val6 | 9093 (Spiral-Fletched Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067882 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12628 | Component 12628 (DAMAGE) | ExtData[7].Val6 | 1374 (;Shaman Spec Tactics), 1733 (Oppression), 8101 (Sever Blessing), 8251 (Purge), 8339 (Sever Blessing), 9034 (Shatter Enchantment), 9337 (Shatter Enchantment), 9413 (Sever Blessing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074090 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12628 | Component 12628 (DAMAGE) | ExtData[7].Val6 | 1374 (Sever Blessing), 1733 (Shatter Enchantment), 8101 (Sever Blessing), 8251 (Purge), 8339 (Sever Blessing), 9034 (Shatter Enchantment), 9337 (Shatter Enchantment), 9413 (Sever Blessing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074090 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12631 | Component 12631 (DAMAGE) | ExtData[7].Val6 | 9104 (Acid Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074654 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12808 | Component 12808 (DAMAGE) | ExtData[7].Val6 | 9398 (Slice) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1104524 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12809 | Component 12809 (DAMAGE) | ExtData[7].Val6 | 9398 (Slice) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1104756 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22784,9 +22785,9 @@ No rows found.
 | Component | 12966 | Component 12966 (DAMAGE) | ExtData[7].Val6 | 9165 (Sundering Chop) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1129523 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12975 | Component 12975 (DAMAGE) | ExtData[7].Val6 | 9096 (Eye Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1131248 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18780 | Component 18780 (DAMAGE) | ExtData[7].Val6 | 8399 (Impale) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 788251 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18906 | Component 18906 (DAMAGE) | ExtData[7].Val6 | 3810 (Ferocious Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132377 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18910 | Component 18910 (DAMAGE) | ExtData[7].Val6 | 3811 (Hound's Cry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132974 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18917 | Component 18917 (DAMAGE) | ExtData[7].Val6 | 3812 (Leaping Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1134202 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18906 | Component 18906 (DAMAGE) | ExtData[7].Val6 | 3810 (Kiss of Agony) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132377 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18910 | Component 18910 (DAMAGE) | ExtData[7].Val6 | 3811 (Kiss of Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132974 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18917 | Component 18917 (DAMAGE) | ExtData[7].Val6 | 3812 (Kiss of Betrayal) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1134202 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27604 | Component 27604 (DAMAGE) | ExtData[7].Val6 | 27603 (Shattering Attack), 27635 (Shattering Attack), 27667 (Shattering Swing), 27699 (Shattering Attack), 27731 (Shattering Attack), 27763 (Shattering Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27606 | Component 27606 (DAMAGE) | ExtData[7].Val6 | 27605 (Get Away!), 27637 (Get Away!), 27669 (Get Out!), 27701 (Get Away!), 27733 (Get Away!), 27765 (Get Away!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856430 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27608 | Component 27608 (DAMAGE) | ExtData[7].Val6 | 27610 (Wild Slash), 27642 (Wild Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856828 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22823,7 +22824,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 7 | AbilityOperation: 7=Unk7. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 44 | AbilityOperation: 44=EquippedInventorySlot. | Confirmed |  |
 | ExtData[1].Val3 | 1 | 1 | 6 | AbilityCondition: 6=LessThan. | Confirmed |  |
@@ -22858,7 +22859,7 @@ No rows found.
 | ExtData[0].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[0].Val2 | 1 | 1 | 7 | AbilityOperation: 7=Unk7. | Confirmed |  |
 | ExtData[0].Val3 | 1 | 1 | 7 | AbilityCondition: 7=GreaterThan. | Confirmed |  |
-| ExtData[0].Val4 | 1 | 1 | 12 |  | Unknown |  |
+| ExtData[0].Val4 | 1 | 1 | 12 | AbilityLogicOperator: 12=Unk12. | Confirmed |  |
 | ExtData[0].Val8 | 1 | 1 | 1 | Operation-specific auxiliary parameter. Position confirmed from decompiled client ExtData schema. | Inferred |  |
 | ExtData[1].Val1 | 1 | 1 | 1 | AbilitySourceType: 1=Cast. | Confirmed |  |
 | ExtData[1].Val2 | 1 | 1 | 44 | AbilityOperation: 44=EquippedInventorySlot. | Confirmed |  |
@@ -22879,7 +22880,7 @@ No rows found.
 ## Requirement 9625
 
 - Summary: Observed in Damage, Disarm, Heal, Immunity contexts; direct ability usage 420; component sources 485; child requirement ids 9623, 9624.
-- Notes: Requirement rows: 1; direct abilities: 420; direct components: 485; parent requirements: 0; child requirements: 9623, 9624; sample abilities: 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury); context tags: Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun.
+- Notes: Requirement rows: 1; direct abilities: 420; direct components: 485; parent requirements: 0; child requirements: 9623, 9624; sample abilities: 1 (Ard Noggin), 2 (Big Claw), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)); context tags: Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Snare, Stagger, Stun.
 
 ## Rows
 
@@ -22916,13 +22917,13 @@ No rows found.
 | Component | 97 | Component 97 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150098 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 98 | Component 98 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150330 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 99 | Component 99 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1150562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 145 | Component 145 (DAMAGE) | ExtData[6].Val6 | 1359 (Don' Feel Nuthin), 1666 (Charged Fury), 1824 (Growing Instability), 8083 (Fervor), 8244 (Divine Assault), 8257 (Castigation), 8338 (Touch of Palsy), 9002 (Graceful Strike) | Damage, Heal, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157367 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 146 | Component 146 (DAMAGE) | ExtData[6].Val6 | 1355 (Shrug it off), 1356 (Geddoff!), 1357 (I'll Take That!), 1362 (Fury of Da Green), 1431 (Staggering Impact), 1434 (Shining Blade), 1465 (Guardian Of Light), 1667 (Shield Of Faith) | Damage, Heal, Snare, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157599 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 147 | Component 147 (DAMAGE) | ExtData[6].Val6 | 1354 (Sticky Feetz), 1364 (Burst O' Waaagh!), 1371 (Nuthin' But Da WAAAGH!), 1664 (Clobber), 1669 (Exalted Defenses), 1772 (Tired Already?), 8017 (Repel Darkness), 8018 (Smashing Counter) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157831 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 148 | Component 148 (DAMAGE) | ExtData[6].Val6 | 1 (Ard Noggin), 3 (Bounce), 127 (Fang And Claw), 128 (Maul), 129 (Gut Ripper ), 130 (Infinite Knowledge), 131 (Divine Fury), 1200 (Stream of Corruption) | Damage, Heal, Silence, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158063 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 149 | Component 149 (DAMAGE) | ExtData[6].Val6 | 1369 (Lookit What I Did!), 1381 (Waaagh! Frenzy), 1437 (Heaven's Fury), 1677 (Cleansing Power), 1691 (Divine Replenishment), 1749 (Oppressing Blows), 3498 (Gorger Boss Eat), 9083 (Grim Slash) | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158295 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 145 | Component 145 (DAMAGE) | ExtData[6].Val6 | 1359 (Punishing Blow), 1666 (Wot armor?), 1824 (Git Em!), 8083 (Fervor), 8244 (Divine Assault), 8257 (Castigation), 8338 (Touch of Palsy), 9002 (Graceful Strike) | Damage, Heal, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157367 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 146 | Component 146 (DAMAGE) | ExtData[6].Val6 | 1355 (Grudging Blow), 1356 (Guarded Attack), 1357 (Vengeful Strike), 1362 (Kneecapper), 1431 (Relentless Strike), 1434 (Deep Wound), 1465 (Inevitable Doom), 1667 (Follow 'me Lead) | Damage, Heal, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157599 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 147 | Component 147 (DAMAGE) | ExtData[6].Val6 | 1354 (Heavy Blow), 1364 (Inspiring Attack), 1371 (Stone Breaker), 1664 (Clobber), 1669 (Tuffer 'n Nails), 1772 (Tired Already?), 8017 (Repel Darkness), 8018 (Smashing Counter) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1157831 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 148 | Component 148 (DAMAGE) | ExtData[6].Val6 | 1 (Ard Noggin), 3 (Bounce), 127 (Main Hand Weap), 128 (Off Hand Weap), 129 (Both Hand Weap), 130 (Tags on Main (Both have fx trails)), 131 (Tags on Off (Both have fx trails)), 1200 (Anim Tag Test - Instant) | Damage, Heal, Silence, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158063 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 149 | Component 149 (DAMAGE) | ExtData[6].Val6 | 1369 (Shield of Reprisal), 1381 (Avenging the Debt), 1437 (Spine Crusher), 1677 (Savin' Me Hide), 1691 (Not in da face!), 1749 (Go For Da Soft Spot), 3498 (Sub Ability), 9083 (Grim Slash) | Damage, Disarm, Heal, Immunity, Knockback, Knockdown, Silence, Stagger | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158295 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 150 | Component 150 (DAMAGE) | ExtData[6].Val6 | 8086 (Confess!), 8413 (Pulverize), 8424 (Thunderous Blow), 9019 (Dazzling Strike) | Damage, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158527 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 151 | Component 151 (DAMAGE) | ExtData[6].Val6 | 1365 (Ain't Done Yet!), 9108 (Exploit Weakness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 151 | Component 151 (DAMAGE) | ExtData[6].Val6 | 1365 (Away With Ye), 9108 (Exploit Weakness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 152 | Component 152 (DAMAGE) | ExtData[6].Val6 | 8109 (Repel Blasphemy), 8115 (Pistol Whip), 9427 (Heart Seeker) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1158991 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 153 | Component 153 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1159223 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 155 | Component 155 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1159455 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22957,7 +22958,7 @@ No rows found.
 | Component | 540 | Component 540 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 7175 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 561 | Component 561 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 11057 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 575 | Component 575 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 13348 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 579 | Component 579 (DAMAGE) | ExtData[6].Val6 | 1202 (Throw Fruit and Vegtible), 1203 (Conflag of Doom), 1204 (Pestilent Globule), 1205 (Forked Lightning (louder)), 1206 (Blessing of Khaine), 1207 (Bolt Thrower (HE1 PQ)), 1208 (Sigmar's Will), 1218 (Pestilent Breath - Dreamhive) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 14111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 579 | Component 579 (DAMAGE) | ExtData[6].Val6 | 1202 (Anim Tag Test - Channel), 1203 (Anim Tag Test - Channel), 1204 (Anim Tag Test - Channel), 1205 (Anim Tag Test - Channel), 1206 (Anim Tag Test - Channel), 1207 (Anim Tag Test - Channel), 1208 (Anim Tag Test - Channel), 1218 (Anim Tag Test - Channel) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 14111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 588 | Component 588 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 15473 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 686 | Component 686 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 31576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 705 | Component 705 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 34664 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -22967,145 +22968,145 @@ No rows found.
 | Component | 1230 | Component 1230 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121220 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1231 | Component 1231 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1232 | Component 1232 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 121783 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1239 | Component 1239 (DAMAGE) | ExtData[6].Val6 | 1361 (Yer A Weaklin') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 123077 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1239 | Component 1239 (DAMAGE) | ExtData[6].Val6 | 1361 (Shield Sweep) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 123077 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1368 | Component 1368 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 144821 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1369 | Component 1369 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1370 | Component 1370 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 145384 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1422 | Component 1422 (DAMAGE) | ExtData[6].Val6 | 1385 (Grudge-Born Fury) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 154742 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1464 | Component 1464 (DAMAGE) | ExtData[6].Val6 | 1508 (Exit Wound) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 161846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1464 | Component 1464 (DAMAGE) | ExtData[6].Val6 | 1508 (Gun Blast) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 161846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1471 | Component 1471 (DAMAGE) | ExtData[6].Val6 | 1513 (Friction Burn) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163008 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1475 | Component 1475 (DAMAGE) | ExtData[6].Val6 | 1517 (Righteous Steel) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163771 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1475 | Component 1475 (DAMAGE) | ExtData[6].Val6 | 1517 (Blunderbuss Blast) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 163771 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1488 | Component 1488 (DAMAGE) | ExtData[6].Val6 | 1536 (Crack Shot) | Damage, Disarm | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 165764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1492 | Component 1492 (DAMAGE) | ExtData[6].Val6 | 1538 (Snipe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 166560 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1515 | Component 1515 (DAMAGE) | ExtData[6].Val6 | 1672 (Divine Petitioning) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 170180 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1522 | Component 1522 (DAMAGE) | ExtData[6].Val6 | 1678 (Leading The Prayer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 171375 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1515 | Component 1515 (DAMAGE) | ExtData[6].Val6 | 1672 (Big Swing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 170180 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1522 | Component 1522 (DAMAGE) | ExtData[6].Val6 | 1678 (Da Big Un') | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 171375 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1527 | Component 1527 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172238 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1528 | Component 1528 (DAMAGE) | ExtData[6].Val6 | 1690 (Divine Aegis) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172470 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1543 | Component 1543 (DAMAGE) | ExtData[6].Val6 | 1680 (Grace Of Sigmar) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175059 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1544 | Component 1544 (DAMAGE) | ExtData[6].Val6 | 1680 (Grace Of Sigmar) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1803 | Component 1803 (DAMAGE) | ExtData[6].Val6 | 1528 (Full Confession) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 218843 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1811 | Component 1811 (DAMAGE) | ExtData[6].Val6 | 1822 (Deadly Clutch) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1528 | Component 1528 (DAMAGE) | ExtData[6].Val6 | 1690 (Ya Missed Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 172470 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1543 | Component 1543 (DAMAGE) | ExtData[6].Val6 | 1680 (Big Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175059 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1544 | Component 1544 (DAMAGE) | ExtData[6].Val6 | 1680 (Big Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 175324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1803 | Component 1803 (DAMAGE) | ExtData[6].Val6 | 1528 (Focused Fire) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 218843 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1811 | Component 1811 (DAMAGE) | ExtData[6].Val6 | 1822 (Yer Bleedin'!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1812 | Component 1812 (DAMAGE) | ExtData[6].Val6 | 1847 (Poison Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 220237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1816 | Component 1816 (DAMAGE) | ExtData[6].Val6 | 1829 (Cut Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221033 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1820 | Component 1820 (DAMAGE) | ExtData[6].Val6 | 1840 (Shoot Thru Ya) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221730 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1821 | Component 1821 (DAMAGE) | ExtData[6].Val6 | 1834 (Lots o' Arrers) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 221962 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1823 | Component 1823 (DAMAGE) | ExtData[6].Val6 | 1823 (Corrupted Edge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222360 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1823 | Component 1823 (DAMAGE) | ExtData[6].Val6 | 1823 (What Blocka?) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222360 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1826 | Component 1826 (DAMAGE) | ExtData[6].Val6 | 1848 (Finish 'em Off) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 222924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1827 | Component 1827 (DAMAGE) | ExtData[6].Val6 | 1848 (Finish 'em Off) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 223189 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1828 | Component 1828 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 223454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1831 | Component 1831 (DAMAGE) | ExtData[6].Val6 | 1853 (Rotten Arrer) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 224018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1842 | Component 1842 (DAMAGE) | ExtData[6].Val6 | 1833 (Tzeentch's Reversal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1843 | Component 1843 (DAMAGE) | ExtData[6].Val6 | 1833 (Tzeentch's Reversal) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1842 | Component 1842 (DAMAGE) | ExtData[6].Val6 | 1833 (Explodin' Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1843 | Component 1843 (DAMAGE) | ExtData[6].Val6 | 1833 (Explodin' Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 226340 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1858 | Component 1858 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 228764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 1880 | Component 1880 (DAMAGE) | ExtData[6].Val6 | 1520 (Vindication) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 232383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 1880 | Component 1880 (DAMAGE) | ExtData[6].Val6 | 1520 (Hip Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 232383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1908 | Component 1908 (DAMAGE) | ExtData[6].Val6 | 1846 (Shrapnel Arrer) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 237129 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 1998 | Component 1998 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 253817 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 2293 | Component 2293 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1224972 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3005 | Component 3005 (DAMAGE) | ExtData[6].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254946 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3006 | Component 3006 (DAMAGE) | ExtData[6].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3007 | Component 3007 (DAMAGE) | ExtData[6].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255575 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3008 | Component 3008 (DAMAGE) | ExtData[6].Val6 | 1358 (Da Waaagh! Is Coming), 3590 (Desert Madness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3009 | Component 3009 (DAMAGE) | ExtData[6].Val6 | 1358 (Da Waaagh! Is Coming) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3018 | Component 3018 (DAMAGE) | ExtData[6].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258325 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3019 | Component 3019 (DAMAGE) | ExtData[6].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258623 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3020 | Component 3020 (DAMAGE) | ExtData[6].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3021 | Component 3021 (DAMAGE) | ExtData[6].Val6 | 1366 (Extra Special Mushrooms) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259219 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3022 | Component 3022 (DAMAGE) | ExtData[6].Val6 | 3177 (Impale) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259517 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3005 | Component 3005 (DAMAGE) | ExtData[6].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 254946 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3006 | Component 3006 (DAMAGE) | ExtData[6].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3007 | Component 3007 (DAMAGE) | ExtData[6].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255575 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3008 | Component 3008 (DAMAGE) | ExtData[6].Val6 | 1358 (Binding Grudge), 3590 (Runic Swiftness) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 255906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3009 | Component 3009 (DAMAGE) | ExtData[6].Val6 | 1358 (Binding Grudge) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 256237 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3018 | Component 3018 (DAMAGE) | ExtData[6].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258325 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3019 | Component 3019 (DAMAGE) | ExtData[6].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258623 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3020 | Component 3020 (DAMAGE) | ExtData[6].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 258921 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3021 | Component 3021 (DAMAGE) | ExtData[6].Val6 | 1366 (Rune-Etched Axe) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259219 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3022 | Component 3022 (DAMAGE) | ExtData[6].Val6 | 3177 (Rune-Etched Axe) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 259517 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3042 | Component 3042 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263266 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3043 | Component 3043 (DAMAGE) | ExtData[6].Val6 | 1838 (Energy Ripple) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3044 | Component 3044 (DAMAGE) | ExtData[6].Val6 | 1865 (Fungal Fetish) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3043 | Component 3043 (DAMAGE) | ExtData[6].Val6 | 1838 (Don't Hit Me!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3044 | Component 3044 (DAMAGE) | ExtData[6].Val6 | 1865 (Drop That!!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 263763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3045 | Component 3045 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264028 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3046 | Component 3046 (DAMAGE) | ExtData[6].Val6 | 1865 (Fungal Fetish) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264326 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3046 | Component 3046 (DAMAGE) | ExtData[6].Val6 | 1865 (Drop That!!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264326 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3047 | Component 3047 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264624 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3048 | Component 3048 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 264922 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3049 | Component 3049 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 265220 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3065 | Component 3065 (DAMAGE) | ExtData[6].Val6 | 1826 (Hulking Brute) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268041 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3066 | Component 3066 (DAMAGE) | ExtData[6].Val6 | 1826 (Hulking Brute) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268273 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3065 | Component 3065 (DAMAGE) | ExtData[6].Val6 | 1826 (Run 'n Shoot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268041 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3066 | Component 3066 (DAMAGE) | ExtData[6].Val6 | 1826 (Run 'n Shoot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 268273 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3151 | Component 3151 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 283307 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3152 | Component 3152 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 283572 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3160 | Component 3160 (DAMAGE) | ExtData[6].Val6 | 1683 (Guilty Soul) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 284999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3161 | Component 3161 (DAMAGE) | ExtData[6].Val6 | 1683 (Guilty Soul) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 285264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3222 | Component 3222 (DAMAGE) | ExtData[6].Val6 | 1541 (Reversal Of Fortune) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 295324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3160 | Component 3160 (DAMAGE) | ExtData[6].Val6 | 1683 (Shut Yer Face) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 284999 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3161 | Component 3161 (DAMAGE) | ExtData[6].Val6 | 1683 (Shut Yer Face) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 285264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3222 | Component 3222 (DAMAGE) | ExtData[6].Val6 | 1541 (Phosphorous Shells) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 295324 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3287 | Component 3287 (DAMAGE) | ExtData[6].Val6 | 2 (Big Claw) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 305487 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3297 | Component 3297 (DAMAGE) | ExtData[6].Val6 | 1851 (Big Bouncin!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 307213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3317 | Component 3317 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 310665 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3356 | Component 3356 (DAMAGE) | ExtData[6].Val6 | 1821 (Exhaustive Strikes) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317568 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3356 | Component 3356 (DAMAGE) | ExtData[6].Val6 | 1821 (Plink) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317568 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3357 | Component 3357 (DAMAGE) | ExtData[6].Val6 | 1839 (Choking Arrer) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 317800 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3358 | Component 3358 (DAMAGE) | ExtData[6].Val6 | 1825 (Unstable Convulsions), 1835 (;Marauder Spec Morale) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3358 | Component 3358 (DAMAGE) | ExtData[6].Val6 | 1825 (Stop Runnin!), 1835 (Not So Fast!) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3359 | Component 3359 (DAMAGE) | ExtData[6].Val6 | 1854 (Behind Ya!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 318264 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3412 | Component 3412 (DAMAGE) | ExtData[6].Val6 | 1689 (;Warrior Priest Morale) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 326171 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3412 | Component 3412 (DAMAGE) | ExtData[6].Val6 | 1689 (T'ree Hit Combo) | Damage, Stun | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 326171 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3444 | Component 3444 (DAMAGE) | ExtData[6].Val6 | 1688 (Down Ya Go) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 331153 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3458 | Component 3458 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333079 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3459 | Component 3459 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333344 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3462 | Component 3462 (DAMAGE) | ExtData[6].Val6 | 1773 (No More Helpin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 333941 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3463 | Component 3463 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 334206 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3467 | Component 3467 (DAMAGE) | ExtData[6].Val6 | 15523 (Training Ability 1) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335002 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3468 | Component 3468 (DAMAGE) | ExtData[6].Val6 | 3283 (Skull Stone) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3469 | Component 3469 (DAMAGE) | ExtData[6].Val6 | 3339 (Spider Queen Web Bolt) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3470 | Component 3470 (DAMAGE) | ExtData[6].Val6 | 3340 (Pleasurevenom) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3471 | Component 3471 (DAMAGE) | ExtData[6].Val6 | 3341 (Painvenom) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335996 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3472 | Component 3472 (DAMAGE) | ExtData[6].Val6 | 1750 (Dire Shielding) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3468 | Component 3468 (DAMAGE) | ExtData[6].Val6 | 3283 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335300 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3469 | Component 3469 (DAMAGE) | ExtData[6].Val6 | 3339 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335532 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3470 | Component 3470 (DAMAGE) | ExtData[6].Val6 | 3340 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335764 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3471 | Component 3471 (DAMAGE) | ExtData[6].Val6 | 3341 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 335996 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3472 | Component 3472 (DAMAGE) | ExtData[6].Val6 | 1750 (Try An' Hurt Me) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336228 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3473 | Component 3473 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336493 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3475 | Component 3475 (DAMAGE) | ExtData[6].Val6 | 1751 (Mixed Defenses) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3475 | Component 3475 (DAMAGE) | ExtData[6].Val6 | 1751 (Weaklin' Killa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 336957 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3476 | Component 3476 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 337222 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3504 | Component 3504 (DAMAGE) | ExtData[6].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3505 | Component 3505 (DAMAGE) | ExtData[6].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342893 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3506 | Component 3506 (DAMAGE) | ExtData[6].Val6 | 3161 (Transfixing Gaze), 3164 (Death's Grasp) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343191 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3504 | Component 3504 (DAMAGE) | ExtData[6].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342562 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3505 | Component 3505 (DAMAGE) | ExtData[6].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 342893 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3506 | Component 3506 (DAMAGE) | ExtData[6].Val6 | 3161 (Lotsa Choppin), 3164 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343191 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3507 | Component 3507 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343456 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3508 | Component 3508 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343721 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3509 | Component 3509 (DAMAGE) | ExtData[6].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3510 | Component 3510 (DAMAGE) | ExtData[6].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344317 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3511 | Component 3511 (DAMAGE) | ExtData[6].Val6 | 3160 (Kraunel's Affliction), 3162 (Doomfire), 3163 (Disease Aura), 3165 (Plague Heal) | Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3512 | Component 3512 (DAMAGE) | ExtData[6].Val6 | 3160 (Kraunel's Affliction), 3163 (Disease Aura) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344880 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3513 | Component 3513 (DAMAGE) | ExtData[6].Val6 | 3160 (Kraunel's Affliction), 3163 (Disease Aura) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 345178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3533 | Component 3533 (DAMAGE) | ExtData[6].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3534 | Component 3534 (DAMAGE) | ExtData[6].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3535 | Component 3535 (DAMAGE) | ExtData[6].Val6 | 3293 (Raven's Wing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349193 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3509 | Component 3509 (DAMAGE) | ExtData[6].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 343986 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3510 | Component 3510 (DAMAGE) | ExtData[6].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344317 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3511 | Component 3511 (DAMAGE) | ExtData[6].Val6 | 3160 (Lotsa Choppin), 3162 (Lotsa Choppin), 3163 (Flurry), 3165 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344615 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3512 | Component 3512 (DAMAGE) | ExtData[6].Val6 | 3160 (Lotsa Choppin), 3163 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 344880 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3513 | Component 3513 (DAMAGE) | ExtData[6].Val6 | 3160 (Lotsa Choppin), 3163 (Flurry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 345178 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3533 | Component 3533 (DAMAGE) | ExtData[6].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348597 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3534 | Component 3534 (DAMAGE) | ExtData[6].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 348895 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3535 | Component 3535 (DAMAGE) | ExtData[6].Val6 | 3293 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349193 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3536 | Component 3536 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349491 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3538 | Component 3538 (DAMAGE) | ExtData[6].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349955 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3539 | Component 3539 (DAMAGE) | ExtData[6].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350253 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3540 | Component 3540 (DAMAGE) | ExtData[6].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350551 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3541 | Component 3541 (DAMAGE) | ExtData[6].Val6 | 3294 (Worm Ground Distortion) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3545 | Component 3545 (DAMAGE) | ExtData[6].Val6 | 1762 (Warping Embrace) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3551 | Component 3551 (DAMAGE) | ExtData[6].Val6 | 1761 (;Chosen Spec Morale) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352740 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3562 | Component 3562 (EFFECT_BUFF) | ExtData[6].Val6 | 3299 (Sean Test) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3563 | Component 3563 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354732 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3564 | Component 3564 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3565 | Component 3565 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355196 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3566 | Component 3566 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355428 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3567 | Component 3567 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3571 | Component 3571 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3572 | Component 3572 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356655 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3573 | Component 3573 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356887 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3574 | Component 3574 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357119 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3538 | Component 3538 (DAMAGE) | ExtData[6].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 349955 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3539 | Component 3539 (DAMAGE) | ExtData[6].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350253 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3540 | Component 3540 (DAMAGE) | ExtData[6].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350551 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3541 | Component 3541 (DAMAGE) | ExtData[6].Val6 | 3294 (Wild Choppin') |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 350849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3545 | Component 3545 (DAMAGE) | ExtData[6].Val6 | 1762 (Bring It On) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 351711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3551 | Component 3551 (DAMAGE) | ExtData[6].Val6 | 1761 (Reckless Blow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 352740 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3562 | Component 3562 (EFFECT_BUFF) | ExtData[6].Val6 | 3299 (Bleed Em Out) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354467 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3563 | Component 3563 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354732 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3564 | Component 3564 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 354964 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3565 | Component 3565 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355196 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3566 | Component 3566 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355428 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3567 | Component 3567 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 355660 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3571 | Component 3571 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356423 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3572 | Component 3572 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356655 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3573 | Component 3573 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 356887 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3574 | Component 3574 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357119 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3577 | Component 3577 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 357716 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3578 | Component 3578 (DAMAGE) | ExtData[6].Val6 | 1774 (Wot's Da Rush?) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 358014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3587 | Component 3587 (DAMAGE) | ExtData[6].Val6 | 1776 (Flail), 3286 (Noxious  Wound) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 359838 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3588 | Component 3588 (DAMAGE) | ExtData[6].Val6 | 3285 (Loyal Sergeant) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 360070 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3587 | Component 3587 (DAMAGE) | ExtData[6].Val6 | 1776 (Git To Da Choppa), 3286 (Git To Da Choppa) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 359838 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3588 | Component 3588 (DAMAGE) | ExtData[6].Val6 | 3285 (Git To Da Choppa) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 360070 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3604 | Component 3604 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 362759 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3632 | Component 3632 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367275 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3633 | Component 3633 (DAMAGE) | ExtData[6].Val6 | 3300 (Fiery Breath) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367507 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3634 | Component 3634 (DAMAGE) | ExtData[6].Val6 | 3301 (Lantern Effect) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3632 | Component 3632 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367275 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3633 | Component 3633 (DAMAGE) | ExtData[6].Val6 | 3300 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367507 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3634 | Component 3634 (DAMAGE) | ExtData[6].Val6 | 3301 (Bleed Em Out) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 367772 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3638 | Component 3638 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 368667 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3639 | Component 3639 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 368932 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3640 | Component 3640 (DAMAGE) | ExtData[6].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369197 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3641 | Component 3641 (DAMAGE) | ExtData[6].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3642 | Component 3642 (DAMAGE) | ExtData[6].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369760 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3643 | Component 3643 (DAMAGE) | ExtData[6].Val6 | 3284 (Explosive Death) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370091 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3646 | Component 3646 (DAMAGE) | ExtData[6].Val6 | 1443 (Sun's Blessing), 1755 (Embrace The Winds) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3648 | Component 3648 (EFFECT_BUFF) | ExtData[6].Val6 | 3306 (Fire Arrow Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 371218 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3640 | Component 3640 (DAMAGE) | ExtData[6].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369197 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3641 | Component 3641 (DAMAGE) | ExtData[6].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3642 | Component 3642 (DAMAGE) | ExtData[6].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 369760 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3643 | Component 3643 (DAMAGE) | ExtData[6].Val6 | 3284 (Yer All Bleedin' Now) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370091 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3646 | Component 3646 (DAMAGE) | ExtData[6].Val6 | 1443 (Incapacitate), 1755 (Sit Down!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 370787 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3648 | Component 3648 (EFFECT_BUFF) | ExtData[6].Val6 | 3306 (Bleed Em Out) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 371218 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3666 | Component 3666 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374305 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3667 | Component 3667 (DAMAGE) | ExtData[6].Val6 | 1744 (Power from the Gods) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374570 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3667 | Component 3667 (DAMAGE) | ExtData[6].Val6 | 1744 (Don't Go Nowhere) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374570 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3668 | Component 3668 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 374802 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3672 | Component 3672 (DAMAGE) | ExtData[6].Val6 | 1768 (Furious Choppin') | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 375730 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3673 | Component 3673 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 375962 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3703 | Component 3703 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 380707 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3704 | Component 3704 (DAMAGE) | ExtData[6].Val6 | 1432 (To Victory!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3704 | Component 3704 (DAMAGE) | ExtData[6].Val6 | 1432 (Slow Down) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381005 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3709 | Component 3709 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 381868 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3711 | Component 3711 (DAMAGE) | ExtData[6].Val6 | 3346 (Keeper of Secrets Channel 1 - AOE) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3712 | Component 3712 (DAMAGE) | ExtData[6].Val6 | 3347 (Keeper of Secrets Channel 2 - HEAL) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3713 | Component 3713 (DAMAGE) | ExtData[6].Val6 | 3348 (Keeper of Secrets Channel 3 - DMG) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3714 | Component 3714 (DAMAGE) | ExtData[6].Val6 | 3349 (Keeper's Desire Tank Channel) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382995 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3711 | Component 3711 (DAMAGE) | ExtData[6].Val6 | 3346 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382299 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3712 | Component 3712 (DAMAGE) | ExtData[6].Val6 | 3347 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382531 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3713 | Component 3713 (DAMAGE) | ExtData[6].Val6 | 3348 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382763 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3714 | Component 3714 (DAMAGE) | ExtData[6].Val6 | 3349 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 382995 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3732 | Component 3732 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 386312 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3760 | Component 3760 (DAMAGE) | ExtData[6].Val6 | 1464 (Shatter Limbs) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 391587 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3761 | Component 3761 (DAMAGE) | ExtData[6].Val6 | 1438 (Enervating Blow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 391819 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23114,30 +23115,30 @@ No rows found.
 | Component | 3765 | Component 3765 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 392780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3771 | Component 3771 (DAMAGE) | ExtData[6].Val6 | 1449 (Precarious Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 393875 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3772 | Component 3772 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3775 | Component 3775 (DAMAGE) | ExtData[6].Val6 | 1450 (;Knight Spec Tactics) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3777 | Component 3777 (DAMAGE) | ExtData[6].Val6 | 1457 (Sunfury) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 395069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3790 | Component 3790 (DAMAGE) | ExtData[6].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3791 | Component 3791 (DAMAGE) | ExtData[6].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397492 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3792 | Component 3792 (DAMAGE) | ExtData[6].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397790 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3793 | Component 3793 (DAMAGE) | ExtData[6].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3794 | Component 3794 (DAMAGE) | ExtData[6].Val6 | 3317 (Deathclaw - Silence Scream) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3795 | Component 3795 (DAMAGE) | ExtData[6].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3796 | Component 3796 (DAMAGE) | ExtData[6].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399114 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3797 | Component 3797 (DAMAGE) | ExtData[6].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399412 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3798 | Component 3798 (DAMAGE) | ExtData[6].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399743 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3799 | Component 3799 (DAMAGE) | ExtData[6].Val6 | 3318 (Deathclaw - Wing Buffet) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3775 | Component 3775 (DAMAGE) | ExtData[6].Val6 | 1450 (Retribution) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 394671 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3777 | Component 3777 (DAMAGE) | ExtData[6].Val6 | 1457 (Rune of Absorption) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 395069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3790 | Component 3790 (DAMAGE) | ExtData[6].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397227 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3791 | Component 3791 (DAMAGE) | ExtData[6].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397492 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3792 | Component 3792 (DAMAGE) | ExtData[6].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 397790 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3793 | Component 3793 (DAMAGE) | ExtData[6].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398121 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3794 | Component 3794 (DAMAGE) | ExtData[6].Val6 | 3317 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398485 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3795 | Component 3795 (DAMAGE) | ExtData[6].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 398849 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3796 | Component 3796 (DAMAGE) | ExtData[6].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399114 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3797 | Component 3797 (DAMAGE) | ExtData[6].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399412 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3798 | Component 3798 (DAMAGE) | ExtData[6].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 399743 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3799 | Component 3799 (DAMAGE) | ExtData[6].Val6 | 3318 (Wild Swing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400107 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3802 | Component 3802 (DAMAGE) | ExtData[6].Val6 | 1460 (Cleft In Twain) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 400869 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3803 | Component 3803 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401101 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3804 | Component 3804 (DAMAGE) | ExtData[6].Val6 | 1463 (No Escape) | Damage, Snare | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401333 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3805 | Component 3805 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 401565 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3811 | Component 3811 (DAMAGE) | ExtData[6].Val6 | 1461 (Devastate) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 402990 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3813 | Component 3813 (DAMAGE) | ExtData[6].Val6 | 1462 (Spellbreaker) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 403388 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3824 | Component 3824 (DAMAGE) | ExtData[6].Val6 | 3320 (Deathclaw - Mounted Wing Buffet), 3321 (Silvshana Dummy), 3322 (Silvshana Arrow Volley), 3323 (Silvshana Mark), 3325 (Silvshana Creeping Death), 3326 (Silvshana Cleave) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 405940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3824 | Component 3824 (DAMAGE) | ExtData[6].Val6 | 3320 (Inevitable Doom), 3321 (Inevitable Doom), 3322 (Inevitable Doom), 3323 (Inevitable Doom), 3325 (Inevitable Doom), 3326 (Inevitable Doom) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 405940 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3825 | Component 3825 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 406172 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3859 | Component 3859 (DAMAGE) | ExtData[6].Val6 | 3342 (Whitefire Webbing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 411981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3860 | Component 3860 (DAMAGE) | ExtData[6].Val6 | 3343 (Whitefire Rage) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3861 | Component 3861 (DAMAGE) | ExtData[6].Val6 | 3344 (Dragon Ogre - Lightning) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412445 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 3862 | Component 3862 (DAMAGE) | ExtData[6].Val6 | 3345 (Pain-Fury Whirlwind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412677 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3859 | Component 3859 (DAMAGE) | ExtData[6].Val6 | 3342 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 411981 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3860 | Component 3860 (DAMAGE) | ExtData[6].Val6 | 3343 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412213 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3861 | Component 3861 (DAMAGE) | ExtData[6].Val6 | 3344 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412445 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 3862 | Component 3862 (DAMAGE) | ExtData[6].Val6 | 3345 (Onslaught) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 412677 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3864 | Component 3864 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 413075 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3876 | Component 3876 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 415034 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 3892 | Component 3892 (DAMAGE) | ExtData[6].Val6 | 1850 (Bad Gas!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 418053 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23192,17 +23193,17 @@ No rows found.
 | Component | 9012 | Component 9012 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 615951 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9013 | Component 9013 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 616216 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9054 | Component 9054 (DAMAGE) | ExtData[6].Val6 | 8344 (Rending Blade) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 623120 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9097 | Component 9097 (DAMAGE) | ExtData[6].Val6 | 3054 (Claw of Flame), 3055 (Corporeal Mass Silence) | Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 630390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9097 | Component 9097 (DAMAGE) | ExtData[6].Val6 | 3054 (Lacerate), 3055 (Castigation) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 630390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9112 | Component 9112 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 632913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9181 | Component 9181 (DAMAGE) | ExtData[6].Val6 | 8085 (Torment) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 644432 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9182 | Component 9182 (DAMAGE) | ExtData[6].Val6 | 8085 (Torment) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 644697 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9187 | Component 9187 (DAMAGE) | ExtData[6].Val6 | 8420 (Guillotine) | Damage, Heal | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 645593 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9329 | Component 9329 (DAMAGE) | ExtData[6].Val6 | 8100 (Silence The Heretic) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 668998 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9331 | Component 9331 (DAMAGE) | ExtData[6].Val6 | 3983 (EvC SH - Auto2 (yellow)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9332 | Component 9332 (DAMAGE) | ExtData[6].Val6 | 3984 (Khorne's Affliction) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9333 | Component 9333 (DAMAGE) | ExtData[6].Val6 | 3985 (Wrath of Khorne) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9334 | Component 9334 (DAMAGE) | ExtData[6].Val6 | 3986 (Curse of Khorne) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9335 | Component 9335 (DAMAGE) | ExtData[6].Val6 | 3987 (EvC SH - Halt (vamp icon)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9331 | Component 9331 (DAMAGE) | ExtData[6].Val6 | 3983 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9332 | Component 9332 (DAMAGE) | ExtData[6].Val6 | 3984 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9333 | Component 9333 (DAMAGE) | ExtData[6].Val6 | 3985 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 669926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9334 | Component 9334 (DAMAGE) | ExtData[6].Val6 | 3986 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9335 | Component 9335 (DAMAGE) | ExtData[6].Val6 | 3987 (Exit Wound) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 670390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9466 | Component 9466 (DAMAGE) | ExtData[6].Val6 | 8005 (Precision Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 693749 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9507 | Component 9507 (DAMAGE) | ExtData[6].Val6 | 8026 (Arcing Swing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 700785 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9508 | Component 9508 (DAMAGE) | ExtData[6].Val6 | 8031 (Myrmidia's Fury) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 701017 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23214,10 +23215,10 @@ No rows found.
 | Component | 9665 | Component 9665 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 728234 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9672 | Component 9672 (DAMAGE) | ExtData[6].Val6 | 8009 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 729924 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9673 | Component 9673 (DAMAGE) | ExtData[6].Val6 | 8009 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730189 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9674 | Component 9674 (DAMAGE) | ExtData[6].Val6 | 3214 (Lycithas' Wrath) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9674 | Component 9674 (DAMAGE) | ExtData[6].Val6 | 3214 (Vicious Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 730454 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9680 | Component 9680 (DAMAGE) | ExtData[6].Val6 | 8037 (Unbalancing Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 731846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9681 | Component 9681 (DAMAGE) | ExtData[6].Val6 | 8037 (Unbalancing Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 732111 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 9709 | Component 9709 (DAMAGE) | ExtData[6].Val6 | 3002 (Burn), 3783 (Blessed Bullets of Cleansing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 736858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 9709 | Component 9709 (DAMAGE) | ExtData[6].Val6 | 3002 (Blessed Bullets of Confession), 3783 (Blessed Bullets of Cleansing) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 736858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9784 | Component 9784 (DAMAGE) | ExtData[6].Val6 | 8114 (Van Horstmann's Speculum), 9423 (Elixir of Blades) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 748846 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9803 | Component 9803 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 751901 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 9804 | Component 9804 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 752166 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23232,12 +23233,12 @@ No rows found.
 | Component | 11097 | Component 11097 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806108 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11098 | Component 11098 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806373 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11099 | Component 11099 (DAMAGE) | ExtData[6].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 806638 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11101 | Component 11101 (DAMAGE) | ExtData[6].Val6 | 3537 (Understanding the New Threat Epic Quest), 9026 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11102 | Component 11102 (DAMAGE) | ExtData[6].Val6 | 3537 (Understanding the New Threat Epic Quest) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11101 | Component 11101 (DAMAGE) | ExtData[6].Val6 | 3537 (Ether Dance), 9026 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807069 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11102 | Component 11102 (DAMAGE) | ExtData[6].Val6 | 3537 (Ether Dance) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807301 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11103 | Component 11103 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 807566 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11122 | Component 11122 (DAMAGE) | ExtData[6].Val6 | 3541 (Generic Set Tactic) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 810786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11123 | Component 11123 (DAMAGE) | ExtData[6].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11124 | Component 11124 (DAMAGE) | ExtData[6].Val6 | 3540 (Warpforged Vanquisher) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11122 | Component 11122 (DAMAGE) | ExtData[6].Val6 | 3541 (Crashing Wave) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 810786 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11123 | Component 11123 (DAMAGE) | ExtData[6].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811018 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11124 | Component 11124 (DAMAGE) | ExtData[6].Val6 | 3540 (Dazzling Strike) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 811283 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11142 | Component 11142 (DAMAGE) | ExtData[6].Val6 | 9025 (Phoenix's Wing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 814601 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11201 | Component 11201 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 824593 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11202 | Component 11202 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 824858 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23275,7 +23276,7 @@ No rows found.
 | Component | 11632 | Component 11632 (DAMAGE) | ExtData[6].Val6 | 9421 (Pierce Armor) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 899731 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11672 | Component 11672 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 906338 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11673 | Component 11673 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 906603 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11700 | Component 11700 (DAMAGE) | ExtData[6].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11700 | Component 11700 (DAMAGE) | ExtData[6].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911151 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11701 | Component 11701 (DAMAGE) | ExtData[6].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911416 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11702 | Component 11702 (DAMAGE) | ExtData[6].Val6 | 3579 (Intimidating Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 911681 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11765 | Component 11765 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 921906 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23287,7 +23288,7 @@ No rows found.
 | Component | 11784 | Component 11784 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 925687 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11791 | Component 11791 (DAMAGE) | ExtData[6].Val6 | 9100 (Lileath's Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 926915 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11792 | Component 11792 (DAMAGE) | ExtData[6].Val6 | 9101 (Rapid Fire) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927147 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11795 | Component 11795 (DAMAGE) | ExtData[6].Val6 | 3929 (Will of Change), 9103 (Glass Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11795 | Component 11795 (DAMAGE) | ExtData[6].Val6 | 3929 (Glass Arrow), 9103 (Glass Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927711 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11796 | Component 11796 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 927943 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11797 | Component 11797 (DAMAGE) | ExtData[6].Val6 | 9105 (Fell The Weak) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 928175 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11798 | Component 11798 (DAMAGE) | ExtData[6].Val6 | 9105 (Fell The Weak) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 928440 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23301,24 +23302,24 @@ No rows found.
 | Component | 11829 | Component 11829 (DAMAGE) | ExtData[6].Val6 | 9086 (Brutal Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 934576 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11830 | Component 11830 (DAMAGE) | ExtData[6].Val6 | 9086 (Brutal Assault) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 934841 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11836 | Component 11836 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 935837 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11882 | Component 11882 (DAMAGE) | ExtData[6].Val6 | 3813 (Crushing Pincer) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 942780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11883 | Component 11883 (DAMAGE) | ExtData[6].Val6 | 3814 (Envenomed Stinger) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943012 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11884 | Component 11884 (DAMAGE) | ExtData[6].Val6 | 3815 (Spider Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11885 | Component 11885 (DAMAGE) | ExtData[6].Val6 | 3816 (Envenomed Fangs) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943476 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11886 | Component 11886 (DAMAGE) | ExtData[6].Val6 | 3817 (Mangling Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11882 | Component 11882 (DAMAGE) | ExtData[6].Val6 | 3813 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 942780 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11883 | Component 11883 (DAMAGE) | ExtData[6].Val6 | 3814 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943012 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11884 | Component 11884 (DAMAGE) | ExtData[6].Val6 | 3815 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943244 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11885 | Component 11885 (DAMAGE) | ExtData[6].Val6 | 3816 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943476 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11886 | Component 11886 (DAMAGE) | ExtData[6].Val6 | 3817 (Puncture) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 943708 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11889 | Component 11889 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944239 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11896 | Component 11896 (DAMAGE) | ExtData[6].Val6 | 3931 (Chaos Eternal), 3988 (Putrid Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944936 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11897 | Component 11897 (DAMAGE) | ExtData[6].Val6 | 3932 (Mewling Spawn), 3989 (EvC SH - Shout (body)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945168 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11898 | Component 11898 (DAMAGE) | ExtData[6].Val6 | 3933 (Nature's Bite), 3990 (EvC SH - Shout (plague)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945400 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11899 | Component 11899 (DAMAGE) | ExtData[6].Val6 | 3934 (Nature's Destruction), 3991 (Blazing Inferno) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945632 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11900 | Component 11900 (DAMAGE) | ExtData[6].Val6 | 3935 (Nature's Reclamation), 3992 (Burn Flesh) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11896 | Component 11896 (DAMAGE) | ExtData[6].Val6 | 3931 (Heart Render Toxin), 3988 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 944936 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11897 | Component 11897 (DAMAGE) | ExtData[6].Val6 | 3932 (Heart Render Toxin), 3989 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945168 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11898 | Component 11898 (DAMAGE) | ExtData[6].Val6 | 3933 (Heart Render Toxin), 3990 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945400 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11899 | Component 11899 (DAMAGE) | ExtData[6].Val6 | 3934 (Heart Render Toxin), 3991 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945632 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11900 | Component 11900 (DAMAGE) | ExtData[6].Val6 | 3935 (Heart Render Toxin), 3992 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 945864 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11902 | Component 11902 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 946229 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11908 | Component 11908 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 947126 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11909 | Component 11909 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 947358 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11915 | Component 11915 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 948453 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11921 | Component 11921 (DAMAGE) | ExtData[6].Val6 | 3536 (Ensorcelled Blow) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949383 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11922 | Component 11922 (DAMAGE) | ExtData[6].Val6 | 3735 (Mount - Dumpy Horse - Order) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 11923 | Component 11923 (DAMAGE) | ExtData[6].Val6 | 3539 (Green Weapon Glowy) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11922 | Component 11922 (DAMAGE) | ExtData[6].Val6 | 3735 (Gusting Wind) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949648 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 11923 | Component 11923 (DAMAGE) | ExtData[6].Val6 | 3539 (Whispering Wind) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 949913 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11926 | Component 11926 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 950444 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11978 | Component 11978 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 958545 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 11979 | Component 11979 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 958777 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23332,22 +23333,22 @@ No rows found.
 | Component | 12023 | Component 12023 (DAMAGE) | ExtData[6].Val6 | 9409 (Throat Slitter) | Damage, Silence | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 966674 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12025 | Component 12025 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 967072 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12037 | Component 12037 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 968898 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12040 | Component 12040 (DAMAGE) | ExtData[6].Val6 | 3581 (Chaos Hound VFX) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12041 | Component 12041 (DAMAGE) | ExtData[6].Val6 | 3581 (Chaos Hound VFX) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12042 | Component 12042 (DAMAGE) | ExtData[6].Val6 | 3582 (Tomb Kings Item Reward Buff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12043 | Component 12043 (DAMAGE) | ExtData[6].Val6 | 3582 (Tomb Kings Item Reward Buff) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12044 | Component 12044 (DAMAGE) | ExtData[6].Val6 | 3583 (Shield of Bones) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12045 | Component 12045 (DAMAGE) | ExtData[6].Val6 | 3583 (Shield of Bones) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12046 | Component 12046 (DAMAGE) | ExtData[6].Val6 | 3584 (Repairing Door) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12047 | Component 12047 (DAMAGE) | ExtData[6].Val6 | 3584 (Repairing Door) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12048 | Component 12048 (DAMAGE) | ExtData[6].Val6 | 3585 (Shroud of Imprathepis) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12049 | Component 12049 (DAMAGE) | ExtData[6].Val6 | 3585 (Shroud of Imprathepis) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971550 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12050 | Component 12050 (DAMAGE) | ExtData[6].Val6 | 3931 (Chaos Eternal), 3988 (Putrid Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12051 | Component 12051 (DAMAGE) | ExtData[6].Val6 | 3932 (Mewling Spawn), 3989 (EvC SH - Shout (body)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12052 | Component 12052 (DAMAGE) | ExtData[6].Val6 | 3933 (Nature's Bite), 3990 (EvC SH - Shout (plague)) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12053 | Component 12053 (DAMAGE) | ExtData[6].Val6 | 3934 (Nature's Destruction), 3991 (Blazing Inferno) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12054 | Component 12054 (DAMAGE) | ExtData[6].Val6 | 3935 (Nature's Reclamation), 3992 (Burn Flesh) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972710 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12169 | Component 12169 (DAMAGE) | ExtData[6].Val6 | 1824 (Growing Instability), 9163 (Coordinated Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995263 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12040 | Component 12040 (DAMAGE) | ExtData[6].Val6 | 3581 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969462 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12041 | Component 12041 (DAMAGE) | ExtData[6].Val6 | 3581 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969694 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12042 | Component 12042 (DAMAGE) | ExtData[6].Val6 | 3582 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 969926 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12043 | Component 12043 (DAMAGE) | ExtData[6].Val6 | 3582 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970158 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12044 | Component 12044 (DAMAGE) | ExtData[6].Val6 | 3583 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970390 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12045 | Component 12045 (DAMAGE) | ExtData[6].Val6 | 3583 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970622 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12046 | Component 12046 (DAMAGE) | ExtData[6].Val6 | 3584 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 970854 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12047 | Component 12047 (DAMAGE) | ExtData[6].Val6 | 3584 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971086 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12048 | Component 12048 (DAMAGE) | ExtData[6].Val6 | 3585 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971318 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12049 | Component 12049 (DAMAGE) | ExtData[6].Val6 | 3585 (On Your Knees!) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971550 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12050 | Component 12050 (DAMAGE) | ExtData[6].Val6 | 3931 (Heart Render Toxin), 3988 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 971782 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12051 | Component 12051 (DAMAGE) | ExtData[6].Val6 | 3932 (Heart Render Toxin), 3989 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972014 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12052 | Component 12052 (DAMAGE) | ExtData[6].Val6 | 3933 (Heart Render Toxin), 3990 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972246 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12053 | Component 12053 (DAMAGE) | ExtData[6].Val6 | 3934 (Heart Render Toxin), 3991 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972478 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12054 | Component 12054 (DAMAGE) | ExtData[6].Val6 | 3935 (Heart Render Toxin), 3992 (Sacrificial Stab) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 972710 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12169 | Component 12169 (DAMAGE) | ExtData[6].Val6 | 1824 (Git Em!), 9163 (Coordinated Strike) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995263 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12173 | Component 12173 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 995993 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12174 | Component 12174 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 996258 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12200 | Component 12200 (DAMAGE) | ExtData[6].Val6 | 9176 (Slashing Blade) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1000805 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23368,7 +23369,7 @@ No rows found.
 | Component | 12553 | Component 12553 (DAMAGE) | ExtData[6].Val6 |  |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1061411 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12588 | Component 12588 (DAMAGE) | ExtData[6].Val6 | 9093 (Spiral-Fletched Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067650 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12589 | Component 12589 (DAMAGE) | ExtData[6].Val6 | 9093 (Spiral-Fletched Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1067882 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 12628 | Component 12628 (DAMAGE) | ExtData[6].Val6 | 1374 (;Shaman Spec Tactics), 1733 (Oppression), 8101 (Sever Blessing), 8251 (Purge), 8339 (Sever Blessing), 9034 (Shatter Enchantment), 9337 (Shatter Enchantment), 9413 (Sever Blessing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074090 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 12628 | Component 12628 (DAMAGE) | ExtData[6].Val6 | 1374 (Sever Blessing), 1733 (Shatter Enchantment), 8101 (Sever Blessing), 8251 (Purge), 8339 (Sever Blessing), 9034 (Shatter Enchantment), 9337 (Shatter Enchantment), 9413 (Sever Blessing) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074090 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12631 | Component 12631 (DAMAGE) | ExtData[6].Val6 | 9104 (Acid Arrow) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1074654 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12808 | Component 12808 (DAMAGE) | ExtData[6].Val6 | 9398 (Slice) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1104524 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12809 | Component 12809 (DAMAGE) | ExtData[6].Val6 | 9398 (Slice) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1104756 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
@@ -23379,9 +23380,9 @@ No rows found.
 | Component | 12966 | Component 12966 (DAMAGE) | ExtData[6].Val6 | 9165 (Sundering Chop) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1129523 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 12975 | Component 12975 (DAMAGE) | ExtData[6].Val6 | 9096 (Eye Shot) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1131248 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 18780 | Component 18780 (DAMAGE) | ExtData[6].Val6 | 8399 (Impale) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 788251 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18906 | Component 18906 (DAMAGE) | ExtData[6].Val6 | 3810 (Ferocious Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132377 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18910 | Component 18910 (DAMAGE) | ExtData[6].Val6 | 3811 (Hound's Cry) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132974 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
-| Component | 18917 | Component 18917 (DAMAGE) | ExtData[6].Val6 | 3812 (Leaping Bite) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1134202 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18906 | Component 18906 (DAMAGE) | ExtData[6].Val6 | 3810 (Kiss of Agony) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132377 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18910 | Component 18910 (DAMAGE) | ExtData[6].Val6 | 3811 (Kiss of Death) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1132974 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
+| Component | 18917 | Component 18917 (DAMAGE) | ExtData[6].Val6 | 3812 (Kiss of Betrayal) |  | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1134202 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27604 | Component 27604 (DAMAGE) | ExtData[6].Val6 | 27603 (Shattering Attack), 27635 (Shattering Attack), 27667 (Shattering Swing), 27699 (Shattering Attack), 27731 (Shattering Attack), 27763 (Shattering Attack) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856032 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27606 | Component 27606 (DAMAGE) | ExtData[6].Val6 | 27605 (Get Away!), 27637 (Get Away!), 27669 (Get Out!), 27701 (Get Away!), 27733 (Get Away!), 27765 (Get Away!) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856430 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |
 | Component | 27608 | Component 27608 (DAMAGE) | ExtData[6].Val6 | 27610 (Wild Slash), 27642 (Wild Slash) | Damage | C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin | byte 1856828 | Inferred requirement reference because ExtData[*].Val6 matches a known RequirementId row in abilityrequirementexport.bin. |

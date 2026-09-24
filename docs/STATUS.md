@@ -2,7 +2,22 @@
 
 ProjectWAR is a C# private server emulator for Warhammer Online: Age of Reckoning. It targets .NET 4.8, x64. The solution is `ProjectWAR.sln`.
 
-## Current state (2026-09-05, after cd438227)
+## Current state (2026-09-24)
+
+Start with the [repository audit](handoffs/2026-09-24-repository-audit.md) for fresh
+measurements, repairs and verification. Release/x64 builds; all 14 existing
+validation scripts passed, two after dependency-loader repairs, and the new Matrix
+check passes. Migrations 00–10 were reapplied twice without changing the six affected
+table checksums. No in-client run was performed.
+
+World data still has 221 configured zones without area maps and 38 PQ definitions
+without PQ maps, but zero area references to missing nonzero influence tracks.
+The ability crosswalk still identifies 127 missing channels, 49 subsecond cooldown
+cases, 574 fractional-foot ranges and unresolved damage/duration mappings.
+Skaven and Thanquol have partial runtime/data scaffolding; passing their data checks
+does not establish playable features. Historical claims below are not current counts.
+
+## Historical state (2026-09-05, after cd438227)
 
 Current handoff: [Gunbad, Land of the Dead and public quests](handoffs/2026-09-05-gunbad-and-lotd.md).
 It supersedes the three earlier 2026-09-05 handoffs for anything it covers.
@@ -119,7 +134,9 @@ Source files it reads are all under `C:\Users\Admin\Downloads\myps`:
 - `data/strings/english/abilitynames.txt`, `abilitydesc.txt`, `abilityeffect.txt`, `careernames_m.txt`, `careerlines_m.txt`, `racenames_m.txt`
 - `data/bin/abilityexport.bin`, `abilitycomponentexport.bin`, `abilityrequirementexport.bin`
 
-Reports are generated at runtime to a local output directory. They are not committed to the repo.
+Reports are generated at runtime to a local output directory. Selected snapshots
+are committed under `docs/data-matrix`; consult their generation dates and regenerate
+to a scratch directory when comparing current state.
 
 Tool usage: `docs/client-data-matrix-usage.md`.
 

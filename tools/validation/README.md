@@ -1,5 +1,16 @@
 # Validation tools
 
+Latest measured results and limits: [September 24 audit](../../docs/handoffs/2026-09-24-repository-audit.md).
+The PowerShell database audits use `Use-BuildAssemblies.ps1` to resolve staged
+dependencies under Windows PowerShell 5.1 as well as PowerShell 7. Its resolver is
+removed when each audit finishes; no machine-wide binding configuration is changed.
+
+`Test-ClientDataMatrix.ps1` checks the real client's 138 upgrade-table records and
+rejects corrupt counts/truncated/trailing data before allocation. It also verifies
+the eight Skaven control-to-operation-51 links against raw `abilityexport.bin`
+offsets and parsed `abilitycomponentexport.bin` records. It does not test the GUI
+or prove the Skaven transformation protocol.
+
 `./tools/validation/Test-WorldDiagnosticData.ps1` verifies migrations 52 and 53 against
 the Release database using read-only queries: no missing area influence references,
 42 peaceful-city areas without influence, zero city PQ fallbacks, all eight original
@@ -60,6 +71,15 @@ named temporary fixture directory is removed even if a check fails.
 Coverage: height values/bounds, missing data, concurrent first loads and image disposal;
 independent area/PQ map failures; immutable region membership under concurrent enumeration;
 realm counts; influence key identity, overflow/capping and update/reward packet bytes.
+
+Ability coverage also exercises real channel ticks with a target beyond 25 feet:
+zero range must not cancel the channel, and an explicit range containing the target
+must continue. This checks the migration 09 range contract, not in-client channel
+animations or the correctness of nonzero range tolerances.
+
+Channel lifecycle checks also reject callbacks from cancelled/replaced casts,
+including failed callbacks and stale buff-start notifications, without changing
+the active cast's buff or resurrecting a finished channel.
 
 The suite also checks Gunbad tracker packets against `INSTANCE_GUNBAD_PART1` packets 335/381,
 realm-specific PQ influence, untimed-stage timers, instance jump coordinate conversion,
@@ -163,7 +183,19 @@ Background and the remaining coverage gap are in
 Migration 77 extends that check: `EffectID` is now taken from the client as well, and the tool
 asserts the agreement counts both migrations left (6,012 names, 8,349 `mythic_src` EffectIDs, 4,164
 in `abilities`) plus a tripwire on the count of `EffectID` values still matching
-`mythic_csv_abilities.AbilityId` — the join key that caused the corruption in the first place.
+`mythic_csv_abilities.AbilityId` — the join key that caused the corruption in the first place. Migrations 01 and 06 raised those floors
+to 8,372 and 4,177 EffectIDs.
+
+```powershell
+./tools/validation/Test-AbilityLoaders.ps1
+```
+
+SELECT-only. Loads both ability tables through the server's own ORM, by reflection and by the
+compiled binder WorldServer uses, and requires every mapped property on every row to agree, and the
+non-NULL `TargetType` and non-zero `AICooldown` counts to match the table. Migrations 03 and 09
+added those columns, migration 10 `ChannelDuration` and `ChannelInterval`, and `TargetType` is nullable -- NULL means the client has no record, and a
+binder that read it as 0 would send those abilities to their caster -- so a column the ORM cannot
+bind fails here rather than at boot.
 
 Against a current world database, run:
 

@@ -87,10 +87,12 @@ namespace ClientDataMatrix.Services
         public int TextureFileCount { get { return _texturePaths.Count; } }
 
         /// <summary>
-        /// The texture file for a raw icon id, or null. Abilities need this and items do not:
-        /// `abilities.csv` carries its own `Icon` column that indexes `icons.xml` directly, with no
-        /// objects.csv hop -- ability 1 "Ard Noggin" is icon 2626 is `abi_squig_ArdNoggin.dds`. Only
-        /// items take the long way round, because an item names art and the art names the icon.
+        /// The texture file for a raw icon id, or null. Abilities need this and items do not: an
+        /// ability's abilityexport.bin EffectId selects its `abilities.csv` row (the sheet is keyed by
+        /// effect id, not ability id), and that row's `Icon` column indexes `icons.xml` directly, with
+        /// no objects.csv hop -- ability 692 Rampaging Siphon is effect 232, icon 23154,
+        /// `Archetype_Healer_rampagingsiphon.dds`. Only items take the long way round, because an
+        /// item names art and the art names the icon.
         /// </summary>
         public string ResolveIconFile(long iconId, out string textureName)
         {

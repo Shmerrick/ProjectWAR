@@ -711,8 +711,10 @@ odd claim.
 No — and for `abilities.csv` specifically it would make things worse. That file is **already**
 imported as `mythic_csv_abilities`, and joining on its ID column is exactly what corrupted
 `mythic_src_abilities`: see `docs/ABILITY_TABLE_ALIGNMENT.md` and migrations 76 and 77. Its ID
-column is an art-authoring row key that agrees with the client's real ability ids on **13 of
-3,115**.
+column is an **effect id**, not an ability id, which is why it agrees with the client's real ability
+ids on only **13 of 3,115**. Reached through the `EffectId` on each ability's `abilityexport.bin`
+record it is correct — that is how ClientDataMatrix finds an ability's icon — but it describes the
+effect, which many abilities share, so it still cannot name or number an ability.
 
 Re-keying it by name does not rescue it either. Of its 4,200 named rows:
 
@@ -722,7 +724,8 @@ Re-keying it by name does not rescue it either. Of its 4,200 named rows:
 
 The `data/gamedata` set is 103 files and is mostly art and animation metadata — `anim_*` (41,484
 lines in `anim_db.csv` alone), `effect*`, `objects.csv`. `effects.csv` shares `abilities.csv`'s
-authoring key space. None of it carries the gameplay ability graph.
+effect-id key space — the two sheets name an effect identically on 3,400 of the 3,705 ids both
+name. None of it carries the gameplay ability graph.
 
 **Per-file verification is the rule, not a blanket import.** Some CSVs *are* keyed on real ids —
 `itemdata.csv` maps real item entries to icon, type and slot, and spot-checks resolve correctly

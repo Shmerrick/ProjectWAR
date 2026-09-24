@@ -65,6 +65,7 @@ namespace ClientDataMatrix.Parsers
                     record.RequiresPet = (flagsRaw & 0x100) != 0;
                     record.IsStatsBuff = (flagsRaw & 0x40000) != 0;
                     record.IsBuffDebuff = ((flagsRaw >> 21) & 0x1) == 1;
+                    record.IsChanneled = ((flagsRaw >> 22) & 0x1) == 1;
 
                     record.Value44 = reader.ReadUInt16();
                     record.Range = reader.ReadUInt16();
@@ -149,6 +150,69 @@ namespace ClientDataMatrix.Parsers
 
                 if (stream.Position != stream.Length)
                     throw new InvalidDataException("abilityrequirementexport.bin parse did not consume the full file. Remaining bytes: " + (stream.Length - stream.Position));
+
+                return records;
+            }
+        }
+
+        private const int UpgradeItemsPerRecord = 20;
+
+        /// <summary>
+        /// `upgradetableexport.bin`: a uint32 header and a uint32 count, then per record a uint16 id
+        /// and 20 items of eight uint16s. See <see cref="BinaryUpgradeTableRecord"/>.
+        /// </summary>
+        public static List<BinaryUpgradeTableRecord> ParseUpgradeTableExport(string path)
+        {
+            using (FileStream stream = OpenShared(path))
+            using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, true))
+            {
+                uint header = reader.ReadUInt32();
+                uint count = reader.ReadUInt32();
+                const int recordBytes = sizeof(ushort) + UpgradeItemsPerRecord * 8 * sizeof(ushort);
+                if (count > int.MaxValue || (long)count * recordBytes != stream.Length - stream.Position)
+                    throw new InvalidDataException("upgradetableexport.bin record count does not match its file length.");
+                List<BinaryUpgradeTableRecord> records = new List<BinaryUpgradeTableRecord>((int)count);
+
+                for (int index = 0; index < count; ++index)
+                {
+                    long recordOffset = stream.Position;
+                    ushort upgradeId = reader.ReadUInt16();
+                    BinaryUpgradeTableRecord record = new BinaryUpgradeTableRecord
+                    {
+                        SourceFamily = "client_bin",
+                        TableName = "upgradetableexport.bin",
+                        SourcePath = path,
+                        Header = header,
+                        RecordIndex = index + 1,
+                        ByteOffset = recordOffset,
+                        UpgradeId = upgradeId,
+                        RowKey = "record=" + (index + 1) + ";UpgradeId=" + upgradeId + ";offset=" + recordOffset,
+                        Items = new List<BinaryUpgradeItemRecord>(UpgradeItemsPerRecord)
+                    };
+
+                    for (int item = 0; item < UpgradeItemsPerRecord; ++item)
+                    {
+                        BinaryUpgradeItemRecord entry = new BinaryUpgradeItemRecord
+                        {
+                            Index = item,
+                            V1 = reader.ReadUInt16(),
+                            V2 = reader.ReadUInt16(),
+                            V3 = reader.ReadUInt16(),
+                            V4 = reader.ReadUInt16(),
+                            V5 = reader.ReadUInt16(),
+                            V6 = reader.ReadUInt16(),
+                            V7 = reader.ReadUInt16(),
+                            V8 = reader.ReadUInt16()
+                        };
+                        entry.Scalar = BitConverter.ToSingle(BitConverter.GetBytes((uint)entry.V1 | ((uint)entry.V2 << 16)), 0);
+                        record.Items.Add(entry);
+                    }
+
+                    records.Add(record);
+                }
+
+                if (stream.Position != stream.Length)
+                    throw new InvalidDataException("upgradetableexport.bin parse did not consume the full file. Remaining bytes: " + (stream.Length - stream.Position));
 
                 return records;
             }

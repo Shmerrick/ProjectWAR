@@ -6,8 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using MySql.Data.MySqlClient;
 
-// SELECT-only checks for Play as Skaven: the control-ability buffs that swap the action bar,
-// the Excavated Skaven Device placements, and the form kits read off the official captures.
+// SELECT-only checks for Play as Skaven: control-buff presence/death flags and
+// Excavated Skaven Device placements. Does not validate kits or action-bar swaps.
 // Does not run AI, networking or an in-client test.
 internal static class SkavenFormChecks
 {
@@ -50,8 +50,8 @@ internal static class SkavenFormChecks
         {
             _connection.Open();
 
-            // The action-bar swap is done by the client from the control ability's op-51 component,
-            // so the buff must exist or the form is only an ability list with no stance.
+            // Client BINs link the controls to op-51 components (Test-ClientDataMatrix),
+            // but buff-row presence alone does not prove action-bar replacement.
             // Buffs live in two parallel tables and the server reads mythic_src_buff_infos; writing
             // only one is invisible at runtime with no error (BUG-120), so both are required.
             foreach (KeyValuePair<string, int[]> form in ControlAbilities)

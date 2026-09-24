@@ -184,7 +184,7 @@ namespace ClientDataMatrix.Output
             builder.AppendLine();
             builder.AppendLine("## Summary");
             builder.AppendLine();
-            builder.AppendLine("- abilities.csv rows: " + report.ClientAbilityRows.Count);
+            builder.AppendLine("- abilities.csv rows (through the BIN EffectId): " + report.ClientAbilityRows.Count);
             builder.AppendLine("- abilityexport.bin rows: " + report.BinaryAbilityRows.Count);
             builder.AppendLine("- effects.csv rows: " + report.ClientEffectRows.Count);
             builder.AppendLine("- abilitycomponentexport.bin rows: " + report.BinaryComponentRows.Count);
@@ -213,9 +213,9 @@ namespace ClientDataMatrix.Output
                 new[] { "Source", "File", "Loaded", "Rows", "Path", "Error" },
                 row => new[] { row.SourceFamily, row.TableName, row.Loaded.ToString(), row.RowCount.ToString(CultureInfo.InvariantCulture), row.SourcePath, NullToEmpty(row.ErrorMessage) });
 
-            AppendTable(builder, "abilities.csv Rows", report.ClientAbilityRows,
-                new[] { "AbilityId", "Name", "Description", "EffectId", "AnimationId", "Path", "Line", "ByteOffset" },
-                row => new[] { row.AbilityId.ToString(CultureInfo.InvariantCulture), row.Name, row.Description, row.EffectId.ToString(CultureInfo.InvariantCulture), row.AnimationId.ToString(CultureInfo.InvariantCulture), row.SourcePath, row.LineNumber.ToString(CultureInfo.InvariantCulture), FormatByteOffset(row.ByteOffset) });
+            AppendTable(builder, "abilities.csv Rows (keyed by the BIN EffectId)", report.ClientAbilityRows,
+                new[] { "EffectId", "Name", "Description", "IconId", "SpecialEffectId", "AnimationId", "Path", "Line", "ByteOffset" },
+                row => new[] { row.EffectId.ToString(CultureInfo.InvariantCulture), row.Name, row.Description, row.IconId.ToString(CultureInfo.InvariantCulture), row.SpecialEffectId.ToString(CultureInfo.InvariantCulture), row.AnimationId.ToString(CultureInfo.InvariantCulture), row.SourcePath, row.LineNumber.ToString(CultureInfo.InvariantCulture), FormatByteOffset(row.ByteOffset) });
 
             AppendTable(builder, "abilityexport.bin Rows", report.BinaryAbilityRows,
                 new[] { "AbilityId", "EffectId", "CareerLine", "CastTime", "Cooldown", "Range", "ApCost", "Faction", "Components", "ExtData", "Path", "ByteOffset" },

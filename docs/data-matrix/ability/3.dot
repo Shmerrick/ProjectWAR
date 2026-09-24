@@ -53,7 +53,7 @@
   "requirement:9623" [label="Requirement 9623\nrequirement"];
   "requirement:9624" [label="Requirement 9624\nrequirement"];
   "requirement:9625" [label="Requirement 9625\nrequirement"];
-  "row:abilities.csv|line=8;AbilityId=3" [label="abilities.csv line=8;AbilityId=3\nrow"];
+  "row:abilities.csv|line=8;EffectId=3" [label="abilities.csv line=8;EffectId=3\nrow"];
   "row:abilitycomponentexport.bin|record=1804;ComponentId=3310;offset=309536" [label="abilitycomponentexport.bin record=1804;ComponentId=3310;offset=309536\nrow"];
   "row:abilitycomponentexport.bin|record=6620;ComponentId=148;offset=1158063" [label="abilitycomponentexport.bin record=6620;ComponentId=148;offset=1158063\nrow"];
   "row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435" [label="abilitycomponentexport.bin record=6673;ComponentId=212;offset=1169435\nrow"];
@@ -112,7 +112,6 @@
   "row:effects.csv|line=701;EffectId=640" [label="effects.csv line=701;EffectId=640\nrow"];
   "row:effects.csv|line=8;EffectId=3" [label="effects.csv line=8;EffectId=3\nrow"];
   "row:effects.csv|line=999;EffectId=921" [label="effects.csv line=999;EffectId=921\nrow"];
-  "ability:3" -> "row:abilities.csv|line=8;AbilityId=3" [label="declared_by abilities.csv"];
   "ability:3" -> "row:abilityexport.bin|record=935;AbilityId=3;offset=181369" [label="declared_by abilityexport.bin"];
   "component:148" -> "row:abilitycomponentexport.bin|record=6620;ComponentId=148;offset=1158063" [label="declared_by abilitycomponentexport.bin"];
   "component:212" -> "row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435" [label="declared_by abilitycomponentexport.bin"];
@@ -146,6 +145,7 @@
   "effect:2740" -> "row:effects.csv|line=2838;EffectId=2740" [label="declared_by effects.csv"];
   "effect:2744" -> "row:effects.csv|line=2842;EffectId=2744" [label="declared_by effects.csv"];
   "effect:2972" -> "row:effects.csv|line=3078;EffectId=2972" [label="declared_by effects.csv"];
+  "effect:3" -> "row:abilities.csv|line=8;EffectId=3" [label="declared_by abilities.csv"];
   "effect:3" -> "row:effects.csv|line=8;EffectId=3" [label="declared_by effects.csv"];
   "effect:433" -> "row:effects.csv|line=482;EffectId=433" [label="declared_by effects.csv"];
   "effect:445" -> "row:effects.csv|line=498;EffectId=445" [label="declared_by effects.csv"];
@@ -223,4 +223,5 @@
   "ability:3" -> "component:212" [label="uses_component abilityexport.bin"];
   "ability:3" -> "component:329" [label="uses_component abilityexport.bin"];
   "ability:3" -> "component:3310" [label="uses_component abilityexport.bin"];
+  "ability:3" -> "effect:3" [label="uses_effect abilityexport.bin"];
 }

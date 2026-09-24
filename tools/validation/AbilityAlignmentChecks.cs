@@ -13,10 +13,11 @@ using MySql.Data.MySqlClient;
 // mechanical column matched. EffectID is written into the cast packets, so those rows told the
 // client to play the wrong visual; migration 76 realigned them. These checks keep that closed.
 //
-// The client (mythic_bin_ability) is the arbiter, per CLAUDE.md hard rule 3. Where abilities
-// deliberately annotates a name ("Gift of Brutality Proc", "Vehement Blades Self AP") the two
-// server tables must still agree with EACH OTHER; only the client comparison is allowed to differ,
-// and only by a bounded amount.
+// The client is the arbiter, per CLAUDE.md hard rule 3. These checks reach it through
+// mythic_bin_ability, the toolkit's import of data/bin/abilityexport.bin, corrected where the import
+// is known to differ from the file itself. Where abilities deliberately annotates a name ("Gift of
+// Brutality Proc", "Vehement Blades Self AP") the two server tables must still agree with EACH
+// OTHER; only the client comparison is allowed to differ, and only by a bounded amount.
 internal static class AbilityAlignmentChecks
 {
     private static MySqlConnection _connection;
@@ -25,10 +26,22 @@ internal static class AbilityAlignmentChecks
     // A drop means something rewrote the table from a misaligned source again.
     private const long MinimumClientNameAgreement = 6012;
 
-    // Rows whose EffectID matches the client, measured after migration 77. EffectID goes into the
+    // Rows whose EffectID matches the client, measured after migration 06. EffectID goes into the
     // cast packets, so this is the number that decides whether an ability plays its own visual.
-    private const long MinimumSrcEffectAgreement = 8349;
-    private const long MinimumAbilitiesEffectAgreement = 4164;
+    private const long MinimumSrcEffectAgreement = 8372;
+    private const long MinimumAbilitiesEffectAgreement = 4177;
+
+    // The client's EffectID where mythic_bin_ability does not match abilityexport.bin: three wrong
+    // values (696, 1712, 3608) and nine missing ones (15981, 425, 445, 446 and Puncture 3813-3817),
+    // measured by `ClientDataMatrix crosswalk abilities` reading the file, confirmed by the live
+    // packet captures wherever they cover the ability, and written by migration 01. Without this,
+    // restoring the client's own value reads as a regression against the import.
+    private const string ClientEffectIdCorrections =
+        " LEFT JOIN (SELECT 696 AS ID, 236 AS EffectID UNION ALL SELECT 1712, 877 UNION ALL SELECT 3608, 2082"
+        + " UNION ALL SELECT 15981, 4518 UNION ALL SELECT 425, 85 UNION ALL SELECT 445, 63 UNION ALL SELECT 446, 64"
+        + " UNION ALL SELECT 3813, 2543 UNION ALL SELECT 3814, 2543 UNION ALL SELECT 3815, 2543"
+        + " UNION ALL SELECT 3816, 2543 UNION ALL SELECT 3817, 2543) f ON f.ID = b.ID";
+
     private static int Main()
     {
         AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
@@ -63,15 +76,17 @@ internal static class AbilityAlignmentChecks
                 + " WHERE NOT (a.Name <=> m.Name) OR NOT (a.EffectID <=> m.EffectID) OR NOT (a.IconId <=> m.IconId)"),
                 "shared entries whose identity differs between abilities and mythic_src_abilities");
 
-            // Mechanics agreed before the repair and must still agree after it; the migration
-            // touched only the identity columns.
+            // Mechanics agreed before the repair and must still agree after it; migrations write
+            // both tables together.
             long shared = Scalar("SELECT COUNT(*) FROM abilities a JOIN mythic_src_abilities m ON m.Entry = a.Entry");
             Equal(shared, Scalar(
                 "SELECT COUNT(*) FROM abilities a JOIN mythic_src_abilities m ON m.Entry = a.Entry"
                 + " WHERE a.CareerLine <=> m.CareerLine AND a.MinRange <=> m.MinRange AND a.Range <=> m.Range"
                 + " AND a.CastTime <=> m.CastTime AND a.Cooldown <=> m.Cooldown AND a.ApCost <=> m.ApCost"
                 + " AND a.AbilityType <=> m.AbilityType AND a.MasteryTree <=> m.MasteryTree"
-                + " AND a.Specline <=> m.Specline AND a.MinimumRank <=> m.MinimumRank"),
+                + " AND a.Specline <=> m.Specline AND a.MinimumRank <=> m.MinimumRank"
+                + " AND a.TargetType <=> m.TargetType AND a.AICooldown <=> m.AICooldown AND a.ChannelID <=> m.ChannelID"
+                + " AND a.ChannelDuration <=> m.ChannelDuration AND a.ChannelInterval <=> m.ChannelInterval"),
                 "shared entries whose mechanics agree");
 
             // Entries that exist only in mythic_src_abilities are creature and world abilities
@@ -98,27 +113,32 @@ internal static class AbilityAlignmentChecks
                 "mythic_src_abilities names agreeing with the client");
 
             // EffectID is the visual the client plays for the ability. These were taken from the
-            // client by migration 77; the shortfall is the 67/57 rows where the server carries an
-            // effect the client record does not, which are deliberately left alone.
+            // client by migrations 77, 01 and 06. Every row that still differs is an id
+            // abilityexport.bin has no record of, so there is no client value to take.
             long srcEffects = Scalar(
                 "SELECT COUNT(*) FROM mythic_src_abilities m JOIN mythic_bin_ability b ON b.ID = m.Entry"
-                + " WHERE m.EffectID <=> b.EffectID");
+                + ClientEffectIdCorrections
+                + " WHERE m.EffectID <=> COALESCE(f.EffectID, b.EffectID)");
             AtLeast(MinimumSrcEffectAgreement, srcEffects,
                 "mythic_src_abilities EffectIDs agreeing with the client");
 
             AtLeast(MinimumAbilitiesEffectAgreement, Scalar(
                 "SELECT COUNT(*) FROM abilities a JOIN mythic_bin_ability b ON b.ID = a.Entry"
-                + " WHERE a.EffectID <=> b.EffectID"),
+                + ClientEffectIdCorrections
+                + " WHERE a.EffectID <=> COALESCE(f.EffectID, b.EffectID)"),
                 "abilities EffectIDs agreeing with the client");
 
             // The signature of the original corruption: values copied from mythic_csv_abilities
-            // (data/gamedata/abilities.csv), whose ID column is an authoring id space that agrees
-            // with the client's own name table on 13 ids out of 3,115. If these climb, something
-            // has joined on that key again.
+            // (data/gamedata/abilities.csv), whose ID column is an effect id -- the EffectId an
+            // abilityexport.bin record carries -- and so agrees with the client's own name table on
+            // 13 ids out of 3,115. Both forms count: the row's own Entry, which migration 77 cleared,
+            // and another row's id such as "Mount Effects" 3701/3702, which migration 01 cleared.
+            // If these climb, something has joined on that key again.
             AtMost(40, Scalar(
                 "SELECT COUNT(*) FROM mythic_src_abilities m JOIN mythic_csv_abilities c ON c.AbilityId = m.Entry"
                 + " JOIN mythic_bin_ability b ON b.ID = m.Entry"
-                + " WHERE COALESCE(b.EffectID, 0) = 0 AND m.EffectID <> 0 AND m.EffectID = m.Entry"
+                + ClientEffectIdCorrections
+                + " WHERE COALESCE(f.EffectID, b.EffectID, 0) = 0 AND m.EffectID <> 0"
                 + " AND m.EffectID = c.EffectAbilityId"),
                 "rows carrying a CSV-derived EffectID the client does not have");
 
@@ -145,7 +165,7 @@ internal static class AbilityAlignmentChecks
     {
         if (actual < floor)
             throw new Exception(what + ": " + actual + ", down from the " + floor
-                + " migrations 76 and 77 left. The table has been rewritten from a misaligned source.");
+                + " migrations 76, 77 and 01 left. The table has been rewritten from a misaligned source.");
     }
 
     private static void AtMost(long ceiling, long actual, string what)

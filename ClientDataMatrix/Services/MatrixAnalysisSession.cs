@@ -191,11 +191,6 @@ namespace ClientDataMatrix.Services
 
         public List<AbilityCatalogEntry> BuildAbilityCatalog()
         {
-            Dictionary<ushort, List<ClientAbilityRecord>> clientRowsById = Dataset.ClientAbilities
-                .Where(row => row.AbilityId <= ushort.MaxValue)
-                .GroupBy(row => (ushort)row.AbilityId)
-                .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).ToList());
-
             Dictionary<ushort, List<BinaryAbilityRecord>> binRowsById = Dataset.BinaryAbilities
                 .GroupBy(row => row.AbilityId)
                 .ToDictionary(group => group.Key, group => group.OrderBy(row => row.RecordIndex).ToList());
@@ -205,20 +200,20 @@ namespace ClientDataMatrix.Services
                 .GroupBy(row => (ushort)row.EntryId)
                 .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).ToList());
 
-            HashSet<ushort> abilityIds = new HashSet<ushort>(clientRowsById.Keys);
-            foreach (ushort abilityId in binRowsById.Keys)
-                abilityIds.Add(abilityId);
+            // abilities.csv contributes no ability ids: its ID column is an effect id, reached below
+            // through each ability's BIN record.
+            HashSet<ushort> abilityIds = new HashSet<ushort>(binRowsById.Keys);
             foreach (ushort abilityId in nameRowsById.Keys)
                 abilityIds.Add(abilityId);
 
             List<AbilityCatalogEntry> entries = new List<AbilityCatalogEntry>();
             foreach (ushort abilityId in abilityIds.OrderBy(value => value))
             {
-                List<ClientAbilityRecord> clientRows = GetRows(clientRowsById, abilityId);
                 List<BinaryAbilityRecord> binRows = GetRows(binRowsById, abilityId);
                 List<IndexedStringRecord> nameRows = GetRows(nameRowsById, abilityId);
-                string displayName = GetDisplayName(clientRows, nameRows);
-                int effectId = GetPreferredEffectId(clientRows, binRows);
+                List<ClientAbilityRecord> clientRows = Dataset.GetClientAbilityRowsForBinaryRows(binRows);
+                string displayName = GetDisplayName(nameRows);
+                int effectId = GetPreferredEffectId(binRows);
                 bool hasClientCsv = clientRows.Count > 0;
                 bool hasClientBin = binRows.Count > 0;
                 bool hasLocalizedName = nameRows.Count > 0;
@@ -255,12 +250,8 @@ namespace ClientDataMatrix.Services
             return rowsById.TryGetValue(key, out rows) ? rows : new List<T>();
         }
 
-        private static string GetDisplayName(IList<ClientAbilityRecord> clientRows, IList<IndexedStringRecord> nameRows)
+        private static string GetDisplayName(IList<IndexedStringRecord> nameRows)
         {
-            ClientAbilityRecord clientRow = clientRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.Name));
-            if (clientRow != null)
-                return clientRow.Name;
-
             IndexedStringRecord stringRow = nameRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.NormalizedValue));
             if (stringRow != null)
                 return stringRow.NormalizedValue;
@@ -268,12 +259,8 @@ namespace ClientDataMatrix.Services
             return "(unnamed)";
         }
 
-        private static int GetPreferredEffectId(IList<ClientAbilityRecord> clientRows, IList<BinaryAbilityRecord> binRows)
+        private static int GetPreferredEffectId(IList<BinaryAbilityRecord> binRows)
         {
-            ClientAbilityRecord clientRow = clientRows.FirstOrDefault(row => row.EffectId > 0);
-            if (clientRow != null)
-                return clientRow.EffectId;
-
             BinaryAbilityRecord binRow = binRows.FirstOrDefault(row => row.EffectId > 0);
             if (binRow != null)
                 return binRow.EffectId;

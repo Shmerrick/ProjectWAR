@@ -5,6 +5,11 @@ delivery checklist, not an implemented feature or a claim about official 1.4.8 d
 First scope: Gunbad and Bastion Stair, including their boss maps. Eventually every dungeon
 should support Normal, Hard and Nightmare.
 
+September 24 readiness audit still finds missing Gunbad PQ prototype 387121
+(24 spawn rows), missing exterior exit metadata and no new client acceptance run.
+The normal-completion gate remains open; database level ranges are not a verified
+baseline. See the [repository audit](handoffs/2026-09-24-repository-audit.md).
+
 ## Requirements supplied by the user
 
 - For a below-40 dungeon, Hard starts at 40 and preserves each creature's offset from that

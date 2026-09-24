@@ -752,13 +752,7 @@ namespace ClientDataMatrix.Services
             if (dataset == null)
                 return names;
 
-            foreach (ClientAbilityRecord row in dataset.ClientAbilities.Where(row => row.AbilityId <= ushort.MaxValue && !string.IsNullOrWhiteSpace(row.Name)))
-            {
-                ushort abilityId = (ushort)row.AbilityId;
-                if (!names.ContainsKey(abilityId))
-                    names[abilityId] = row.Name;
-            }
-
+            // abilitynames.txt only: abilities.csv is keyed by effect id, not ability id.
             foreach (IndexedStringRecord row in dataset.AbilityNames.Where(row => row.EntryId <= ushort.MaxValue && !string.IsNullOrWhiteSpace(row.NormalizedValue)))
             {
                 ushort abilityId = (ushort)row.EntryId;
@@ -775,10 +769,6 @@ namespace ClientDataMatrix.Services
             if (dataset == null)
                 return contexts;
 
-            Dictionary<ushort, string> clientDescriptions = dataset.ClientAbilities
-                .Where(row => row.AbilityId <= ushort.MaxValue && !string.IsNullOrWhiteSpace(row.Description))
-                .GroupBy(row => (ushort)row.AbilityId)
-                .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).Select(row => row.Description).FirstOrDefault() ?? string.Empty);
             Dictionary<ushort, string> stringDescriptions = dataset.AbilityDescriptions
                 .Where(row => row.EntryId <= ushort.MaxValue && !string.IsNullOrWhiteSpace(row.NormalizedValue))
                 .GroupBy(row => (ushort)row.EntryId)
@@ -789,8 +779,6 @@ namespace ClientDataMatrix.Services
                 .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).Select(row => row.NormalizedValue).FirstOrDefault() ?? string.Empty);
 
             HashSet<ushort> abilityIds = new HashSet<ushort>(abilityNamesById.Keys);
-            foreach (ushort abilityId in clientDescriptions.Keys)
-                abilityIds.Add(abilityId);
             foreach (ushort abilityId in stringDescriptions.Keys)
                 abilityIds.Add(abilityId);
             foreach (ushort abilityId in effectTexts.Keys)
@@ -799,18 +787,15 @@ namespace ClientDataMatrix.Services
             foreach (ushort abilityId in abilityIds.OrderBy(row => row))
             {
                 string abilityName;
-                string clientDescription;
                 string stringDescription;
                 string effectText;
                 abilityNamesById.TryGetValue(abilityId, out abilityName);
-                clientDescriptions.TryGetValue(abilityId, out clientDescription);
                 stringDescriptions.TryGetValue(abilityId, out stringDescription);
                 effectTexts.TryGetValue(abilityId, out effectText);
 
                 string combinedText = string.Join(" ", new[]
                 {
                     abilityName ?? string.Empty,
-                    clientDescription ?? string.Empty,
                     stringDescription ?? string.Empty,
                     effectText ?? string.Empty
                 }.Where(row => !string.IsNullOrWhiteSpace(row)));
@@ -819,7 +804,7 @@ namespace ClientDataMatrix.Services
                 {
                     AbilityId = abilityId,
                     AbilityName = abilityName ?? string.Empty,
-                    TextExcerpt = FirstNonEmpty(stringDescription, effectText, clientDescription, abilityName),
+                    TextExcerpt = FirstNonEmpty(stringDescription, effectText, abilityName),
                     ContextTags = BuildContextTags(combinedText)
                 };
             }

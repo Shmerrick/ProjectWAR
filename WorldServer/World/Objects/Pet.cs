@@ -636,7 +636,7 @@ namespace WorldServer.World.Objects
                 AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(minBound);
                 if (abInfo != null && abInfo.ConstantInfo.MinimumRank <= Level)
                 {
-                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) abInfo.Cooldown, true, "");
+                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) Math.Max(abInfo.Cooldown, abInfo.AICooldown), true, "");
                     AbtInterface.NPCAbilities.Add(npcAbility);
                     SendPetAbility(npcAbility);
                 }
@@ -649,7 +649,7 @@ namespace WorldServer.World.Objects
                     AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(i);
                     if (abInfo == null || abInfo.ConstantInfo.MinimumRank > Level)
                         continue;
-                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) abInfo.Cooldown, true, "");
+                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) Math.Max(abInfo.Cooldown, abInfo.AICooldown), true, "");
                     AbtInterface.NPCAbilities.Add(npcAbility);
                     SendPetAbility(npcAbility);
                 }

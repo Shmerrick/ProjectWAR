@@ -165,6 +165,21 @@ namespace ClientDataMatrix
                     + ", agree " + report.Agreements.ToString("N0", CultureInfo.InvariantCulture)
                     + " (" + report.AgreementRate.ToString("F2", CultureInfo.InvariantCulture) + "%), disagree "
                     + report.Disagreements.ToString("N0", CultureInfo.InvariantCulture));
+                foreach (AbilityCrosswalkService.FieldTally tally in report.Fields)
+                {
+                    Console.WriteLine("COLUMN  " + tally.Field.PadRight(11)
+                        + " agree " + tally.Agreements.ToString("N0", CultureInfo.InvariantCulture)
+                        + ", differ " + tally.Disagreements.ToString("N0", CultureInfo.InvariantCulture)
+                        + ", ours empty " + tally.DatabaseEmpty.ToString("N0", CultureInfo.InvariantCulture)
+                        + ", client empty " + tally.ClientEmpty.ToString("N0", CultureInfo.InvariantCulture)
+                        + ", not representable " + tally.NotRepresentable.ToString("N0", CultureInfo.InvariantCulture)
+                        + ", not comparable " + tally.NotComparable.ToString("N0", CultureInfo.InvariantCulture));
+                }
+                Console.WriteLine("IMPORT  component lists differ " + report.ComponentListsDiffer.ToString("N0", CultureInfo.InvariantCulture)
+                    + " of " + report.ComponentListsCompared.ToString("N0", CultureInfo.InvariantCulture)
+                    + " (client lists the import lacks " + report.ClientListsWithoutImport.ToString("N0", CultureInfo.InvariantCulture)
+                    + "); upgrade items differ " + report.UpgradeItemsDiffer.ToString("N0", CultureInfo.InvariantCulture)
+                    + " of " + report.UpgradeItemsCompared.ToString("N0", CultureInfo.InvariantCulture));
 
                 string directory = AbilityCrosswalkService.Write(report, outputRoot, 40);
                 Console.WriteLine("Ability crosswalk written to " + directory);
@@ -695,6 +710,8 @@ namespace ClientDataMatrix
             Console.WriteLine("  ClientDataMatrix doctor ability <abilityId> [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix export graph ability <abilityId> [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix export index [--root <path>] [--output <path>]");
+            Console.WriteLine("  ClientDataMatrix crosswalk items [--table <name>] [--connection <string>] [--root <path>] [--output <path>]");
+            Console.WriteLine("  ClientDataMatrix crosswalk abilities [--connection <string>] [--root <path>] [--output <path>]");
             Console.WriteLine("  ClientDataMatrix find <text> [--limit <count>] [--root <path>]");
             Console.WriteLine("  ClientDataMatrix lookup <id> [--root <path>]");
             Console.WriteLine("  ClientDataMatrix report sources [--root <path>] [--output <path>]");

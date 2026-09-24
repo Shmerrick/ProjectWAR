@@ -1,13 +1,8 @@
 ﻿digraph ClientDataMatrix {
   rankdir=LR;
   "ability:4" [label="Ability 4\nability"];
-  "effect:4" [label="Effect 4\neffect"];
-  "row:abilities.csv|line=9;AbilityId=4" [label="abilities.csv line=9;AbilityId=4\nrow"];
   "row:abilitydesc.txt|line=5;EntryId=4" [label="abilitydesc.txt line=5;EntryId=4\nrow"];
   "row:abilitynames.txt|line=5;EntryId=4" [label="abilitynames.txt line=5;EntryId=4\nrow"];
-  "row:effects.csv|line=9;EffectId=4" [label="effects.csv line=9;EffectId=4\nrow"];
-  "ability:4" -> "row:abilities.csv|line=9;AbilityId=4" [label="declared_by abilities.csv"];
-  "effect:4" -> "row:effects.csv|line=9;EffectId=4" [label="declared_by effects.csv"];
   "ability:4" -> "row:abilitydesc.txt|line=5;EntryId=4" [label="localized_description abilitydesc.txt"];
   "ability:4" -> "row:abilitynames.txt|line=5;EntryId=4" [label="localized_name abilitynames.txt"];
 }

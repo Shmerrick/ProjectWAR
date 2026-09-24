@@ -1,6 +1,3 @@
 ﻿Id,SubjectKey,FactName,Domain,ValueKey,RawValue,NormalizedValue,SourceFamily,TableName,SourcePath,RowKey,LineNumber,ByteOffset,FieldName,Confidence,Notes
-claim:5,Ability:4,Description,AbilityDescription,,,,client_strings,abilitydesc.txt,C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt,line=5;EntryId=4,5,0,value,localized_string,abilitydesc.txt
-claim:2,Ability:4,EffectId,EffectId,4,4,4,client_csv,abilities.csv,C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv,line=9;AbilityId=4,9,0,Effect,client_contract,abilities.csv
-claim:1,Ability:4,Name,AbilityName,,,,client_csv,abilities.csv,C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv,line=9;AbilityId=4,9,0,name,client_contract,abilities.csv
-claim:4,Ability:4,Name,AbilityName,,,,client_strings,abilitynames.txt,C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt,line=5;EntryId=4,5,0,value,localized_string,abilitynames.txt
-claim:3,Effect:4,Name,EffectName,,,,client_csv,effects.csv,C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv,line=9;EffectId=4,9,0,Name,client_contract,effects.csv
+claim:2,Ability:4,Description,AbilityDescription,,,,client_strings,abilitydesc.txt,C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt,line=5;EntryId=4,5,0,value,localized_string,abilitydesc.txt
+claim:1,Ability:4,Name,AbilityName,,,,client_strings,abilitynames.txt,C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt,line=5;EntryId=4,5,0,value,localized_string,abilitynames.txt

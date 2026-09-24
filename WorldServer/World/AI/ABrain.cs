@@ -658,7 +658,8 @@ namespace WorldServer.World.AI
 
             caster.MvtInterface.StopMove();
             if (!info.CanCastWhileMoving)
-                caster.EvtInterface.AddEvent(DelayedChase, info.CastTime + 100, 1);
+                // Stay put through the cast and, for a channel, through the channel itself.
+                caster.EvtInterface.AddEvent(DelayedChase, info.CastTime + (info.ConstantInfo.ChannelID != 0 ? (int)info.ConstantInfo.ChannelDuration : 0) + 100, 1);
             else
                 DelayedChase();
             return true;

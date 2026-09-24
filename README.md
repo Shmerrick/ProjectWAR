@@ -225,7 +225,7 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
   - RoR refers to the visible LOTD bar as the `expedition tracker`, but current client evidence still points at the Tomb Kings `F_RRQ` / RRQ tracker container for that UI.
   - if the `lotd_resource_tracker` table is missing, the server now keeps the LOTD flights hidden instead of exposing them to both realms.
   - if a realm owns LOTD but the client still cannot see the zone `191` flight path, update to the current `WorldServer` build; LOTD taxis now bypass the generic T4 Tome-token gate once `LotdService` has unlocked them for that realm.
-  - `WorldServer` normalizes the shipped `zone_infos.Pairing = 100` metadata for zone `191` to the proper Land of the Dead pairing id (`4`) on load, so the flight-master node is clickable.
+  - `WorldServer` normalizes zone `191` to pairing `100` (`Common/Database/GameData.cs`, `ZoneService.NormalizeZoneInfoMetadata`). The earlier value `4` was wrong; client dispatch evidence is recorded in [the LOTD guide](docs/LAND_OF_THE_DEAD.md).
   - `WorldServer` also normalizes malformed LOTD taxi rows on load; zone `191` taxi destinations previously stored as local pins are converted to world coordinates at boot.
   - if the expedition tracker is still invisible, confirm the server log reaches `Loaded Land of the Dead resource tracker` on the current build before debugging packet display behavior.
 - Live event tables are missing or the live-event UI is empty because `war_world.liveevent_*` was dropped or truncated:
@@ -252,9 +252,11 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 ## Developer Documentation
 
-Latest delivery and known regressions: [2026-09-05 commit handoff](docs/handoffs/2026-09-05-commit-handoff.md).
-PQs reportedly improved, but the Destruction Chaos Wastes entrance to Bastion Stair is
-currently reported broken. Do not interpret successful builds as complete gameplay validation.
+Current measurements, plan corrections and validation limits:
+[2026-09-24 repository audit](docs/handoffs/2026-09-24-repository-audit.md).
+Apply incremental scripts 00–10 in order before running the ability-conformance build.
+The historical Chaos Wastes entrance repair still needs client retesting; successful
+builds and database checks do not establish complete gameplay correctness.
 
 For contributors and AI agents, please refer to the following architectural documents:
 
@@ -301,7 +303,7 @@ explaining a change.
 **CRITICAL RULE FOR ALL CONTRIBUTORS AND AI AGENTS:**
 
 1. **NEVER modify** the base `.sql` files located in the `Database/` folder (`war_accounts.sql`, `war_characters.sql`, `war_world.sql`). These are meant for the initial setup by end-users.
-2. If a source code change requires a database schema or data modification, you **MUST create a new update script**, named `NN_short_description.sql` with the next free number in the series. The previous series was folded into the base dumps, so `Database/` currently holds no numbered scripts and the next one is `00_`. Each script must select its own database with a `USE` statement and be safe to re-run.
+2. If a source code change requires a database schema or data modification, you **MUST create a new update script**, named `NN_short_description.sql` with the next free number in the series. The previous series was folded into the base dumps and the numbering restarted at `00_`; take the number after the highest script currently in `Database/`. Each script must select its own database with a `USE` statement and be safe to re-run.
 3. These update scripts should be provided alongside the code changes, and end-users must be prompted to apply them to their database prior to loading the emulator for the server to run correctly.
 4. Apply the script to your own local Release database and verify the resulting schema and data before handing the work off. A clean compile is not verification of database-backed behavior (`AGENTS.md` rule 6).
 5. Note that the ORM auto-provisions unknown tables (`ObjectDatabase.CheckOrCreateTable` issues `CREATE TABLE IF NOT EXISTS` on registration), so a brand-new `DataObject` entity works without a script. Write one when **existing rows** need changing.

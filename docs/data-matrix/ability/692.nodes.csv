@@ -1,0 +1,21 @@
+﻿Id,Kind,Key,Label,Properties
+ability:692,ability,692,Ability 692,
+component:212,component,212,Component 212,
+component:3439,component,3439,Component 3439,
+component:3440,component,3440,Component 3440,
+effect:232,effect,232,Effect 232,
+effect:2841,effect,2841,Effect 2841,
+effect:2842,effect,2842,Effect 2842,
+row:abilities.csv|line=267;EffectId=232,row,abilities.csv|line=267;EffectId=232,abilities.csv line=267;EffectId=232,line_number=267 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
+row:abilitycomponentexport.bin|record=1933;ComponentId=3439;offset=330323,row,abilitycomponentexport.bin|record=1933;ComponentId=3439;offset=330323,abilitycomponentexport.bin record=1933;ComponentId=3439;offset=330323,byte_offset=330323 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=1934;ComponentId=3440;offset=330489,row,abilitycomponentexport.bin|record=1934;ComponentId=3440;offset=330489,abilitycomponentexport.bin record=1934;ComponentId=3440;offset=330489,byte_offset=330489 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,row,abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,abilitycomponentexport.bin record=6673;ComponentId=212;offset=1169435,byte_offset=1169435 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
+row:abilitydesc.txt|line=693;EntryId=692,row,abilitydesc.txt|line=693;EntryId=692,abilitydesc.txt line=693;EntryId=692,"line_number=693 | normalized_value=Deals {COM_1_VAL0_COM_0_VAL0_DAMAGE} to all enemies within {COM_0_RADI_FEET}, and heals group members within 100 feet for the full amount of the damage dealt. | raw_value=Deals {COM_1_VAL0_COM_0_VAL0_DAMAGE} to all enemies within {COM_0_RADI_FEET}, and heals group members within 100 feet for the full amount of the damage dealt. | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitydesc.txt"
+row:abilityexport.bin|record=1418;AbilityId=692;offset=276919,row,abilityexport.bin|record=1418;AbilityId=692;offset=276919,abilityexport.bin record=1418;AbilityId=692;offset=276919,byte_offset=276919 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilityexport.bin
+row:abilitynames.txt|line=693;EntryId=692,row,abilitynames.txt|line=693;EntryId=692,abilitynames.txt line=693;EntryId=692,line_number=693 | normalized_value=Rampaging Siphon | raw_value=Rampaging Siphon^n | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\abilitynames.txt
+row:componenteffects.txt|line=213;EntryId=212,row,componenteffects.txt|line=213;EntryId=212,componenteffects.txt line=213;EntryId=212,line_number=213 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=3440;EntryId=3439,row,componenteffects.txt|line=3440;EntryId=3439,componenteffects.txt line=3440;EntryId=3439,line_number=3440 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:componenteffects.txt|line=3441;EntryId=3440,row,componenteffects.txt|line=3441;EntryId=3440,componenteffects.txt line=3441;EntryId=3440,line_number=3441 | source_path=C:\Users\Admin\Downloads\myps\data\strings\english\componenteffects.txt
+row:effects.csv|line=253;EffectId=232,row,effects.csv|line=253;EffectId=232,effects.csv line=253;EffectId=232,line_number=253 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv
+row:effects.csv|line=2944;EffectId=2841,row,effects.csv|line=2944;EffectId=2841,effects.csv line=2944;EffectId=2841,line_number=2944 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv
+row:effects.csv|line=2945;EffectId=2842,row,effects.csv|line=2945;EffectId=2842,effects.csv line=2945;EffectId=2842,line_number=2945 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\effects.csv

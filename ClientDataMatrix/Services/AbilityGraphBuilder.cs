@@ -46,7 +46,6 @@ namespace ClientDataMatrix.Services
         };
 
         private readonly AbilityDataset _dataset;
-        private readonly Dictionary<uint, ClientAbilityRecord> _clientAbilitiesById;
         private readonly Dictionary<uint, List<ClientEffectRecord>> _effectsById;
         private readonly Dictionary<ushort, List<BinaryRequirementRecord>> _requirementsById;
         private readonly HashSet<ushort> _knownRequirementIds;
@@ -54,9 +53,6 @@ namespace ClientDataMatrix.Services
         public AbilityGraphBuilder(AbilityDataset dataset)
         {
             _dataset = dataset;
-            _clientAbilitiesById = dataset.ClientAbilities
-                .GroupBy(x => x.AbilityId)
-                .ToDictionary(x => x.Key, x => x.OrderBy(y => y.LineNumber).First());
             _effectsById = dataset.ClientEffects.GroupBy(x => x.EffectId).ToDictionary(x => x.Key, x => x.OrderBy(y => y.LineNumber).ToList());
             _requirementsById = dataset.BinaryRequirements.GroupBy(x => x.RequirementId).ToDictionary(x => x.Key, x => x.OrderBy(y => y.RecordIndex).ToList());
             _knownRequirementIds = new HashSet<ushort>(_requirementsById.Keys);
@@ -66,12 +62,13 @@ namespace ClientDataMatrix.Services
         {
             AnalysisGraph graph = new AnalysisGraph();
             List<string> warnings = new List<string>();
-            List<ClientAbilityRecord> clientAbilityRows = _dataset.ClientAbilities.Where(x => x.AbilityId == abilityId).OrderBy(x => x.LineNumber).ToList();
             List<BinaryAbilityRecord> binaryAbilityRows = _dataset.BinaryAbilities.Where(x => x.AbilityId == abilityId).OrderBy(x => x.RecordIndex).ToList();
-            HashSet<int> relatedEffectIds = new HashSet<int>(clientAbilityRows.Select(x => x.EffectId).Where(x => x > 0));
-            foreach (BinaryAbilityRecord row in binaryAbilityRows)
-                if (row.EffectId > 0)
-                    relatedEffectIds.Add(row.EffectId);
+            // abilities.csv is keyed by effect id, so an ability reaches its art row through the BIN record.
+            List<ClientAbilityRecord> clientAbilityRows = _dataset.GetClientAbilityRowsForBinaryRows(binaryAbilityRows);
+            HashSet<int> relatedEffectIds = new HashSet<int>(binaryAbilityRows.Select(x => (int)x.EffectId).Where(x => x > 0));
+            foreach (ClientAbilityRecord row in clientAbilityRows)
+                if (row.SpecialEffectId > 0)
+                    relatedEffectIds.Add(row.SpecialEffectId);
             QueueLinkedClientEffects(relatedEffectIds);
 
             HashSet<ushort> relatedComponentIds = new HashSet<ushort>(binaryAbilityRows.SelectMany(x => x.ComponentIds).Where(x => x > 0));
@@ -93,17 +90,12 @@ namespace ClientDataMatrix.Services
                 .ToList();
 
             GraphNode abilityNode = graph.AddNode("ability", abilityId.ToString(CultureInfo.InvariantCulture), "Ability " + abilityId.ToString(CultureInfo.InvariantCulture));
-            foreach (ClientAbilityRecord row in clientAbilityRows)
-            {
-                GraphNode rowNode = AddRowNode(graph, row);
-                graph.AddEdge("declared_by", abilityNode, rowNode, "abilities.csv", null);
-                AddClaim(graph, "Ability:" + row.AbilityId, "Name", "AbilityName", row.Name, row.Name, row, "name", "client_contract", "abilities.csv");
-                AddClaim(graph, "Ability:" + row.AbilityId, "EffectId", "EffectId", row.EffectId.ToString(CultureInfo.InvariantCulture), row.EffectId.ToString(CultureInfo.InvariantCulture), row, "Effect", "client_contract", "abilities.csv");
-            }
             foreach (BinaryAbilityRecord row in binaryAbilityRows)
             {
                 GraphNode rowNode = AddRowNode(graph, row);
                 graph.AddEdge("declared_by", abilityNode, rowNode, "abilityexport.bin", null);
+                if (row.EffectId > 0)
+                    graph.AddEdge("uses_effect", abilityNode, graph.AddNode("effect", row.EffectId.ToString(CultureInfo.InvariantCulture), "Effect " + row.EffectId), "abilityexport.bin", null);
                 AddClaim(graph, "Ability:" + row.AbilityId, "EffectId", "EffectId", row.EffectId.ToString(CultureInfo.InvariantCulture), row.EffectId.ToString(CultureInfo.InvariantCulture), row, "EffectId", "client_bin", "abilityexport.bin");
                 AddClaim(graph, "Ability:" + row.AbilityId, "CastTime", "Milliseconds", row.CastTime.ToString(CultureInfo.InvariantCulture), row.CastTime.ToString(CultureInfo.InvariantCulture), row, "CastTime", "client_bin", "abilityexport.bin");
                 AddClaim(graph, "Ability:" + row.AbilityId, "Cooldown", "Milliseconds", row.Cooldown.ToString(CultureInfo.InvariantCulture), row.Cooldown.ToString(CultureInfo.InvariantCulture), row, "Cooldown", "client_bin", "abilityexport.bin");
@@ -112,6 +104,15 @@ namespace ClientDataMatrix.Services
                 AddClaim(graph, "Ability:" + row.AbilityId, "CareerLine", "CareerLineId", row.CareerLine.ToString(CultureInfo.InvariantCulture), row.CareerLine.ToString(CultureInfo.InvariantCulture), row, "CareerLine", "client_bin", "abilityexport.bin");
                 foreach (ushort componentId in row.ComponentIds.Where(x => x > 0))
                     graph.AddEdge("uses_component", abilityNode, graph.AddNode("component", componentId.ToString(CultureInfo.InvariantCulture), "Component " + componentId), "abilityexport.bin", null);
+            }
+            foreach (ClientAbilityRecord row in clientAbilityRows)
+            {
+                GraphNode effectNode = graph.AddNode("effect", row.EffectId.ToString(CultureInfo.InvariantCulture), "Effect " + row.EffectId);
+                graph.AddEdge("declared_by", effectNode, AddRowNode(graph, row), "abilities.csv", null);
+                AddClaim(graph, "Effect:" + row.EffectId, "Name", "EffectName", row.Name, row.Name, row, "name", "client_contract", "abilities.csv");
+                AddClaim(graph, "Effect:" + row.EffectId, "IconId", "IconId", row.IconId.ToString(CultureInfo.InvariantCulture), row.IconId.ToString(CultureInfo.InvariantCulture), row, "Icon", "client_contract", "abilities.csv");
+                if (row.SpecialEffectId > 0 && row.SpecialEffectId != row.EffectId)
+                    graph.AddEdge("linked_effect", effectNode, graph.AddNode("effect", row.SpecialEffectId.ToString(CultureInfo.InvariantCulture), "Effect " + row.SpecialEffectId), "Special Effect", null);
             }
             foreach (ClientEffectRecord row in clientEffectRows)
             {
@@ -154,7 +155,10 @@ namespace ClientDataMatrix.Services
             foreach (PregameCharacterRecord row in pregameRows)
                 graph.AddEdge("pregame_reference", AddRowNode(graph, row), abilityNode, row.CareerName + " / " + row.RaceName, null);
 
-            if (clientAbilityRows.Count == 0) warnings.Add("No row was found in abilities.csv for the requested ability ID.");
+            if (binaryAbilityRows.Count > 0 && clientAbilityRows.Count == 0)
+                warnings.Add(binaryAbilityRows.Any(x => x.EffectId > 0)
+                    ? "No abilities.csv row exists for this ability's EffectId. That sheet is keyed by effect id, not ability id."
+                    : "The abilityexport.bin record carries EffectId 0, so no abilities.csv row (keyed by effect id) applies.");
             if (binaryAbilityRows.Count == 0) warnings.Add("No row was found in abilityexport.bin for the requested ability ID.");
             if (abilityNameRows.Count == 0) warnings.Add("No english ability name row was found in abilitynames.txt.");
             if (abilityDescriptionRows.Count == 0) warnings.Add("No english ability description row was found in abilitydesc.txt.");
@@ -191,12 +195,10 @@ namespace ClientDataMatrix.Services
         public ConflictReportDocument BuildConflictReport(string extractedRootPath)
         {
             AnalysisGraph graph = new AnalysisGraph();
+            // abilities.csv is keyed by effect id, so its names are claims about effects, checked against
+            // effects.csv at the same id. The two sheets agree on 3,400 of the 3,705 ids both name.
             foreach (ClientAbilityRecord row in _dataset.ClientAbilities)
-            {
-                AddClaim(graph, "Ability:" + row.AbilityId, "Name", "AbilityName", row.Name, row.Name, row, "name", "client_contract", "abilities.csv");
-                AddClaim(graph, "Ability:" + row.AbilityId, "Description", "AbilityDescription", row.Description, row.Description, row, "Description", "client_contract", "abilities.csv");
-                AddClaim(graph, "Ability:" + row.AbilityId, "EffectId", "EffectId", row.EffectId.ToString(CultureInfo.InvariantCulture), row.EffectId.ToString(CultureInfo.InvariantCulture), row, "Effect", "client_contract", "abilities.csv");
-            }
+                AddClaim(graph, "Effect:" + row.EffectId, "Name", "EffectName", row.Name, row.Name, row, "name", "client_contract", "abilities.csv");
             foreach (BinaryAbilityRecord row in _dataset.BinaryAbilities)
             {
                 AddClaim(graph, "Ability:" + row.AbilityId, "EffectId", "EffectId", row.EffectId.ToString(CultureInfo.InvariantCulture), row.EffectId.ToString(CultureInfo.InvariantCulture), row, "EffectId", "client_bin", "abilityexport.bin");
@@ -307,18 +309,6 @@ namespace ClientDataMatrix.Services
                 category = "InternalOnlyAbilityNameMismatch";
                 reasons.Add("all variants look like internal helper or prototype ability labels");
             }
-            else if (IsAbilityIdMirrorEffectConflict(conflict))
-            {
-                score = 125;
-                category = "AbilityIdMirrorEffectId";
-                reasons.Add("abilities.csv EffectId mirrors AbilityId while BIN points elsewhere");
-            }
-            else if (IsMountOverlayEffectConflict(conflict))
-            {
-                score = 110;
-                category = "MountOverlayEffectId";
-                reasons.Add("abilities.csv points at a generic Mount Effects contract row while BIN uses a mounted ability effect");
-            }
             else if (IsZeroVsEffectConflict(conflict))
             {
                 score = 100;
@@ -392,18 +382,6 @@ namespace ClientDataMatrix.Services
         {
             if (conflict == null)
                 return new ConflictResolution();
-
-            if (string.Equals(conflict.TriageCategory, "AbilityIdMirrorEffectId", StringComparison.OrdinalIgnoreCase))
-            {
-                ClaimRecord canonical = SelectPreferredNonMirrorEffectClaim(conflict);
-                return BuildEffectResolution(canonical, "PreferNonMirrorEffectId", "Prefer the non-mirror effect id over the CSV ability-id echo.");
-            }
-
-            if (string.Equals(conflict.TriageCategory, "MountOverlayEffectId", StringComparison.OrdinalIgnoreCase))
-            {
-                ClaimRecord canonical = SelectPreferredPositiveNonCsvEffectClaim(conflict);
-                return BuildEffectResolution(canonical, "PreferMountedAbilityEffectId", "Prefer the specific mounted ability effect over the generic Mount Effects contract row.");
-            }
 
             if (string.Equals(conflict.TriageCategory, "ZeroVsEffectIdGap", StringComparison.OrdinalIgnoreCase))
             {
@@ -526,36 +504,6 @@ namespace ClientDataMatrix.Services
                 .FirstOrDefault();
         }
 
-        private ClaimRecord SelectPreferredPositiveNonCsvEffectClaim(ConflictRecord conflict)
-        {
-            return (conflict.Claims ?? new List<ClaimRecord>())
-                .Where(claim => !string.Equals(claim.SourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase))
-                .Where(claim =>
-                {
-                    int value;
-                    return TryParseClaimInt(claim, out value) && value > 0;
-                })
-                .OrderBy(claim => claim.SourceFamily, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault();
-        }
-
-        private ClaimRecord SelectPreferredNonMirrorEffectClaim(ConflictRecord conflict)
-        {
-            int abilityId;
-            if (!TryParseAbilityId(conflict == null ? null : conflict.SubjectKey, out abilityId))
-                return null;
-
-            return (conflict.Claims ?? new List<ClaimRecord>())
-                .Where(claim =>
-                {
-                    int value;
-                    return TryParseClaimInt(claim, out value) && value > 0 && value != abilityId;
-                })
-                .OrderBy(claim => string.Equals(claim.SourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase) ? 1 : 0)
-                .ThenBy(claim => claim.SourceFamily, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault();
-        }
-
         private string DescribeEffectId(int effectId)
         {
             if (effectId <= 0)
@@ -569,74 +517,6 @@ namespace ClientDataMatrix.Services
             return row == null || string.IsNullOrWhiteSpace(row.Name)
                 ? "Unknown effect " + effectId.ToString(CultureInfo.InvariantCulture)
                 : row.Name;
-        }
-
-        private bool IsMountOverlayEffectConflict(ConflictRecord conflict)
-        {
-            if (conflict == null
-                || !string.Equals(conflict.Domain, "EffectId", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            int abilityId;
-            if (!TryParseAbilityId(conflict.SubjectKey, out abilityId))
-                return false;
-
-            ClientAbilityRecord abilityRow;
-            if (!_clientAbilitiesById.TryGetValue((uint)abilityId, out abilityRow)
-                || string.IsNullOrWhiteSpace(abilityRow.Name)
-                || !abilityRow.Name.StartsWith("Mount -", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            ClaimRecord csvClaim = conflict.Claims == null
-                ? null
-                : conflict.Claims.FirstOrDefault(claim => string.Equals(claim.SourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase));
-            int csvEffectId;
-            if (!TryParseClaimInt(csvClaim, out csvEffectId))
-                return false;
-
-            List<ClientEffectRecord> effectRows;
-            if (!_effectsById.TryGetValue((uint)csvEffectId, out effectRows))
-                return false;
-
-            ClientEffectRecord effectRow = effectRows.FirstOrDefault();
-            return effectRow != null
-                && !string.IsNullOrWhiteSpace(effectRow.Name)
-                && effectRow.Name.StartsWith("Mount Effects", StringComparison.OrdinalIgnoreCase)
-                && SelectPreferredPositiveNonCsvEffectClaim(conflict) != null;
-        }
-
-        private static bool IsAbilityIdMirrorEffectConflict(ConflictRecord conflict)
-        {
-            if (conflict == null
-                || !string.Equals(conflict.Domain, "EffectId", StringComparison.OrdinalIgnoreCase)
-                || conflict.Claims == null
-                || conflict.Claims.Count < 2)
-                return false;
-
-            int abilityId;
-            if (!TryParseAbilityId(conflict.SubjectKey, out abilityId))
-                return false;
-
-            ClaimRecord csvClaim = conflict.Claims.FirstOrDefault(claim => string.Equals(claim.SourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase));
-            if (csvClaim == null)
-                return false;
-
-            int csvEffectId;
-            if (!int.TryParse(csvClaim.RawValue ?? string.Empty, NumberStyles.Integer, CultureInfo.InvariantCulture, out csvEffectId))
-                return false;
-            if (csvEffectId != abilityId)
-                return false;
-
-            return conflict.Claims
-                .Where(claim => !string.Equals(claim.SourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase))
-                .Select(claim =>
-                {
-                    int value;
-                    return int.TryParse(claim.RawValue ?? string.Empty, NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
-                        ? (int?)value
-                        : null;
-                })
-                .Any(value => value.HasValue && value.Value > 0 && value.Value != abilityId);
         }
 
         private static bool IsZeroVsEffectConflict(ConflictRecord conflict)
@@ -729,15 +609,6 @@ namespace ClientDataMatrix.Services
             value = 0;
             return claim != null
                 && int.TryParse(claim.RawValue ?? string.Empty, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
-        }
-
-        private static bool TryParseAbilityId(string subjectKey, out int abilityId)
-        {
-            abilityId = 0;
-            if (string.IsNullOrWhiteSpace(subjectKey) || !subjectKey.StartsWith("Ability:", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return int.TryParse(subjectKey.Substring("Ability:".Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out abilityId);
         }
 
         private static string DetermineConflictBucket(int score, bool isNoise)
@@ -837,7 +708,8 @@ namespace ClientDataMatrix.Services
 
         private static int GetPreferredStringSourceRank(string domain, string sourceFamily)
         {
-            if (IsDescriptionLikeDomain(domain))
+            // abilitynames.txt is the arbiter for ability names; the csv sheets only name effects.
+            if (IsDescriptionLikeDomain(domain) || string.Equals(domain, "AbilityName", StringComparison.OrdinalIgnoreCase))
                 return string.Equals(sourceFamily, "client_strings", StringComparison.OrdinalIgnoreCase) ? 0 : 1;
 
             return string.Equals(sourceFamily, "client_csv", StringComparison.OrdinalIgnoreCase) ? 0 : 1;
@@ -880,10 +752,6 @@ namespace ClientDataMatrix.Services
 
         public CoverageReportDocument BuildCoverageReport(string extractedRootPath)
         {
-            Dictionary<ushort, List<ClientAbilityRecord>> clientRowsById = _dataset.ClientAbilities
-                .Where(row => row.AbilityId <= ushort.MaxValue)
-                .GroupBy(row => (ushort)row.AbilityId)
-                .ToDictionary(group => group.Key, group => group.OrderBy(row => row.LineNumber).ToList());
             Dictionary<ushort, List<BinaryAbilityRecord>> binRowsById = _dataset.BinaryAbilities
                 .GroupBy(row => row.AbilityId)
                 .ToDictionary(group => group.Key, group => group.OrderBy(row => row.RecordIndex).ToList());
@@ -910,9 +778,8 @@ namespace ClientDataMatrix.Services
                 AddPregameRow(pregameRowsByAbilityId, row.OnClickAbilityId, row);
             }
 
-            HashSet<ushort> abilityIds = new HashSet<ushort>(clientRowsById.Keys);
-            foreach (ushort abilityId in binRowsById.Keys)
-                abilityIds.Add(abilityId);
+            // abilities.csv contributes no ability ids: its ID column is an effect id.
+            HashSet<ushort> abilityIds = new HashSet<ushort>(binRowsById.Keys);
             foreach (ushort abilityId in nameRowsById.Keys)
                 abilityIds.Add(abilityId);
             foreach (ushort abilityId in descriptionRowsById.Keys)
@@ -925,17 +792,17 @@ namespace ClientDataMatrix.Services
             List<CoverageAbilityRecord> rows = new List<CoverageAbilityRecord>();
             foreach (ushort abilityId in abilityIds.OrderBy(value => value))
             {
-                List<ClientAbilityRecord> clientRows = GetRows(clientRowsById, abilityId);
                 List<BinaryAbilityRecord> binRows = GetRows(binRowsById, abilityId);
+                List<ClientAbilityRecord> clientRows = _dataset.GetClientAbilityRowsForBinaryRows(binRows);
                 List<IndexedStringRecord> nameRows = GetRows(nameRowsById, abilityId);
                 List<IndexedStringRecord> descriptionRows = GetRows(descriptionRowsById, abilityId);
                 List<IndexedStringRecord> effectTextRows = GetRows(effectTextRowsById, abilityId);
                 List<PregameCharacterRecord> pregameRows = GetRows(pregameRowsByAbilityId, abilityId);
 
-                HashSet<int> relatedEffectIds = new HashSet<int>(clientRows.Select(row => row.EffectId).Where(value => value > 0));
-                foreach (BinaryAbilityRecord row in binRows)
-                    if (row.EffectId > 0)
-                        relatedEffectIds.Add(row.EffectId);
+                HashSet<int> relatedEffectIds = new HashSet<int>(binRows.Select(row => (int)row.EffectId).Where(value => value > 0));
+                foreach (ClientAbilityRecord row in clientRows)
+                    if (row.SpecialEffectId > 0)
+                        relatedEffectIds.Add(row.SpecialEffectId);
                 QueueLinkedClientEffects(relatedEffectIds);
 
                 HashSet<ushort> relatedComponentIds = new HashSet<ushort>(binRows.SelectMany(row => row.ComponentIds).Where(value => value > 0));
@@ -951,12 +818,12 @@ namespace ClientDataMatrix.Services
                 HashSet<ushort> relatedRequirementIds = new HashSet<ushort>(requirementReferences.Select(row => row.RequirementId));
                 QueueRequirementDependencies(relatedRequirementIds, requirementReferences);
 
-                int preferredEffectId = GetPreferredEffectId(clientRows, binRows);
+                int preferredEffectId = GetPreferredEffectId(binRows);
                 bool hasClientCsv = clientRows.Count > 0;
                 bool hasClientBin = binRows.Count > 0;
-                bool hasLocalizedName = nameRows.Count > 0 || clientRows.Any(row => !string.IsNullOrWhiteSpace(row.Name));
+                bool hasLocalizedName = nameRows.Count > 0;
                 bool hasDescriptionText = descriptionRows.Count > 0;
-                bool hasNonBlankName = nameRows.Any(row => !string.IsNullOrWhiteSpace(row.NormalizedValue)) || clientRows.Any(row => !string.IsNullOrWhiteSpace(row.Name));
+                bool hasNonBlankName = nameRows.Any(row => !string.IsNullOrWhiteSpace(row.NormalizedValue));
                 bool hasNonBlankDescription = descriptionRows.Any(row => !string.IsNullOrWhiteSpace(row.NormalizedValue));
                 bool hasEffectText = effectTextRows.Count > 0;
                 bool hasRootEffectRow = preferredEffectId > 0 && _effectsById.ContainsKey((uint)preferredEffectId);
@@ -964,7 +831,7 @@ namespace ClientDataMatrix.Services
                 rows.Add(new CoverageAbilityRecord
                 {
                     AbilityId = abilityId,
-                    Name = GetDisplayName(clientRows, nameRows),
+                    Name = GetDisplayName(nameRows),
                     EffectId = preferredEffectId > 0 ? (int?)preferredEffectId : null,
                     HasClientCsv = hasClientCsv,
                     HasClientBin = hasClientBin,
@@ -1014,22 +881,14 @@ namespace ClientDataMatrix.Services
             return rowsById.TryGetValue(key, out rows) ? rows : new List<T>();
         }
 
-        private static string GetDisplayName(IList<ClientAbilityRecord> clientRows, IList<IndexedStringRecord> nameRows)
+        private static string GetDisplayName(IList<IndexedStringRecord> nameRows)
         {
-            ClientAbilityRecord clientRow = clientRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.Name));
-            if (clientRow != null)
-                return clientRow.Name;
-
             IndexedStringRecord nameRow = nameRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.NormalizedValue));
             return nameRow == null ? "(unnamed)" : nameRow.NormalizedValue;
         }
 
-        private static int GetPreferredEffectId(IList<ClientAbilityRecord> clientRows, IList<BinaryAbilityRecord> binRows)
+        private static int GetPreferredEffectId(IList<BinaryAbilityRecord> binRows)
         {
-            ClientAbilityRecord clientRow = clientRows.FirstOrDefault(row => row.EffectId > 0);
-            if (clientRow != null)
-                return clientRow.EffectId;
-
             BinaryAbilityRecord binRow = binRows.FirstOrDefault(row => row.EffectId > 0);
             return binRow == null ? 0 : binRow.EffectId;
         }

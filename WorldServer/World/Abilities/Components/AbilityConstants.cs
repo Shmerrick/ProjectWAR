@@ -24,6 +24,8 @@ namespace WorldServer.World.Abilities.Components
             if (dbObj.Specline == "Item")
                 Origin = AbilityOrigin.AO_ITEM;
             ChannelID = dbObj.ChannelID;
+            ChannelDuration = dbObj.ChannelDuration;
+            ChannelInterval = dbObj.ChannelInterval;
             CastAngle = dbObj.CastAngle;
             EffectID = dbObj.EffectID;
             WeaponNeeded = (WeaponRequirements)dbObj.WeaponNeeded;
@@ -38,6 +40,7 @@ namespace WorldServer.World.Abilities.Components
             IgnoreOwnModifiers = dbObj.IgnoreOwnModifiers;
             BaseCastTime = dbObj.CastTime;
             AIRange = dbObj.AIRange;
+            ClientTargetType = dbObj.TargetType;
         }
 
         public static List<AbilityConstants> Convert(List<DBAbilityInfo> dbObjs)
@@ -74,6 +77,12 @@ namespace WorldServer.World.Abilities.Components
 
         public ushort ChannelID;
 
+        /// <summary>How long a channel lasts, in milliseconds (the client's component duration).</summary>
+        public uint ChannelDuration;
+
+        /// <summary>How often a channel spends its AP, in milliseconds; 0 means once a second.</summary>
+        public ushort ChannelInterval;
+
         public ushort CastAngle;
 
         public ushort EffectID;
@@ -108,5 +117,11 @@ namespace WorldServer.World.Abilities.Components
         public ushort BaseCastTime;
 
         public ushort AIRange;
+
+        /// <summary>
+        /// The client's TargetType (data/bin/abilityexport.bin); null where the client has no record of the
+        /// ability. Read through <c>AbilityInfo.TargetsCaster</c>.
+        /// </summary>
+        public byte? ClientTargetType;
     }
 }

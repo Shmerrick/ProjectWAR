@@ -1,7 +1,8 @@
 # Play as Skaven — what works, what does not, and what is still unknown
 
-Status as of 2026-09-07. **The forms are not working.** This records what the captures actually
-show, corrects two claims that were asserted without evidence, and says what is still missing.
+Reviewed 2026-09-24. **Playable forms are not verified.** Runtime scaffolding and
+buff/device data exist; their checks do not establish transformation or usable kits.
+See the [fresh audit](handoffs/2026-09-24-repository-audit.md).
 
 ## What the feature is
 
@@ -15,19 +16,17 @@ Device in a contested Tier 4 lake.
 
 ## Two corrections
 
-**1. The control abilities have no components.** It was previously stated here, in
-`SkavenFormService`, in `Player.ApplySkavenForm` and in `Database/75_skaven_control_ability_buffs.sql`
-that each of the eight "Controlled &lt;form&gt;" abilities (24857-24864) carries a component with
-operation 51 — career ability-set replacement — and that applying one as a buff therefore makes the
-client swap the action bar out of its own data.
+**1. The previous component-absence correction was itself wrong.** Empty imported
+`ComponentData`/`mythic_bin_abilitycomponentlink` fields do not establish absence in
+the client. Direct `data/bin/abilityexport.bin` records for 24857–24864 start at
+byte 2002266 and continue at 194-byte intervals. At record +40 is the ability ID;
+at +72 is component 26661–26668, respectively. All eight components have operation
+51 in `data/bin/abilitycomponentexport.bin`; component 26661 starts at byte 2849165.
+`tools/validation/Test-ClientDataMatrix.ps1` verifies the raw bytes and parsed links.
 
-That is false. In the client's own records all eight have empty `ComponentData` and **zero rows** in
-`mythic_bin_abilitycomponentlink`. They have no components of any kind. The op-51 description that
-was quoted belongs to component 26389, which is attached to something else entirely; it was never
-checked against these entries.
-
-So the mechanism by which the bar is replaced is **not known**, and migration 75's buffs do not
-supply it.
+The linkage is established. The stronger assertion that adding an otherwise empty
+server buff row is sufficient to transform the player and swap the bar is **not**.
+Packet fields, component execution and the full lifecycle still need verification.
 
 **2. There is a Pack Master capture.** `SkavenFormService` records Pack Master's kit as unknown
 because "no capture shows anyone playing one". The corpus contains
@@ -83,9 +82,11 @@ the server declines a cast. That stops the lock-up; it does not make the abiliti
 
 1. **Restore the 21 missing ability rows** into `abilities` and `mythic_src_abilities` from
    `mythic_bin_ability`, with their component chains in `mythic_src_buff_commands`. Part of the
-   larger gap: 20,590 client abilities have no server row, every one of them carrying component
-   data. See `docs/ABILITY_TABLE_ALIGNMENT.md`.
-2. **Find what actually swaps the bar.** Not an op-51 component — that has been ruled out. The
+   larger ability-coverage gap. The older 20,590 count used imported identity rows;
+   it is not a count of actionable client abilities with complete components. See
+   `docs/ABILITY_TABLE_ALIGNMENT.md` and the direct BIN crosswalk.
+2. **Find what actually swaps the bar.** Operation-51 linkage exists, but it does not
+   establish which server packets and component state are necessary. The
    remaining candidates are the unnamed `0x4C46` field, the two BuffLines, or a packet in the
    capture that has not been read yet. The full ordered packet sequence around the transformation in
    `CONTROL A GUTTER RUNNER` has not been walked end to end; that is the next thing to do.

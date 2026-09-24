@@ -1,0 +1,21 @@
+﻿Id,Kind,FromNodeId,ToNodeId,Label,ClaimId
+edge:1,declared_by,ability:28974,row:abilityexport.bin|record=5397;AbilityId=28974;offset=1077060,abilityexport.bin,
+edge:12,declared_by,component:15590,row:abilitycomponentexport.bin|record=9989;ComponentId=15590;offset=1708506,abilitycomponentexport.bin,
+edge:13,declared_by,component:18526,row:abilitycomponentexport.bin|record=10744;ComponentId=18526;offset=1827599,abilitycomponentexport.bin,
+edge:11,declared_by,component:212,row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,abilitycomponentexport.bin,
+edge:14,declared_by,component:28974,row:abilitycomponentexport.bin|record=11488;ComponentId=28974;offset=1947704,abilitycomponentexport.bin,
+edge:10,declared_by,effect:3701,row:effects.csv|line=3719;EffectId=3701,effects.csv,
+edge:8,declared_by,effect:3770,row:abilities.csv|line=3910;EffectId=3770,abilities.csv,
+edge:9,linked_effect,effect:3770,effect:3701,Special Effect,
+edge:18,localized_component_description,component:15590,row:componenteffects.txt|line=15591;EntryId=15590,componenteffects.txt,claim:29
+edge:19,localized_component_description,component:18526,row:componenteffects.txt|line=18527;EntryId=18526,componenteffects.txt,claim:30
+edge:17,localized_component_description,component:212,row:componenteffects.txt|line=213;EntryId=212,componenteffects.txt,claim:28
+edge:20,localized_component_description,component:28974,row:componenteffects.txt|line=28975;EntryId=28974,componenteffects.txt,claim:31
+edge:16,localized_description,ability:28974,row:abilitydesc.txt|line=28975;EntryId=28974,abilitydesc.txt,claim:27
+edge:15,localized_name,ability:28974,row:abilitynames.txt|line=28975;EntryId=28974,abilitynames.txt,claim:26
+edge:4,uses_component,ability:28974,component:15590,abilityexport.bin,
+edge:7,uses_component,ability:28974,component:18526,abilityexport.bin,
+edge:5,uses_component,ability:28974,component:212,abilityexport.bin,
+edge:6,uses_component,ability:28974,component:212,abilityexport.bin,
+edge:3,uses_component,ability:28974,component:28974,abilityexport.bin,
+edge:2,uses_effect,ability:28974,effect:3770,abilityexport.bin,

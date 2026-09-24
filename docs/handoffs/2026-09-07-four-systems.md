@@ -1,5 +1,11 @@
 # Four-system restoration implementation — September 7
 
+**Later review:** [September 24 audit](2026-09-24-repository-audit.md) separates the
+implemented scaffolding from gameplay acceptance. The client does link Skaven
+controls to op-51 components, but applying a buff row is not proven sufficient for
+the complete transformation. A Pack Master capture exists. Treat the evolving
+mechanism claims below as historical findings, not a verified protocol specification.
+
 The user approved the [plan](../plans/2026-09-06-four-systems-restoration.md).
 Implementation is underway; the four systems are **not yet restored end to end**.
 This batch changes only NPC casting and vanity companion lifecycle code. It adds

@@ -77,7 +77,7 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            if (!GetTarget(abInfo, _pendingInfo.Instigator, foeVisible, allyVisible) && _pendingInfo.Range > 0)
+            if (!GetTarget(abInfo, _pendingInfo.Instigator, foeVisible, allyVisible))
             {
                 CancelPendingCast();
                 return false;
@@ -85,7 +85,7 @@ namespace WorldServer.World.Abilities
 
             byte result = ModifyInitials();
 
-            if (!_pendingInfo.CanCastWhileMoving && _pendingInfo.CastTime > 0 && _pendingInfo.ConstantInfo.ChannelID == 0 && moving)
+            if (!_pendingInfo.CanCastWhileMoving && _pendingInfo.CastTime > 0 && moving)
             {
                 CancelPendingCast();
                 return false;
@@ -201,17 +201,9 @@ namespace WorldServer.World.Abilities
             if (!AbInfo.ConstantInfo.IgnoreGlobalCooldown)
                 _abInterface.SetGlobalCooldown();
 
-            if (AbInfo.ConstantInfo.ChannelID != 0)
-            {
-                // Channeled Morale 4s grant immunity and cannot be interrupted
-                if (AbInfo.SpecialCost == -4)
-                {
-                    _caster.AddCrowdControlImmunity((int)CrowdControlTypes.Unstoppable);
-                    _caster.IsImmovable = true;
-                }
-
-                _channelHandler.Initialize(AbInfo, castSequence);
-            }
+            // Channels. One with a cast time casts first and channels when the cast completes.
+            if (AbInfo.ConstantInfo.ChannelID != 0 && AbInfo.CastTime == 0)
+                StartChannel();
 
             // Instants
             else if (AbInfo.CastTime == 0)
@@ -349,7 +341,8 @@ namespace WorldServer.World.Abilities
                     if (_caster.IsMoving && _pendingInfo.Target.IsMoving)
                         maxRange = maxRange + 5;
 
-                    if (abRange > maxRange || abRange < _pendingInfo.MinRange)
+                    // A range of 0 on an ability that needs a target sets no limit of its own.
+                    if ((_pendingInfo.Range > 0 && abRange > maxRange) || abRange < _pendingInfo.MinRange)
                         return false;
                 }
             }
@@ -407,15 +400,17 @@ namespace WorldServer.World.Abilities
 
             if (plr != null)
             {
-                //For abilities with a cast time, we send the timer first to ensure the client knows it's modified
-                if (AbInfo.ConstantInfo.Origin != AbilityOrigin.AO_ITEM && AbInfo.CastTime > 0)
+                //For abilities with a cast time, we send the timer first to ensure the client knows it's modified.
+                //A channel sends its length with 0x20 set, as the live server's channel-start timers do.
+                bool channelTimer = AbInfo.ConstantInfo.ChannelID != 0 && AbInfo.CastTime == 0;
+                if (AbInfo.ConstantInfo.Origin != AbilityOrigin.AO_ITEM && (AbInfo.CastTime > 0 || channelTimer))
                 {
                     Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
                     Out.WriteUInt16(1);
                     Out.WriteByte(1);
-                    Out.WriteByte(0x1); // initial timer
+                    Out.WriteByte(channelTimer ? (byte)0x21 : (byte)0x1); // initial timer
                     Out.WriteUInt16(0);
-                    Out.WriteUInt16(AbInfo.CastTime);
+                    Out.WriteUInt16(channelTimer ? (ushort)Math.Min(AbInfo.ConstantInfo.ChannelDuration, ushort.MaxValue) : AbInfo.CastTime);
                     Out.WriteUInt16(AbInfo.Entry);
                     Out.WriteByte(_castSequence);
                     Out.WriteByte(0);
@@ -433,14 +428,14 @@ namespace WorldServer.World.Abilities
 
             if (AbInfo.Target != null)
                 Out.WriteUInt16(AbInfo.Target.Oid);
-            else if (AbInfo.Range == 0)
+            else if (AbInfo.TargetsCaster)
                 Out.WriteUInt16(_caster.Oid);
             else Out.WriteUInt16(0);
 
             Out.WriteByte(1);
             Out.WriteByte((byte)AbInfo.ConstantInfo.Origin);
 
-            Out.WriteUInt32(AbInfo.ConstantInfo.ChannelID == 0 ? AbInfo.CastTime : (uint)0);
+            Out.WriteUInt32(AbInfo.CastTime);
 
             Out.WriteByte(_castSequence);
             Out.WriteUInt16(0);
@@ -462,7 +457,7 @@ namespace WorldServer.World.Abilities
         /// <returns>True if target is valid for the ability</returns>
         private bool GetTarget(AbilityInfo abInfo, Unit instigator, bool foeVisible, bool allyVisible)
         {
-            if (_pendingInfo.Range == 0 || _pendingInfo.CommandInfo == null)
+            if (_pendingInfo.TargetsCaster || _pendingInfo.CommandInfo == null)
             {
                 _pendingInfo.Target = _caster;
                 return true;
@@ -712,7 +707,7 @@ namespace WorldServer.World.Abilities
 
                 uint abRange = (uint)AbInfo.Target.GetAbilityRangeTo(_caster);
 
-                if (abRange > AbInfo.Range)
+                if (AbInfo.Range > 0 && abRange > AbInfo.Range)
                 {
                     CancelCast((byte)AbilityResult.ABILITYRESULT_OUTOFRANGE);
                     return;
@@ -725,7 +720,12 @@ namespace WorldServer.World.Abilities
                 }
             }
             if (tick >= _castStartTime + AbInfo.CastTime)
-                Cast();
+            {
+                if (AbInfo.ConstantInfo.ChannelID != 0)
+                    StartChannel();
+                else
+                    Cast();
+            }
             else
             {
                 if (AbInfo.CastTime == 0 || _channelHandler.HasInfo())
@@ -744,6 +744,18 @@ namespace WorldServer.World.Abilities
         #endregion Tick
 
         #region Channelling
+
+        private void StartChannel()
+        {
+            // Channeled Morale 4s grant immunity and cannot be interrupted
+            if (AbInfo.SpecialCost == -4)
+            {
+                _caster.AddCrowdControlImmunity((int)CrowdControlTypes.Unstoppable);
+                _caster.IsImmovable = true;
+            }
+
+            _channelHandler.Initialize(AbInfo, _castSequence);
+        }
 
         public void NotifyChannelEnded()
         {
@@ -1095,7 +1107,7 @@ namespace WorldServer.World.Abilities
 
             if (AbInfo.Target != null)
                 Out.WriteUInt16(AbInfo.Target.Oid);
-            else if (AbInfo.Range == 0)
+            else if (AbInfo.TargetsCaster)
                 Out.WriteUInt16(_caster.Oid);
             else Out.WriteUInt16(0);
 
@@ -1109,8 +1121,8 @@ namespace WorldServer.World.Abilities
             Out.WriteByte(0);
             _abInterface._Owner.DispatchPacket(Out, true);
 
-            if (AbInfo.CastTime == 0)
-                //if (AbInfo.ConstantInfo.ChannelID == 0)
+            // A channel ends without this, as it did while its length was held in CastTime.
+            if (AbInfo.CastTime == 0 && AbInfo.ConstantInfo.ChannelID == 0)
                 _caster.SendUpdateState((byte)StateOpcode.CastCompletion, 0);
         }
 

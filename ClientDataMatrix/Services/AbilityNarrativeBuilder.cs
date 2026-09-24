@@ -28,51 +28,48 @@ namespace ClientDataMatrix.Services
 
             string abilityName = GetAbilityName(report);
             BinaryAbilityRecord abilityRow = report.BinaryAbilityRows.FirstOrDefault();
-            ClientAbilityRecord clientRow = report.ClientAbilityRows.FirstOrDefault();
 
-            if (abilityRow == null && clientRow == null)
+            // abilities.csv is reached through the BIN record's EffectId, so without a BIN record
+            // there is no client row of any kind to explain.
+            if (abilityRow == null)
             {
-                builder.AppendLine("No client ability row or client BIN row was found for this ability ID.");
+                builder.AppendLine("No abilityexport.bin record was found for this ability ID.");
                 return builder.ToString().TrimEnd();
             }
 
             builder.AppendLine(abilityName + " (" + report.AbilityId.ToString(CultureInfo.InvariantCulture) + ")");
             builder.AppendLine();
 
-            if (abilityRow != null)
+            builder.AppendLine("1. The BIN row says this is a "
+                + _definitions.DescribeAbilityType(abilityRow.AbilityType).ToLowerInvariant()
+                + " ability that targets "
+                + _definitions.DescribeTargetType(abilityRow.TargetType).ToLowerInvariant()
+                + " and uses "
+                + _definitions.DescribeAttackType(abilityRow.AttackType).ToLowerInvariant()
+                + " attack typing.");
+
+            builder.AppendLine("2. The cost/timing block says it has cast time "
+                + abilityRow.CastTime.ToString(CultureInfo.InvariantCulture) + " ms, cooldown "
+                + abilityRow.Cooldown.ToString(CultureInfo.InvariantCulture) + " ms, range "
+                + abilityRow.Range.ToString(CultureInfo.InvariantCulture) + " feet, and AP cost "
+                + abilityRow.ApCost.ToString(CultureInfo.InvariantCulture) + ".");
+
+            builder.AppendLine("3. The career line value "
+                + abilityRow.CareerLine.ToString(CultureInfo.InvariantCulture)
+                + " resolves to "
+                + _definitions.DescribeCareerLine(abilityRow.CareerLine) + ".");
+
+            if (abilityRow.EffectId > 0)
             {
-                builder.AppendLine("1. The BIN row says this is a "
-                    + _definitions.DescribeAbilityType(abilityRow.AbilityType).ToLowerInvariant()
-                    + " ability that targets "
-                    + _definitions.DescribeTargetType(abilityRow.TargetType).ToLowerInvariant()
-                    + " and uses "
-                    + _definitions.DescribeAttackType(abilityRow.AttackType).ToLowerInvariant()
-                    + " attack typing.");
-
-                builder.AppendLine("2. The cost/timing block says it has cast time "
-                    + abilityRow.CastTime.ToString(CultureInfo.InvariantCulture) + " ms, cooldown "
-                    + abilityRow.Cooldown.ToString(CultureInfo.InvariantCulture) + " ms, range "
-                    + abilityRow.Range.ToString(CultureInfo.InvariantCulture) + " feet, and AP cost "
-                    + abilityRow.ApCost.ToString(CultureInfo.InvariantCulture) + ".");
-
-                builder.AppendLine("3. The career line value "
-                    + abilityRow.CareerLine.ToString(CultureInfo.InvariantCulture)
-                    + " resolves to "
-                    + _definitions.DescribeCareerLine(abilityRow.CareerLine) + ".");
-
-                if (abilityRow.EffectId > 0)
-                    builder.AppendLine("4. The BIN row points at client effect " + abilityRow.EffectId.ToString(CultureInfo.InvariantCulture) + ", which is the visual or staged effect entry the client will follow.");
-
-                AppendEffectNarrative(builder, report, abilityRow.EffectId);
-                AppendComponentNarrative(builder, report, abilityRow);
-                AppendRequirementNarrative(builder, report);
+                builder.AppendLine("4. The BIN row points at client effect " + abilityRow.EffectId.ToString(CultureInfo.InvariantCulture) + ", which is the visual or staged effect entry the client will follow.");
+                ClientAbilityRecord artRow = report.ClientAbilityRows.FirstOrDefault(row => row.EffectId == abilityRow.EffectId);
+                if (artRow != null)
+                    builder.AppendLine("   Its abilities.csv art row, keyed by that effect id, is \"" + artRow.Name + "\" with icon " + artRow.IconId.ToString(CultureInfo.InvariantCulture) + ".");
             }
-            else
-            {
-                builder.AppendLine("1. Only the client CSV row is present, so the timing and component story is incomplete.");
-                if (clientRow != null && clientRow.EffectId > 0)
-                    AppendEffectNarrative(builder, report, clientRow.EffectId);
-            }
+
+            AppendEffectNarrative(builder, report, abilityRow.EffectId);
+            AppendComponentNarrative(builder, report, abilityRow);
+            AppendRequirementNarrative(builder, report);
 
             if (report.Warnings != null && report.Warnings.Count > 0)
             {
@@ -187,10 +184,6 @@ namespace ClientDataMatrix.Services
 
         private static string GetAbilityName(AbilityAnalysisResult report)
         {
-            ClientAbilityRecord clientRow = report.ClientAbilityRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.Name));
-            if (clientRow != null)
-                return clientRow.Name;
-
             IndexedStringRecord nameRow = report.AbilityNameRows.FirstOrDefault(row => !string.IsNullOrWhiteSpace(row.NormalizedValue));
             if (nameRow != null)
                 return nameRow.NormalizedValue;

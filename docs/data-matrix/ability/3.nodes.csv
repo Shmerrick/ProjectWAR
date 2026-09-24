@@ -52,7 +52,7 @@ requirement:9622,requirement,9622,Requirement 9622,
 requirement:9623,requirement,9623,Requirement 9623,
 requirement:9624,requirement,9624,Requirement 9624,
 requirement:9625,requirement,9625,Requirement 9625,
-row:abilities.csv|line=8;AbilityId=3,row,abilities.csv|line=8;AbilityId=3,abilities.csv line=8;AbilityId=3,line_number=8 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
+row:abilities.csv|line=8;EffectId=3,row,abilities.csv|line=8;EffectId=3,abilities.csv line=8;EffectId=3,line_number=8 | source_path=C:\Users\Admin\Downloads\myps\data\gamedata\abilities.csv
 row:abilitycomponentexport.bin|record=1804;ComponentId=3310;offset=309536,row,abilitycomponentexport.bin|record=1804;ComponentId=3310;offset=309536,abilitycomponentexport.bin record=1804;ComponentId=3310;offset=309536,byte_offset=309536 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
 row:abilitycomponentexport.bin|record=6620;ComponentId=148;offset=1158063,row,abilitycomponentexport.bin|record=6620;ComponentId=148;offset=1158063,abilitycomponentexport.bin record=6620;ComponentId=148;offset=1158063,byte_offset=1158063 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin
 row:abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,row,abilitycomponentexport.bin|record=6673;ComponentId=212;offset=1169435,abilitycomponentexport.bin record=6673;ComponentId=212;offset=1169435,byte_offset=1169435 | source_path=C:\Users\Admin\Downloads\myps\data\bin\abilitycomponentexport.bin

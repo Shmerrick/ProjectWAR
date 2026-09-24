@@ -4,9 +4,14 @@ This file is the single source of truth for repository-specific AI-agent instruc
 
 ## Start of session
 
-Read **`docs/handoffs/2026-09-05-commit-handoff.md`** for the latest user retest and delivery
-state. Destruction's Chaos Wastes entrance to Bastion Stair is broken; the blue-orb
-identification was retracted. Earlier portal/PQ confirmations do not close those issues.
+Read **`docs/handoffs/2026-09-24-repository-audit.md`** for the fresh measured state,
+plan corrections, validation limits and outstanding acceptance work. The current
+incremental SQL series is 00–10; earlier numbered migrations were folded into the base.
+
+Read **`docs/handoffs/2026-09-05-commit-handoff.md`** for the historical user retest.
+Its follow-up records the Chaos Wastes entrance code repair, with client retest pending.
+The blue-orb identification remains retracted. Earlier portal/PQ confirmations do
+not establish current gameplay correctness.
 
 Read **`docs/handoffs/2026-09-05-stabilization.md`** first. It corrects the earlier checkpoint's
 influence-key diagnosis using the client `maps/zone160/influenceids.csv` and

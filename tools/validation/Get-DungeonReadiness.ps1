@@ -4,6 +4,8 @@ $BuildRoot = (Resolve-Path -LiteralPath $BuildRoot).Path
 [xml]$config = Get-Content -LiteralPath (Join-Path $BuildRoot 'Configs/World.xml')
 $db = $config.DocumentElement.WorldDatabase
 if ($db.ConnectionType -ne 'DATABASE_MYSQL') { throw 'This audit requires the configured MySQL database.' }
+$assemblyResolver = & (Join-Path $PSScriptRoot 'Use-BuildAssemblies.ps1') -BuildRoot $BuildRoot
+try {
 [void][Reflection.Assembly]::LoadFrom((Join-Path $BuildRoot 'libs/MySql.Data.dll'))
 $builder = New-Object MySql.Data.MySqlClient.MySqlConnectionStringBuilder
 $builder.set_ConnectionString([string]$db.Custom)
@@ -98,3 +100,4 @@ GROUP BY s.Source,s.ZoneId ORDER BY s.ZoneId,s.Source
         Limits = 'Data audit only. Empty objective spawn sets can be scripted; investigate before treating them as bugs. Level ranges include friendly NPCs and unverified legacy rows, exclude scripted adds, and are not difficulty baselines. Client completion, loot, portals and lockouts need gameplay retests.'
     }
 } finally { $connection.Dispose() }
+} finally { $assemblyResolver.Dispose() }

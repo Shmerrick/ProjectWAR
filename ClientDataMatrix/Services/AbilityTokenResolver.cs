@@ -1,8 +1,10 @@
+using ClientDataMatrix.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ClientDataMatrix.Services
@@ -28,9 +30,16 @@ namespace ClientDataMatrix.Services
     /// So finding an ability's damage needs no operation table and no decoded component semantics.
     /// The ability's own description says which component and which slot.
     ///
-    /// WHERE THE ORDERED LIST LIVES, AND THE TRAP. `mythic_bin_ability.MythicComponentData` is a
-    /// JSON array whose entries carry `ComponentID`, an explicit `Index`, and the component's own
-    /// `Values`, `Multipliers`, `Duration`, `Interval` and `Radius`. Order by `Index`.
+    /// WHERE THE ORDERED LIST LIVES, AND THE TRAP. `abilityexport.bin` carries each ability's
+    /// `ComponentIds` in slot order; each id is looked up in `abilitycomponentexport.bin` for its
+    /// `Values`, `Multipliers`, `Duration`, `Interval` and `Radius` (<see cref="FromClient"/>).
+    /// Empty slots are skipped. That is the toolkit import's convention -- its `Index` is the
+    /// compacted position on all 49 gapped abilities it holds -- and no tooltip token addresses a
+    /// gapped ability, so the client's own convention there is untested rather than confirmed.
+    ///
+    /// The import, `mythic_bin_ability.MythicComponentData`, carries the same lists with an explicit
+    /// `Index` (<see cref="ParseComponents"/>), but it is a copy and differs from the client on 60
+    /// abilities, so it is checked against the client rather than used.
     ///
     /// Do **not** use the ability report's "Related component IDs" line: it is a *sorted* set. For
     /// ability 7 it prints `2, 3301` while the real order is `3301, 2`, which makes `COM_0` resolve
@@ -50,6 +59,12 @@ namespace ClientDataMatrix.Services
             public long Duration;
             public long Interval;
             public long Radius;
+
+            /// <summary>
+            /// The ability names this id but `abilitycomponentexport.bin` has no record of it -- 38 ids
+            /// across 77 slots. Kept in place so the positions after it stay right.
+            /// </summary>
+            public bool Missing;
         }
 
         public sealed class Token
@@ -115,8 +130,47 @@ namespace ClientDataMatrix.Services
         }
 
         /// <summary>
-        /// Reads `MythicComponentData` into the ability's ordered component list. The column stores
-        /// an array whose `Data` member is itself a JSON *string*, so it is parsed twice.
+        /// The ability's ordered component list, read from the client: its `abilityexport.bin`
+        /// `ComponentIds` in slot order, empty slots skipped, each resolved in
+        /// `abilitycomponentexport.bin`.
+        /// </summary>
+        public static List<Component> FromClient(BinaryAbilityRecord ability, IDictionary<ushort, BinaryComponentRecord> componentsById)
+        {
+            var components = new List<Component>();
+            if (ability == null || ability.ComponentIds == null || componentsById == null)
+                return components;
+
+            foreach (ushort componentId in ability.ComponentIds)
+            {
+                if (componentId == 0)
+                    continue;
+
+                BinaryComponentRecord record;
+                if (!componentsById.TryGetValue(componentId, out record))
+                {
+                    components.Add(new Component { ComponentId = componentId, Index = components.Count, Missing = true });
+                    continue;
+                }
+
+                components.Add(new Component
+                {
+                    ComponentId = componentId,
+                    Index = components.Count,
+                    Values = record.Values == null ? new long[0] : record.Values.Select(value => (long)value).ToArray(),
+                    Multipliers = record.Multipliers == null ? new long[0] : record.Multipliers.Select(value => (long)value).ToArray(),
+                    Duration = record.Duration,
+                    Interval = record.Interval,
+                    Radius = record.Radius
+                });
+            }
+
+            return components;
+        }
+
+        /// <summary>
+        /// Reads the toolkit import's `MythicComponentData` into an ordered component list, used to
+        /// check that import against the client. The column stores an array whose `Data` member is
+        /// itself a JSON *string*, so it is parsed twice.
         /// </summary>
         public static List<Component> ParseComponents(string mythicComponentData)
         {
@@ -187,12 +241,13 @@ namespace ClientDataMatrix.Services
             }
 
             // Two very different failures, kept apart because they mean opposite things. No
-            // components at all is an import gap in mythic_bin_ability -- the token is fine and we
-            // simply have nothing to resolve it against. An index past a non-empty list would mean
-            // the ordering is wrong, which would indict the reading itself.
+            // components at all means the client lists none for the ability -- the token is fine and
+            // there is nothing to resolve it against. An index past a non-empty list means the record
+            // holds fewer components than its tooltip names; a wrong ordering would scatter those
+            // across the dataset instead of clustering them in one family of abilities.
             if (components == null || components.Count == 0)
             {
-                resolution.Failure = "no components imported for this ability";
+                resolution.Failure = "no components for this ability";
                 return resolution;
             }
 
@@ -203,6 +258,11 @@ namespace ClientDataMatrix.Services
             }
 
             Component component = components[token.ComponentIndex];
+            if (component.Missing)
+            {
+                resolution.Failure = "component " + component.ComponentId + " has no record in abilitycomponentexport.bin";
+                return resolution;
+            }
 
             if (token.Field.StartsWith("VAL", StringComparison.Ordinal))
             {

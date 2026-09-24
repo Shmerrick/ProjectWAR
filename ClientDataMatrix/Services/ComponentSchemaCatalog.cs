@@ -8286,16 +8286,11 @@ namespace ClientDataMatrix.Services
             return _abilityNamesById.TryGetValue(abilityId, out name) ? name : string.Empty;
         }
 
+        // abilitynames.txt only: abilities.csv is keyed by effect id, so a name read from it at an
+        // ability id belongs to some effect instead.
         private static Dictionary<ushort, string> BuildAbilityNames(AbilityDataset dataset)
         {
             Dictionary<ushort, string> names = new Dictionary<ushort, string>();
-            foreach (ClientAbilityRecord row in dataset.ClientAbilities.Where(row => row.AbilityId <= ushort.MaxValue))
-            {
-                ushort abilityId = (ushort)row.AbilityId;
-                if (!names.ContainsKey(abilityId) && !string.IsNullOrWhiteSpace(row.Name))
-                    names[abilityId] = row.Name;
-            }
-
             foreach (IndexedStringRecord row in dataset.AbilityNames.Where(row => row.EntryId <= ushort.MaxValue))
             {
                 ushort abilityId = (ushort)row.EntryId;

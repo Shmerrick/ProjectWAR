@@ -3,6 +3,8 @@ $ErrorActionPreference = 'Stop'
 # Read-only: exact-position/model/name matches, never nearest-neighbour level inference.
 [xml]$config = Get-Content (Join-Path $PSScriptRoot '../../bin/Release/Configs/World.xml')
 $db = $config.DocumentElement.WorldDatabase
+$assemblyResolver = & (Join-Path $PSScriptRoot 'Use-BuildAssemblies.ps1') -BuildRoot (Join-Path $PSScriptRoot '../../bin/Release')
+try {
 [void][Reflection.Assembly]::LoadFrom((Resolve-Path (Join-Path $PSScriptRoot '../../bin/Release/libs/MySql.Data.dll')))
 $builder = New-Object MySql.Data.MySqlClient.MySqlConnectionStringBuilder
 $builder.set_ConnectionString([string]$db.Custom)
@@ -12,9 +14,9 @@ $builder.set_Database(([string]$db.Database).Replace('%name%', 'world'))
 $builder.set_UserID([string]$db.Username)
 $builder.set_Password([string]$db.Password)
 $connection = New-Object MySql.Data.MySqlClient.MySqlConnection($builder.get_ConnectionString())
-$connection.Open()
 $lookup = @{}
 try {
+    $connection.Open()
     $command = $connection.CreateCommand()
     $command.CommandText = 'SELECT s.Instance_spawns_ID,s.Entry,s.Level,s.WorldX,s.WorldY,s.WorldZ,p.Name,p.Model1,p.Model2 FROM instance_creature_spawns s JOIN creature_protos p ON p.Entry=s.Entry WHERE s.ZoneID=60'
     $reader = $command.ExecuteReader()
@@ -27,6 +29,7 @@ try {
     $reader.Dispose()
     $command.Dispose()
 } finally {$connection.Dispose()}
+} finally {$assemblyResolver.Dispose()}
 
 function U32($b, $i) {16777216L*$b[$i]+65536L*$b[$i+1]+256L*$b[$i+2]+$b[$i+3]}
 $matchesBySpawn = @{}

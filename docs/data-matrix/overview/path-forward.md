@@ -1,5 +1,11 @@
 # ClientDataMatrix: Path Forward
 
+Current review: [September 24 repository audit](../../handoffs/2026-09-24-repository-audit.md).
+The historical "Unknown=0" classifier result below is not proof that every runtime
+operation or upgrade join is understood. Direct client BINs outrank imported blank
+fields; the Skaven controls are a verified example. Use the current crosswalk and
+the dated generated summaries when choosing the next implementation task.
+
 Last updated: 2026-03-28 (Londos DB + WorldServer + live war_world DB searched; op=43 confirmed; ops 29/30/32/40/41/47/51 row counts and patterns fully documented)
 
 Component field decode is complete (Unknown=0, Structural=0). Requirement semantics fully decoded. This document covers all remaining open work, ordered by impact and tractability.
@@ -68,6 +74,12 @@ Work through the 72 command codes. Many can be inferred by correlating Values[1]
 
 ## Area 4: Coverage Gaps — 12,664 abilities below Mapped (High)
 
+> **Superseded 2026-09-13 (BUG-165).** Every count in this section came from joining `abilities.csv`
+> on ability id, and that sheet is keyed by effect id. With the join corrected the gap is **3,171**
+> (Partial 1,962, StringsOnly 1,209) and Mapped rose from 1,984 to 8,657. The "csv + effect-text"
+> bucket below — "Has abilities.csv but no BIN row" — was csv rows landing on unrelated ability ids.
+> Run `report remaining` for the current patterns; the text below is kept as history.
+
 ### Findings from investigation (commit fbb2a83d)
 
 The string files (`abilitynames.txt`, `abilitydesc.txt`) contain 29,001 sequential indexed entries, most of which are blank placeholders. These were inflating the gap count. Fixed by adding a new `BlankSlot` coverage status — fires when an ability's only source data is blank string-table entries. BlankSlot abilities (13,963) are excluded from coverage gap counts as irrecoverable empty placeholder IDs.
@@ -102,6 +114,10 @@ Have actual non-blank names/descriptions in string files but no BIN/CSV/effect/c
 ---
 
 ## ~~Area 5: Conflict Hotspots — 2,897 EffectId Conflicts~~ — RESOLVED (commit df9fff32)
+
+> **Note 2026-09-13 (BUG-165).** Two of these three groups were never disagreements between client
+> files: `AbilityIdMirrorEffectId` and `MountOverlayEffectId` came from joining `abilities.csv` on
+> ability id, and disappeared with that join. The ledger now holds 471 conflicts, all about effects.
 
 All three EffectId conflict groups (AbilityIdMirrorEffectId=2,546, ZeroVsEffectIdGap=289, MountOverlayEffectId=65) already had resolution rules with `CanonicalValue` set. The remaining-work catalog was not filtering resolved conflicts. Fixed by adding `string.IsNullOrWhiteSpace(row.CanonicalValue)` to the `BuildConflictArea` filter and `HighSignalConflictCount` — dropping high-signal conflicts from 2,897 to 0.
 
