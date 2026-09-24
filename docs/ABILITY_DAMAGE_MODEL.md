@@ -1,5 +1,8 @@
 # Ability damage: how the client computes it, and where we diverge
 
+Cooldown counts below are historical. Migration 11 closes all 49 fractional-value
+gaps using `abilityexport.bin` record +4; [current verification and limits](handoffs/2026-09-24-cooldown-milliseconds.md).
+
 Established 2026-09-08 by measurement against the extracted 1.4.8 client, the world database and
 the packet captures. Read this before touching `mythic_src_ability_damage_heals`,
 `AbilityDamageInfo`, or anything in `AbilityMgr` that mentions scaling.

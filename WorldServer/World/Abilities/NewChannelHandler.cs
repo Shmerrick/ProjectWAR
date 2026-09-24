@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FrameWork;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -82,7 +82,7 @@ namespace WorldServer.World.Abilities
             _channelStartTime = TCPManager.GetTimeStampMS();
             _nextTickTime = _channelStartTime + TickInterval;
             InvokeChannelBuff();
-            _host.AbtInterface.SetCooldown(_baseEntry, _channelInfo.Cooldown * 1000);
+            _host.AbtInterface.SetCooldown(_baseEntry, _channelInfo.CooldownMilliseconds);
             if (_playerHost != null && _channelInfo.SpecialCost > 5)
                 _playerHost.CrrInterface.ConsumeResource((byte)_channelInfo.SpecialCost, false);
             else if (_channelInfo.SpecialCost < 0)

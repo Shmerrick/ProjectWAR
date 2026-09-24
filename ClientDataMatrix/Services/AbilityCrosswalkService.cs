@@ -251,6 +251,7 @@ namespace ClientDataMatrix.Services
             var importedComponentLists = new Dictionary<long, List<long>>();
             var importedUpgradeItems = new Dictionary<long, long[]>();
             bool channelColumns = false;
+            bool millisecondCooldowns = false;
 
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -272,7 +273,14 @@ namespace ClientDataMatrix.Services
                     reader => channelColumns = Convert.ToInt64(reader[0], CultureInfo.InvariantCulture) == 2);
 
                 ReadRows(connection,
-                    "SELECT Entry, CareerLine, `Range`, CastTime, Cooldown, ApCost, EffectID, ChannelID, "
+                    "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()"
+                    + " AND TABLE_NAME = 'mythic_src_abilities' AND COLUMN_NAME = 'CooldownMilliseconds'",
+                    reader => millisecondCooldowns = Convert.ToInt64(reader[0], CultureInfo.InvariantCulture) == 1);
+
+                ReadRows(connection,
+                    "SELECT Entry, CareerLine, `Range`, CastTime, "
+                    + (millisecondCooldowns ? "COALESCE(CooldownMilliseconds, COALESCE(Cooldown,0)*1000)" : "COALESCE(Cooldown,0)*1000")
+                    + ", ApCost, EffectID, ChannelID, "
                     + (channelColumns ? "ChannelDuration, ChannelInterval" : "NULL, NULL") + " FROM mythic_src_abilities",
                     reader => databaseAbilities.Add(new DatabaseAbilityRow
                     {
@@ -323,7 +331,7 @@ namespace ClientDataMatrix.Services
             }
 
             FieldTally castTime = AddTally(report, "CastTime", "client ms = ours ms");
-            FieldTally cooldown = AddTally(report, "Cooldown", "client ms = ours s x 1000");
+            FieldTally cooldown = AddTally(report, "Cooldown", "client ms = effective runtime ms (legacy seconds fallback)");
             FieldTally range = AddTally(report, "Range", "client = ours ft x 12");
             FieldTally apCost = AddTally(report, "ApCost", "client = ours");
             FieldTally channel = AddTally(report, "Channel", "client FlagsRaw bit 22 = ours ChannelID set");
@@ -411,7 +419,7 @@ namespace ClientDataMatrix.Services
                 Compare(report, castTime, row.Entry, clientName, "abilityexport.bin CastTime", client.CastTime,
                     row.CastTime, "mythic_src_abilities.CastTime", 1);
                 Compare(report, cooldown, row.Entry, clientName, "abilityexport.bin Cooldown", client.Cooldown,
-                    row.Cooldown, "mythic_src_abilities.Cooldown", SecondsToMilliseconds);
+                    row.Cooldown, "mythic_src_abilities effective cooldown ms", 1);
                 Compare(report, range, row.Entry, clientName, "abilityexport.bin Range", client.Range,
                     row.Range, "mythic_src_abilities.Range", FeetToClientRange);
                 Compare(report, apCost, row.Entry, clientName, "abilityexport.bin ApCost", client.ApCost,
@@ -905,7 +913,7 @@ namespace ClientDataMatrix.Services
             text.AppendLine("and none on the other is listed separately because it is often a convention — the client binds");
             text.AppendLine("the Squig pet abilities 6–9 to no career line while ours carry a mask — so read those before");
             text.AppendLine("acting on them. *Not representable* is a client value our column's unit cannot hold, such as a");
-            text.AppendLine("4,500 ms cooldown in whole seconds. A channel is `FlagsRaw` bit 22, set on every ability the");
+            text.AppendLine("fractional-foot range. Cooldowns use exact milliseconds with a legacy seconds fallback. A channel is `FlagsRaw` bit 22, set on every ability the");
             text.AppendLine("captures show channelling; its length and AP tick are compared only where both sides channel.");
             text.AppendLine();
             text.AppendLine("| Column | Rule | Agree | Differ | Ours empty | Client empty | Not representable | Not comparable | Agreement |");
@@ -1012,7 +1020,6 @@ namespace ClientDataMatrix.Services
         {
             switch (finding.Field)
             {
-                case "Cooldown":
                 case "Duration":
                     return Math.Abs(finding.ClientValue - finding.DatabaseValue * SecondsToMilliseconds);
                 case "Range":

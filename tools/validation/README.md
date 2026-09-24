@@ -193,11 +193,19 @@ to 8,372 and 4,177 EffectIDs.
 SELECT-only. Loads both ability tables through the server's own ORM, by reflection and by the
 compiled binder WorldServer uses, and requires every mapped property on every row to agree, and the
 non-NULL `TargetType` and non-zero `AICooldown` counts to match the table. Migrations 03 and 09
-added those columns, migration 10 `ChannelDuration` and `ChannelInterval`, and `TargetType` is nullable -- NULL means the client has no record, and a
+added those columns, migration 10 `ChannelDuration` and `ChannelInterval`, and migration 11
+`CooldownMilliseconds`. `TargetType` is nullable -- NULL means the client has no record, and a
 binder that read it as 0 would send those abilities to their caster -- so a column the ORM cannot
 bind fails here rather than at boot.
 
 Against a current world database, run:
+
+`./tools/validation/Test-AbilityCooldownData.ps1` checks migration 11 in both ability
+tables against legacy seconds and the raw fractional cooldown bytes from the extracted
+client's `data/bin/abilityexport.bin`. It is SELECT-only. `Test-RuntimeRegressions.ps1`
+also verifies modifier precision, NPC isolation, timer packet floors/expiry and item
+rounding. See [cooldown handoff](../../docs/handoffs/2026-09-24-cooldown-milliseconds.md)
+for evidence, units and the still-required in-client acceptance.
 
 
 ```powershell

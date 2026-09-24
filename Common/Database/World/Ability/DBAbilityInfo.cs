@@ -36,6 +36,10 @@ namespace Common
         [DataElement]
         public ushort Cooldown { get; set; }
 
+        /// <summary>Exact milliseconds; NULL falls back to the legacy Cooldown seconds.</summary>
+        [DataElement]
+        public int? CooldownMilliseconds { get; set; }
+
         [DataElement]
         public byte ApCost { get; set; }
 

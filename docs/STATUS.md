@@ -12,8 +12,11 @@ table checksums. No in-client run was performed.
 
 World data still has 221 configured zones without area maps and 38 PQ definitions
 without PQ maps, but zero area references to missing nonzero influence tracks.
-The ability crosswalk still identifies 127 missing channels, 49 subsecond cooldown
-cases, 574 fractional-foot ranges and unresolved damage/duration mappings.
+The subsequent [cooldown migration](handoffs/2026-09-24-cooldown-milliseconds.md)
+closes all 49 fractional cooldown gaps: 5,864 comparable cooldowns now agree.
+Migration 11 is applied and idempotency checked; runtime and loader regressions pass.
+The ability crosswalk still identifies 127 missing channels, 574 fractional-foot
+ranges and unresolved damage/duration mappings. Item relog precision remains seconds.
 Skaven and Thanquol have partial runtime/data scaffolding; passing their data checks
 does not establish playable features. Historical claims below are not current counts.
 

@@ -23,7 +23,7 @@ namespace WorldServer.World.Abilities.Components
             MinRange = dbObj.MinRange;
             Range = dbObj.Range;
             CastTime = dbObj.CastTime;
-            Cooldown = dbObj.Cooldown;
+            CooldownMilliseconds = ClampCooldownMilliseconds(dbObj.CooldownMilliseconds ?? dbObj.Cooldown * 1000);
             AICooldown = dbObj.AICooldown;
             ApCost = dbObj.ApCost;
             SpecialCost = dbObj.SpecialCost;
@@ -127,9 +127,28 @@ namespace WorldServer.World.Abilities.Components
 
         public ushort CastTime;
 
-        public ushort Cooldown;
+        public int CooldownMilliseconds;
 
-        /// <summary>AI pacing in seconds; the AI uses the larger of this and Cooldown.</summary>
+        public static int ClampCooldownMilliseconds(double value)
+        {
+            if (double.IsNaN(value) || value <= 0)
+                return 0;
+            return value >= int.MaxValue ? int.MaxValue : (int)value;
+        }
+
+        public int GetAICooldownMilliseconds()
+        {
+            return Math.Max(CooldownMilliseconds, AICooldown * 1000);
+        }
+
+        // Existing item metadata/timer packets carry whole seconds. Keep that boundary
+        // explicit and round up so a positive fractional delay is never displayed as zero.
+        public static ushort GetItemCooldownSeconds(int milliseconds)
+        {
+            return (ushort)Math.Min(ushort.MaxValue, (Math.Max(0L, milliseconds) + 999) / 1000);
+        }
+
+        /// <summary>Server-authored AI pacing in seconds; compared in milliseconds at use.</summary>
         public ushort AICooldown;
 
         public byte ApCost;

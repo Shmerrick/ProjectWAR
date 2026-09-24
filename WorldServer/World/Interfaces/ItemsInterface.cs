@@ -3259,9 +3259,10 @@ namespace WorldServer.World.Interfaces
         private readonly HashSet<uint> _foundItemEntries = new HashSet<uint>();
         private readonly List<Item> _foundItems = new List<Item>();
 
-        public void SendItemGroupCooldown(ushort groupEntry, ushort cooldown)
+        public void SendItemGroupCooldown(ushort groupEntry, int cooldownMilliseconds)
         {
-            long nextUseTime = TCPManager.GetTimeStamp() + cooldown;
+            ushort cooldown = WorldServer.World.Abilities.Components.AbilityInfo.GetItemCooldownSeconds(cooldownMilliseconds);
+            long nextUseTime = (TCPManager.GetTimeStampMS() + Math.Max(0, cooldownMilliseconds) + 999) / 1000;
 
             foreach (var item in Items)
             {
@@ -3360,9 +3361,10 @@ namespace WorldServer.World.Interfaces
         }
 
 
-        public void SendItemCooldown(ushort spellEntry, ushort cooldown)
+        public void SendItemCooldown(ushort spellEntry, int cooldownMilliseconds)
         {
-            long nextUseTime = TCPManager.GetTimeStamp() + cooldown;
+            ushort cooldown = WorldServer.World.Abilities.Components.AbilityInfo.GetItemCooldownSeconds(cooldownMilliseconds);
+            long nextUseTime = (TCPManager.GetTimeStampMS() + Math.Max(0, cooldownMilliseconds) + 999) / 1000;
 
             foreach (Item item in Items)
             {

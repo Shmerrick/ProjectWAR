@@ -1134,28 +1134,24 @@ namespace WorldServer.World.Abilities
             return (!CanCastCooldown(0) && !abInfo.ConstantInfo.IgnoreGlobalCooldown) || !CanCastCooldown(abInfo.ConstantInfo.CooldownEntry != 0 ? abInfo.ConstantInfo.CooldownEntry : abInfo.Entry);
         }
 
-        public void SetItemGroupCooldown(byte cooldownGroupId, ushort duration)
+        /// <summary>Schedules exact milliseconds; item packets/persistence have a seconds boundary.</summary>
+        public void SetItemGroupCooldown(byte cooldownGroupId, int durationMilliseconds)
         {
             if (cooldownGroupId == byte.MaxValue)
                 return;
-            if (!ItemGroupCooldowns.ContainsKey(cooldownGroupId))
-                ItemGroupCooldowns.Add(cooldownGroupId, duration * 1000 + TCPManager.GetTimeStampMS());
-            else
-                ItemGroupCooldowns[cooldownGroupId] = duration * 1000 + TCPManager.GetTimeStampMS();
-
-            _unitOwner.ItmInterface.SendItemGroupCooldown(cooldownGroupId, duration);
+            durationMilliseconds = Math.Max(0, durationMilliseconds);
+            ItemGroupCooldowns[cooldownGroupId] = durationMilliseconds + TCPManager.GetTimeStampMS();
+            _unitOwner.ItmInterface.SendItemGroupCooldown(cooldownGroupId, durationMilliseconds);
         }
 
-        public void SetItemCooldown(ushort abilityId, ushort duration, bool silent = false)
+        public void SetItemCooldown(ushort abilityId, int durationMilliseconds, bool silent = false)
         {
             if (abilityId == ushort.MaxValue)
                 return;
-            if (!Cooldowns.ContainsKey(abilityId))
-                Cooldowns.Add(abilityId, duration * 1000 + TCPManager.GetTimeStampMS());
-            else
-                Cooldowns[abilityId] = duration * 1000 + TCPManager.GetTimeStampMS();
-
-            _unitOwner.ItmInterface.SendItemCooldown(abilityId, duration);
+            durationMilliseconds = Math.Max(0, durationMilliseconds);
+            Cooldowns[abilityId] = durationMilliseconds + TCPManager.GetTimeStampMS();
+            if (!silent)
+                _unitOwner.ItmInterface.SendItemCooldown(abilityId, durationMilliseconds);
         }
 
         /// <summary>
@@ -1172,57 +1168,36 @@ namespace WorldServer.World.Abilities
 
             if (abilityId == ushort.MaxValue)
                 return;
+            if (duration < -1)
+                throw new ArgumentOutOfRangeException(nameof(duration));
+
             AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(abilityId);
-            if (abInfo.IgnoreCooldownReduction == 1 && (abInfo.Cooldown * 1000) >= duration)
+            long effectiveDuration = duration;
+            if (abInfo != null)
             {
-                long nextTimestamp = 0;
-                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
-                    nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
-                else
-                    nextTimestamp = (abInfo.Cooldown * 1000) + TCPManager.GetTimeStampMS();
-
-                Cooldowns[abilityId] = nextTimestamp;
-
-                if (silent)
-                    return;
-
-                PacketOut Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
-                Out.WriteUInt16(abilityId);
-                Out.Fill(0, 2);
-                Out.WriteUInt32(((uint)abInfo.Cooldown * 1000));
-                Out.Fill(0, 4);
-                if (_Owner.IsPet())
-                    _Owner.GetPet().Owner.SendPacket(Out);
-                else
-                    _playerOwner?.SendPacket(Out);
+                // Preserve the existing no-reduction and minimum-cooldown policies.
+                if (abInfo.IgnoreCooldownReduction == 1)
+                    effectiveDuration = Math.Max(effectiveDuration, abInfo.CooldownMilliseconds);
+                if (abInfo.CDcap != 0)
+                    effectiveDuration = Math.Max(effectiveDuration, abInfo.CDcap * 1000L);
             }
+            effectiveDuration = Math.Max(0, Math.Min(uint.MaxValue, effectiveDuration));
+            Cooldowns[abilityId] = effectiveDuration == 0 ? 0 : TCPManager.GetTimeStampMS() + effectiveDuration;
+            if (!silent)
+                SendCooldownTimer(abilityId, (uint)effectiveDuration);
+        }
 
-            if (abInfo.IgnoreCooldownReduction != 1 || (abInfo.IgnoreCooldownReduction == 1 && (abInfo.Cooldown * 1000) < duration))
-            {
-                long nextTimestamp = 0;
-
-                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
-                    nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
-                else
-                    nextTimestamp = (duration) + TCPManager.GetTimeStampMS();
-
-                if (duration == -1 && abInfo.CDcap == 0)
-                    nextTimestamp = 0;
-                Cooldowns[abilityId] = nextTimestamp;
-
-                if (silent)
-                    return;
-
-                PacketOut Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
-                Out.WriteUInt16(abilityId);
-                Out.Fill(0, 2);
-                Out.WriteUInt32(duration != -1 ? (uint)duration : 0);
-                Out.Fill(0, 4);
-                if (_Owner.IsPet())
-                    _Owner.GetPet().Owner.SendPacket(Out);
-                else
-                    _playerOwner?.SendPacket(Out);
-            }
+        private void SendCooldownTimer(ushort abilityId, uint durationMilliseconds)
+        {
+            PacketOut packet = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
+            packet.WriteUInt16(abilityId);
+            packet.Fill(0, 2);
+            packet.WriteUInt32(durationMilliseconds);
+            packet.Fill(0, 4);
+            if (_Owner.IsPet())
+                _Owner.GetPet().Owner.SendPacket(packet);
+            else
+                _playerOwner?.SendPacket(packet);
         }
 
         /// <summary>
@@ -1240,18 +1215,11 @@ namespace WorldServer.World.Abilities
 
         public void ResendCooldown(ushort abilityId)
         {
-            uint duration = 0;
-
-            if (Cooldowns.ContainsKey(abilityId))
-                duration = (uint)(Cooldowns[abilityId] - TCPManager.GetTimeStampMS());
-
-            PacketOut Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
-            Out.WriteUInt16(abilityId);
-            Out.Fill(0, 2);
-            Out.WriteUInt32(duration);
-            Out.Fill(0, 4);
-
-            _playerOwner.SendPacket(Out);
+            long expiresAt;
+            uint duration = Cooldowns.TryGetValue(abilityId, out expiresAt)
+                ? (uint)Math.Max(0, Math.Min(uint.MaxValue, expiresAt - TCPManager.GetTimeStampMS()))
+                : 0;
+            SendCooldownTimer(abilityId, duration);
         }
 
         public void SetGlobalCooldown()
@@ -1271,7 +1239,7 @@ namespace WorldServer.World.Abilities
             if (!Cooldowns.TryGetValue(abilityId, out time))
                 return true;
 
-            return time - COOLDOWN_GRACE <= TCPManager.GetTimeStampMS();
+            return time - (abilityId == 0 ? COOLDOWN_GRACE : 0) <= TCPManager.GetTimeStampMS();
         }
 
         public bool CanCastItemGroupCooldown(byte groupCooldownId)
@@ -1281,7 +1249,7 @@ namespace WorldServer.World.Abilities
             if (!ItemGroupCooldowns.TryGetValue(groupCooldownId, out time))
                 return true;
 
-            return time - COOLDOWN_GRACE <= TCPManager.GetTimeStampMS();
+            return time <= TCPManager.GetTimeStampMS();
         }
 
         public bool IsOnGlobalCooldown()
@@ -1301,7 +1269,7 @@ namespace WorldServer.World.Abilities
             if (curCooldownMS == 0)
                 return;
 
-            item.CharSaveInfo.NextAllowedUseTime = curCooldownMS / 1000;
+            item.CharSaveInfo.NextAllowedUseTime = (curCooldownMS + 999) / 1000;
         }
 
         #endregion Cooldowns

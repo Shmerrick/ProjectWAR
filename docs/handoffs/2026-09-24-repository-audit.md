@@ -112,7 +112,8 @@ database to apply an upgrade.
 1. Client-test casting/target selection, cast-then-channel, cancellation/recast,
    AP ticks, portals/relog and Matrix filters/icons through the normal launchers.
 2. Trace channel-end command execution before converting the 127 remaining
-   channels; then migrate subsecond cooldown storage and all consumers together.
+   channels. The independent fractional cooldown migration and its consumers are
+   now implemented; see [subsequent handoff](2026-09-24-cooldown-milliseconds.md).
 3. Resolve component-to-command/damage-row mappings and the upgrade evaluator's
    object/key join before further scaling changes (BUG-151).
 4. Finish Thanquol admission/population ownership and the Skaven transformation

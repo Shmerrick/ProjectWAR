@@ -1,4 +1,4 @@
-﻿using FrameWork;
+using FrameWork;
 using GameData;
 using NLog;
 using System;
@@ -72,7 +72,7 @@ namespace WorldServer.World.Abilities
                 {
                     toToggle.BuffHasExpired = true;
                     CancelPendingCast();
-                    _abInterface.SetCooldown(abInfo.ConstantInfo.CooldownEntry != 0 ? abInfo.ConstantInfo.CooldownEntry : abInfo.Entry, abInfo.Cooldown * 1000);
+                    _abInterface.SetCooldown(abInfo.ConstantInfo.CooldownEntry != 0 ? abInfo.ConstantInfo.CooldownEntry : abInfo.Entry, abInfo.CooldownMilliseconds);
                     return true;
                 }
             }
@@ -106,7 +106,7 @@ namespace WorldServer.World.Abilities
 
             if (result == 3)
             {
-                _abInterface.SetCooldown(_pendingInfo.ConstantInfo.CooldownEntry != 0 ? _pendingInfo.ConstantInfo.CooldownEntry : _pendingInfo.Entry, _pendingInfo.Cooldown * 1000);
+                _abInterface.SetCooldown(_pendingInfo.ConstantInfo.CooldownEntry != 0 ? _pendingInfo.ConstantInfo.CooldownEntry : _pendingInfo.Entry, _pendingInfo.CooldownMilliseconds);
                 CancelPendingCast();
                 return false;
             }
@@ -246,7 +246,7 @@ namespace WorldServer.World.Abilities
 
             if (result == 3)
             {
-                _abInterface.SetCooldown(_pendingInfo.ConstantInfo.CooldownEntry != 0 ? _pendingInfo.ConstantInfo.CooldownEntry : _pendingInfo.Entry, _pendingInfo.Cooldown * 1000);
+                _abInterface.SetCooldown(_pendingInfo.ConstantInfo.CooldownEntry != 0 ? _pendingInfo.ConstantInfo.CooldownEntry : _pendingInfo.Entry, _pendingInfo.CooldownMilliseconds);
                 CancelPendingCast();
                 return false;
             }
@@ -662,7 +662,7 @@ namespace WorldServer.World.Abilities
                         {
                             if (result > 1)
                             {
-                                _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown * 1000);
+                                _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.CooldownMilliseconds);
                                 _abInterface.SetGlobalCooldown();
                             }
 
@@ -1133,11 +1133,11 @@ namespace WorldServer.World.Abilities
                 if (AbInfo.ConstantInfo.Origin == AbilityOrigin.AO_ITEM)
                 {
                     if (_itemCooldownGroup > 0)
-                        _abInterface.SetItemGroupCooldown(_itemCooldownGroup, AbInfo.Cooldown);
+                        _abInterface.SetItemGroupCooldown(_itemCooldownGroup, AbInfo.CooldownMilliseconds);
                     else
-                        _abInterface.SetItemCooldown(AbInfo.Entry, AbInfo.Cooldown);
+                        _abInterface.SetItemCooldown(AbInfo.Entry, AbInfo.CooldownMilliseconds);
                 }
-                else _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown * 1000);
+                else _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.CooldownMilliseconds);
             }
 
             // Morale cooldown if applicable
@@ -1152,7 +1152,7 @@ namespace WorldServer.World.Abilities
                     PacketOut Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
                     Out.WriteUInt16(0);
                     Out.WriteUInt16(0x200);
-                    Out.WriteUInt32((uint)(AbInfo.Cooldown * 1000));
+                    Out.WriteUInt32((uint)(AbInfo.CooldownMilliseconds));
                     Out.WriteUInt32(0);
                     plr.SendPacket(Out);
                 }
@@ -1216,8 +1216,8 @@ namespace WorldServer.World.Abilities
             _abEffectInvoker.StartEffects(AbInfo);
 
             if (_itemCooldownGroup > 0)
-                _abInterface.SetItemGroupCooldown(_itemCooldownGroup, AbInfo.Cooldown);
-            else _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown * 1000);
+                _abInterface.SetItemGroupCooldown(_itemCooldownGroup, AbInfo.CooldownMilliseconds);
+            else _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.CooldownMilliseconds);
 
             if (AbInfo.SpecialCost < 0)
             {

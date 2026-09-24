@@ -305,7 +305,7 @@ crosswalk's reading of `abilityexport.bin`. Migrations 00-02 took what both witn
 | `09_conform_ability_targeting_and_ranges_to_client.sql` | `TargetType` on 5,864 rows, 2,122 ranges | tier 1; who a cast lands on follows `TargetType`, as tier 2 shows the live server did (BUG-168) |
 | `10_conform_ability_channels_to_client.sql` | 87 channels' length, tick, cast time and AP cost; 13 channel buff durations | tier 1 channel flag, component duration and `ChannelInterval`; tier 2 agrees on all 64 captured lengths (BUG-170) |
 
-Afterwards the crosswalk reads, as differ / ours empty / client empty / not representable: cast time
+After migration 10 the crosswalk read, as differ / ours empty / client empty / not representable: cast time
 0 / 0 / 0 / 0, cooldown 0 / 24 / 0 / 25, range 0 / 0 / 0 / 574, AP cost 0 / 8 / 0 / 0, channel flag
 0 / 127 / 0 / 0, channel length 0 / 0 / 5 / 0, channel interval 0 / 0 / 0 / 0, EffectID 0 / 0 / 0 / 0,
 buff duration 5 differing, damage 15 of 408 comparable.
@@ -324,9 +324,10 @@ to follow the client. Each needs code or a mapping first, and every row is in
   remaining time on channels, which look like setbacks the emulator never applies to a channel; and
   several channel buffs tick at a different interval from their component, which needs the
   component mapping before an interval is taken.
-- *Cooldowns below a second: 49.* `Cooldown` is whole seconds and the client holds 4,500 ms and the
-  like. The column has to move to milliseconds, which touches every `Cooldown * 1000` site and the
-  item cooldowns that read it as seconds.
+- *Fractional cooldowns: 49 — runtime/storage completed by migration 11.*
+  Client `abilityexport.bin` record +4 supplies exact milliseconds; all 5,864
+  comparable cooldowns now agree. See the [handoff](handoffs/2026-09-24-cooldown-milliseconds.md)
+  for modifier/AI conversion and remaining item seconds boundaries and client acceptance.
 - *Ranges finer than a foot: 574.* Taken to the nearest foot, because the server measures distance
   in whole feet (`GetDistanceToObject`). Exact conformance needs distance checks in the client's
   twelfth-of-a-foot units.

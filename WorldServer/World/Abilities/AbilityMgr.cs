@@ -1012,7 +1012,8 @@ namespace WorldServer.World.Abilities
                 AbilityInfo abInfo = GetAbilityInfo(cAb.AbilityId);
                 if (abInfo != null)
                 {
-                    temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, Math.Max(Math.Max(abInfo.Cooldown, abInfo.AICooldown), cAb.Cooldown), true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange));
+                    temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, 0, true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange,
+                        Math.Max(abInfo.GetAICooldownMilliseconds(), cAb.Cooldown * 1000)));
                     Log.Dump("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + " ~ Loaded");
                 }
                 else
@@ -1022,7 +1023,7 @@ namespace WorldServer.World.Abilities
             }
 
             foreach (uint key in temp.Keys)
-                CreatureAbilities[key] = temp[key].OrderByDescending(x => x.Cooldown).ToList();
+                CreatureAbilities[key] = temp[key].OrderByDescending(x => x.CooldownMilliseconds).ToList();
         }
 
         public static List<NPCAbility> GetCreatureAbilities(uint entry)
@@ -1729,11 +1730,11 @@ namespace WorldServer.World.Abilities
             return 0;
         }
 
-        public static ushort GetCooldownFor(ushort entry)
+        public static int GetCooldownMilliseconds(ushort entry)
         {
             ushort resolvedEntry = ResolveAbilityEntry(entry);
             if (NewAbilityVolatiles.ContainsKey(resolvedEntry))
-                return NewAbilityVolatiles[resolvedEntry].Cooldown;
+                return NewAbilityVolatiles[resolvedEntry].CooldownMilliseconds;
             return 0;
         }
 

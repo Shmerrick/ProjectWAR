@@ -83,6 +83,7 @@ internal static class AbilityAlignmentChecks
                 "SELECT COUNT(*) FROM abilities a JOIN mythic_src_abilities m ON m.Entry = a.Entry"
                 + " WHERE a.CareerLine <=> m.CareerLine AND a.MinRange <=> m.MinRange AND a.Range <=> m.Range"
                 + " AND a.CastTime <=> m.CastTime AND a.Cooldown <=> m.Cooldown AND a.ApCost <=> m.ApCost"
+                + " AND a.CooldownMilliseconds <=> m.CooldownMilliseconds"
                 + " AND a.AbilityType <=> m.AbilityType AND a.MasteryTree <=> m.MasteryTree"
                 + " AND a.Specline <=> m.Specline AND a.MinimumRank <=> m.MinimumRank"
                 + " AND a.TargetType <=> m.TargetType AND a.AICooldown <=> m.AICooldown AND a.ChannelID <=> m.ChannelID"

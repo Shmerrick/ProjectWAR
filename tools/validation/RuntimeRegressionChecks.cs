@@ -54,6 +54,7 @@ internal static class RuntimeRegressionChecks
             CheckOverlays(root);
             CheckRegionMembership();
             CheckInfluence();
+            CheckCooldowns();
             CheckChannelRange();
             CheckStaleChannelCallback();
             CheckDungeonPackets();
@@ -287,6 +288,72 @@ internal static class RuntimeRegressionChecks
     {
         return ((uint)bytes[offset] << 24) | ((uint)bytes[offset + 1] << 16) |
             ((uint)bytes[offset + 2] << 8) | bytes[offset + 3];
+    }
+
+    private static void CheckCooldowns()
+    {
+        Assert(new AbilityInfo(new DBAbilityInfo { Cooldown = 7 }).CooldownMilliseconds == 7000, "Legacy seconds fallback");
+        Assert(new AbilityInfo(new DBAbilityInfo { Cooldown = 7, CooldownMilliseconds = 0 }).CooldownMilliseconds == 0, "Explicit zero overrides legacy");
+        Assert(AbilityInfo.ClampCooldownMilliseconds(double.NaN) == 0 && AbilityInfo.ClampCooldownMilliseconds(-1) == 0,
+            "Invalid cooldowns clamp to zero");
+        Assert(AbilityInfo.ClampCooldownMilliseconds(double.MaxValue) == int.MaxValue, "Cooldown overflow saturates");
+        Assert(AbilityInfo.GetItemCooldownSeconds(1500) == 2 && AbilityInfo.GetItemCooldownSeconds(int.MaxValue) == ushort.MaxValue,
+            "Item seconds boundary rounds up and saturates");
+        var info = new AbilityInfo { Entry = 1353, CooldownMilliseconds = 1500, AICooldown = 300 };
+        Assert(info.GetAICooldownMilliseconds() == 300000, "AI pacing does not narrow to byte");
+        var npc = new NPCAbility(1353, 10, 0, true, "", cooldownMilliseconds: 1500);
+        npc.CooldownEnd = 9999;
+        npc.AbilityUsed = 1;
+        var clone = npc.CreateInstance();
+        Assert(clone.CooldownMilliseconds == 1500 && clone.CooldownEnd == 0 && clone.AbilityUsed == 0, "NPC clone retains precision and isolates state");
+        Assert(new NPCAbility(1, 10, 300, true, "").CooldownMilliseconds == 300000, "Authored NPC constructor remains seconds");
+
+        var modifier = typeof(AbilityModifierInvoker);
+        modifier.GetMethod("AddCooldownMS", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null,
+            new object[] { null, info, new AbilityModifierEffect { PrimaryValue = -250 } });
+        Assert(info.CooldownMilliseconds == 1250, "Add modifier retains fractional seconds");
+        modifier.GetMethod("MultiplyCooldown", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null,
+            new object[] { null, info, new AbilityModifierEffect { PrimaryValue = -50 } });
+        Assert(info.CooldownMilliseconds == 625, "Percentage modifier retains milliseconds");
+        modifier.GetMethod("SetCooldown", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null,
+            new object[] { null, info, new AbilityModifierEffect { PrimaryValue = 3 } });
+        Assert(info.CooldownMilliseconds == 3000, "Set modifier preserves authored seconds contract");
+
+        var player = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var client = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+        player.Client = client;
+        var abilities = new AbilityInterface();
+        abilities.SetOwner(player);
+        PacketOut.SizeLen = 2;
+        AbilityMgr.NewAbilityVolatiles[1353] = info;
+        try
+        {
+            info.CDcap = 2;
+            abilities.SetCooldown(1353, 1500);
+            Assert(ReadUInt32(client.LastPacket, 7) == 2000, "Timer advertises enforced cap");
+            info.IgnoreCooldownReduction = 1;
+            info.CooldownMilliseconds = 4500;
+            abilities.SetCooldown(1353, 250);
+            Assert(ReadUInt32(client.LastPacket, 7) == 4500, "No-reduction floor and packet agree");
+            info.IgnoreCooldownReduction = 0;
+            info.CDcap = 0;
+            abilities.SetCooldown(1353, 1999);
+            Assert(ReadUInt32(client.LastPacket, 7) == 1999, "Fractional timer payload at offset four");
+            abilities.Cooldowns[1353] = TCPManager.GetTimeStampMS() + 350;
+            Assert(!abilities.CanCastCooldown(1353), "Individual cooldown cannot bypass last 400ms");
+            abilities.Cooldowns[0] = TCPManager.GetTimeStampMS() + 350;
+            Assert(abilities.CanCastCooldown(0), "Existing global cooldown grace retained");
+            abilities.Cooldowns[1353] = TCPManager.GetTimeStampMS() - 1;
+            abilities.ResendCooldown(1353);
+            Assert(ReadUInt32(client.LastPacket, 7) == 0, "Expired resend cannot underflow");
+            abilities.SetCooldown(1353, -1);
+            Assert(abilities.CanCastCooldown(1353) && ReadUInt32(client.LastPacket, 7) == 0, "Reset clears ordinary timer");
+            abilities.SetItemCooldown(1353, 1500, true);
+            long remaining = abilities.Cooldowns[1353] - TCPManager.GetTimeStampMS();
+            Assert(remaining > 1400 && remaining <= 1500, "Silent item timer stores exact milliseconds");
+        }
+        finally { AbilityMgr.NewAbilityVolatiles.Remove(1353); }
+        Console.WriteLine("PASS: millisecond cooldown loading, arithmetic, AI isolation, timer packets, expiry and item boundary.");
     }
 
     private static void CheckInfluence()

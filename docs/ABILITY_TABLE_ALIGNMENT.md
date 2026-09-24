@@ -1,5 +1,11 @@
 # Ability table alignment
 
+September 24 follow-up: migration 11 adds `CooldownMilliseconds` to both tables.
+The [cooldown handoff](handoffs/2026-09-24-cooldown-milliseconds.md) records client
+byte evidence, NULL fallback, AI compatibility and verification of all shared rows.
+The legacy seconds column remains for compatibility; edit the millisecond column
+for migrated rows.
+
 How the server's ability data lines up with the client's, what was wrong with it, where the wrong
 data came from, and what is still missing. Measured 2026-09-07 against the Release database.
 

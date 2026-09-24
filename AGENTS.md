@@ -6,7 +6,9 @@ This file is the single source of truth for repository-specific AI-agent instruc
 
 Read **`docs/handoffs/2026-09-24-repository-audit.md`** for the fresh measured state,
 plan corrections, validation limits and outstanding acceptance work. The current
-incremental SQL series is 00–10; earlier numbered migrations were folded into the base.
+incremental SQL series is 00–11; earlier numbered migrations were folded into the base.
+Read `docs/handoffs/2026-09-24-cooldown-milliseconds.md` for the subsequent runtime
+unit migration, database verification and remaining item/client acceptance limits.
 
 Read **`docs/handoffs/2026-09-05-commit-handoff.md`** for the historical user retest.
 Its follow-up records the Chaos Wastes entrance code repair, with client retest pending.

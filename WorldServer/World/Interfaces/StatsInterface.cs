@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Common;
 using FrameWork;
@@ -1081,11 +1081,11 @@ namespace WorldServer.World.Interfaces
 
             if (abInfo.Entry != 9553 && abInfo.Entry != 8239 && abInfo.Entry != 9035 && abInfo.Entry != 1734) // exempt divine mend, khaine's invigoration, sudden shift and changin' da plan
             {
-                short cooldownMod = (short) (GetStatLinearModifier(Stats.Cooldown)/1000);
-                if (abInfo.Cooldown + cooldownMod <= 0)
-                    abInfo.Cooldown = 0;
+                int cooldownMod = GetStatLinearModifier(Stats.Cooldown);
+                if ((long)abInfo.CooldownMilliseconds + cooldownMod <= 0)
+                    abInfo.CooldownMilliseconds = 0;
                 else
-                    abInfo.Cooldown = (ushort) ((abInfo.Cooldown + cooldownMod)*(GetStatPercentageModifier(Stats.Cooldown)));
+                    abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds(((long)abInfo.CooldownMilliseconds + cooldownMod) * (double)GetStatPercentageModifier(Stats.Cooldown));
             }
 
             float rangeMod = GetStatPercentageModifier(Stats.Range);

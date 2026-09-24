@@ -1,4 +1,4 @@
-﻿//#define MODIFIER_DEBUG
+//#define MODIFIER_DEBUG
 
 using Common;
 using FrameWork;
@@ -761,14 +761,12 @@ namespace WorldServer.World.Abilities
 
         private static void AddCooldownMS(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
-            if (abInfo.Cooldown * 1000 < -myEffect.PrimaryValue)
-                abInfo.Cooldown = 0;
-            else abInfo.Cooldown += (ushort)(myEffect.PrimaryValue * 0.001f);
+            abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds((long)abInfo.CooldownMilliseconds + myEffect.PrimaryValue);
         }
 
         private static void MultiplyCooldown(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
-            abInfo.Cooldown = (ushort)(abInfo.Cooldown * (float)(100 + myEffect.PrimaryValue) * 0.01f);
+            abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds(abInfo.CooldownMilliseconds * (100.0 + myEffect.PrimaryValue) / 100.0);
         }
 
         private static void MultiplyCooldownGreatweapon(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
@@ -776,12 +774,13 @@ namespace WorldServer.World.Abilities
             Item myItem = caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
 
             if (myItem != null && myItem.Info.TwoHanded)
-                abInfo.Cooldown = (ushort)(abInfo.Cooldown * (float)(100 + myEffect.PrimaryValue) * 0.01f);
+                MultiplyCooldown(caster, abInfo, myEffect);
         }
 
         private static void SetCooldown(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
-            abInfo.Cooldown = (ushort)myEffect.PrimaryValue;
+            // Existing modifier rows express SetCooldown in seconds (AddCooldownMS is ms).
+            abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds((long)myEffect.PrimaryValue * 1000);
         }
 
         private static void AddAPCost(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
@@ -1149,7 +1148,7 @@ namespace WorldServer.World.Abilities
                     return;
 
                 if (plr.CrrInterface.ExperimentalMode)
-                    abInfo.Cooldown = (ushort)(abInfo.Cooldown * 0.6f);
+                    abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds(abInfo.CooldownMilliseconds * 0.6);
             }
 
             // Tranquility bonus - Force cools down faster
@@ -1159,7 +1158,7 @@ namespace WorldServer.World.Abilities
                     return;
 
                 if (plr.CrrInterface.ExperimentalMode)
-                    abInfo.Cooldown = (ushort)(abInfo.Cooldown * 0.6f);
+                    abInfo.CooldownMilliseconds = AbilityInfo.ClampCooldownMilliseconds(abInfo.CooldownMilliseconds * 0.6);
             }
         }
 

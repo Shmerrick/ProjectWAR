@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FrameWork;
 using GameData;
 using System;
@@ -1532,7 +1532,7 @@ namespace WorldServer.World.Abilities
 
         private bool InvokeCooldown(AbilityCommandInfo cmd, byte level, Unit target)
         {
-            _caster.AbtInterface.SetCooldown((ushort)cmd.PrimaryValue, AbilityMgr.GetCooldownFor((ushort)cmd.PrimaryValue) * 1000);
+            _caster.AbtInterface.SetCooldown((ushort)cmd.PrimaryValue, AbilityMgr.GetCooldownMilliseconds((ushort)cmd.PrimaryValue));
             return true;
         }
 

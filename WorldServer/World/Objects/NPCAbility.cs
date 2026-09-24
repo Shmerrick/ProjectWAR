@@ -5,7 +5,7 @@
         public ushort Entry;
         public byte MinRange;
         public ushort Range;
-        public ushort Cooldown;
+        public int CooldownMilliseconds;
         public bool AutoUse;
         public string Text;
         public uint TimeStart;
@@ -22,9 +22,9 @@
         public NPCAbility CreateInstance()
         {
             // Definitions are cached; timers and one-shot state belong to one creature.
-            return new NPCAbility(Entry, Range, Cooldown, AutoUse, Text, TimeStart,
+            return new NPCAbility(Entry, Range, 0, AutoUse, Text, TimeStart,
                 ActivateAtHealthPercent, AbilityCycle, Active, ActivateOnCombatStart,
-                RandomTarget, TargetFocus, DisableAtHealthPercent, MinRange);
+                RandomTarget, TargetFocus, DisableAtHealthPercent, MinRange, CooldownMilliseconds);
         }
 
         public bool IsHealthCycleActive(uint health, uint totalHealth)
@@ -33,12 +33,13 @@
                 (AbilityCycle == 1 && health < (ulong)totalHealth * ActivateAtHealthPercent / 100);
         }
 
-        public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
+        public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0, int? cooldownMilliseconds = null)
         {
             Entry = entry;
             MinRange = minrange;
             Range = range;
-            Cooldown = cooldown;
+            // Existing encounter scripts pass seconds; loaded ability definitions pass exact ms.
+            CooldownMilliseconds = System.Math.Max(0, cooldownMilliseconds ?? cooldown * 1000);
             AutoUse = autoUse;
             Text = text;
             TimeStart = timestart;

@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FrameWork;
 using GameData;
 using System;
@@ -3135,7 +3135,7 @@ namespace WorldServer.World.Abilities.Buffs
                     break;
                 case BUFF_END:
                 case BUFF_REMOVE:
-                    hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, AbilityMgr.GetCooldownFor(hostBuff.Entry) * 1000);
+                    hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, AbilityMgr.GetCooldownMilliseconds(hostBuff.Entry));
                     break;
             }
 

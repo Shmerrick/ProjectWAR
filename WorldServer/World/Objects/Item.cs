@@ -565,7 +565,7 @@ namespace WorldServer.World.Objects
                     Out.WriteByte(1); // (byte)info._Spells.Count OK
 
                     Out.WriteUInt32(info.SpellId);
-                    Out.WriteUInt16(AbilityMgr.GetCooldownFor(info.SpellId));   // cooldown time info
+                    Out.WriteUInt16(WorldServer.World.Abilities.Components.AbilityInfo.GetItemCooldownSeconds(AbilityMgr.GetCooldownMilliseconds(info.SpellId))); // item wire format: seconds
 
                     if (Plr == null || itm?.CharSaveInfo == null)
                         Out.WriteUInt16(0);   // current cooldown

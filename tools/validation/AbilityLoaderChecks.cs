@@ -69,7 +69,7 @@ internal static class AbilityLoaderChecks
         var bindings = (Array)typeof(ObjectDatabase).GetMethod("GetBindingInfo", BindingFlags.Instance | BindingFlags.NonPublic)
             .Invoke(orm, new object[] { typeof(T) });
         var properties = bindings.Cast<object>().Select(x => (PropertyInfo)bindingType.GetField("Member").GetValue(x)).ToArray();
-        foreach (string column in new[] { "AICooldown", "TargetType", "ChannelDuration", "ChannelInterval" })
+        foreach (string column in new[] { "AICooldown", "TargetType", "ChannelDuration", "ChannelInterval", "CooldownMilliseconds" })
         {
             if (!properties.Any(x => x.Name == column))
                 throw new Exception(table + ": the ORM does not bind " + column);

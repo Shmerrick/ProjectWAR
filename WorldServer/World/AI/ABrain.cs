@@ -614,7 +614,7 @@ namespace WorldServer.World.AI
                     return;
 
                 long now = TCPManager.GetTimeStampMS();
-                ability.CooldownEnd = now + ability.Cooldown * 1000L;
+                ability.CooldownEnd = now + ability.CooldownMilliseconds;
                 if (ability.ActivateAtHealthPercent != 0 && ability.AbilityCycle == 0)
                 {
                     ability.AbilityUsed = 1;

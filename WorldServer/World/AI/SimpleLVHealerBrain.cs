@@ -66,7 +66,7 @@ namespace WorldServer.World.AI
             };
 
             AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(13682);
-            NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte)System.Math.Max(abInfo.Cooldown, abInfo.AICooldown), true, "<character name>, be restored by our chaos gods!");
+            NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, 0, true, "<character name>, be restored by our chaos gods!", cooldownMilliseconds: abInfo.GetAICooldownMilliseconds());
             _unit.AbtInterface.NPCAbilities.Add(npcAbility);
         }
 

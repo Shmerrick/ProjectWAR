@@ -254,7 +254,9 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 Current measurements, plan corrections and validation limits:
 [2026-09-24 repository audit](docs/handoffs/2026-09-24-repository-audit.md).
-Apply incremental scripts 00–10 in order before running the ability-conformance build.
+Apply incremental scripts 00–11 in order before running the ability-conformance build.
+The subsequent [millisecond cooldown migration](docs/handoffs/2026-09-24-cooldown-milliseconds.md)
+records runtime units, source evidence and item compatibility limits.
 The historical Chaos Wastes entrance repair still needs client retesting; successful
 builds and database checks do not establish complete gameplay correctness.
 
