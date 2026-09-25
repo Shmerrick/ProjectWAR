@@ -94,6 +94,8 @@ namespace WorldServer.World.Objects
             }
 
             CharSaveInfo = itemSaveInfo;
+            if (Owner is Player player)
+                player.AbtInterface.AssignItemCooldown(this);
             return true;
         }
 

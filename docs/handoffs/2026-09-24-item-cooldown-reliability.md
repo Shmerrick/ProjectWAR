@@ -1,5 +1,9 @@
 # Item cooldown reliability — 2026-09-24
 
+Subsequent work: [migration 12](2026-09-24-item-cooldown-persistence.md) now
+persists character-owned deadlines. The unmapped inventory property described
+below remains a display cache, not the source of persistence.
+
 Follow-up to the millisecond migration. This is a server consistency repair,
 not a claim of newly established 1.4.8 behavior or packet units.
 

@@ -1,5 +1,9 @@
 # Millisecond cooldown migration — 2026-09-24
 
+Follow-up: [migration 12](2026-09-24-item-cooldown-persistence.md) adds actual
+character-owned item cooldown persistence; the item boundary discussion below
+records the earlier migration 11 state and its corrected claims.
+
 Follows the [repository audit](2026-09-24-repository-audit.md). Migration 11 and
 the runtime now retain fractional cooldowns across casting, channels, modifiers,
 AI and item scheduling. This closes the 49 fractional-value crosswalk gaps;

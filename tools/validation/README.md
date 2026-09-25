@@ -212,6 +212,14 @@ reset and send-failure cleanup. These use in-memory `CharacterItem` fixtures;
 `NextAllowedUseTime` is not persisted by the ORM. See the
 [inventory follow-up](../../docs/handoffs/2026-09-24-item-cooldown-reliability.md).
 
+`./tools/validation/Test-ItemCooldownPersistence.ps1` validates migration 12 and
+the actual runtime persistence path against the configured Release character DB.
+Unlike the read-only audits, it writes a reserved fixture character ID (4294967295),
+refuses to use it if already owned, and removes its rows in `finally`. It tests
+fresh-interface reload, empty inventories, exact milliseconds, shared groups,
+resets and cached inventory display state. Apply migration 12 before running it.
+See [persistence handoff](../../docs/handoffs/2026-09-24-item-cooldown-persistence.md).
+
 
 ```powershell
 ./tools/validation/Test-LotdGlyphs.ps1

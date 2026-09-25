@@ -116,7 +116,7 @@ mysql -u root -p war_world -e "source Database/war_world.sql"
 ```
 
 After importing the base dumps, apply the current numbered SQL scripts in `Database/`
-from `00_` through `11_` in numeric order before starting the server. The earlier
+from `00_` through `12_` in numeric order before starting the server. The earlier
 series was folded into the base dumps; this newer series must still be applied.
 Each script selects its target database and is safe to rerun. For an existing
 installation, apply these updates without importing base dumps over character data.
@@ -253,7 +253,9 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 Current measurements, plan corrections and validation limits:
 [2026-09-24 repository audit](docs/handoffs/2026-09-24-repository-audit.md).
-Apply incremental scripts 00–11 in order before running the ability-conformance build.
+Apply incremental scripts 00–12 in order before running the ability-conformance build.
+Migration 12 adds character-owned item cooldown persistence; see the
+[persistence handoff](docs/handoffs/2026-09-24-item-cooldown-persistence.md) for verification and limits.
 The subsequent [millisecond cooldown migration](docs/handoffs/2026-09-24-cooldown-milliseconds.md)
 records runtime units, source evidence and item compatibility limits.
 The historical Chaos Wastes entrance repair still needs client retesting; successful

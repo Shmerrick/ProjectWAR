@@ -123,6 +123,7 @@
     <Compile Include="Database\Character\Guild_event.cs" />
     <Compile Include="Database\Character\GuildVaultItem.cs" />
     <Compile Include="Database\Character\Characters_items.cs" />
+    <Compile Include="Database\Character\CharacterItemCooldown.cs" />
     <Compile Include="Database\Account\Realm.cs" />
     <Compile Include="Database\Character\Characters_mails.cs" />
     <Compile Include="Database\Character\Characters_quests.cs" />
@@ -320,4 +321,3 @@
   </Target>
   -->
 </Project>
-

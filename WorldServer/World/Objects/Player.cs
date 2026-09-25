@@ -643,6 +643,7 @@ namespace WorldServer.World.Objects
                 EvtInterface.AddEventNotify(EventName.Playing, Save);
                 EvtInterface.Start();
 
+                AbtInterface.LoadItemCooldowns();
                 ItmInterface.Load(CharMgr.GetItemsForCharacter(Info));
                 StsInterface.Load(CharMgr.GetCharacterInfoStats(Info.CareerLine, _Value.Level));
                 QtsInterface.Load(Info.Quests);
@@ -7682,7 +7683,6 @@ namespace WorldServer.World.Objects
         }
     }
 }
-
 
 
 

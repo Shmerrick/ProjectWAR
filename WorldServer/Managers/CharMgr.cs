@@ -907,6 +907,8 @@ namespace WorldServer.Managers
             Database.DeleteObject(Char);
             Database.DeleteObject(Char.Value);
             Database.DeleteObject(Char.ClientData);
+            foreach (var cooldown in Database.SelectObjects<CharacterItemCooldown>("CharacterId=" + Char.CharacterId))
+                Database.DeleteObject(cooldown);
 
             if (Char.Socials != null)
                 foreach (Character_social obj in Char.Socials)

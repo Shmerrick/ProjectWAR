@@ -1129,6 +1129,79 @@ namespace WorldServer.World.Abilities
 
         public Dictionary<byte, long> ItemGroupCooldowns = new Dictionary<byte, long>();
 
+        private readonly HashSet<uint> _savedItemCooldowns = new HashSet<uint>();
+
+        public void LoadItemCooldowns()
+        {
+            if (_playerOwner == null || _playerOwner.IsBot)
+                return;
+            // Composite primary key plus the accepted ranges bounds this result to 65,788 rows.
+            var rows = CharMgr.Database.SelectObjects<CharacterItemCooldown>("CharacterId=" + _playerOwner.Info.CharacterId
+                + " AND (CooldownKey BETWEEN 1 AND 65534 OR CooldownKey BETWEEN 65537 AND 65790)");
+            if (rows == null)
+                throw new InvalidOperationException("Unable to load character item cooldowns.");
+            foreach (var row in rows)
+            {
+                if (!RestoreItemCooldown(row.CooldownKey, row.ExpiresAtMilliseconds))
+                {
+                    string delete = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        "DELETE FROM character_item_cooldowns WHERE CharacterId={0} AND CooldownKey={1}",
+                        row.CharacterId, row.CooldownKey);
+                    if (!CharMgr.Database.ExecuteNonQuery(delete))
+                        throw new InvalidOperationException("Unable to remove stale item cooldown.");
+                    continue;
+                }
+                _savedItemCooldowns.Add(row.CooldownKey);
+            }
+        }
+
+        // A fixed key space bounds character state; persisted deadlines use the same ms clock.
+        public bool RestoreItemCooldown(uint key, long expiresAt)
+        {
+            long now = TCPManager.GetTimeStampMS();
+            if (expiresAt <= now || expiresAt - now > int.MaxValue)
+                return false;
+            if (key > 0 && key < ushort.MaxValue)
+            {
+                ushort spell = (ushort)key;
+                long existing;
+                Cooldowns.TryGetValue(spell, out existing);
+                Cooldowns[spell] = Math.Max(existing, expiresAt);
+                return true;
+            }
+            if (key > 65536 && key < 65536 + byte.MaxValue)
+            {
+                byte group = (byte)(key - 65536);
+                long existing;
+                ItemGroupCooldowns.TryGetValue(group, out existing);
+                ItemGroupCooldowns[group] = Math.Max(existing, expiresAt);
+                return true;
+            }
+            return false;
+        }
+
+        private void TrackItemCooldown(uint key, long expiresAt)
+        {
+            if (_playerOwner?.Info == null || _playerOwner.IsBot)
+                return;
+            // One indexed upsert per item use/reset, never per tick. Synchronous completion
+            // prevents a quick relog from outrunning the ORM's delayed write queue.
+            string sql = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "INSERT INTO character_item_cooldowns (CharacterId,CooldownKey,ExpiresAtMilliseconds) VALUES ({0},{1},{2}) " +
+                "ON DUPLICATE KEY UPDATE ExpiresAtMilliseconds=VALUES(ExpiresAtMilliseconds)",
+                _playerOwner.Info.CharacterId, key, expiresAt);
+            if (!CharMgr.Database.ExecuteNonQuery(sql))
+            {
+                // The ORM reports zero affected rows as false, including unchanged upserts.
+                var stored = CharMgr.Database.SelectObject<CharacterItemCooldown>(string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture, "CharacterId={0} AND CooldownKey={1}",
+                    _playerOwner.Info.CharacterId, key));
+                if (stored == null || stored.ExpiresAtMilliseconds != expiresAt)
+                    throw new InvalidOperationException("Unable to persist item cooldown.");
+            }
+            _savedItemCooldowns.Add(key);
+        }
+
         public bool IsOnCooldown(AbilityInfo abInfo)
         {
             return (!CanCastCooldown(0) && !abInfo.ConstantInfo.IgnoreGlobalCooldown) || !CanCastCooldown(abInfo.ConstantInfo.CooldownEntry != 0 ? abInfo.ConstantInfo.CooldownEntry : abInfo.Entry);
@@ -1141,6 +1214,8 @@ namespace WorldServer.World.Abilities
                 return;
             durationMilliseconds = Math.Max(0, durationMilliseconds);
             ItemGroupCooldowns[cooldownGroupId] = durationMilliseconds + TCPManager.GetTimeStampMS();
+            if (cooldownGroupId != 0)
+                TrackItemCooldown((uint)(65536 + cooldownGroupId), ItemGroupCooldowns[cooldownGroupId]);
             _unitOwner.ItmInterface.SendItemGroupCooldown(cooldownGroupId, durationMilliseconds);
         }
 
@@ -1150,6 +1225,8 @@ namespace WorldServer.World.Abilities
                 return;
             durationMilliseconds = Math.Max(0, durationMilliseconds);
             Cooldowns[abilityId] = durationMilliseconds + TCPManager.GetTimeStampMS();
+            if (abilityId != 0)
+                TrackItemCooldown(abilityId, Cooldowns[abilityId]);
             if (!silent)
                 _unitOwner.ItmInterface.SendItemCooldown(abilityId, durationMilliseconds);
         }
@@ -1183,6 +1260,8 @@ namespace WorldServer.World.Abilities
             }
             effectiveDuration = Math.Max(0, Math.Min(uint.MaxValue, effectiveDuration));
             Cooldowns[abilityId] = effectiveDuration == 0 ? 0 : TCPManager.GetTimeStampMS() + effectiveDuration;
+            if (_savedItemCooldowns.Contains(abilityId))
+                TrackItemCooldown(abilityId, Cooldowns[abilityId]);
             if (!silent)
                 SendCooldownTimer(abilityId, (uint)effectiveDuration);
         }
@@ -1266,10 +1345,8 @@ namespace WorldServer.World.Abilities
             else
                 Cooldowns.TryGetValue(item.Info.SpellId, out curCooldownMS);
 
-            if (curCooldownMS == 0)
-                return;
-
-            item.CharSaveInfo.NextAllowedUseTime = (curCooldownMS + 999) / 1000;
+            item.CharSaveInfo.NextAllowedUseTime = curCooldownMS <= TCPManager.GetTimeStampMS()
+                ? 0 : (curCooldownMS + 999) / 1000;
         }
 
         #endregion Cooldowns
