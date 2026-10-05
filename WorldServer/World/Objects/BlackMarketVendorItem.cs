@@ -28,6 +28,8 @@ namespace WorldServer.World.Objects
 
                     // Create new Item to trade the blackmarket item for
                     var tradingItem = ItemService.GetItem_Info((uint) 1298378521);
+                    if (tradingItem == null)
+                        return resultList;
                     tradingItem.Description = "Black Market";
 
                     var item = new Vendor_items

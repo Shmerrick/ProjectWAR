@@ -1290,22 +1290,30 @@ namespace WorldServer.World.Guild
             if (Info.Level < 3)
                 return;
 
-            GuildVaultUser.Add(plr);
+            if (!GuildVaultUser.Contains(plr))
+                GuildVaultUser.Add(plr);
             SendVaultUpdate(plr);
         }
 
         public void SendVaultUpdate()
         {
+            // Nothing removes a vault user on logout, so drop disposed players before sending.
+            GuildVaultUser.RemoveAll(user => user == null || user.IsDisposed);
             foreach (Player plr in GuildVaultUser)
                 SendVaultUpdate(plr);
         }
 
-        public void SendVaultUpdate(Player plr)
-        {
-            LogGuildBug(plr);
-            PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
-            Out.WriteByte(0x18);
+        private const byte VAULT_COUNT = 5;
+        private const byte VAULT_MAX_SLOTS = 60;
 
+        private static bool IsVaultIndex(int vault)
+        {
+            return vault >= 1 && vault <= VAULT_COUNT;
+        }
+
+        /// <summary>Vaults the guild can use: one per level threshold reached or vault already bought into, plus the fifth.</summary>
+        private byte GetVaultCount()
+        {
             byte vaults = 0;
             if (Info.Level >= 3 || Info.guildvaultpurchased[0] > 0)
                 vaults++;
@@ -1316,6 +1324,57 @@ namespace WorldServer.World.Guild
             if (Info.Level >= 33 || Info.guildvaultpurchased[3] > 0)
                 vaults++;
             vaults++;
+            return vaults;
+        }
+
+        /// <summary>Price of the next ten slots of vault index <paramref name="i"/> (0-based); 0 once full.</summary>
+        private uint GetVaultSlotPrice(int i)
+        {
+            byte purchased = Info.guildvaultpurchased[i];
+            if (purchased >= VAULT_MAX_SLOTS)
+                return 0;
+
+            if (purchased == 0)
+            {
+                switch (i)
+                {
+                    case 0: return 100000;
+                    case 1: return 1000000;
+                    case 2: return 6000000;
+                    case 3: return 12000000;
+                    default: return 20000000;
+                }
+            }
+
+            uint steps = (uint)(i * 6 + purchased / 10);
+            switch (i)
+            {
+                case 0: return 20000 * steps;
+                case 1: return 100000 * steps;
+                case 2: return 200000 * steps;
+                case 3: return 400000 * steps;
+                default: return 800000 * steps;
+            }
+        }
+
+        /// <summary>A vault holder is gone once they have closed the vault or disconnected.</summary>
+        private bool IsVaultLockHeld(uint characterId)
+        {
+            if (characterId == 0)
+                return false;
+            foreach (Player user in GuildVaultUser)
+                if (user != null && !user.IsDisposed && user.CharacterId == characterId)
+                    return true;
+            return false;
+        }
+
+        public void SendVaultUpdate(Player plr)
+        {
+            LogGuildBug(plr);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
+            Out.WriteByte(0x18);
+
+            byte vaults = GetVaultCount();
             Out.WriteByte(vaults);
             Out.WriteUInt64(Info.Money);
             for (byte i = 0; i < 5; i++)
@@ -1353,29 +1412,8 @@ namespace WorldServer.World.Guild
                 else
                 {
                     Out.WriteByte(Info.guildvaultpurchased[i]);
-                    if (Info.guildvaultpurchased[i] == 60)
-                        Out.WriteInt32R(0);
-                    else if (Info.guildvaultpurchased[i] < 60 && Info.guildvaultpurchased[i] == 0)
-                    {
-                        switch (i)
-                        {
-                            case 0: Out.WriteInt32R(100000); break;
-                            case 1: Out.WriteInt32R(1000000); break;
-                            case 2: Out.WriteInt32R(6000000); break;
-                            case 3: Out.WriteInt32R(12000000); break;
-                            case 4: Out.WriteInt32R(20000000); break;
-                        }
-                    }
-
-                    else
-                        switch (i)
-                        {
-                            case 0: Out.WriteInt32R(20000 * (i * 6 + ((Info.guildvaultpurchased[i]) / 10))); break;
-                            case 1: Out.WriteInt32R(100000 * (i * 6 + ((Info.guildvaultpurchased[i]) / 10))); break;
-                            case 2: Out.WriteInt32R(200000 * (i * 6 + ((Info.guildvaultpurchased[i]) / 10))); break;
-                            case 3: Out.WriteInt32R(400000 * (i * 6 + ((Info.guildvaultpurchased[i]) / 10))); break;
-                            case 4: Out.WriteInt32R(800000 * (i * 6 + ((Info.guildvaultpurchased[i]) / 10))); break;
-                        }
+                    // The same price BuyVaultSlot charges; the client's echo of it is not trusted.
+                    Out.WriteInt32R((int)GetVaultSlotPrice(i));
 
                 }
 
@@ -1817,6 +1855,21 @@ namespace WorldServer.World.Guild
         public bool CanAddTo(Player player, int vaultIndex)
         {
             LogGuildBug(player);
+            if (!IsVaultIndex(vaultIndex) || vaultIndex > GetVaultCount() || !Info.Members.ContainsKey(player.CharacterId))
+                return false;
+
+            if (!HasAddPermission(player, vaultIndex))
+            {
+                player.SendLocalizeString(new[] { Info.Ranks[Info.Members[player.CharacterId].RankId].Name, vaultIndex.ToString() }, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_DEPOSIT_VAULT_Y);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>Silent form of <see cref="CanAddTo"/>, for searching vaults without messaging each refusal.</summary>
+        private bool HasAddPermission(Player player, int vaultIndex)
+        {
             GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_ADD_ITEM;
 
             switch (vaultIndex)
@@ -1838,18 +1891,15 @@ namespace WorldServer.World.Guild
                     break;
             }
 
-            if (!HasPermissions(Info.Ranks[Info.Members[player.CharacterId].RankId], permission))
-            {
-                player.SendLocalizeString(new[] { Info.Ranks[Info.Members[player.CharacterId].RankId].Name, vaultIndex.ToString() }, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_DEPOSIT_VAULT_Y);
-                return false;
-            }
-
-            return true;
+            return HasPermissions(Info.Ranks[Info.Members[player.CharacterId].RankId], permission);
         }
 
         public bool CanTakeFrom(Player player, int vaultIndex)
         {
             LogGuildBug(player);
+            // An out-of-range index used to fall back to vault 1's permission and then index Vaults[-1].
+            if (!IsVaultIndex(vaultIndex) || !Info.Members.ContainsKey(player.CharacterId))
+                return false;
             GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_TAKE_ITEM; ;
 
             switch (vaultIndex)
@@ -1883,13 +1933,22 @@ namespace WorldServer.World.Guild
         public void BuyVaultSlot(Player plr, byte vault, uint money)
         {
             LogGuildBug(plr);
-            if (!plr.RemoveMoney(money))
+            // The price is the server's, never the client's: charging the echoed amount let a
+            // packet with 0 buy every slot free. A full vault (60) would also wrap past 255.
+            if (!IsVaultIndex(vault) || vault > GetVaultCount())
+                return;
+
+            uint price = GetVaultSlotPrice(vault - 1);
+            if (price == 0)
+                return;
+
+            if (!plr.RemoveMoney(price))
             {
                 plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_EXPANSION_NO_MONEY);
                 return;
             }
 
-            Info.guildvaultpurchased[vault - 1] += 10;
+            Info.guildvaultpurchased[vault - 1] = (byte)Math.Min(VAULT_MAX_SLOTS, Info.guildvaultpurchased[vault - 1] + 10);
             SendVaultUpdate();
             CharMgr.Database.SaveObject(Info);
         }
@@ -1918,6 +1977,7 @@ namespace WorldServer.World.Guild
             plr.RemoveMoney(money);
             Info.Money += money;
             CharMgr.Database.SaveObject(Info);
+            ItemAudit.Money("Vault", "Deposit", plr.CharacterId, plr.Name, Info.GuildId, "guild:" + Info.Name, money);
             SendVaultUpdate();
         }
 
@@ -1939,6 +1999,7 @@ namespace WorldServer.World.Guild
             Info.Money -= money;
             plr.AddMoney(money);
             CharMgr.Database.SaveObject(Info);
+            ItemAudit.Money("Vault", "Withdraw", Info.GuildId, "guild:" + Info.Name, plr.CharacterId, plr.Name, money);
 
             SendVaultUpdate();
         }
@@ -1951,6 +2012,10 @@ namespace WorldServer.World.Guild
 
             lock (Info.Vaults)
             {
+                // Only bought slots: any ushort was accepted, giving unlimited free vault space.
+                if (destSlot >= Info.guildvaultpurchased[destVault - 1])
+                    return;
+
                 if (Info.Vaults[destVault - 1].ContainsKey(destSlot))
                 {
                     plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_SLOT_ALREADY_OCCUPIED);
@@ -2003,17 +2068,21 @@ namespace WorldServer.World.Guild
                 return;
             }
 
-            if (!CanAddTo(plr, destVault))
+            bool autoPlace = destSlot == (int)Inventory.INVENTORY_FIRST_AVAILABLE_GUILD_VAULT_SLOT;
+
+            // The automatic search picks its own vault, so it is checked per vault below; it used
+            // to check only the client's vault and then deposit into any vault, permitted or not.
+            if (!autoPlace && !CanAddTo(plr, destVault))
                 return;
 
             lock (Info.Vaults)
             {
                 bool freeslot = false;
-                if (destSlot == (int)Inventory.INVENTORY_FIRST_AVAILABLE_GUILD_VAULT_SLOT)
+                if (autoPlace)
                 {
-                    for (byte i = 0; i < 5 && !freeslot; i++)
+                    for (byte i = 0; i < VAULT_COUNT && !freeslot; i++)
                     {
-                        if (Info.guildvaultpurchased[i] == 0)
+                        if (Info.guildvaultpurchased[i] == 0 || i + 1 > GetVaultCount() || !HasAddPermission(plr, i + 1))
                             continue;
 
                         destVault = (byte)(i + 1);
@@ -2035,7 +2104,10 @@ namespace WorldServer.World.Guild
                     }
 
                 }
-                if (destSlot == (int)Inventory.INVENTORY_FIRST_AVAILABLE_GUILD_VAULT_SLOT)
+                if (autoPlace && !freeslot)
+                    return;
+
+                if (destSlot >= Info.guildvaultpurchased[destVault - 1])
                     return;
 
                 if (Info.Vaults[destVault - 1].ContainsKey(destSlot))
@@ -2058,6 +2130,7 @@ namespace WorldServer.World.Guild
 
                 Info.Vaults[destVault - 1].Add(destSlot, gv);
                 CharMgr.Database.AddObject(gv);
+                ItemAudit.Item("Vault", "Deposit", plr.CharacterId, plr.Name, Info.GuildId, "guild:" + Info.Name, item.Info.Entry, item.Count, (ulong)(destVault * 1000 + destSlot));
                 plr.ItmInterface.DeleteItem(itemSlot, item.Count);
             }
             SendVaultUpdate();
@@ -2103,10 +2176,14 @@ namespace WorldServer.World.Guild
                     return;
                 }
 
-                if (plr.ItmInterface.CreateItem(ItemService.GetItem_Info(gv.Entry), gv.Counts, gv._Talismans, gv.PrimaryDye, gv.SecondaryDye, false, (itemSlot != 600 ? itemSlot : (ushort)0)) == ItemResult.RESULT_OK)
+                // A slot the client names is honoured only if it is an empty bag/bank slot; otherwise the
+                // item is auto-placed. Equipment slots used to receive it with no equip checks at all.
+                ushort target = plr.ItmInterface.CanCreateInSlot(itemSlot) ? itemSlot : (ushort)0;
+                if (plr.ItmInterface.CreateItem(ItemService.GetItem_Info(gv.Entry), gv.Counts, gv._Talismans, gv.PrimaryDye, gv.SecondaryDye, false, target) == ItemResult.RESULT_OK)
                 {
                     Info.Vaults[sourceVault - 1].Remove(sourceSlot);
                     CharMgr.Database.DeleteObject(gv);
+                    ItemAudit.Item("Vault", "Withdraw", Info.GuildId, "guild:" + Info.Name, plr.CharacterId, plr.Name, gv.Entry, gv.Counts, (ulong)(sourceVault * 1000 + sourceSlot));
                 }
             }
             SendVaultUpdate();
@@ -2122,8 +2199,10 @@ namespace WorldServer.World.Guild
 
             lock (Info.Vaults)
             {
+                // A lock whose holder closed the vault or disconnected is stale; it used to block the
+                // item for everyone until restart, since nothing released it.
                 if (Info.Vaults[vault - 1].TryGetValue(slot, out gv))
-                    if (gv.LockedPlayerId == 0)
+                    if (gv.LockedPlayerId == 0 || !IsVaultLockHeld(gv.LockedPlayerId))
                         gv.LockedPlayerId = plr.CharacterId;
             }
         }
@@ -2132,6 +2211,9 @@ namespace WorldServer.World.Guild
         {
             LogGuildBug(plr);
             GuildVaultItem gv;
+
+            if (!IsVaultIndex(vault))
+                return;
 
             lock (Info.Vaults)
             {
@@ -2147,6 +2229,12 @@ namespace WorldServer.World.Guild
         {
             LogGuildBug(plr);
             GuildVaultUser.Remove(plr);
+
+            lock (Info.Vaults)
+                for (int i = 0; i < VAULT_COUNT; i++)
+                    foreach (GuildVaultItem gv in Info.Vaults[i].Values)
+                        if (gv.LockedPlayerId == plr.CharacterId)
+                            gv.LockedPlayerId = 0;
         }
 
         #endregion
@@ -2403,7 +2491,7 @@ namespace WorldServer.World.Guild
             {
                 CharacterId = plr.Info.CharacterId,
                 GuildId = Info.GuildId,
-                RankId = 1,
+                RankId = SystemGuildRankFor(plr, 1),
                 PublicNote = "",
                 OfficerNote = "",
                 Member = plr.Info,
@@ -2416,6 +2504,47 @@ namespace WorldServer.World.Guild
             AddGuildLog(0, plr.Name);
             AddOnlineMember(plr);
             SendGuildInfo(plr);
+        }
+
+        private const byte SYSTEM_GUILD_GM_RANK = 9;
+        private const byte SYSTEM_GUILD_MEMBER_RANK = 1;
+
+        /// <summary>
+        /// Rank 9 ("System") of a system guild carries every permission bit (FF FF FF FF FF FF FF 3F),
+        /// so a GM placed there can edit the guild -- ranks, permissions, MOTD, vault, members --
+        /// which is how system guilds are administered and tested, since they have no character
+        /// leader (LeaderId 0). Everyone else keeps <paramref name="current"/>.
+        /// </summary>
+        private byte SystemGuildRankFor(Player plr, byte current)
+        {
+            if (!IsSystemGuild() || plr?.Client == null)
+                return current;
+            if (plr.GmLevel > 1)
+                return SYSTEM_GUILD_GM_RANK;
+            // An account that has lost GM status loses the System rank with it -- unless the guild has
+            // been handed a real leader, in which case rank 9 is that leader's and the boot check owns it.
+            if (current == SYSTEM_GUILD_GM_RANK && Info.LeaderId == 0)
+                return SYSTEM_GUILD_MEMBER_RANK;
+            return current;
+        }
+
+        /// <summary>
+        /// Brings an existing member's rank in line with their account on login: GMs already in a
+        /// system guild before this rule existed are raised to rank 9, and former GMs are lowered.
+        /// </summary>
+        public void ApplySystemGuildRank(Player plr)
+        {
+            Guild_member member;
+            if (plr == null || !Info.Members.TryGetValue(plr.CharacterId, out member))
+                return;
+
+            byte rank = SystemGuildRankFor(plr, member.RankId);
+            if (rank == member.RankId)
+                return;
+
+            member.RankId = rank;
+            CharMgr.Database.SaveObject(member);
+            SendMember(null, member);
         }
 
         public void LeaveGuild(Guild_member member, bool kicked)

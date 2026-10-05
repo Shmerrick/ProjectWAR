@@ -1827,7 +1827,7 @@ namespace WorldServer.World.Interfaces
             if (info == null)
                 return ItemResult.RESULT_ITEMID_INVALID;
 
-            if (bagSlot > 0 && GetItemInSlot(bagSlot) != null)
+            if (bagSlot > 0 && !CanCreateInSlot(bagSlot))
                 return ItemResult.RESULT_ITEMID_INVALID;
 
             lock (_toSend)
@@ -1841,6 +1841,18 @@ namespace WorldServer.World.Interfaces
                     if (info.MaxStack > 1) // Seek existing stacks within the inventory, for addition.
                     {
                         _stacked = GetStackItem(info);
+
+                        // Check capacity before merging, so a refused creation leaves every stack untouched.
+                        ushort unstacked = count;
+                        foreach (ushort stackableSlot in _stacked)
+                        {
+                            Item Itm = Items[stackableSlot];
+                            if (Itm == null || Itm.Count >= Itm.Info.MaxStack)
+                                continue;
+                            unstacked -= (ushort)Math.Min(unstacked, Itm.Info.MaxStack - Itm.Count);
+                        }
+                        if (GetTotalFreeInventorySlot(info, overflow) < NumStacksRequiredToHold(unstacked, info.MaxStack))
+                            return ItemResult.RESULT_MAX_BAG;
 
                         foreach (ushort stackableSlot in _stacked)
                         {
@@ -1866,6 +1878,12 @@ namespace WorldServer.World.Interfaces
 
                         toCreate = NumStacksRequiredToHold(count, info.MaxStack); // Nombre d'objet qui doit être créé count/MaxStack
                     }
+                    else
+                    {
+                        // Non-stackable (MaxStack 0 or 1): one item per unit. This previously
+                        // left toCreate at 0, reporting success for N > 1 while creating nothing.
+                        toCreate = count;
+                    }
                 }
                 else
                 {
@@ -1884,7 +1902,8 @@ namespace WorldServer.World.Interfaces
                 {
                     ushort freeSlot;
 
-                    if (bagSlot > 0)
+                    // A requested bag slot holds the first stack only; reusing it would overwrite that stack.
+                    if (bagSlot > 0 && i == 0)
                         freeSlot = bagSlot;
                     else
                         freeSlot = GetFreeInventorySlot(info, overflow);
@@ -1892,7 +1911,8 @@ namespace WorldServer.World.Interfaces
                     if (freeSlot == 0)
                         return ItemResult.RESULT_MAX_BAG;
 
-                    ushort ToAdd = Math.Min(count, info.MaxStack);
+                    // 1,004 items carry MaxStack 0; they hold one each, like MaxStack 1.
+                    ushort ToAdd = Math.Min(count, Math.Max((ushort)1, info.MaxStack));
                     count -= ToAdd;
 
                     Item itm = new Item(_Owner);
@@ -2614,7 +2634,7 @@ namespace WorldServer.World.Interfaces
         public byte TradingAccepted;
         public bool TradingUpdated;
         public byte TradingUpdate;
-        public KeyValuePair<ushort, Item>[] TradeItems;
+        public KeyValuePair<ushort, Item>[] TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
 
         public void HandleTrade(PacketIn packet)
         {
@@ -2654,9 +2674,11 @@ namespace WorldServer.World.Interfaces
 
                 //Log.Success("HandleTrade", "Status=" + Status + ",oid=" + oid);
 
-                Trading = Plr.Region.GetPlayer(Oid);
+                // The packet names a player; only the opening packet may make that player our partner.
+                // Later packets must name the partner already bound, or any player's trade could be driven.
+                Player target = Plr.Region.GetPlayer(Oid);
 
-                if (Trading == null)
+                if (target == null)
                 {
                     SendTradeClose(Oid);
                     return;
@@ -2664,49 +2686,85 @@ namespace WorldServer.World.Interfaces
 
                 if (Status == 0 && TradingAccepted == 0) // New Trade
                 {
-                    if (!CanOpenTrade(Trading))
+                    if (!CanOpenTrade(target))
                     {
                         Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_TARGET_ALREADY_TRADING);
                         CloseTrade();
                         return;
                     }
 
+                    Trading = target;
                     TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
                     SendTradeInfo(this);
                     Trading.ItmInterface.SendTradeInfo(this);
                     TradingAccepted = 1;
                 }
-                else if (Status == 1 && IsTrading()) // Update trade
+                else if (Status == 3) // Close trade
+                {
+                    // An invited partner who has not answered yet (Trading still null) is closed too,
+                    // so their window and state are reset; someone trading with a third player is not.
+                    ItemsInterface partner = target.ItmInterface;
+                    if (Trading == target && (partner.Trading == Plr || partner.Trading == null))
+                        partner.SendTradeClose(_Owner.Oid);
+                    SendTradeClose(Oid);
+                }
+                else if ((Status == 1 || Status == 2) && !BindTradePartner(target))
+                {
+                    SendTradeClose(Oid);
+                }
+                else if (Status == 1) // Update trade
                 {
                     uint Money = packet.GetUint32();
                     byte Update = packet.GetUint8();
                     byte ItemCounts = packet.GetUint8();
 
                     //Log.info("Trade", "Money=" + Money + ",Update=" + Update + ",Items=" + ItemCounts);
-                    if (TradeItems == null)
-                        TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+                    // Build the offer aside and commit it whole, so a refused update keeps the previous one.
+                    KeyValuePair<ushort, Item>[] offer = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
 
                     for (int i = 0; i < MAX_TRADE_SLOT; i++)
                     {
                         ushort itemslot = packet.GetUint16();
-                        Item item = GetItemInSlot(itemslot);
+                        Item item = IsBagSlot(itemslot) ? GetItemInSlot(itemslot) : null;
 
-                        if (item != null)
+                        if (item == null)
                         {
-                            if (item.BoundtoPlayer || item.Info.Bind == 1)
+                            offer[i] = new KeyValuePair<ushort, Item>(0, null);
+                            continue;
+                        }
+
+                        if (item.BoundtoPlayer || item.Info.Bind == 1)
+                        {
+                            Plr.SendLocalizeString(item.Info.Name, ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_OBJECT_CANT_BE_TRADED);
+                            return;
+                        }
+
+                        // One stack offered twice would be created twice on the other side (BUG-178).
+                        for (int j = 0; j < i; j++)
+                        {
+                            if (offer[j].Value == item)
                             {
                                 Plr.SendLocalizeString(item.Info.Name, ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_OBJECT_CANT_BE_TRADED);
                                 return;
                             }
-                            TradeItems[i] = new KeyValuePair<ushort, Item>(itemslot, item);
-                            SendItemToTradeWindow(Plr, (ushort)(MY_TRADE_SLOT + i), item, item.Count);
-                            SendItemToTradeWindow(Trading, (ushort)(OTHER_TRADE_SLOT + i), item, item.Count);
                         }
-                        else
-                            TradeItems[i] = new KeyValuePair<ushort, Item>(0, null);
+
+                        offer[i] = new KeyValuePair<ushort, Item>(itemslot, item);
                     }
 
-                    Trading.ItmInterface.TradingAccepted = 1;
+                    TradeItems = offer;
+                    for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                    {
+                        Item item = TradeItems[i].Value;
+                        if (item == null)
+                            continue;
+                        SendItemToTradeWindow(Plr, (ushort)(MY_TRADE_SLOT + i), item, item.Count);
+                        SendItemToTradeWindow(Trading, (ushort)(OTHER_TRADE_SLOT + i), item, item.Count);
+                    }
+
+                    // A changed offer withdraws both acceptances; an invitee not yet bound has none to withdraw.
+                    if (Trading.ItmInterface.Trading == Plr)
+                        Trading.ItmInterface.TradingAccepted = 1;
                     TradingAccepted = 1;
 
                     TradingMoney = Money;
@@ -2720,19 +2778,14 @@ namespace WorldServer.World.Interfaces
                     Trading.ItmInterface.SendTradeInfo(this);
 
                 }
-                else if (Status == 2 && IsTrading()) // Accept trade
+                else if (Status == 2) // Accept trade
                 {
                     TradingAccepted = 2;
 
                     Trading.ItmInterface.SendTradeInfo(this);
 
-                    if (TradingAccepted == 2 && Trading.ItmInterface.TradingAccepted == 2)
+                    if (Trading.ItmInterface.Trading == Plr && Trading.ItmInterface.TradingAccepted == 2)
                         Trade(Trading.ItmInterface);
-                }
-                else if (Status == 3 && IsTrading()) // Close trade
-                {
-                    Trading.ItmInterface.SendTradeClose(_Owner.Oid);
-                    SendTradeClose(Oid);
                 }
             }
             catch (Exception e)
@@ -2740,6 +2793,81 @@ namespace WorldServer.World.Interfaces
                 _logger.Error($"Handletrade error {e.Message} {e.StackTrace}");
             }
         }
+
+        /// <summary>
+        /// Confirms that <paramref name="target"/> is this player's trade partner. A player with no
+        /// partner adopts one who has opened a trade with them; anyone else is refused.
+        /// </summary>
+        private bool BindTradePartner(Player target)
+        {
+            ItemsInterface other = target.ItmInterface;
+
+            if (Trading == null && other.Trading == _playerOwner && CanOpenTrade(target))
+            {
+                Trading = target;
+                TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+                TradingMoney = 0;
+                TradingAccepted = 1;
+            }
+
+            return Trading == target && (other.Trading == null || other.Trading == _playerOwner);
+        }
+
+        /// <summary>
+        /// Whether a new item may be placed directly into <paramref name="slot"/>: an empty bag,
+        /// bank or overflow slot. Equipment slots would bypass every equip restriction, and slots
+        /// past the array threw after the item's database row had been created.
+        /// </summary>
+        public bool CanCreateInSlot(ushort slot)
+        {
+            bool placeable = IsBagSlot(slot)
+                || (slot >= BANK_START_SLOT && slot < GetMaxBankSlot())
+                || (slot >= OVERFLOW_START_SLOT && slot < OVERFLOW_END_SLOT);
+            return placeable && GetItemInSlot(slot) == null;
+        }
+
+        /// <summary>Bag slots a trade or sale may take from: never equipped, banked or quest items.</summary>
+        public bool IsBagSlot(ushort slot)
+        {
+            return (slot >= INVENTORY_START_SLOT && slot < GetMaxInventorySlot())
+                || IsCraftingInventorySlot(slot)
+                || (slot >= CURRENCY_START_SLOT && slot < CURRENCY_START_SLOT + GetMaxCurrencyItemSlots());
+        }
+
+        /// <summary>
+        /// Checks that every offered stack is still where it was offered, owned, unchanged and
+        /// listed once, and counts the new main-bag slots it needs and the ones giving it frees.
+        /// </summary>
+        private bool ValidateTradeOffer(out ushort slotsNeeded, out ushort slotsFreed)
+        {
+            slotsNeeded = 0;
+            slotsFreed = 0;
+
+            for (int i = 0; i < MAX_TRADE_SLOT; i++)
+            {
+                Item offered = TradeItems[i].Value;
+                if (offered == null)
+                    continue;
+
+                ushort slot = TradeItems[i].Key;
+                Item itm = GetItemInSlot(slot);
+
+                if (itm == null || itm != offered || offered.Owner != _Owner || !IsBagSlot(slot) || offered.Count == 0)
+                    return false;
+
+                for (int j = 0; j < i; j++)
+                    if (TradeItems[j].Value == offered)
+                        return false;
+
+                // The receiver may get the stack whole, so at worst it needs fresh slots for all of it.
+                slotsNeeded += NumStacksRequiredToHold(offered.Count, Math.Max((ushort)1, offered.Info.MaxStack));
+                if (slot >= INVENTORY_START_SLOT && slot < GetMaxInventorySlot())
+                    slotsFreed++;
+            }
+
+            return true;
+        }
+
         public void Trade(ItemsInterface distInter)
         {
             //Log.Success("Trade", "TRADE !");
@@ -2757,73 +2885,47 @@ namespace WorldServer.World.Interfaces
                 if (!Me.HasMoney(TradingMoney))
                     AllOk = false;
 
-            // TODO : CheckItem more
-            Item itm;
-
-            for (int i = 0; i < MAX_TRADE_SLOT; i++)
+            ushort myNeeded, myFreed, otherNeeded, otherFreed;
+            if (!ValidateTradeOffer(out otherNeeded, out myFreed) || !distInter.ValidateTradeOffer(out myNeeded, out otherFreed))
+                AllOk = false;
+            // Free main-bag slots only: preferred bags may also take items, so this can refuse a
+            // trade that would have fitted, but never accepts one that would destroy an item (BUG-179).
+            else if (GetTotalFreeInventorySlot() + myFreed < myNeeded)
             {
-                itm = _Owner.GetPlayer().ItmInterface.GetItemInSlot(TradeItems[i].Key);
-
-                if (TradeItems[i].Value != null)
-                {
-                    if (itm == null)
-                    {
-                        AllOk = false;
-                        continue;
-                    }
-
-                    if (TradeItems[i].Value.Owner != _Owner)
-                        AllOk = false;
-
-                    if (itm.Info.Entry != TradeItems[i].Value.Info.Entry)
-                        AllOk = false;
-
-                    if (itm.Count < TradeItems[i].Value.Count)
-                        AllOk = false;
-                }
-
-                itm = distInter.GetPlayer().ItmInterface.GetItemInSlot(distInter.TradeItems[i].Key);
-
-                if (distInter.TradeItems[i].Value != null)
-                {
-                    if (distInter.TradeItems[i].Value.Owner != distInter._Owner)
-                        AllOk = false;
-
-                    if (itm == null)
-                    {
-                        AllOk = false;
-                        continue;
-                    }
-
-                    if (itm.Info.Entry != distInter.TradeItems[i].Value.Info.Entry)
-                        AllOk = false;
-
-                    if (itm.Count < distInter.TradeItems[i].Value.Count)
-                        AllOk = false;
-                }
+                AllOk = false;
+                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+            }
+            else if (distInter.GetTotalFreeInventorySlot() + otherFreed < otherNeeded)
+            {
+                AllOk = false;
+                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
             }
 
             if (AllOk)
             {
                 if (Other.RemoveMoney(distInter.TradingMoney))
+                {
                     Me.AddMoney(distInter.TradingMoney);
+                    ItemAudit.Money("Trade", "Give", Other, Me, distInter.TradingMoney);
+                }
 
                 if (Me.RemoveMoney(TradingMoney))
+                {
                     Other.AddMoney(TradingMoney);
+                    ItemAudit.Money("Trade", "Give", Me, Other, TradingMoney);
+                }
+
+                // Take every offered stack out of both inventories first, so the slots they free are
+                // available to what comes back; capture each before DeleteItem zeroes its count.
+                TradedStack[] mine = TakeTradeOffer();
+                TradedStack[] theirs = distInter.TakeTradeOffer();
 
                 for (int i = 0; i < MAX_TRADE_SLOT; i++)
                 {
-                    if (TradeItems[i].Value != null)
-                    {
-                        distInter.CreateItem(TradeItems[i].Value.Info, TradeItems[i].Value.Count, TradeItems[i].Value.CharSaveInfo._Talismans, TradeItems[i].Value.GetPrimaryDye(), TradeItems[i].Value.GetSecondaryDye(), TradeItems[i].Value.BoundtoPlayer);
-                        DeleteItem(TradeItems[i].Value.SlotId, TradeItems[i].Value.Count);
-                    }
-
-                    if (distInter.TradeItems[i].Value != null)
-                    {
-                        CreateItem(distInter.TradeItems[i].Value.Info, distInter.TradeItems[i].Value.Count, distInter.TradeItems[i].Value.CharSaveInfo._Talismans, distInter.TradeItems[i].Value.GetPrimaryDye(), distInter.TradeItems[i].Value.GetSecondaryDye(), distInter.TradeItems[i].Value.BoundtoPlayer);
-                        distInter.DeleteItem(distInter.TradeItems[i].Value.SlotId, distInter.TradeItems[i].Value.Count);
-                    }
+                    mine[i].GiveTo(distInter, Me, Other);
+                    theirs[i].GiveTo(this, Other, Me);
                 }
             }
 
@@ -2831,6 +2933,53 @@ namespace WorldServer.World.Interfaces
             distInter.SendTradeClose(Me.Oid);
 
             CloseTrade();
+        }
+
+        private struct TradedStack
+        {
+            public Item_Info Info;
+            public ushort Count;
+            public List<Talisman> Talismans;
+            public ushort PrimaryDye;
+            public ushort SecondaryDye;
+            public bool Bound;
+
+            public void GiveTo(ItemsInterface receiver, Player giverPlayer, Player receiverPlayer)
+            {
+                if (Info == null)
+                    return;
+                ItemResult result = receiver.CreateItem(Info, Count, Talismans, PrimaryDye, SecondaryDye, Bound);
+                // Capacity was checked before anything moved, so this indicates a defect; record what was lost.
+                if (result != ItemResult.RESULT_OK)
+                    _logger.Error($"Trade could not deliver {Count} x {Info.Entry} to {receiverPlayer?.Name}: {result}");
+                else
+                    ItemAudit.Item("Trade", "Give", giverPlayer, receiverPlayer, Info.Entry, Count);
+            }
+        }
+
+        private TradedStack[] TakeTradeOffer()
+        {
+            TradedStack[] taken = new TradedStack[MAX_TRADE_SLOT];
+
+            for (int i = 0; i < MAX_TRADE_SLOT; i++)
+            {
+                Item item = TradeItems[i].Value;
+                if (item == null)
+                    continue;
+
+                taken[i] = new TradedStack
+                {
+                    Info = item.Info,
+                    Count = item.Count,
+                    Talismans = item.CharSaveInfo._Talismans,
+                    PrimaryDye = item.GetPrimaryDye(),
+                    SecondaryDye = item.GetSecondaryDye(),
+                    Bound = item.BoundtoPlayer
+                };
+                DeleteItem(TradeItems[i].Key, item.Count);
+            }
+
+            return taken;
         }
         public void SendTradeInfo(ItemsInterface distInterface)
         {
@@ -2867,11 +3016,14 @@ namespace WorldServer.World.Interfaces
         }
         public bool CanOpenTrade(Player plr)
         {
+            if (plr == _playerOwner || plr.Realm != _playerOwner.Realm)
+                return false;
             return plr.ItmInterface.Trading == null || plr.ItmInterface.Trading == _playerOwner;
         }
         public void CloseTrade()
         {
             Trading = null;
+            TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
             TradingMoney = 0;
             TradingAccepted = 0;
             TradingUpdate = 0;
@@ -2914,7 +3066,8 @@ namespace WorldServer.World.Interfaces
             ushort count = menu.Count;
 
             List<ushort> toSend = new List<ushort>();
-            Item itm = GetItemInSlot(slotId);
+            // Equipped items would be cleared without UnEquipItem, leaving their stats applied.
+            Item itm = IsBagSlot(slotId) ? GetItemInSlot(slotId) : null;
 
             if (itm == null || itm.Info.SellPrice <= 0)
                 return;
@@ -2948,37 +3101,20 @@ namespace WorldServer.World.Interfaces
         public void RepairItem(InteractMenu menu)
         {
             ushort slotId = (ushort)(menu.Num + (menu.Page * 256));
-            ushort count = menu.Count;
-            Item itm = GetItemInSlot(slotId);
+            Item itm = IsBagSlot(slotId) ? GetItemInSlot(slotId) : null;
 
-            if (itm == null)
+            // Only broken items (the range BuildItem marks repairable) can be repaired. Any of the
+            // 1,278 other items with a Craftresult used to convert into its result, a whole stack
+            // for one item, and an unparseable or unknown result id threw.
+            if (itm == null || !IsRepairable(itm.Info))
                 return;
 
-            string[] items = itm.Info.Craftresult.Split(';');
-            Item_Info RepItemInfo = null;
-            uint itemlvl = 0;
-            byte rarety = 0;
-
-            foreach (string ritem in items)
-            {
-                Item_Info RitemInfo = ItemService.GetItem_Info(uint.Parse(ritem));
-                rarety = RitemInfo.Rarity;
-                itemlvl = RitemInfo.MinRank;
-                if (ItemsInterface.CanUse(RitemInfo, _Owner.GetPlayer(), false, false))
-                {
-                    RepItemInfo = RitemInfo;
-                    break;
-                }
-            }
-            if (rarety < 1)
-                rarety = 1;
-            if (itemlvl < 1)
-                itemlvl = 1;
-
+            uint cost;
+            Item_Info RepItemInfo = ResolveRepairResult(itm.Info, _playerOwner, out cost);
             if (RepItemInfo == null)
                 return;
 
-            if (!_playerOwner.RemoveMoney(20 * itemlvl * 6 * rarety * 2))
+            if (!_playerOwner.RemoveMoney(cost))
             {
                 _playerOwner.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
                 return;
@@ -2986,24 +3122,89 @@ namespace WorldServer.World.Interfaces
 
             if (CreateItem(RepItemInfo, 1) == ItemResult.RESULT_OK)
             {
-                DeleteItem(slotId);
+                DeleteItem(slotId, 1);
             }
             else
-                _playerOwner.AddMoney(20 * itemlvl * 6 * rarety * 2);
+                _playerOwner.AddMoney(cost);
+        }
+
+        /// <summary>Broken items, which a merchant repairs into a usable one; see Item.BuildItem.</summary>
+        public static bool IsRepairable(Item_Info info)
+        {
+            return info != null && info.Entry >= 2500000 && info.Entry < 2600000;
+        }
+
+        /// <summary>
+        /// The first item in <paramref name="broken"/>'s Craftresult that <paramref name="plr"/> can use,
+        /// and its repair cost. Ids that do not parse or name no item are skipped rather than thrown on.
+        /// </summary>
+        public static Item_Info ResolveRepairResult(Item_Info broken, Player plr, out uint cost)
+        {
+            uint itemlvl = 0;
+            byte rarety = 0;
+            Item_Info result = null;
+
+            foreach (string ritem in (broken.Craftresult ?? string.Empty).Split(';'))
+            {
+                uint entry;
+                if (!uint.TryParse(ritem, out entry))
+                    continue;
+                Item_Info RitemInfo = ItemService.GetItem_Info(entry);
+                if (RitemInfo == null)
+                    continue;
+                rarety = RitemInfo.Rarity;
+                itemlvl = RitemInfo.MinRank;
+                if (CanUse(RitemInfo, plr, false, false))
+                {
+                    result = RitemInfo;
+                    break;
+                }
+            }
+
+            if (rarety < 1)
+                rarety = 1;
+            if (itemlvl < 1)
+                itemlvl = 1;
+            cost = 20 * itemlvl * 6 * rarety * 2;
+            return result;
         }
 
         public void BuyBackItem(InteractMenu menu)
         {
-            ushort slotId = (ushort)(BuyBack.Count - 1 - (menu.Num + (menu.Page * 256)));
-            Item itm = GetBuyBack(slotId, menu.Packet.GetUint16());
+            int index = BuyBack.Count - 1 - (menu.Num + (menu.Page * 256));
+            if (index < 0 || index >= BuyBack.Count || BuyBack[index] == null)
+                return;
 
-            if (itm == null || !_playerOwner.RemoveMoney(itm.Count * itm.Info.SellPrice))
+            Item itm = BuyBack[index];
+            ushort count = menu.Packet.GetUint16();
+
+            // 0 means the whole stack, as in SellItem. It used to split off a 1-count copy
+            // (Item.Load turns 0 into 1) while the full stack stayed listed: unlimited duplicates.
+            if (count == 0 || count > itm.Count)
+                count = itm.Count;
+
+            ulong price = (ulong)itm.Info.SellPrice * count;
+            if (price > uint.MaxValue || !_playerOwner.HasMoney((uint)price))
             {
                 _playerOwner.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
                 return;
             }
-            //CreateExistingItem(itm.Info, itm.Count, itm.CharSaveInfo);
-            CreateItem(itm.Info, itm.Count, itm.GetTalismans(), itm.GetPrimaryDye(), itm.GetSecondaryDye(), itm.BoundtoPlayer);
+
+            // Deliver, then charge, then take the item off the list: a full bag or failed charge
+            // used to lose an item that had already been taken off the list.
+            if (CreateItem(itm.Info, count, itm.GetTalismans(), itm.GetPrimaryDye(), itm.GetSecondaryDye(), itm.BoundtoPlayer) != ItemResult.RESULT_OK)
+            {
+                _playerOwner.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_SPACE_TO_BUY);
+                return;
+            }
+
+            _playerOwner.RemoveMoney((uint)price);
+
+            if (count == itm.Count)
+                BuyBack.RemoveAt(index);
+            else
+                itm.Count -= count;
+
             SendBuyBack();
         }
         public void AddBuyBack(Item itm)
@@ -3018,29 +3219,6 @@ namespace WorldServer.World.Interfaces
             }
             BuyBack.Add(itm);
         }
-        public Item GetBuyBack(ushort num, ushort count)
-        {
-            if (num >= BuyBack.Count)
-                return null;
-
-            Item itm = BuyBack[num];
-
-            if (itm == null || !_playerOwner.HasMoney(itm.Info.SellPrice * count))
-                return null;
-
-            if (itm.Count <= count)
-            {
-                BuyBack.Remove(itm);
-                return itm;
-            }
-
-            itm.Count -= count;
-            Item New = new Item(_Owner);
-            // New.LoadExisting(itm.Info, 0, count, itm);
-            New.Load(itm.Info, 0, count);
-            return New;
-        }
-
         #endregion
 
         #region Dye

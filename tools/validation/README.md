@@ -70,7 +70,11 @@ named temporary fixture directory is removed even if a check fails.
 
 Coverage: height values/bounds, missing data, concurrent first loads and image disposal;
 independent area/PQ map failures; immutable region membership under concurrent enumeration;
-realm counts; influence key identity, overflow/capping and update/reward packet bytes.
+realm counts; influence key identity, overflow/capping and update/reward packet bytes;
+all-or-nothing `CreateItem` stacking (BUG-179), trade offers refused when duplicated, moved
+or equipped (BUG-178), out-of-range mail COD bytes (BUG-180), non-stackable creation (BUG-183),
+equipped sales (BUG-185), vault prices (BUG-188), slot-targeted creation (BUG-189), repair
+scope (BUG-195), and crafting locks and swapped ingredients for both crafting interfaces (BUG-196).
 
 Ability coverage also exercises real channel ticks with a target beyond 25 feet:
 zero range must not cancel the channel, and an explicit range containing the target
@@ -219,6 +223,13 @@ refuses to use it if already owned, and removes its rows in `finally`. It tests
 fresh-interface reload, empty inventories, exact milliseconds, shared groups,
 resets and cached inventory display state. Apply migration 12 before running it.
 See [persistence handoff](../../docs/handoffs/2026-09-24-item-cooldown-persistence.md).
+
+`./tools/validation/Test-CrashWindowPersistence.ps1` checks BUG-199 against the same
+database with the same fixture rules (reserved character ID 4294967295, refused if owned,
+removed in `finally`). It inserts an item and a value row through the real ORM, lowers the
+stack and the money without any player autosave, and requires both changes to reach the
+database on the next persistence pass -- the property that stops a crash from keeping both
+sides of a transfer. Expect about 10 seconds: the persistence thread wakes every 5.
 
 
 ```powershell

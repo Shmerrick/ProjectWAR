@@ -798,36 +798,16 @@ namespace WorldServer.World.Objects
             Out.WritePascalString(info.Name);
 
 
-            string[] items = info.Craftresult.Split(';');
-            Item_Info RepItemInfo = null;
-
-            uint itemlvl=0;
-            byte rarety=0;
-
-            foreach(string ritem in items)
-            {
-                
-                Item_Info RitemInfo = ItemService.GetItem_Info(uint.Parse(ritem));
-                rarety = RitemInfo.Rarity;
-                itemlvl = RitemInfo.MinRank;
-
-                if (ItemsInterface.CanUse(RitemInfo, Plr,false,false))
-                {
-                    RepItemInfo = RitemInfo;
-                    break;
-                }
-            }
-            if(rarety < 1)
-                rarety = 1;
-            if (itemlvl < 1)
-                itemlvl = 1;
+            // Shared with ItemsInterface.RepairItem so the price shown is the price charged.
+            uint repairCost;
+            Item_Info RepItemInfo = ItemsInterface.ResolveRepairResult(info, Plr, out repairCost);
 
             if (RepItemInfo != null)
             {
 
                 Out.WritePacketString(@"|00 00 0F 67|......b.L...]...|"); //Icon
 
-                Out.WriteUInt32(20 * itemlvl * 6 * rarety * 2);  // repair costs
+                Out.WriteUInt32(repairCost);  // repair costs
                 Out.WritePacketString(@"|00 00 07 62|......b.L...]...|"); //?? 00 00 07 62
 
                 BuildItem(ref Out,null, RepItemInfo,null,0,1,Plr,true);
@@ -835,7 +815,7 @@ namespace WorldServer.World.Objects
             else
             {
                 Out.WritePacketString(@" | 00 00 0F 67 |........|");
-                Out.WriteUInt32(20 * itemlvl * 6 * rarety * 2);  // repair costs
+                Out.WriteUInt32(repairCost);  // repair costs
 
                 Out.WritePacketString(@"|00 00 07 62 | apon...g.......b |
                                         | 00 4C B0 A5 0F 67 00 00 00 00 00 00 00 00 00 00 |.L...g..........|
@@ -911,7 +891,18 @@ namespace WorldServer.World.Objects
             set
             {
                 if (CharSaveInfo != null)
+                {
+                    if (CharSaveInfo.Counts == value)
+                        return;
                     CharSaveInfo.Counts = value;
+                    // Queue the new count now rather than at the owner's 60s autosave. Whatever the
+                    // count went to -- a new stack, a trade partner, a craft result -- is queued at
+                    // once, so a crash between the two passes restored the old count and kept the
+                    // copy. A row still awaiting its insert writes its current count anyway, and a
+                    // deleted one is ignored by SaveObject.
+                    if (CharSaveInfo.IsValid && CharMgr.Database != null)
+                        CharMgr.Database.SaveObject(CharSaveInfo);
+                }
                 else
                     _Count = value;
             }

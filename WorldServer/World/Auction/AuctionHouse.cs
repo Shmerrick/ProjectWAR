@@ -154,34 +154,38 @@ namespace WorldServer.World.Auction
 
             bool cancel = false;
 
+            // Find, charge and remove under one lock: as separate steps two buyers could both find
+            // the auction and both be charged and sent the item.
             lock (Auctions)
+            {
                 auction = Auctions.Find(info => info.AuctionId == auctionId);
 
-            if (auction == null)
-            {
-                buyer.SendLocalizeString(auctionId.ToString(), ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_ITEM_NO_LONGER_EXISTS);
-                return;
-            }
-
-            if (auction.SellPrice != price)
-            {
-                if (price == 0 && auction.SellerId == buyer.CharacterId) // cancel?
-                    cancel = true;
-                else
+                // Other-realm auctions are hidden from search; ids are sequential, so buyout must refuse them too.
+                if (auction == null || (auction.Realm != 0 && auction.Realm != buyer.Info.Realm))
                 {
-                    buyer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_UNKNOWN_ERROR);
+                    buyer.SendLocalizeString(auctionId.ToString(), ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_ITEM_NO_LONGER_EXISTS);
                     return;
                 }
-            }
-            else if (!buyer.RemoveMoney(auction.SellPrice))
-            {
-                buyer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_NOT_ENOUGH_MONEY);
-                return;
-            }
 
-            // Remove live auction
-            lock (Auctions)
+                if (auction.SellPrice != price)
+                {
+                    if (price == 0 && auction.SellerId == buyer.CharacterId) // cancel?
+                        cancel = true;
+                    else
+                    {
+                        buyer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_UNKNOWN_ERROR);
+                        return;
+                    }
+                }
+                else if (!buyer.RemoveMoney(auction.SellPrice))
+                {
+                    buyer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_NOT_ENOUGH_MONEY);
+                    return;
+                }
+
+                // Remove live auction
                 Auctions.Remove(auction);
+            }
             auction.Dirty = true;
             CharMgr.Database.DeleteObject(auction);
 
@@ -204,6 +208,7 @@ namespace WorldServer.World.Auction
                     // Complete
 
                     CharMgr.AddMail(sellerMail);
+                    ItemAudit.Money("Auction", "Sold", buyer.CharacterId, buyer.Name, auction.SellerId, auction.Seller.Name, sellerMail.Money, auction.AuctionId);
                 }
             }
 
@@ -223,6 +228,7 @@ namespace WorldServer.World.Auction
             buyerMail.Items.Add(new MailItem(auction.ItemId, auction._Talismans, auction.PrimaryDye, auction.SecondaryDye, auction.Count));
 
             CharMgr.AddMail(buyerMail);
+            ItemAudit.Item("Auction", cancel ? "Cancel" : "Buy", auction.SellerId, auction.Seller?.Name, buyer.CharacterId, buyer.Name, auction.ItemId, auction.Count, auction.AuctionId);
 
             // Send a list
             if (cancel)
@@ -285,6 +291,7 @@ namespace WorldServer.World.Auction
                         expireMail.Items.Add(new MailItem(auction.ItemId, auction._Talismans, auction.PrimaryDye, auction.SecondaryDye, auction.Count));
 
                         CharMgr.AddMail(expireMail);
+                        ItemAudit.Item("Auction", "Expire", 0, null, auction.SellerId, auction.Seller?.Name, auction.ItemId, auction.Count, auction.AuctionId);
                     }
 
                     CharMgr.Database.DeleteObject(auction);

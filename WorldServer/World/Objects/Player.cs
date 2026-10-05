@@ -860,6 +860,11 @@ namespace WorldServer.World.Objects
                     }
                 }
 
+                // GM characters already in a system guild get its System rank on login (and lose it
+                // when the account stops being GM); new joins are ranked in Guild.JoinGuild.
+                if (GldInterface.IsInGuild())
+                    GldInterface.Guild.ApplySystemGuildRank(this);
+
                 if (Info.FirstConnect && GmLevel >= 0)
                 {
                     bool guildHandled = false;
@@ -3979,19 +3984,34 @@ namespace WorldServer.World.Objects
         #region Money
 
         public bool HasMoney(uint Money) { return _Value.Money >= Money; }
+
+        /// <summary>
+        /// Queues the money change for the next database pass instead of the 60s autosave. The
+        /// other side of a payment -- a mail, a guild deposit, an auction, the other trader -- is
+        /// queued at once, so a crash between the two passes used to keep the gold on both sides.
+        /// Queuing is a list append; the update itself runs on the persistence thread.
+        /// </summary>
+        private void QueueMoneySave()
+        {
+            if (!IsBot && _Value != null && _Value.IsValid && CharMgr.Database != null)
+                CharMgr.Database.SaveObject(_Value);
+        }
         public bool RemoveMoney(uint Money)
         {
             if (!HasMoney(Money))
                 return false;
 
             _Value.Money -= Money;
+            QueueMoneySave();
             SendMoney();
             return true;
         }
         public uint GetMoney() { return _Value.Money; }
         public void AddMoney(uint Money)
         {
-            _Value.Money += Money;
+            // Saturate: a uint add past ~4.29 billion copper wrapped to almost nothing.
+            _Value.Money = (uint)Math.Min(uint.MaxValue, (ulong)_Value.Money + Money);
+            QueueMoneySave();
             SendMoney();
 
             if (Money > 0)

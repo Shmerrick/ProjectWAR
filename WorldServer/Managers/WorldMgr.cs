@@ -921,10 +921,13 @@ namespace WorldServer.Managers
                 Vendors.Add(vi);
             }
 
-            if (Vendors.Count <= Num)
+            if (Num < 0 || Vendors.Count <= Num)
                 return;
 
-            if (!Plr.HasMoney((Vendors[Num].Price) * Count))
+            // Totals are computed wide: Price * Count wrapped in uint and Kp.Value * Count in
+            // ushort, so a large Count was charged a fraction of its price.
+            ulong price = (ulong)Vendors[Num].Price * Count;
+            if (price > uint.MaxValue || !Plr.HasMoney((uint)price))
             {
                 Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
                 return;
@@ -932,7 +935,7 @@ namespace WorldServer.Managers
 
             foreach (KeyValuePair<uint, ushort> Kp in Vendors[Num].ItemsReq)
             {
-                if (!Plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
+                if ((uint)Kp.Value * Count > ushort.MaxValue || !Plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
                 {
                     Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
                     return;
@@ -945,7 +948,7 @@ namespace WorldServer.Managers
             ItemResult result = Plr.ItmInterface.CreateItem(Vendors[Num].Info, Count);
             if (result == ItemResult.RESULT_OK)
             {
-                Plr.RemoveMoney(Vendors[Num].Price * Count);
+                Plr.RemoveMoney((uint)price);
                 foreach (KeyValuePair<uint, ushort> Kp in Vendors[Num].ItemsReq)
                     Plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
             }
@@ -2139,21 +2142,41 @@ namespace WorldServer.Managers
         public static void BuyItemBlackMarketVendor(Player plr, InteractMenu menu, List<Vendor_items> items)
         {
             int Num = (menu.Page * VendorService.MAX_ITEM_PAGE) + menu.Num;
-            ushort Count = menu.Packet.GetUint16();
-            if (Count == 0)
-                Count = 1;
+            // Each purchase delivers exactly one reward, so it costs exactly one of each requirement.
+            // The client's Count used to scale only the cost: Count 2 against a single Warlord item
+            // failed the removal unchecked and handed out the reward for free, repeatably.
+            menu.Packet.GetUint16();
 
-            if (items.Count <= Num)
+            if (Num < 0 || items.Count <= Num)
                 return;
 
-            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, (ushort)1);
+            Vendor_items offer = items[Num];
+            if (offer.Info == null)
+                return;
+
+            if (!plr.HasMoney(offer.Price))
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
+                return;
+            }
+
+            foreach (KeyValuePair<uint, ushort> Kp in offer.ItemsReq)
+            {
+                if (!plr.ItmInterface.HasItemCountInInventory(Kp.Key, Kp.Value))
+                {
+                    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
+                    return;
+                }
+            }
+
+            ItemResult result = plr.ItmInterface.CreateItem(offer.Info, (ushort)1);
             if (result == ItemResult.RESULT_OK)
             {
-                plr.RemoveMoney(items[Num].Price * Count);
-                foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
-                    plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
+                plr.RemoveMoney(offer.Price);
+                foreach (KeyValuePair<uint, ushort> Kp in offer.ItemsReq)
+                    plr.ItmInterface.RemoveItems(Kp.Key, Kp.Value);
 
-                items.Remove(items[Num]);
+                items.Remove(offer);
 
             }
             else if (result == ItemResult.RESULT_MAX_BAG)

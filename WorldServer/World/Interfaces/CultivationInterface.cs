@@ -254,9 +254,6 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-            if (ItemService.GetItem_Info(_seedItemID).Rarity == 3)
-                harvester.ItmInterface.CreateItem(_seedItemID, 1, true);
-
             Item_Info mainItem = ItemService.GetItem_Info(uint.Parse(ItemService.GetItem_Info(_seedItemID).Craftresult.Split(';')[0]));
             Item_Info subItem = ItemService.GetItem_Info(uint.Parse(ItemService.GetItem_Info(_seedItemID).Craftresult.Split(';')[1]));
 
@@ -293,7 +290,9 @@ namespace WorldServer.World.Interfaces
 
                     if (harvester.ItmInterface.CreateItem(subItem, 1, 0, true) != ItemResult.RESULT_OK)
                     {
-                        harvester.ItmInterface.DeleteItem(ushort.Parse(ItemService.GetItem_Info(_seedItemID).Craftresult.Split(';')[0]), 2);
+                        // Take back the two main items just created. This passed the item id to
+                        // DeleteItem as a slot number: ids past 65535 threw, smaller ones hit any slot.
+                        harvester.ItmInterface.RemoveItems(mainItem.Entry, 2);
                         return;
                     }
 
@@ -322,6 +321,12 @@ namespace WorldServer.World.Interfaces
                     harvester.SendLocalizeString(new[] { "1", ItemService.GetItem_Info(dyepigment).Name}, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
                     break;
             }
+
+            // A rare seed is returned only by a harvest that completes. It was granted before the
+            // backpack check, whose early return leaves the plot harvestable, so a near-full bag
+            // turned every retry into another rare seed.
+            if (ItemService.GetItem_Info(_seedItemID).Rarity == 3)
+                harvester.ItmInterface.CreateItem(_seedItemID, 1, true);
 
             Reset();
         }

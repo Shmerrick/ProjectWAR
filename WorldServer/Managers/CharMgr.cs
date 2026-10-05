@@ -1441,7 +1441,9 @@ namespace WorldServer.Managers
                             break;
                     }
 
-                    if (rank9count > 1)
+                    // A leaderless system guild holds every GM character at rank 9 by design
+                    // (Guild.SystemGuildRankFor); demoting them all here would undo that on each boot.
+                    if (rank9count > 1 && !(isSystemGuild && guild.LeaderId == 0))
                     {
                         Log.Info("LoadGuilds", guild.Name + "More then 1 guildleader found removeing all rank 9 players");
                         for (int x = 0; x < members.Count; x++)

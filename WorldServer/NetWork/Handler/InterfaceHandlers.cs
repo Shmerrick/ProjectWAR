@@ -95,25 +95,45 @@ namespace WorldServer.NetWork.Handler
 
                                     List<uint> unfused = modifiedItem.AbortFuseTalisman();
 
+                                    // The talismans are already off the item; a full bag must not destroy them.
                                     foreach (uint entry in unfused)
                                     {
-                                        Plr.ItmInterface.CreateItem(entry, 1);
+                                        if (Plr.ItmInterface.CreateItem(entry, 1) != WorldServer.World.Interfaces.ItemResult.RESULT_OK)
+                                            WorldServer.Services.World.MailService.MailItem(Plr.CharacterId, entry, 1);
                                     }
 
                                     Plr.ItmInterface.MoveSlot(255, Plr.ItmInterface.GetFreeInventorySlot(Plr.ItmInterface.GetItemInSlot(255).Info,true),1);
                                     break;
                                 case 2:    // add Talis
-                                    if (Plr.ItmInterface.GetItemInSlot(255) != null && Plr.ItmInterface.GetItemInSlot(255).AddTalisman(Plr.ItmInterface.GetItemInSlot(itemslot).Info.Entry, slot))
                                     {
-                                        Plr.ItmInterface.DeleteItem(itemslot, 1);
-                                        Plr.ItmInterface.SendItemInSlot(Plr, 255);
+                                        // The talisman comes from a bag, into a slot the item actually has:
+                                        // one past TalismanSlots was consumed but never applied (EquipItem
+                                        // reads only slots below it), and an empty slot threw.
+                                        Item host = Plr.ItmInterface.GetItemInSlot(255);
+                                        Item talisman = Plr.ItmInterface.IsBagSlot(itemslot) ? Plr.ItmInterface.GetItemInSlot(itemslot) : null;
+                                        if (host != null && talisman != null && slot < host.Info.TalismanSlots && host.AddTalisman(talisman.Info.Entry, slot))
+                                        {
+                                            Plr.ItmInterface.DeleteItem(itemslot, 1);
+                                            Plr.ItmInterface.SendItemInSlot(Plr, 255);
+                                        }
                                     }
                                     break;
                                 case 3:  //  remove talis
-                                    Plr.ItmInterface.CreateItem(Plr.ItmInterface.GetItemInSlot(255).RemoveTalisman(slot), 1);
-                                    Plr.ItmInterface.SendItemInSlot(Plr, 255);
+                                    {
+                                        Item host = Plr.ItmInterface.GetItemInSlot(255);
+                                        if (host == null)
+                                            break;
+                                        uint entry = host.RemoveTalisman(slot);
+                                        // RemoveTalisman takes it off first; put it back if it cannot be
+                                        // delivered, rather than destroying it in a full bag.
+                                        if (entry != 0 && Plr.ItmInterface.CreateItem(entry, 1) != WorldServer.World.Interfaces.ItemResult.RESULT_OK)
+                                            host.AddTalisman(entry, slot);
+                                        Plr.ItmInterface.SendItemInSlot(Plr, 255);
+                                    }
                                     break;
                                 case 4:   // fuse
+                                    if (Plr.ItmInterface.GetItemInSlot(255) == null)
+                                        break;
                                     Plr.ItmInterface.GetItemInSlot(255).FuseTalisman();
                                     Plr.ItmInterface.MoveSlot(255, Plr.ItmInterface.GetFreeInventorySlot(Plr.ItmInterface.GetItemInSlot(255).Info, true),1);
                                     break;

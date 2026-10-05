@@ -361,6 +361,7 @@
     <Compile Include="Services\World\GameObjectService.cs" />
     <Compile Include="Services\World\GuildService.cs" />
     <Compile Include="Services\World\MailService.cs" />
+    <Compile Include="Managers\ItemAudit.cs" />
     <Compile Include="Services\World\ItemService.cs" />
     <Compile Include="Services\World\LotdService.cs" />
     <Compile Include="Services\World\BattlefrontService.cs" />

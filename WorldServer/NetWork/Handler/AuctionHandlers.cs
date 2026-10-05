@@ -71,7 +71,8 @@ namespace WorldServer.NetWork.Handler
             packet.Skip(2);
             uint price = packet.GetUint32();
 
-            if(plr.ItmInterface.GetItemInSlot(slot) == null)
+            // Bag slots only: equipped, banked and quest items are not for sale.
+            if (!plr.ItmInterface.IsBagSlot(slot) || plr.ItmInterface.GetItemInSlot(slot) == null)
                 return;
 
             if (plr.ItmInterface.GetItemInSlot(slot).BoundtoPlayer || plr.ItmInterface.GetItemInSlot(slot).Info.Bind == 1)
@@ -97,6 +98,7 @@ namespace WorldServer.NetWork.Handler
             };
 
             AuctionHouse.AddAuction(auction);
+            WorldServer.Managers.ItemAudit.Item("Auction", "Post", plr, null, auction.ItemId, auction.Count, auction.AuctionId);
             plr.ItmInterface.DeleteItem(slot);
         }
 

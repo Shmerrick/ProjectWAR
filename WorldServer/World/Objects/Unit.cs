@@ -972,9 +972,25 @@ namespace WorldServer.World.Objects
             RewardLogger.Debug($"Looter : {looter.Name}");
             
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);
-            
+            _lootOwner = looter;
+
             if (lootContainer != null)
-                SetLootable(true, looter);          
+                SetLootable(true, looter);
+        }
+
+        private Player _lootOwner;
+
+        /// <summary>
+        /// Whether <paramref name="player"/> may open this corpse's loot: the looter chosen at the
+        /// kill, or anyone in their group. Only the looter is sent the lootable flag, but every
+        /// interact used to be served, so any player in range could take the items and gold.
+        /// </summary>
+        protected bool CanLoot(Player player)
+        {
+            Player owner = _lootOwner;
+            if (owner == null || player == owner)
+                return true;
+            return player.PriorityGroup != null && player.PriorityGroup == owner.PriorityGroup;
         }
 		
 		public void SetLootable(bool value, Player looter)
@@ -1020,7 +1036,7 @@ namespace WorldServer.World.Objects
 
         public virtual void TryLoot(Player player, InteractMenu menu)
         {
-            if (lootContainer != null && lootContainer.IsLootable())
+            if (lootContainer != null && lootContainer.IsLootable() && CanLoot(player))
             {
                 player.TokInterface.FireHelpTips(HelpTipTrigger.Loot);
 

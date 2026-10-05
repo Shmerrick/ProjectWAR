@@ -1,4 +1,6 @@
-﻿using SystemData;
+﻿using System;
+using System.Collections.Generic;
+using SystemData;
 using FrameWork;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -40,20 +42,48 @@ namespace WorldServer.World.Interfaces
             _myPlayer = owner as Player;
         }
 
-         public void AddContainer(ushort slot)
-         {
+        // Which item each slot held when it was added. Craft() consumes slots, not items, so an item
+        // swapped into a slot after its bonuses were applied was consumed in its place.
+        private readonly Dictionary<ushort, Item> _added = new Dictionary<ushort, Item>();
+
+        /// <summary>
+        /// Runs a crafting step under the interface lock and always releases it. Several paths
+        /// (an empty slot, Craft's power check, any exception) returned or threw with the lock
+        /// still held, which disabled crafting for the player until relog.
+        /// </summary>
+        private void RunLocked(Action step)
+        {
             if (locked)
                 return;
             locked = true;
-
-            Item Itm = _myPlayer.ItmInterface.GetItemInSlot(slot);
-            byte crafttype = GetCraft(8, Itm.Info.Crafts);
-
-            if (Itm == null)
+            try
+            {
+                step();
+            }
+            catch (Exception e)
+            {
+                Log.Error("CraftingApoInterface", e.ToString());
+                Reset(0);
+            }
+            finally
             {
                 locked = false;
-                return;
             }
+        }
+
+        public void AddContainer(ushort slot)
+        {
+            RunLocked(() => AddContainerImpl(slot));
+        }
+
+         private void AddContainerImpl(ushort slot)
+         {
+            Item Itm = _myPlayer.ItmInterface.IsBagSlot(slot) ? _myPlayer.ItmInterface.GetItemInSlot(slot) : null;
+
+            if (Itm == null || Itm.Info.Crafts == null)
+                return;
+
+            byte crafttype = GetCraft(8, Itm.Info.Crafts);
 
             try
             {
@@ -128,9 +158,15 @@ namespace WorldServer.World.Interfaces
             }
 
 
-            if(slot == _slot2 || slot == _slot3 || slot == _slot4)
+            // One stack may fill several roles only if it holds one item per role. The container and
+            // main ingredient were not counted, so a single item could be both main and additive.
+            if (slot == _container || slot == _mainIngredient || slot == _slot2 || slot == _slot3 || slot == _slot4)
             {
                 byte count = 1;
+                if (slot == _container)
+                    count++;
+                if (slot == _mainIngredient)
+                    count++;
                 if (slot == _slot2)
                     count++;
                 if (slot == _slot3)
@@ -138,7 +174,7 @@ namespace WorldServer.World.Interfaces
                 if (slot == _slot4)
                     count++;
 
-                if(count > _myPlayer.ItmInterface.GetItemInSlot(slot).Count)
+                if(count > Itm.Count)
                 {
                     Crafting();
                     locked = false;
@@ -178,7 +214,8 @@ namespace WorldServer.World.Interfaces
                 break;
             }
 
-            AddBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
+            _added[slot] = Itm;
+            AddBonuses(Itm.Info.Crafts.Split(';'));
             Crafting();
             locked = false;
              //_Owner.GetPlayer().SendMessage(_Owner.Oid,"Power ", "" + (_power + _basePower) + "  stabi  " + (_stability+ _baseStability) + "  crittchance "+_critChance+"  duration  "+_duration+"  multi "+_multiplier ,SystemData.ChatLogFilters.CHATLOGFILTERS_SHOUT);
@@ -186,33 +223,38 @@ namespace WorldServer.World.Interfaces
 
         public void RemoveContainer(ushort slot,bool consumeItem = false,byte count = 1)
         {
+            // consumeItem is Craft's own call, made while it already holds the lock.
+            if (consumeItem)
+                RemoveContainerImpl(slot, true, count);
+            else
+                RunLocked(() => RemoveContainerImpl(slot, false, count));
+        }
 
-            if (!consumeItem)
-            {
-                if (locked)
-                    return;
-                locked = true;
-            }
-            if (slot == 0)
-            {
-                locked = false;
+        private void RemoveContainerImpl(ushort slot, bool consumeItem, byte count)
+        {
+            // Only a slot in this craft carries bonuses to remove. Any other slot's item used to have
+            // its bonuses subtracted anyway, so "removing" a negative-stability item raised stability.
+            if (slot == 0 || (slot != _container && slot != _mainIngredient && slot != _slot2 && slot != _slot3 && slot != _slot4))
                 return;
-            }
+
            if(_container == slot)
            {
-                if (consumeItem) 
+                if (consumeItem)
                     _myPlayer.ItmInterface.DeleteItem(slot, 1);
                 Reset(0);
-                locked = false;
                 return;
-           } 
+           }
            if(_mainIngredient == slot)
            {
-                RemoveContainer(_slot2);
-                RemoveContainer(_slot3);
-                RemoveContainer(_slot4);
+                // These were RemoveContainer calls, which returned at once because the lock was
+                // held, so the additives' bonuses outlived the main ingredient they belonged to.
+                // Clear the main slot first: a stack serving as main and additive would otherwise
+                // re-enter this branch from the additive's removal without end.
                 _stage = 1;
                 _mainIngredient = 0;
+                RemoveContainerImpl(_slot2, false, 1);
+                RemoveContainerImpl(_slot3, false, 1);
+                RemoveContainerImpl(_slot4, false, 1);
            }
            if (_slot2 == slot)
            {
@@ -228,16 +270,16 @@ namespace WorldServer.World.Interfaces
            {
                _slot4 = 0;
            }
-            RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
+            // Remove the bonuses that were added, from the item recorded at the time; the slot may
+            // now hold something else, or nothing (which threw here with the lock held).
+            Item added;
+            if (_added.TryGetValue(slot, out added) && added?.Info?.Crafts != null)
+                RemoveBonuses(added.Info.Crafts.Split(';'));
 
-           
             if (consumeItem)
                 _myPlayer.ItmInterface.DeleteItem(slot, count);
-           
-                Crafting();
 
-            if (!consumeItem)
-                locked = false;
+                Crafting();
             //_Owner.GetPlayer().SendMessage(_Owner.Oid, "Power ", "" + (_power + _basePower) + "  stabi  " + (_stability+ _baseStability) + "  crittchance " + _critChance + "  duration  " + _duration + "  multi " + _multiplier, SystemData.ChatLogFilters.CHATLOGFILTERS_SHOUT);
             //Log.Success("Stage: "+ _stage +"   Power ", "" + (_power+_basePower) + "  stabi  " + _stability);
         }
@@ -309,20 +351,35 @@ namespace WorldServer.World.Interfaces
             _duration = 0;
             _multiplier = 0;
             _critChance = 0;
+            _added.Clear();
             Crafting();
         }
 
         public void Craft()
         {
-            try
+            RunLocked(CraftImpl);
+        }
+
+        /// <summary>Every slot in the craft still holds the item that was added to it.</summary>
+        private bool SlotsUnchanged()
+        {
+            foreach (ushort slot in new[] { _container, _mainIngredient, _slot2, _slot3, _slot4 })
             {
-                if (locked)
-                    return;
-                locked = true;
+                if (slot == 0)
+                    continue;
+                Item added;
+                if (!_added.TryGetValue(slot, out added) || added == null || _myPlayer.ItmInterface.GetItemInSlot(slot) != added)
+                    return false;
             }
-            catch
+            return _container != 0 && _mainIngredient != 0;
+        }
+
+        private void CraftImpl()
+        {
+            if (!SlotsUnchanged())
             {
-                locked = false;
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_MISMATCH_TYPE);
+                Reset(0);
                 return;
             }
 

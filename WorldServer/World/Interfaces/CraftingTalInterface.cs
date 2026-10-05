@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SystemData;
 using Common;
 using FrameWork;
@@ -38,22 +39,51 @@ namespace WorldServer.World.Interfaces
             _myPlayer = owner as Player;
         }
 
-        public void AddContainer(ushort slot)
-        {
-           // Log.Info("addtoslot", "  " + slot);
+        // The item each slot held when it was added; see CraftingApoInterface._added (BUG-196).
+        private readonly Dictionary<ushort, Item> _added = new Dictionary<ushort, Item>();
 
-            //locked = false;
+        /// <summary>Runs a step under the lock and always releases it; errors reset the craft.</summary>
+        private void RunLocked(Action step)
+        {
             if (locked)
                 return;
             locked = true;
-
-            Item_Info itm = _myPlayer.ItmInterface.GetItemInSlot(slot).Info;
-
-            if (itm == null)
+            try
+            {
+                step();
+            }
+            catch (Exception e)
+            {
+                Log.Error("CraftingTalInterface", e.ToString());
+                Reset();
+            }
+            finally
             {
                 locked = false;
-                return;
             }
+        }
+
+        /// <summary>The bonuses the item added to <paramref name="slot"/> contributed, whatever the slot holds now.</summary>
+        private string[] AddedCrafts(ushort slot)
+        {
+            Item added;
+            if (_added.TryGetValue(slot, out added) && added?.Info?.Crafts != null)
+                return added.Info.Crafts.Split(';');
+            return new string[0];
+        }
+
+        public void AddContainer(ushort slot)
+        {
+            RunLocked(() => AddContainerImpl(slot));
+        }
+
+        private void AddContainerImpl(ushort slot)
+        {
+            Item added = _myPlayer.ItmInterface.IsBagSlot(slot) ? _myPlayer.ItmInterface.GetItemInSlot(slot) : null;
+            Item_Info itm = added?.Info;
+
+            if (itm == null || itm.Crafts == null || itm.Unk27 == null)
+                return;
             if (itm.Unk27.Length == 0 || ((itm.Unk27[15] == 1 || itm.Unk27[15] == 5) || ((GetCraft(8,itm.Crafts) == 14) && (itm.Craftresult == null || itm.Craftresult.Length < 2))))
             {
                 _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_CULTIVATION_BAD_SEED_DATA);
@@ -97,43 +127,43 @@ namespace WorldServer.World.Interfaces
                         _stage = 3;               
                     break;
                 case 2:
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 14)
+                        if (GetCraft(8, itm.Crafts) == 14)
                         {
                             if (_slot1 == 0)
                                 _slot1 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot1));
                                 _slot1 = slot;
                             }
                         }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 15)
+                        if (GetCraft(8, itm.Crafts) == 15)
                         {
                             if (_slot2 == 0)
                                 _slot2 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot2).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot2));
                                 _slot2 = slot;
                             }
                         }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 16)
+                        if (GetCraft(8, itm.Crafts) == 16)
                             if (_slot3 == 0)
                                 _slot3 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot3).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot3));
                                 _slot3 = slot;
                             }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 17)
+                        if (GetCraft(8, itm.Crafts) == 17)
                             if (_slot4 == 0)
                                 _slot4 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot4).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot4));
                                 _slot4 = slot;
                             }
                         if (_slot2 != 0 && _slot3 != 0 && _slot4 != 0)
@@ -141,53 +171,53 @@ namespace WorldServer.World.Interfaces
                     
                     break;
                 case 3:
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 13)
+                        if (GetCraft(8, itm.Crafts) == 13)
                         {
                             if (_container == 0)
                                 _container = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_container).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_container));
                                 _container = slot;
                             }
                         }
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 14)
+                        if (GetCraft(8, itm.Crafts) == 14)
                         {
                             if (_slot1 == 0)
                                 _slot1 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot1));
                                 _slot1 = slot;
                             }
                         }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 15)
+                        if (GetCraft(8, itm.Crafts) == 15)
                         {
                             if (_slot2 == 0)
                                 _slot2 = slot;
                             else
                             {
-                                RemoveBonuses( _myPlayer.ItmInterface.GetItemInSlot(_slot2).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot2));
                                 _slot2 = slot;
                             }
                         }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 16)
+                        if (GetCraft(8, itm.Crafts) == 16)
                             if (_slot3 == 0)
                                 _slot3 = slot;
                             else
                             {
-                                RemoveBonuses( _myPlayer.ItmInterface.GetItemInSlot(_slot3).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot3));
                                 _slot3 = slot;
                             }
 
-                        if (GetCraft(8, _myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts) == 17)
+                        if (GetCraft(8, itm.Crafts) == 17)
                             if (_slot4 == 0)
                                 _slot4 = slot;
                             else
                             {
-                                RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(_slot4).Info.Crafts.Split(';'));
+                                RemoveBonuses(AddedCrafts(_slot4));
                                 _slot4 = slot;
                             }
                         if (_slot2 != 0 && _slot3 != 0 && _slot4 != 0)
@@ -196,7 +226,8 @@ namespace WorldServer.World.Interfaces
 
             }
 
-            AddBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
+            _added[slot] = added;
+            AddBonuses(itm.Crafts.Split(';'));
             Crafting();
             locked = false;
          //   Log.Success("Power ", "" + _power);
@@ -204,14 +235,17 @@ namespace WorldServer.World.Interfaces
 
         public void RemoveContainer(ushort slot,Boolean consumeItem = false)
         {
-           // Log.Info("remtoslot", "  " + slot);
+            // consumeItem is Craft's own call, made while it already holds the lock.
+            if (consumeItem)
+                RemoveContainerImpl(slot, true);
+            else
+                RunLocked(() => RemoveContainerImpl(slot, false));
+        }
 
-            if (!consumeItem)
-            {
-                if (locked)
-                    return;
-                locked = true;
-            }
+        private void RemoveContainerImpl(ushort slot, Boolean consumeItem)
+        {
+            if (slot == 0)
+                return;
 
            if (_container == slot)
            {
@@ -243,7 +277,7 @@ namespace WorldServer.World.Interfaces
                 locked = false;
                 return;
            }
-            RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
+            RemoveBonuses(AddedCrafts(slot));
 
             if(_myPlayer._Value.CraftingSkill == 5)
               if (_slot2 == 0 || _slot3 == 0 || _slot4 == 0)
@@ -322,19 +356,30 @@ namespace WorldServer.World.Interfaces
             _duration = 0;
             _multiplier = 0;
             _critChance = 0;
+            _added.Clear();
             Crafting();
         }
 
         public void Craft()
         {
-            if (locked)
-                return;
-            locked = true;
+            RunLocked(CraftImpl);
+        }
 
-            if (_container == 0 || _slot1 == 0 || _slot2 == 0 || _slot3 == 0 || _slot4 == 0 || _myPlayer.ItmInterface.GetItemInSlot(_slot1) == null)
-            {
-                locked = false;
+        private void CraftImpl()
+        {
+            if (_container == 0 || _slot1 == 0 || _slot2 == 0 || _slot3 == 0 || _slot4 == 0)
                 return;
+
+            // Consumption is by slot, so every slot must still hold the item whose bonuses were applied.
+            foreach (ushort slot in new[] { _container, _slot1, _slot2, _slot3, _slot4 })
+            {
+                Item added;
+                if (!_added.TryGetValue(slot, out added) || added == null || _myPlayer.ItmInterface.GetItemInSlot(slot) != added)
+                {
+                    _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_MISMATCH_TYPE);
+                    Reset();
+                    return;
+                }
             }
 
             byte rarety = _myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Rarity;

@@ -57,6 +57,7 @@ internal static class RuntimeRegressionChecks
             CheckInfluence();
             CheckCooldowns();
             CheckItemCooldownNotifications();
+            CheckEconomyGuards();
             CheckChannelRange();
             CheckStaleChannelCallback();
             CheckDungeonPackets();
@@ -292,6 +293,195 @@ internal static class RuntimeRegressionChecks
     {
         return ((uint)bytes[offset] << 24) | ((uint)bytes[offset + 1] << 16) |
             ((uint)bytes[offset + 2] << 8) | bytes[offset + 3];
+    }
+
+    private static void CheckEconomyGuards()
+    {
+        var player = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var client = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+        client.Packets = new List<byte[]>();
+        player.Client = client;
+        player._Value = new Character_value();
+        PacketOut.SizeLen = 2;
+
+        // BUG-179: a refused creation must not have merged anything into existing stacks.
+        var bags = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+        var potion = new Item_Info { Entry = 5000, MaxStack = 10 };
+        var filler = new Item_Info { Entry = 5001, MaxStack = 1 };
+        for (ushort slot = ItemsInterface.INVENTORY_START_SLOT; slot < ItemsInterface.INVENTORY_START_SLOT + 32; slot++)
+            bags.Items[slot] = new Item(player) { Info = filler, CharSaveInfo = new CharacterItem { Counts = 1 } };
+        bags.Items[ItemsInterface.INVENTORY_START_SLOT] = new Item(player) { Info = potion, CharSaveInfo = new CharacterItem { Counts = 5 } };
+        Assert(bags.CreateItem(potion, 20) == ItemResult.RESULT_MAX_BAG, "Full bags refuse an overflowing stack");
+        Assert(bags.Items[ItemsInterface.INVENTORY_START_SLOT].Count == 5, "Refused creation leaves the partial stack untouched");
+        // BUG-183: N non-stackables need N slots; this used to report success and create nothing.
+        Assert(bags.CreateItem(filler, 3) == ItemResult.RESULT_MAX_BAG, "Three non-stackables need three slots");
+        Assert(bags.CreateItem(new Item_Info { Entry = 5003, MaxStack = 0 }, 2) == ItemResult.RESULT_MAX_BAG,
+            "MaxStack 0 items are counted as one per slot");
+
+        // BUG-178: the same stack offered in two trade slots is refused at execution.
+        var trader = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+        trader.SetOwner(player);
+        var sword = new Item(player) { Info = new Item_Info { Entry = 5002, MaxStack = 1 }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+        trader.Items[ItemsInterface.INVENTORY_START_SLOT] = sword;
+        MethodInfo validate = typeof(ItemsInterface).GetMethod("ValidateTradeOffer", BindingFlags.Instance | BindingFlags.NonPublic);
+        object[] counts = new object[2];
+        trader.TradeItems = new KeyValuePair<ushort, Item>[ItemsInterface.MAX_TRADE_SLOT];
+        trader.TradeItems[0] = new KeyValuePair<ushort, Item>(ItemsInterface.INVENTORY_START_SLOT, sword);
+        Assert((bool)validate.Invoke(trader, counts) && (ushort)counts[0] == 1 && (ushort)counts[1] == 1,
+            "A single offered stack validates, needing and freeing one main-bag slot");
+        trader.TradeItems[1] = new KeyValuePair<ushort, Item>(ItemsInterface.INVENTORY_START_SLOT, sword);
+        Assert(!(bool)validate.Invoke(trader, counts), "A stack offered twice is refused");
+        trader.TradeItems[1] = new KeyValuePair<ushort, Item>(0, null);
+        trader.Items[ItemsInterface.INVENTORY_START_SLOT] = null;
+        trader.Items[ItemsInterface.INVENTORY_START_SLOT + 1] = sword;
+        Assert(!(bool)validate.Invoke(trader, counts), "A stack moved after the offer is refused");
+        trader.Items[ItemsInterface.INVENTORY_START_SLOT + 1] = null;
+        trader.Items[10] = sword;
+        trader.TradeItems[0] = new KeyValuePair<ushort, Item>(10, sword);
+        Assert(!(bool)validate.Invoke(trader, counts), "Equipped items cannot be traded");
+        // BUG-185: selling an equipped item cleared the slot without unequipping it.
+        sword.Info.SellPrice = 100;
+        trader.SellItem(new WorldServer.NetWork.Handler.InteractMenu { Num = 10, Count = 1 });
+        Assert(trader.Items[10] == sword && player._Value.Money == 0, "Equipped items cannot be sold");
+
+        // BUG-195: only broken items (2500000-2599999) are repairable; any Craftresult item used to convert.
+        var pinion = new Item(player) { Info = new Item_Info { Entry = 82150, MaxStack = 20, Craftresult = "188917;188917;188917;0" },
+            CharSaveInfo = new CharacterItem { Counts = 5 } };
+        trader.Items[ItemsInterface.INVENTORY_START_SLOT + 3] = pinion;
+        trader.RepairItem(new WorldServer.NetWork.Handler.InteractMenu { Num = (byte)(ItemsInterface.INVENTORY_START_SLOT + 3) });
+        Assert(trader.Items[ItemsInterface.INVENTORY_START_SLOT + 3] == pinion && pinion.Count == 5,
+            "A non-broken item with a Craftresult is not repaired");
+        Assert(ItemsInterface.IsRepairable(new Item_Info { Entry = 2500001 }) && !ItemsInterface.IsRepairable(pinion.Info),
+            "Repairable range matches the one Item.BuildItem advertises");
+
+        // BUG-196: crafting lock leaks, swapped ingredients and phantom bonus removal.
+        {
+            player.ItmInterface = trader;
+            var craft = new CraftingApoInterface();
+            craft.SetOwner(player);
+            FieldInfo stageField = typeof(CraftingApoInterface).GetField("_stage", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo stabilityField = typeof(CraftingApoInterface).GetField("_stability", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo lockField = typeof(CraftingApoInterface).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
+            ushort potSlot = (ushort)(ItemsInterface.INVENTORY_START_SLOT + 10), mainSlot = (ushort)(potSlot + 1),
+                addSlot = (ushort)(potSlot + 2), otherSlot = (ushort)(potSlot + 3);
+            craft.AddContainer((ushort)(ItemsInterface.INVENTORY_START_SLOT + 20)); // empty slot
+            Assert(!(bool)lockField.GetValue(craft), "An empty slot does not leave crafting locked");
+            trader.Items[potSlot] = new Item(player) { Info = new Item_Info { Entry = 6000, Crafts = "8:5" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            trader.Items[mainSlot] = new Item(player) { Info = new Item_Info { Entry = 6001, Crafts = "8:2", Craftresult = "100;101;102" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            trader.Items[addSlot] = new Item(player) { Info = new Item_Info { Entry = 6002, Crafts = "8:3;1:5" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            trader.Items[otherSlot] = new Item(player) { Info = new Item_Info { Entry = 6003, Crafts = "8:3;1:65531" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            craft.AddContainer(potSlot);
+            craft.AddContainer(mainSlot);
+            craft.AddContainer(mainSlot);
+            Assert((byte)stageField.GetValue(craft) == 3, "A single item cannot be both main ingredient and additive");
+            craft.AddContainer(addSlot);
+            Assert((short)stabilityField.GetValue(craft) == 5, "Additive bonuses apply once");
+            craft.RemoveContainer(otherSlot);
+            Assert((short)stabilityField.GetValue(craft) == 5, "Removing a slot that was never added changes nothing");
+            Item rare = trader.Items[addSlot];
+            trader.Items[addSlot] = trader.Items[otherSlot];
+            trader.Items[otherSlot] = rare;
+            craft.Craft();
+            Assert((byte)stageField.GetValue(craft) == 0 && trader.Items[addSlot].Count == 1 && !(bool)lockField.GetValue(craft),
+                "A slot swapped after adding aborts the craft without consuming, and the lock is released");
+        }
+
+        // BUG-196 (talisman side): same lock and swapped-ingredient guards.
+        {
+            var tal = new CraftingTalInterface();
+            tal.SetOwner(player);
+            player._Value.CraftingSkill = 5;
+            FieldInfo talStage = typeof(CraftingTalInterface).GetField("_stage", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo talLock = typeof(CraftingTalInterface).GetField("locked", BindingFlags.Instance | BindingFlags.NonPublic);
+            ushort first = (ushort)(ItemsInterface.INVENTORY_START_SLOT + 20);
+            tal.AddContainer((ushort)(first + 9)); // empty slot
+            Assert(!(bool)talLock.GetValue(tal), "An empty slot does not leave talisman crafting locked");
+            string[] roles = { "8:13", "8:14", "8:15", "8:16", "8:17" };
+            for (int r = 0; r < roles.Length; r++)
+                trader.Items[first + r] = new Item(player) { Info = new Item_Info { Entry = (uint)(6100 + r), Crafts = roles[r], Craftresult = "100;101", Unk27 = new byte[27] },
+                    CharSaveInfo = new CharacterItem { Counts = 1 } };
+            trader.Items[first + 5] = new Item(player) { Info = new Item_Info { Entry = 6199, Crafts = "8:17", Unk27 = new byte[27] }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            for (int r = 0; r < roles.Length; r++)
+                tal.AddContainer((ushort)(first + r));
+            Assert((byte)talStage.GetValue(tal) == 3, "All five talisman roles filled");
+            Item kept = trader.Items[first + 4];
+            trader.Items[first + 4] = trader.Items[first + 5];
+            trader.Items[first + 5] = kept;
+            tal.Craft();
+            Assert((byte)talStage.GetValue(tal) == 0 && trader.Items[first + 4].Count == 1 && !(bool)talLock.GetValue(tal),
+                "A swapped talisman ingredient aborts the craft without consuming");
+        }
+
+        // System guilds: GM accounts hold rank 9 (every permission); everyone else keeps their rank.
+        {
+            var systemGuild = (WorldServer.World.Guild.Guild)FormatterServices.GetUninitializedObject(typeof(WorldServer.World.Guild.Guild));
+            systemGuild.Info = new Guild_info { Name = "Forces of Order", LeaderId = 0 };
+            var playerGuild = (WorldServer.World.Guild.Guild)FormatterServices.GetUninitializedObject(typeof(WorldServer.World.Guild.Guild));
+            playerGuild.Info = new Guild_info { Name = "Some Player Guild", LeaderId = 77 };
+            MethodInfo rankFor = typeof(WorldServer.World.Guild.Guild).GetMethod("SystemGuildRankFor", BindingFlags.Instance | BindingFlags.NonPublic);
+            var gmClient = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+            gmClient._Account = new Account { GmLevel = 3 };
+            var gm = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+            gm.Client = gmClient;
+            var normalClient = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+            normalClient._Account = new Account { GmLevel = 1 };
+            var normal = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+            normal.Client = normalClient;
+            Func<WorldServer.World.Guild.Guild, Player, byte, byte> rank = (g, p, current) => (byte)rankFor.Invoke(g, new object[] { p, current });
+            Assert(rank(systemGuild, gm, 1) == 9, "A GM joining a system guild gets rank 9");
+            Assert(rank(systemGuild, normal, 1) == 1, "A player joining a system guild stays a Member");
+            Assert(rank(systemGuild, normal, 9) == 1, "A former GM loses rank 9 in a leaderless system guild");
+            Assert(rank(systemGuild, normal, 8) == 8, "Officers promoted by a GM keep their rank");
+            Assert(rank(playerGuild, gm, 1) == 1, "GMs get no special rank in player guilds");
+            systemGuild.Info.LeaderId = 55;
+            Assert(rank(systemGuild, normal, 9) == 9, "A system guild given a real leader keeps that leader's rank 9");
+        }
+
+        // Item audit line format (checked without writing to the real ITEMS log).
+        {
+            MethodInfo format = typeof(ItemAudit).GetMethod("Format", BindingFlags.Static | BindingFlags.NonPublic);
+            string line = (string)format.Invoke(null, new object[] { "Trade", "Give", 12u, "Alice", 34u, "Bob", 208470u, (ushort)10, 0u, 0ul });
+            Assert(line == "Trade|Give|from=12:Alice|to=34:Bob|item=208470x10", "Audit item line: " + line);
+            line = (string)format.Invoke(null, new object[] { "Vault", "Deposit", 12u, "Alice", 5u, "guild:Order", 0u, (ushort)0, 2500u, 1003ul });
+            Assert(line == "Vault|Deposit|from=12:Alice|to=5:guild:Order|money=2500|ref=1003", "Audit money line: " + line);
+
+            // The deployed NLog.config routes ItemAudit to its own file and stops it there (final),
+            // so audit lines neither go missing nor flood the console and main log.
+            bool routed = false;
+            foreach (NLog.Config.LoggingRule rule in NLog.LogManager.Configuration.LoggingRules)
+                if (rule.LoggerNamePattern == "ItemAudit" && rule.Final)
+                    foreach (NLog.Targets.Target target in rule.Targets)
+                        routed |= target.Name == "itemAuditLogToFile";
+            Assert(routed, "NLog.config routes ItemAudit to itemAuditLogToFile as a final rule");
+        }
+
+        // BUG-189: a requested slot must be an empty bag/bank/overflow slot, never equipment or past the array.
+        Assert(!trader.CanCreateInSlot(10) && !trader.CanCreateInSlot(ushort.MaxValue) && !trader.CanCreateInSlot(ItemsInterface.AUTO_BANK_SLOT),
+            "Equipment, auto and out-of-range slots cannot receive a created item");
+        Assert(trader.CanCreateInSlot((ushort)(ItemsInterface.INVENTORY_START_SLOT + 2)) && trader.CanCreateInSlot(ItemsInterface.BANK_START_SLOT),
+            "Empty bag and bank slots can");
+        Assert(trader.CreateItem(sword.Info, 1, new List<Talisman>(), 0, 0, false, 10) == ItemResult.RESULT_ITEMID_INVALID,
+            "CreateItem refuses an equipment slot");
+
+        // BUG-188: the vault price is the server's; a full vault costs nothing more because it cannot grow.
+        var guild = (WorldServer.World.Guild.Guild)FormatterServices.GetUninitializedObject(typeof(WorldServer.World.Guild.Guild));
+        guild.Info = new Guild_info { Level = 40 };
+        guild.Info.guildvaultpurchased[0] = 10;
+        guild.Info.guildvaultpurchased[1] = 60;
+        MethodInfo vaultPrice = typeof(WorldServer.World.Guild.Guild).GetMethod("GetVaultSlotPrice", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert((uint)vaultPrice.Invoke(guild, new object[] { 0 }) == 20000 && (uint)vaultPrice.Invoke(guild, new object[] { 1 }) == 0
+            && (uint)vaultPrice.Invoke(guild, new object[] { 4 }) == 20000000, "Vault slot prices follow the displayed table");
+
+        // BUG-180: a COD byte other than 0/1 is refused before any money moves.
+        var mail = new MailInterface();
+        mail.SetOwner(player);
+        // Skip(1), empty name, empty subject and body, money 1000, cr 2, no items.
+        byte[] body = { 0, 0, 0, 0, 0, 0, 0xE8, 0x03, 0, 0, 2, 0 };
+        client.Packets.Clear();
+        mail.SendPacketMail(new PacketIn(body, 0, body.Length));
+        Assert(client.Packets.Count == 1 && client.LastPacket[client.LastPacket.Length - 1] == (byte)MailResult.TEXT_MAIL_RESULT5,
+            "Out-of-range COD byte is refused");
+        Console.WriteLine("PASS: atomic and non-stackable creation, slot-targeted creation, trade offers, equipped sales, vault prices, repair, crafting and mail COD.");
     }
 
     private static void CheckItemCooldownNotifications()

@@ -92,6 +92,14 @@ namespace WorldServer.World.Interfaces
             // COD?
             byte cr = packet.GetUint8();
 
+            // Only 0 and 1 are meaningful. Any other value was charged as COD (nothing) but
+            // delivered as plain money, creating gold from postage alone (BUG-180).
+            if (cr > 1 || money > uint.MaxValue - MAIL_PRICE)
+            {
+                SendResult(MailResult.TEXT_MAIL_RESULT5);
+                return;
+            }
+
             // Item
             byte itemsToSendCount = packet.GetUint8();
 
@@ -109,6 +117,13 @@ namespace WorldServer.World.Interfaces
                 if (item == null || item.Info == null)
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT16);
+                    return;
+                }
+
+                // A slot listed twice would be exchanged twice (BUG-182).
+                if (itemSlots.Contains(itemSlot))
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT9);
                     return;
                 }
 
@@ -139,27 +154,34 @@ namespace WorldServer.World.Interfaces
 
                 var blackMarketManager = new BlackMarketManager();
 
-                // Sending multiple items.
+                // Refuse the whole package before exchanging any of it.
                 foreach (var item in itemList)
                 {
-                    if (blackMarketManager.IsItemOnBlackMarket(item.Info.Entry))
-                    {
-                        _logger.Info($"Sending {item.Info.Name} ({item.Info.Entry}) to BlackMarket");
-                        blackMarketManager.SendBlackMarketReward(plr, item.Info.Entry);
-                        plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
-                        _logger.Debug($"Email Sent.");
-                        plr.ItmInterface.RemoveItems(item.Info.Entry, 1);
-                        _logger.Info($"Removed {item.Info.Name} ({item.Info.Entry}) from {plr.Name}");
-                        plr.SendClientMessage($"A suspicious looking package has arrived in your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                    }
-                    else
+                    if (!blackMarketManager.IsItemOnBlackMarket(item.Info.Entry))
                     {
                         _logger.Debug($"{MailResult.TEXT_MAIL_RESULT9}");
+                        SendResult(MailResult.TEXT_MAIL_RESULT9);
                         return;
                     }
                 }
-                
-                SendResult(MailResult.TEXT_MAIL_RESULT4);   
+
+                plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
+
+                // Take the item before paying for it: the reward is only earned by a removal that succeeded.
+                foreach (var item in itemList)
+                {
+                    if (!plr.ItmInterface.RemoveItems(item.Info.Entry, 1))
+                    {
+                        _logger.Warn($"Could not remove {item.Info.Name} ({item.Info.Entry}) from {plr.Name}; no Black Market reward sent");
+                        continue;
+                    }
+                    _logger.Info($"Removed {item.Info.Name} ({item.Info.Entry}) from {plr.Name}; sending Black Market reward");
+                    ItemAudit.Item("BlackMarket", "Exchange", plr, null, item.Info.Entry, 1);
+                    blackMarketManager.SendBlackMarketReward(plr, item.Info.Entry);
+                    plr.SendClientMessage($"A suspicious looking package has arrived in your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                }
+
+                SendResult(MailResult.TEXT_MAIL_RESULT4);
             }
             else
             {
@@ -222,11 +244,17 @@ namespace WorldServer.World.Interfaces
                     if (itm != null && itm.Info != null)
                     {
                         cMail.Items.Add(new MailItem(itm.Info.Entry, itm.GetTalismans(), itm.GetPrimaryDye(), itm.GetSecondaryDye(), itm.Count));
+                        ItemAudit.Item("Mail", "Send", sender.CharacterId, sender.Name, receiver.CharacterId, receiver.Name, itm.Info.Entry, itm.Count, (ulong)cMail.Guid);
                         sender.ItmInterface.DeleteItem(itmslot, itm.Count);
                         itm.Owner = null;
                     }
                 }
             }
+
+            if (cashOnDelivery)
+                ItemAudit.Money("Mail", "CodRequest", sender.CharacterId, sender.Name, receiver.CharacterId, receiver.Name, money, (ulong)cMail.Guid);
+            else
+                ItemAudit.Money("Mail", "Send", sender.CharacterId, sender.Name, receiver.CharacterId, receiver.Name, money, (ulong)cMail.Guid);
 
             SendResult(MailResult.TEXT_MAIL_RESULT4);
 
@@ -251,7 +279,7 @@ namespace WorldServer.World.Interfaces
         /// <summary>
         /// Returns an expired mail to its sender.
         /// </summary>
-        private static MailResult ReturnMail(Character_mail mail)
+        private static MailResult ReturnMail(Character_mail mail, bool expired)
         {
             // Can't return auction mail.
             if (mail.AuctionType != 0)
@@ -280,15 +308,24 @@ namespace WorldServer.World.Interfaces
                 CharacterIdSender = mail.CharacterId,
                 SenderName = mail.ReceiverName,
                 ReceiverName = mail.SenderName,
-                Content = "Your mail expired and has been returned to you.",
+                // Carry the attachments back: building the return without them destroyed every
+                // returned item and gold attachment (BUG-181). COD money was cleared above.
+                Title = mail.Title ?? "",
+                Money = mail.Money,
+                Content = expired ? "Your mail expired and has been returned to you." : "Your mail has been returned to you.",
                 ReadDate = 0,
                 SendDate = (uint) TCPManager.GetTimeStamp(),
                 Opened = false
             };
 
+            returnMail.Items.AddRange(mail.Items);
+            foreach (MailItem returned in mail.Items)
+                ItemAudit.Item("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, mail.SenderName, returned.id, returned.count, (ulong)returnMail.Guid);
+            ItemAudit.Money("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, mail.SenderName, returnMail.Money, (ulong)returnMail.Guid);
+
             CharMgr.AddMail(returnMail);
 
-            return MailResult.TEXT_MAIL_UNK;
+            return MailResult.TEXT_MAIL_RESULT10;
         }
 
         public static long TimeToExpire(Character_mail mail)
@@ -324,7 +361,7 @@ namespace WorldServer.World.Interfaces
             Character receiver = CharMgr.GetCharacter(mail.SenderName, false);
 
             if (receiver != null)
-                ReturnMail(mail);
+                ReturnMail(mail, true);
             else
                 CharMgr.DeleteMail(mail);
         }
@@ -354,7 +391,7 @@ namespace WorldServer.World.Interfaces
                         SendMail(mail);
                         break;
                     case MailInteractType.ReturnMail:
-                        SendResult(ReturnMail(mail));
+                        SendResult(ReturnMail(mail, false));
                         SendMailCount();
                         SendMailBox();
                         break;
@@ -393,7 +430,13 @@ namespace WorldServer.World.Interfaces
                             _Owner.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
                             return;
                         }
-                        _Owner.GetPlayer().ItmInterface.CreateItem(ItemService.GetItem_Info(item.id), item.count, item.talisman, item.primary_dye, item.secondary_dye, false);
+                        // Remove the attachment only once it is in the bag; it used to be removed regardless.
+                        if (_Owner.GetPlayer().ItmInterface.CreateItem(ItemService.GetItem_Info(item.id), item.count, item.talisman, item.primary_dye, item.secondary_dye, false) != ItemResult.RESULT_OK)
+                        {
+                            _Owner.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                            return;
+                        }
+                        ItemAudit.Item("Mail", "Take", mail.CharacterIdSender, mail.SenderName, mail.CharacterId, mail.ReceiverName, item.id, item.count, (ulong)mail.Guid);
                         mail.Items.Remove(item);
                         mail.Dirty = true;
                         CharMgr.Database.SaveObject(mail);
@@ -414,7 +457,10 @@ namespace WorldServer.World.Interfaces
                                 MailHandlers.SendCOD(mail.SenderName, _Owner.GetPlayer(), mail.Money);
                             }
                             else
+                            {
                                 _Owner.GetPlayer().AddMoney(mail.Money);
+                                ItemAudit.Money("Mail", "TakeMoney", mail.CharacterIdSender, mail.SenderName, mail.CharacterId, mail.ReceiverName, mail.Money, (ulong)mail.Guid);
+                            }
 
                             mail.Money = 0;
                         }
@@ -429,7 +475,12 @@ namespace WorldServer.World.Interfaces
                                 _Owner.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
                                 break;
                             }
-                            _Owner.GetPlayer().ItmInterface.CreateItem(ItemService.GetItem_Info(curritem.id), curritem.count, curritem.talisman, curritem.primary_dye, curritem.secondary_dye, false);
+                            if (_Owner.GetPlayer().ItmInterface.CreateItem(ItemService.GetItem_Info(curritem.id), curritem.count, curritem.talisman, curritem.primary_dye, curritem.secondary_dye, false) != ItemResult.RESULT_OK)
+                            {
+                                _Owner.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                                break;
+                            }
+                            ItemAudit.Item("Mail", "Take", mail.CharacterIdSender, mail.SenderName, mail.CharacterId, mail.ReceiverName, curritem.id, curritem.count, (ulong)mail.Guid);
                             toRemove.Add(curritem);
                         }
 

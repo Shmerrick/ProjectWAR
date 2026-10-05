@@ -21,6 +21,14 @@ Players are free to leave the system guilds at any time to join player-created g
 - **Permanent Flag**: Once a player leaves a system guild, a `LeftSystemGuild` flag is set on their character in the database (`characters_value` table).
 - **Invite Restriction**: Regular players cannot invite a character back into a system guild if they have already left one. This prevents these guilds from being used as permanent high-level hubs for veteran players who wish to alternate between guilds.
 
+### 4. GM Accounts Administer the System Guilds
+System guilds have no character leader (`LeaderId = 0`), so they are administered by GMs. Any character on a GM account (GM level above 1) holds **rank 9 ("System")** in its system guild, which carries every permission bit (`FF FF FF FF FF FF FF 3F`, covering all 56 `GuildPermissions` values): editing ranks and permissions, the MOTD and recruitment page, promoting, demoting and kicking, the guild vault and its money, and guild tactics.
+
+- **Joining**: a GM character that joins a system guild -- automatically on first login, or through `.guildadd` -- starts at rank 9 instead of rank 1 (`Guild.JoinGuild`).
+- **Existing members**: on every login, a GM character already in a system guild is raised to rank 9, and a character whose account is no longer GM drops from rank 9 back to rank 1 (`Guild.ApplySystemGuildRank`, from `Player.StartInit`). Officers a GM promoted keep their rank.
+- **Boot**: the duplicate-leader check in `CharMgr.LoadGuilds`, which demotes every rank-9 member when there is more than one, skips leaderless system guilds -- otherwise several GM characters at rank 9 would all be demoted on each restart.
+- **Handing over leadership**: rank 9 can assign a guild leader. Doing so gives the system guild a real `LeaderId`, after which it is treated like a player guild for leadership and the former-GM demotion no longer applies. Avoid it unless that is the intent.
+
 ## GM Management
 GMs have specialized commands to manage guild memberships, which can bypass the standard restrictions:
 

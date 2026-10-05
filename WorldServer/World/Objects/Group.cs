@@ -35,7 +35,8 @@ namespace WorldServer.World.Objects
 
         public int ProcessVote(Player voter, ushort vote)
         {
-            if (_playersNeeding.Contains(voter) || _playersGreeding.Contains(voter))
+            // A pass is a vote too: passing and then needing counted the voter twice toward completion.
+            if (_playersNeeding.Contains(voter) || _playersGreeding.Contains(voter) || _playersPassing.Contains(voter))
             {
                 voter.SendClientMessage("You've already rolled on this item.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
                 return -1;
@@ -150,7 +151,10 @@ namespace WorldServer.World.Objects
                     if (mem != highestPlayer)
                         mem.SendLocalizeString(new[] { highestPlayer.Name, Item.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_PLAYER_X_RECEIVES_ITEM_X);
                 }
-                highestPlayer.ItmInterface.CreateItem(Item, 1);
+                // The roll already removed the item from the corpse, so a full bag must not lose it.
+                if (highestPlayer.ItmInterface.CreateItem(Item, 1) != ItemResult.RESULT_OK
+                    && !WorldServer.Services.World.MailService.MailItem(highestPlayer.CharacterId, Item.Entry, 1))
+                    Log.Error("LootRoll", $"Could not deliver won item {Item.Entry} to {highestPlayer.Name}");
             }
 
             Completed = true;

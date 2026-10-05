@@ -197,7 +197,7 @@ namespace WorldServer.World.Objects.Instances
 
         public override void TryLoot(Player player, InteractMenu menu)
         {
-            if (lootContainer != null && lootContainer.IsLootable())
+            if (lootContainer != null && lootContainer.IsLootable() && CanLoot(player))
             {
                 List<Player> subGroup = new List<Player>();
 
