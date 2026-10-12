@@ -253,7 +253,7 @@ Get-Process | Where-Object { $_.Name -match 'AccountCacher|LauncherServer|LobbyS
 
 Current measurements, plan corrections and validation limits:
 [2026-09-24 repository audit](docs/handoffs/2026-09-24-repository-audit.md).
-Apply incremental scripts 00–12 in order before running the ability-conformance build.
+Apply incremental scripts 00–13 in order before running the ability-conformance build.
 Migration 12 adds character-owned item cooldown persistence; see the
 [persistence handoff](docs/handoffs/2026-09-24-item-cooldown-persistence.md) for verification and limits.
 The subsequent [millisecond cooldown migration](docs/handoffs/2026-09-24-cooldown-milliseconds.md)

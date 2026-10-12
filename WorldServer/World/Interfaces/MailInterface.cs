@@ -113,7 +113,8 @@ namespace WorldServer.World.Interfaces
                 ushort itemSlot = ByteSwap.Swap(packet.GetUint16());
                 packet.Skip(2);
 
-                Item item = plr.ItmInterface.GetItemInSlot(itemSlot);
+                // Bags and bought bank slots only; see ItemsInterface.IsStorageSlot.
+                Item item = plr.ItmInterface.IsStorageSlot(itemSlot) ? plr.ItmInterface.GetItemInSlot(itemSlot) : null;
                 if (item == null || item.Info == null)
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT16);
@@ -285,20 +286,14 @@ namespace WorldServer.World.Interfaces
             if (mail.AuctionType != 0)
                 return MailResult.TEXT_MAIL_RESULT11;
 
-            Character receiver = CharMgr.GetCharacter(mail.SenderName, false);
+            // The sender by id, not by name: a sender who renamed made the return fail, and a deleted
+            // sender's name taken by someone else passed this check while the return mail, addressed
+            // by id, had nowhere to go -- after the original had been deleted, losing its attachments.
+            Character receiver = CharMgr.GetCharacter(mail.CharacterIdSender, false);
 
             // No one to return mail to.
-            if (receiver == null)              
+            if (receiver == null)
                 return MailResult.TEXT_MAIL_RESULT11;
-
-            // If mail is COD, remove the COD requirement and remove the money.
-            if (mail.Cr)
-            {
-                mail.Cr = false;
-                mail.Money = 0;
-            }
-            
-            CharMgr.DeleteMail(mail);
 
             Character_mail returnMail = new Character_mail
             {
@@ -307,11 +302,12 @@ namespace WorldServer.World.Interfaces
                 CharacterId = mail.CharacterIdSender,
                 CharacterIdSender = mail.CharacterId,
                 SenderName = mail.ReceiverName,
-                ReceiverName = mail.SenderName,
+                ReceiverName = receiver.Name,
                 // Carry the attachments back: building the return without them destroyed every
-                // returned item and gold attachment (BUG-181). COD money was cleared above.
+                // returned item and gold attachment (BUG-181). COD money is a demand, not gold, so
+                // it is not returned.
                 Title = mail.Title ?? "",
-                Money = mail.Money,
+                Money = mail.Cr ? 0 : mail.Money,
                 Content = expired ? "Your mail expired and has been returned to you." : "Your mail has been returned to you.",
                 ReadDate = 0,
                 SendDate = (uint) TCPManager.GetTimeStamp(),
@@ -319,11 +315,17 @@ namespace WorldServer.World.Interfaces
             };
 
             returnMail.Items.AddRange(mail.Items);
-            foreach (MailItem returned in mail.Items)
-                ItemAudit.Item("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, mail.SenderName, returned.id, returned.count, (ulong)returnMail.Guid);
-            ItemAudit.Money("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, mail.SenderName, returnMail.Money, (ulong)returnMail.Guid);
 
-            CharMgr.AddMail(returnMail);
+            // Deliver the return before deleting the original, so a return that cannot be delivered
+            // leaves the mail where it was instead of destroying what it carried.
+            if (!CharMgr.AddMail(returnMail))
+                return MailResult.TEXT_MAIL_RESULT11;
+
+            CharMgr.DeleteMail(mail);
+
+            foreach (MailItem returned in mail.Items)
+                ItemAudit.Item("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, receiver.Name, returned.id, returned.count, (ulong)returnMail.Guid);
+            ItemAudit.Money("Mail", expired ? "Expire" : "Return", mail.CharacterId, mail.ReceiverName, mail.CharacterIdSender, receiver.Name, returnMail.Money, (ulong)returnMail.Guid);
 
             return MailResult.TEXT_MAIL_RESULT10;
         }
@@ -358,12 +360,12 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-            Character receiver = CharMgr.GetCharacter(mail.SenderName, false);
-
-            if (receiver != null)
-                ReturnMail(mail, true);
-            else
+            // A sender who no longer exists cannot be returned to; anything else that fails to return
+            // stays put rather than being destroyed.
+            if (CharMgr.GetCharacter(mail.CharacterIdSender, false) == null)
                 CharMgr.DeleteMail(mail);
+            else
+                ReturnMail(mail, true);
         }
 
         public void MailInteract(MailInteractType type, uint guid, PacketIn packet)
@@ -416,6 +418,10 @@ namespace WorldServer.World.Interfaces
                             }
                             MailHandlers.SendCOD(mail.SenderName, _Owner.GetPlayer(), mail.Money);
                             mail.Money = 0;
+                            // Queued with the payment and the COD mail (BUG-199): the take below can
+                            // still fail on a full bag, and this was otherwise saved only by the
+                            // 60s autosave, so a crash between made the receiver pay twice.
+                            CharMgr.Database.SaveObject(mail);
                         }
                         packet.Skip(4);
                         byte itemnum = packet.GetUint8();
@@ -458,6 +464,12 @@ namespace WorldServer.World.Interfaces
                             }
                             else
                             {
+                                // AddMoney saturates; refuse rather than destroy the excess.
+                                if (!_Owner.GetPlayer().CanAddMoney(mail.Money))
+                                {
+                                    _Owner.GetPlayer().SendClientMessage("You cannot carry any more money.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                                    return;
+                                }
                                 _Owner.GetPlayer().AddMoney(mail.Money);
                                 ItemAudit.Money("Mail", "TakeMoney", mail.CharacterIdSender, mail.SenderName, mail.CharacterId, mail.ReceiverName, mail.Money, (ulong)mail.Guid);
                             }

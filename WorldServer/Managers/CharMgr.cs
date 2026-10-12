@@ -1873,7 +1873,13 @@ namespace WorldServer.Managers
                 int count = 0;
                 if (mails != null)
                 {
-                    List<Character_mail> expired = mails.FindAll(mail => MailInterface.TimeToExpire(mail) <= 0);
+                    // Only expired mail that carries nothing to return, or auction mail, is deleted
+                    // here -- the same rule MailInterface.MailExpired applies. Mail with attachments or
+                    // gold is left for that path to return to its sender when the recipient logs in.
+                    // Deleting it here destroyed attachments whenever mail expired with its recipient
+                    // offline across a restart: the in-memory copy outlived one restart, not two.
+                    List<Character_mail> expired = mails.FindAll(mail => MailInterface.TimeToExpire(mail) <= 0
+                        && (mail.AuctionType != 0 || (mail.Money == 0 && mail.Items.Count == 0)));
 
                     if (expired.Count > 0)
                     {
@@ -1898,17 +1904,21 @@ namespace WorldServer.Managers
 
             else
             {
-                _maxMailGuid = Database.GetObjectCount<Character_mail>();
-                Log.Success("LoadMails", _maxMailGuid + " existing mails.");
+                // The highest id, not the row count: once any mail had been deleted the count fell
+                // below live ids, new mail collided with an existing primary key, its insert failed
+                // and it was lost with whatever it carried.
+                _maxMailGuid = (int)Database.GetMaxColValue<Character_mail>("Guid");
+                Log.Success("LoadMails", _maxMailGuid + " is the highest mail id.");
             }
         }
 
-        public static void AddMail(Character_mail mail)
+        /// <summary>Delivers <paramref name="mail"/>; false if its recipient does not exist, in which case nothing is stored.</summary>
+        public static bool AddMail(Character_mail mail)
         {
             Character character = GetCharacter(mail.CharacterId, false);
 
             if (character == null)
-                return;
+                return false;
 
             if (character.Mails == null)
             {
@@ -1924,6 +1934,7 @@ namespace WorldServer.Managers
             _logger.Debug($"Mail Receiver : {mail.ReceiverName}");
 
             receiver?.MlInterface?.AddMail(mail);
+            return true;
         }
 
         public static void DeleteMail(Character_mail mail)

@@ -2,7 +2,12 @@
 
 ProjectWAR is a C# private server emulator for Warhammer Online: Age of Reckoning. It targets .NET 4.8, x64. The solution is `ProjectWAR.sln`.
 
-## Current state (2026-10-05)
+## Current state (2026-10-12)
+
+The [economy review handoff](handoffs/2026-10-12-economy-review.md) follows up the sweep below:
+14 more defects (BUG-201–214), including forged item-move duplication, talisman strings too long to
+save (migration 13, applied and verified) and boot-time loss of expired mail attachments. Untested
+in the client.
 
 The [economy and duplication handoff](handoffs/2026-10-05-economy-and-duplication.md) records a
 code-review sweep of every item and gold path between players: 24 bugs (BUG-177–200) fixed across

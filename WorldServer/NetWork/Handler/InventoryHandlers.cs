@@ -193,8 +193,11 @@ namespace WorldServer.NetWork.Handler
 
             if ((item.Info.Entry == 208477) || (item.Info.Entry == 208474))
             {
-                Plr.ItmInterface.CreateItem(208470, 6);
-                Plr.ItmInterface.DeleteItem(slot, 1);
+                // Consumed only once the six are delivered; a full backpack used to lose the item.
+                if (Plr.ItmInterface.CreateItem(208470, 6) == ItemResult.RESULT_OK)
+                    Plr.ItmInterface.DeleteItem(slot, 1);
+                else
+                    Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_NOT_ENOUGH_INVENTORY_SPACE);
             }
 
             // Oil

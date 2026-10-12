@@ -59,9 +59,11 @@ namespace Common
 
         // Note:
         //
-        // If the Timer is implemented, this field may no longer be big enough to hold the data
-        // - check first!
-        [DataElement(Varchar = 40)]
+        // "entry:slot:fused:timer;" per talisman, at most 30 characters each (uint, byte, byte, uint),
+        // and a slot can hold a fused and an unfused talisman while the fusing window is open: 8 x 30.
+        // 40 overflowed at three untimed or two timed talismans, and the strict-mode save then failed
+        // (migration 13 widens the column).
+        [DataElement(Varchar = 255)]
         public string Talismans
         {
             get

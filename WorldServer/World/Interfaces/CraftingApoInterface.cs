@@ -504,15 +504,23 @@ namespace WorldServer.World.Interfaces
             }
             
 
+                    // Deliver the potion before anything is consumed. CreateItem's result was ignored, so a
+                    // full backpack (or a recipe naming no item) used up every ingredient for nothing.
+                    ItemResult created = _myPlayer.ItmInterface.CreateItem(itemid, multiplierlvl);
+                    if (created != ItemResult.RESULT_OK)
+                    {
+                        _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, created == ItemResult.RESULT_MAX_BAG
+                            ? GameData.Localized_text.TEXT_CRAFT_NO_ROOM_IN_BACKPACK
+                            : GameData.Localized_text.TEXT_CRAFT_INVALID_PRODUCT);
+                        return;
+                    }
+
                     if (_myPlayer._Value.CraftingSkillLevel < 200 && ((byte)((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
                     {
                         _myPlayer._Value.CraftingSkillLevel++;
                         SetBasePower();
                         _myPlayer.SendTradeSkill(_myPlayer._Value.CraftingSkill, _myPlayer._Value.CraftingSkillLevel);
                     }
-
-
-                    _myPlayer.ItmInterface.CreateItem(itemid, multiplierlvl);
 
 
                     if (_slot2 != 0 && _slot2 == _slot3 && _slot2 == _slot4)

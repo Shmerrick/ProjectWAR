@@ -3986,6 +3986,13 @@ namespace WorldServer.World.Objects
         public bool HasMoney(uint Money) { return _Value.Money >= Money; }
 
         /// <summary>
+        /// Whether <paramref name="Money"/> can be added without passing the uint ceiling. AddMoney
+        /// saturates there, so a transfer that already took the gold from its source must check this
+        /// first or the excess is destroyed.
+        /// </summary>
+        public bool CanAddMoney(uint Money) { return (ulong)_Value.Money + Money <= uint.MaxValue; }
+
+        /// <summary>
         /// Queues the money change for the next database pass instead of the 60s autosave. The
         /// other side of a payment -- a mail, a guild deposit, an auction, the other trader -- is
         /// queued at once, so a crash between the two passes used to keep the gold on both sides.

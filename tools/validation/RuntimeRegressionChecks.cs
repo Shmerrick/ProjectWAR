@@ -58,6 +58,7 @@ internal static class RuntimeRegressionChecks
             CheckCooldowns();
             CheckItemCooldownNotifications();
             CheckEconomyGuards();
+            CheckInventoryTransferGuards();
             CheckChannelRange();
             CheckStaleChannelCallback();
             CheckDungeonPackets();
@@ -289,6 +290,21 @@ internal static class RuntimeRegressionChecks
         }
     }
 
+    /// <summary>Records each offered stack's count, as HandleTrade does when an offer is committed.</summary>
+    private static void SnapshotTradeOffer(ItemsInterface trader)
+    {
+        ushort[] offered = new ushort[ItemsInterface.MAX_TRADE_SLOT];
+        for (int i = 0; i < offered.Length; i++)
+            offered[i] = trader.TradeItems[i].Value == null ? (ushort)0 : trader.TradeItems[i].Value.Count;
+        typeof(ItemsInterface).GetField("_tradeCounts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(trader, offered);
+    }
+
+    private static void SetPlayerOwner(ItemsInterface items, Player owner)
+    {
+        items.SetOwner(owner);
+        typeof(ItemsInterface).GetField("_playerOwner", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(items, owner);
+    }
+
     private static uint ReadUInt32(byte[] bytes, int offset)
     {
         return ((uint)bytes[offset] << 24) | ((uint)bytes[offset + 1] << 16) |
@@ -325,19 +341,26 @@ internal static class RuntimeRegressionChecks
         trader.Items[ItemsInterface.INVENTORY_START_SLOT] = sword;
         MethodInfo validate = typeof(ItemsInterface).GetMethod("ValidateTradeOffer", BindingFlags.Instance | BindingFlags.NonPublic);
         object[] counts = new object[2];
+        // HandleTrade records each offered stack's count beside the offer; tests that set the offer
+        // directly record it the same way, so each refusal below is for the reason it names.
+        Action<ItemsInterface> recordOffer = SnapshotTradeOffer;
         trader.TradeItems = new KeyValuePair<ushort, Item>[ItemsInterface.MAX_TRADE_SLOT];
         trader.TradeItems[0] = new KeyValuePair<ushort, Item>(ItemsInterface.INVENTORY_START_SLOT, sword);
+        recordOffer(trader);
         Assert((bool)validate.Invoke(trader, counts) && (ushort)counts[0] == 1 && (ushort)counts[1] == 1,
             "A single offered stack validates, needing and freeing one main-bag slot");
         trader.TradeItems[1] = new KeyValuePair<ushort, Item>(ItemsInterface.INVENTORY_START_SLOT, sword);
+        recordOffer(trader);
         Assert(!(bool)validate.Invoke(trader, counts), "A stack offered twice is refused");
         trader.TradeItems[1] = new KeyValuePair<ushort, Item>(0, null);
+        recordOffer(trader);
         trader.Items[ItemsInterface.INVENTORY_START_SLOT] = null;
         trader.Items[ItemsInterface.INVENTORY_START_SLOT + 1] = sword;
         Assert(!(bool)validate.Invoke(trader, counts), "A stack moved after the offer is refused");
         trader.Items[ItemsInterface.INVENTORY_START_SLOT + 1] = null;
         trader.Items[10] = sword;
         trader.TradeItems[0] = new KeyValuePair<ushort, Item>(10, sword);
+        recordOffer(trader);
         Assert(!(bool)validate.Invoke(trader, counts), "Equipped items cannot be traded");
         // BUG-185: selling an equipped item cleared the slot without unequipping it.
         sword.Info.SellPrice = 100;
@@ -482,6 +505,184 @@ internal static class RuntimeRegressionChecks
         Assert(client.Packets.Count == 1 && client.LastPacket[client.LastPacket.Length - 1] == (byte)MailResult.TEXT_MAIL_RESULT5,
             "Out-of-range COD byte is refused");
         Console.WriteLine("PASS: atomic and non-stackable creation, slot-targeted creation, trade offers, equipped sales, vault prices, repair, crafting and mail COD.");
+    }
+
+    private static void CheckInventoryTransferGuards()
+    {
+        var player = (Player)FormatterServices.GetUninitializedObject(typeof(Player));
+        var client = (CaptureClient)FormatterServices.GetUninitializedObject(typeof(CaptureClient));
+        client.Packets = new List<byte[]>();
+        player.Client = client;
+        player.Info = new Character { CharacterId = 77 };
+        player._Value = new Character_value();
+        PacketOut.SizeLen = 2;
+        ushort bag = ItemsInterface.INVENTORY_START_SLOT;
+
+        // F_TRANSFER_ITEM: the client never sends a count of 0 or a move onto its own slot (all 1,847
+        // client frames in the official captures). Both used to duplicate.
+        {
+            var bags = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+            SetPlayerOwner(bags, player);
+            var gem = new Item_Info { Entry = 7000, MaxStack = 20, Name = "gem" };
+            var gear = new Item_Info { Entry = 7004, MaxStack = 1, Name = "gear" };
+            bags.Items[bag] = new Item(player) { Info = gem, CharSaveInfo = new CharacterItem { Counts = 15, SlotId = bag } };
+            bags.Items[bag + 2] = new Item(player) { Info = gear, CharSaveInfo = new CharacterItem { Counts = 1, SlotId = (ushort)(bag + 2) } };
+            Assert(!bags.MoveSlot(bag, (ushort)(bag + 1), 0) && bags.Items[bag + 1] == null && bags.Items[bag].Count == 15,
+                "A zero-count move into an empty slot creates nothing");
+            Assert(!bags.MoveSlot((ushort)(bag + 2), (ushort)(bag + 3), 0) && bags.Items[bag + 3] == null,
+                "A zero-count move cannot copy gear either");
+            Assert(!bags.MoveSlot(bag, bag, 15) && bags.Items[bag].Count == 15,
+                "A partial stack moved onto its own slot does not grow to MaxStack");
+
+            // Unbought bank slots: 80 bank slots plus 8 per purchase, so 880 is the first unbought one.
+            Assert(!bags.CanMoveToSlot(bags.Items[bag], 900) && bags.CanMoveToSlot(bags.Items[bag], 850),
+                "Only bought bank slots accept items");
+            Assert(bags.IsStorageSlot(bag) && bags.IsStorageSlot(850) && !bags.IsStorageSlot(900) && !bags.IsStorageSlot(10)
+                && !bags.IsStorageSlot(ItemsInterface.TALISMAN_SLOT_WINDOW) && !bags.IsStorageSlot(ItemsInterface.QUEST_START_SLOT),
+                "Mail and vault deposits take bags and bought bank slots only");
+        }
+
+        // Requirements are paid from the crafting bag too, and a removal is all or nothing. The
+        // crafting bag was skipped, so cultivation's rollback took nothing back and its harvest repeated.
+        {
+            var bags = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+            bags.SetOwner(player); // no _playerOwner: DeleteItem then sends nothing
+            var herb = new Item_Info { Entry = 7001, MaxStack = 20, Type = 34, Name = "herb" };
+            bags.Items[ItemsInterface.CRAFTING_START_SLOT] = new Item(player) { Info = herb, CharSaveInfo = new CharacterItem { Counts = 5 } };
+            bags.Items[20] = new Item(player) { Info = herb, CharSaveInfo = new CharacterItem { Counts = 10 } }; // worn, never consumed
+            Assert(bags.HasItemCountInInventory(7001, 5) && !bags.HasItemCountInInventory(7001, 6),
+                "The crafting bag counts toward a requirement; worn items do not");
+            Assert(!bags.RemoveItems(7001, 6) && bags.Items[ItemsInterface.CRAFTING_START_SLOT].Count == 5,
+                "A removal that cannot be completed removes nothing and reports failure");
+            MethodInfo removeImpl = typeof(ItemsInterface).GetMethod("RemoveItemsImpl", BindingFlags.Instance | BindingFlags.NonPublic);
+            object[] args = { 7001u, (ushort)3, new List<ushort>(), true };
+            Assert((int)removeImpl.Invoke(bags, args) == 3 && bags.Items[ItemsInterface.CRAFTING_START_SLOT].Count == 2,
+                "Three are taken from the crafting bag");
+        }
+
+        // Trade: the partner accepts the count they were shown, and the frames keep the retail layout.
+        {
+            var trader = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+            trader.SetOwner(player);
+            var ore = new Item(player) { Info = new Item_Info { Entry = 7002, MaxStack = 20, Name = "ore" }, CharSaveInfo = new CharacterItem { Counts = 20 } };
+            ushort oreSlot = (ushort)(bag + 25); // 0x41, as in the official frames
+            trader.Items[oreSlot] = ore;
+            trader.TradeItems = new KeyValuePair<ushort, Item>[ItemsInterface.MAX_TRADE_SLOT];
+            trader.TradeItems[0] = new KeyValuePair<ushort, Item>(oreSlot, ore);
+            SnapshotTradeOffer(trader);
+            MethodInfo validate = typeof(ItemsInterface).GetMethod("ValidateTradeOffer", BindingFlags.Instance | BindingFlags.NonPublic);
+            object[] counts = new object[2];
+            Assert((bool)validate.Invoke(trader, counts), "An unchanged offer validates");
+            ore.CharSaveInfo.Counts = 1;
+            Assert(!(bool)validate.Invoke(trader, counts), "A stack split after it was offered is refused");
+            ore.CharSaveInfo.Counts = 20;
+
+            SetPlayerOwner(trader, player);
+            trader.TradingMoney = 100000;
+            trader.TradingAccepted = 2;
+            client.Packets.Clear();
+            trader.SendTradeInfo(trader);
+            byte[] frame = client.LastPacket;
+            // status | 0 | oid | money | 3 | count | 9 x slot, from e.g. "4B 02 00 00 00 00 01 86 A0 03 01 00 41".
+            Assert(frame.Length == 31 && frame[2] == 0x4B && frame[3] == 2 && frame[5] == 0 && frame[6] == 0
+                && ReadUInt32(frame, 7) == 100000 && frame[11] == 3 && frame[12] == 1 && frame[13] == 0 && frame[14] == 0x41
+                && frame[15] == 0 && frame[16] == 0, "An accepted trade frame keeps the money, timeout byte and offered slot");
+            trader.SendTradeClose(0);
+            frame = client.LastPacket;
+            Assert(frame.Length == 31 && frame[3] == 3 && frame[11] == 3 && trader.TradingMoney == 0 && trader.TradeItems[0].Value == null,
+                "A close frame carries the timeout byte and clears the offer");
+        }
+
+        // Money: transfers that already took gold from one side must not saturate on the other.
+        {
+            player._Value.Money = uint.MaxValue - 5;
+            Assert(player.CanAddMoney(5) && !player.CanAddMoney(6), "CanAddMoney stops at the uint ceiling");
+            var seller = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+            SetPlayerOwner(seller, player);
+            var gold = new Item(player) { Info = new Item_Info { Entry = 7005, MaxStack = 1, SellPrice = 10, Name = "gold" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            seller.Items[bag] = gold;
+            seller.SellItem(new WorldServer.NetWork.Handler.InteractMenu { Num = (byte)bag, Count = 1 });
+            Assert(seller.Items[bag] == gold && player._Value.Money == uint.MaxValue - 5, "A sale whose proceeds cannot be carried is refused");
+            player._Value.Money = 0;
+        }
+
+        // A bolstered ranged weapon adds its bolster term once (MainAndRanged added it twice).
+        {
+            var weapons = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+            weapons.SetOwner(player);
+            weapons.Items[(int)EquipSlot.RANGED_WEAPON] = new Item(player) { Info = new Item_Info { Entry = 7003, Dps = 100 }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+            weapons.BolsterFactor = 1f;
+            float ranged = weapons.GetWeaponDamage(WeaponDamageContribution.Ranged);
+            float both = weapons.GetWeaponDamage(WeaponDamageContribution.MainAndRanged);
+            Assert(Math.Abs(ranged - 11f) < 0.001f && Math.Abs(both - 11f) < 0.001f,
+                "Ranged and main-and-ranged agree with no main hand: " + ranged + " / " + both);
+        }
+
+        // A currency box is consumed only once its contents are delivered.
+        {
+            Dictionary<uint, Item_Info> savedInfos = ItemService._Item_Info;
+            ItemService._Item_Info = new Dictionary<uint, Item_Info>(); // the contents resolve to nothing
+            try
+            {
+                var bags = new ItemsInterface { Items = new Item[ItemsInterface.OVERFLOW_END_SLOT] };
+                SetPlayerOwner(bags, player);
+                var box = new Item(player) { Info = new Item_Info { Entry = 208424, MaxStack = 20, Name = "box" }, CharSaveInfo = new CharacterItem { Counts = 1 } };
+                bags.Items[bag] = box;
+                bags.OpenBox(bag, box);
+                Assert(bags.Items[bag] == box && box.Count == 1, "An undeliverable box is not consumed");
+            }
+            finally
+            {
+                ItemService._Item_Info = savedInfos;
+            }
+        }
+
+        // Guild banners and tactics need the permissions the client gates them on.
+        {
+            var guild = (WorldServer.World.Guild.Guild)FormatterServices.GetUninitializedObject(typeof(WorldServer.World.Guild.Guild));
+            guild.Info = new Guild_info { Name = "Some Player Guild", LeaderId = 1 };
+            guild.Info.Members = new Dictionary<uint, Guild_member> { { 77u, new Guild_member { CharacterId = 77, RankId = 1 } } };
+            guild.Info.Ranks = new Dictionary<byte, Guild_rank>
+            {
+                { 1, new Guild_rank { RankId = 1, Name = "Member", Permissions = "00 00 00 00 00 00 00 00" } },
+                { 9, new Guild_rank { RankId = 9, Name = "Leader", Permissions = "FF FF FF FF FF FF FF 3F" } }
+            };
+            guild.Info.GuildTacticsPurchased = new ushort[40];
+            FieldInfo bannersField = typeof(WorldServer.World.Guild.Guild).GetField("_banners", BindingFlags.Instance | BindingFlags.NonPublic);
+            var banners = new ushort[3, 4] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } };
+            bannersField.SetValue(guild, banners);
+
+            guild.SaveBanner(player, 0, 2, 999, 999, 999);
+            Assert(banners[0, 1] == 0, "A member without BANNER_MANAGEMENT cannot edit the standard");
+            guild.TrainGuildTactics(player, 0, 999);
+            Assert(guild.Info.GuildTacticsPurchased[0] == 0, "A member without TACTICS_PURCHASE cannot buy a tactic");
+
+            guild.Info.Members[77].RankId = 9;
+            guild.SaveBanner(player, 255, 2, 999, 999, 999); // banner 0 minus one, wrapped
+            guild.TrainGuildTactics(player, 40, 999);
+            Assert(banners[0, 1] == 0 && Array.IndexOf(guild.Info.GuildTacticsPurchased, (ushort)999) < 0,
+                "Out-of-range banner and tactic slots are refused, not thrown on");
+        }
+
+        // The auction expiry timer contains its failures: an exception escaping a Timer callback ends
+        // the process. With no database here, resolving the deleted seller throws inside the pass.
+        {
+            List<Common.Auction> savedAuctions = WorldServer.World.Auction.AuctionHouse.Auctions;
+            WorldServer.World.Auction.AuctionHouse.Auctions = new List<Common.Auction>
+            {
+                new Common.Auction { AuctionId = 1, SellerId = 4000000, ItemId = 7000, StartTime = 1 }
+            };
+            try
+            {
+                WorldServer.World.Auction.AuctionHouse.CheckAuctionExpiry(null);
+            }
+            finally
+            {
+                WorldServer.World.Auction.AuctionHouse.Auctions = savedAuctions;
+            }
+        }
+
+        Console.WriteLine("PASS: transfer counts, same-slot moves, bank bounds, storage slots, crafting-bag removal, trade counts and frames, money ceiling, ranged bolster, box delivery, guild permissions and auction-timer containment.");
     }
 
     private static void CheckItemCooldownNotifications()

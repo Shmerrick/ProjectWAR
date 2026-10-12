@@ -1297,8 +1297,10 @@ namespace WorldServer.World.Guild
 
         public void SendVaultUpdate()
         {
-            // Nothing removes a vault user on logout, so drop disposed players before sending.
-            GuildVaultUser.RemoveAll(user => user == null || user.IsDisposed);
+            // Nothing removes a vault user on logout or on leaving the guild, so drop disposed players
+            // and former members before sending: SendVaultUpdate(plr) looks up the member's rank, and a
+            // former member threw out of whichever member's deposit or withdrawal triggered the update.
+            GuildVaultUser.RemoveAll(user => user == null || user.IsDisposed || !Info.Members.ContainsKey(user.CharacterId));
             foreach (Player plr in GuildVaultUser)
                 SendVaultUpdate(plr);
         }
@@ -1527,7 +1529,9 @@ namespace WorldServer.World.Guild
         public void GuildsTacticRespec(Player plr)
         {
             LogGuildBug(plr);
-            if (!HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_BANNER_MANAGEMENT))
+            // The client gates the respec on TACTICS_PURCHASE, not banner management:
+            // interface/default/ea_guildwindow/source/guildrespectacticslist.lua:106.
+            if (!Info.Members.ContainsKey(plr.CharacterId) || !HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_TACTICS_PURCHASE))
             {
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_GENERAL_NO_PERMISSION);
                 return;
@@ -1565,8 +1569,21 @@ namespace WorldServer.World.Guild
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.ERROR_CAREER_PACKAGE_NOT_ENOUGH_MONEY);
         }
 
-        public void TrainGuildTactics(byte slot, ushort spell)
+        public void TrainGuildTactics(Player plr, byte slot, ushort spell)
         {
+            LogGuildBug(plr);
+            // The client offers the purchase only to ranks holding TACTICS_PURCHASE
+            // (interface/default/ea_guildwindow/source/guildwindowtabrewards.lua:312); any member could
+            // send it. The slot comes from the packet and indexed a 40-entry array unchecked.
+            if (!Info.Members.ContainsKey(plr.CharacterId) || !HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_TACTICS_PURCHASE))
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_GENERAL_NO_PERMISSION);
+                return;
+            }
+
+            if (Info.GuildTacticsPurchased == null || slot >= Info.GuildTacticsPurchased.Length)
+                return;
+
             Info.GuildTacticsPurchased[slot] = spell;
             CharMgr.Database.SaveObject(Info);
             SendGuildTacticsPurchased(null);
@@ -1771,8 +1788,21 @@ namespace WorldServer.World.Guild
             }
         }
 
-        public void SaveBanner(byte banner, byte post, ushort spell1, ushort spell2, ushort spell3)
+        public void SaveBanner(Player plr, byte banner, byte post, ushort spell1, ushort spell2, ushort spell3)
         {
+            LogGuildBug(plr);
+            // The client lets only ranks holding BANNER_MANAGEMENT edit the standard
+            // (interface/default/ea_guildwindow/source/guildwindowtabbanner.lua:306); any member could
+            // send it. The banner index comes from the packet (minus one, so 0 wrapped to 255).
+            if (!Info.Members.ContainsKey(plr.CharacterId) || !HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_BANNER_MANAGEMENT))
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_GENERAL_NO_PERMISSION);
+                return;
+            }
+
+            if (banner >= _banners.GetLength(0))
+                return;
+
             _banners[banner, 0] = post;
             _banners[banner, 1] = spell1;
             _banners[banner, 2] = spell2;
@@ -1996,6 +2026,13 @@ namespace WorldServer.World.Guild
                 return;
             }
 
+            // AddMoney saturates at the uint ceiling, and the coffers are debited in full.
+            if (!plr.CanAddMoney(money))
+            {
+                plr.SendClientMessage("You cannot carry any more money.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
             Info.Money -= money;
             plr.AddMoney(money);
             CharMgr.Database.SaveObject(Info);
@@ -2057,7 +2094,8 @@ namespace WorldServer.World.Guild
 
             LogGuildBug(plr);
 
-            Item item = plr.ItmInterface.GetItemInSlot(itemSlot);
+            // Bags and bought bank slots only; see ItemsInterface.IsStorageSlot.
+            Item item = plr.ItmInterface.IsStorageSlot(itemSlot) ? plr.ItmInterface.GetItemInSlot(itemSlot) : null;
 
             if (item == null)
                 return;
@@ -2185,6 +2223,8 @@ namespace WorldServer.World.Guild
                     CharMgr.Database.DeleteObject(gv);
                     ItemAudit.Item("Vault", "Withdraw", Info.GuildId, "guild:" + Info.Name, plr.CharacterId, plr.Name, gv.Entry, gv.Counts, (ulong)(sourceVault * 1000 + sourceSlot));
                 }
+                else
+                    plr.SendLocalizeString(sourceVault.ToString(), ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_ERROR_INVENTORY_FULL);
             }
             SendVaultUpdate();
         }

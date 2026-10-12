@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SystemData;
 using Common;
 using FrameWork;
@@ -22,8 +23,12 @@ namespace WorldServer.World.Auction
 
         public static ulong GenerateAuctionGUID()
         {
-            return ++MAX_AUCTION_GUID;
+            // Posts arrive on different players' packet threads; ++ could hand two of them the same id,
+            // the primary key, and the second insert would fail with its item already deleted.
+            return (ulong)Interlocked.Increment(ref _auctionGuidCounter);
         }
+
+        private static long _auctionGuidCounter = 1;
 
         public static void LoadAuctions()
         {
@@ -40,6 +45,8 @@ namespace WorldServer.World.Auction
                         MAX_AUCTION_GUID = auct.AuctionId;
                     count++;
                 }
+
+            Interlocked.Exchange(ref _auctionGuidCounter, (long)MAX_AUCTION_GUID);
 
 
             Log.Success("LoadAuctions", "Loaded " + count + " Auctions");
@@ -167,6 +174,17 @@ namespace WorldServer.World.Auction
                     return;
                 }
 
+                // Auctions loaded at boot resolve their item only when a search walks past them. The
+                // mails below read its name after the buyer has been charged and the auction removed,
+                // so an unresolved item threw there and lost the payment and the item together.
+                if (auction.Item == null)
+                    auction.Item = ItemService.GetItem_Info(auction.ItemId);
+                if (auction.Item == null)
+                {
+                    buyer.SendLocalizeString(auctionId.ToString(), ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_AUCTION_ITEM_NO_LONGER_EXISTS);
+                    return;
+                }
+
                 if (auction.SellPrice != price)
                 {
                     if (price == 0 && auction.SellerId == buyer.CharacterId) // cancel?
@@ -255,7 +273,24 @@ namespace WorldServer.World.Auction
             return count;
         }
 
+        /// <summary>
+        /// Timer callback (Program, every 24 hours). An exception escaping a System.Threading.Timer
+        /// callback terminates the process, so the pass is contained here; one bad auction is logged
+        /// and the rest wait for the next pass.
+        /// </summary>
         public static void CheckAuctionExpiry(object arg)
+        {
+            try
+            {
+                RemoveExpiredAuctions();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Auction House", "Auction expiry pass failed: " + e);
+            }
+        }
+
+        private static void RemoveExpiredAuctions()
         {
             int removeCount = 0;
 
@@ -273,7 +308,12 @@ namespace WorldServer.World.Auction
                     if (auction.Item == null)
                         auction.Item = ItemService.GetItem_Info(auction.ItemId);
 
-                    if (auction.Item != null)
+                    // Character deletion leaves its auctions behind, and after a restart their Seller
+                    // is null; reading its name here threw out of the timer and took the server down.
+                    if (auction.Seller == null)
+                        auction.Seller = CharMgr.GetCharacter(auction.SellerId, false);
+
+                    if (auction.Item != null && auction.Seller != null)
                     {
                         // return item to lister
                         Character_mail expireMail = new Character_mail

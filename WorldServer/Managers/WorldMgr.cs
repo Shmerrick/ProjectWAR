@@ -826,7 +826,7 @@ namespace WorldServer.Managers
 
             foreach (Vendor_items vi in Itemsprecheck)
             {
-                if (vi.ReqGuildlvl > 0 && Plr.GldInterface.IsInGuild() && vi.ReqGuildlvl > Plr.GldInterface.Guild.Info.Level)
+                if (!MeetsVendorGuildRank(Plr, vi))
                     continue;
                 Items.Add(vi);
             }
@@ -903,6 +903,20 @@ namespace WorldServer.Managers
             items.RemoveRange(0, Count);
         }
 
+        /// <summary>
+        /// Whether <paramref name="vendorItem"/>'s guild-rank requirement is met. The vendor list and the
+        /// purchase must apply this identically, since the purchase indexes the list the client was sent.
+        /// A player with no guild has no guild rank, so items requiring one are not offered to them; the
+        /// old test only applied to players in a guild, so 134 guild-rank items (ReqGuildlvl 5 to 35, on
+        /// the guild vendors) were sold to anyone without a guild at all.
+        /// </summary>
+        private static bool MeetsVendorGuildRank(Player plr, Vendor_items vendorItem)
+        {
+            if (vendorItem.ReqGuildlvl == 0)
+                return true;
+            return plr.GldInterface.IsInGuild() && vendorItem.ReqGuildlvl <= plr.GldInterface.Guild.Info.Level;
+        }
+
         public static void BuyItemVendor(Player Plr, InteractMenu Menu, ushort id)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
@@ -916,7 +930,7 @@ namespace WorldServer.Managers
 
             foreach (Vendor_items vi in Itemsprecheck)
             {
-                if (vi.ReqGuildlvl > 0 && Plr.GldInterface.IsInGuild() && vi.ReqGuildlvl > Plr.GldInterface.Guild.Info.Level)
+                if (!MeetsVendorGuildRank(Plr, vi))
                     continue;
                 Vendors.Add(vi);
             }

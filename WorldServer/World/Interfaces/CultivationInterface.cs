@@ -549,8 +549,21 @@ namespace WorldServer.World.Interfaces
             if(lvl > 1)
                 arborealResin += (uint)(lvl / 25);
 
-            plr.ItmInterface.CreateItem(arborealResin, 1, true);
-            plr.ItmInterface.CreateItem(uint.Parse(plr.ItmInterface.GetItemInSlot(slot).Info.Craftresult.Split(';')[3]), 1, true);
+            // The plant is consumed below, so neither result may be lost to a full backpack (both
+            // CreateItem results were ignored): undeliverable results are mailed. A missing or
+            // unparseable fourth Craftresult id used to throw after the resin was already created.
+            string[] results = (plr.ItmInterface.GetItemInSlot(slot).Info.Craftresult ?? string.Empty).Split(';');
+            uint secondary;
+            if (results.Length < 4 || !uint.TryParse(results[3], out secondary) || ItemService.GetItem_Info(secondary) == null || ItemService.GetItem_Info(arborealResin) == null)
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_INVALID_PRODUCT);
+                return;
+            }
+
+            if (plr.ItmInterface.CreateItem(arborealResin, 1, true) != ItemResult.RESULT_OK)
+                MailService.MailItem(plr.CharacterId, arborealResin, 1);
+            if (plr.ItmInterface.CreateItem(secondary, 1, true) != ItemResult.RESULT_OK)
+                MailService.MailItem(plr.CharacterId, secondary, 1);
             plr.ItmInterface.DeleteItem(slot, 1);
         }
 

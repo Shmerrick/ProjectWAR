@@ -6,7 +6,7 @@ This file is the single source of truth for repository-specific AI-agent instruc
 
 Read **`docs/handoffs/2026-09-24-repository-audit.md`** for the fresh measured state,
 plan corrections, validation limits and outstanding acceptance work. The current
-incremental SQL series is 00–12; earlier numbered migrations were folded into the base.
+incremental SQL series is 00–13; earlier numbered migrations were folded into the base.
 Read `docs/handoffs/2026-09-24-cooldown-milliseconds.md` for the subsequent runtime
 unit migration, database verification and remaining item/client acceptance limits.
 The follow-up `docs/handoffs/2026-09-24-item-cooldown-reliability.md` corrects the

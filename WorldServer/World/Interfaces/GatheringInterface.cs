@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SystemData;
+using Common;
 using FrameWork;
 using WorldServer.NetWork;
 using WorldServer.Services.World;
@@ -248,21 +249,18 @@ namespace WorldServer.World.Interfaces
                 else
                     Talid += (uint)(itm.Info.ObjectLevel / 5 * statjump);
 
-                _Owner.GetPlayer().ItmInterface.CreateItem(Talid, 1, true);
-                _myPlayer.SendLocalizeString(ItemService.GetItem_Info(Talid).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+                GiveSalvage(Talid, 1);
 
                 if (!fail)
                 {
 
                     if (((float)StaticRandom.Instance.NextDouble() * 100f) <= 50)
                     {
-                        _Owner.GetPlayer().ItmInterface.CreateItem(Dust, (ushort)(itm.Info.Rarity), true);
-                        _myPlayer.SendLocalizeString(ItemService.GetItem_Info(Dust).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+                        GiveSalvage(Dust, (ushort)(itm.Info.Rarity));
                     }
                     else
                     {
-                        _Owner.GetPlayer().ItmInterface.CreateItem(Essence, (ushort)(itm.Info.Rarity), true);
-                        _myPlayer.SendLocalizeString(ItemService.GetItem_Info(Essence).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+                        GiveSalvage(Essence, (ushort)(itm.Info.Rarity));
                     }
                 }
             }
@@ -270,17 +268,35 @@ namespace WorldServer.World.Interfaces
             {
                 if (((float)StaticRandom.Instance.NextDouble() * 100f) <= 50)
                 {
-                    _Owner.GetPlayer().ItmInterface.CreateItem(Dust, 1, true);
-                    _myPlayer.SendLocalizeString(ItemService.GetItem_Info(Dust).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+                    GiveSalvage(Dust, 1);
                 }
                 else
                 {
-                    _Owner.GetPlayer().ItmInterface.CreateItem(Essence, 1, true);
-                    _myPlayer.SendLocalizeString(ItemService.GetItem_Info(Essence).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+                    GiveSalvage(Essence, 1);
                 }
             }
 
             _Owner.GetPlayer().ItmInterface.DeleteItem(Slot, 1);
+        }
+
+        /// <summary>
+        /// Delivers one salvage result. The salvaged item is consumed whatever happens here, and
+        /// CreateItem's result was ignored, so a full backpack and overflow destroyed the results;
+        /// they are mailed instead. A result id naming no item threw on its name.
+        /// </summary>
+        private void GiveSalvage(uint entry, ushort count)
+        {
+            Item_Info info = ItemService.GetItem_Info(entry);
+            if (info == null)
+            {
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_INVALID_PRODUCT);
+                return;
+            }
+
+            if (_myPlayer.ItmInterface.CreateItem(info, count, 0, true) != ItemResult.RESULT_OK)
+                MailService.MailItem(_myPlayer.CharacterId, entry, count);
+
+            _myPlayer.SendLocalizeString(info.Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
         }
     }
 }

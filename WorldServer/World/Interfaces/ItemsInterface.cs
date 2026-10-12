@@ -339,6 +339,8 @@ namespace WorldServer.World.Interfaces
                 return;
 
             List<Item> itms = new List<Item>(Items);
+            // Never in Items, so never listed twice: see HandleSlotCollisions.
+            itms.AddRange(_unplacedItems);
 
             CharMgr.SaveItems(_playerOwner.Info.CharacterId, itms);
         }
@@ -358,10 +360,31 @@ namespace WorldServer.World.Interfaces
             foreach (Item itm in SlotCollidingItems)
             {
                 Log.Success("ItemInterface", "Found duplicated item " + itm.Info.Name);
-                itm.SlotId = GetFreeInventorySlot(itm.Info);
-                Items[itm.SlotId] = itm;
+
+                // With no free slot this used to place the item at slot 0, which is worn equipment at
+                // runtime and the buyback list on the next load. Overflow first; failing that, leave
+                // the row untouched so it is placed again at the next login rather than misfiled.
+                ushort slot = GetFreeInventorySlot(itm.Info, true);
+                if (slot == 0)
+                {
+                    Log.Error("ItemInterface", $"No free slot for colliding item {itm.Info.Entry} of {_playerOwner?.Name}; left in slot {itm.SlotId} for the next login.");
+                    _unplacedItems.Add(itm);
+                    continue;
+                }
+
+                itm.SlotId = slot;
+                Items[slot] = itm;
             }
+
+            SlotCollidingItems.Clear();
         }
+
+        /// <summary>
+        /// Colliding items no slot could take. They are not in <see cref="Items"/>, so <see cref="Save"/>
+        /// adds them back: CharMgr.SaveItems replaces the character's cached item list with what it is
+        /// given, and leaving them out would hide them until the next restart.
+        /// </summary>
+        private readonly List<Item> _unplacedItems = new List<Item>();
 
         #endregion
 
@@ -596,54 +619,60 @@ namespace WorldServer.World.Interfaces
 
         public void OpenBox(ushort slot, Item item)
         {
+            uint contents;
+            int count;
+            bool warlordCrests = false;
+
             switch (item.Info.Entry)
             {
                 case 208424:
-                    CreateItem(208400, 5, true);
+                    contents = 208400; count = 5;
                     break;
                 case 208425:
-                    CreateItem(208400, 25, true);
+                    contents = 208400; count = 25;
                     break;
                 case 208426:
-                    CreateItem(208401, 5, true);
+                    contents = 208401; count = 5;
                     break;
                 case 208427:
-                    CreateItem(208401, 25, true);
+                    contents = 208401; count = 25;
                     break;
                 case 208428:
-                    CreateItem(208402, 5, true);
+                    contents = 208402; count = 5;
                     break;
                 case 208447:
-                    CreateItem(208431, 5, true);
+                    contents = 208431; count = 5;
                     break;
                 case 208448:
-                    CreateItem(208431, 25, true);
+                    contents = 208431; count = 25;
                     break;
                 case 208449:
-                    CreateItem(208432, 5, true);
+                    contents = 208432; count = 5;
                     break;
                 case 208450:
-                    CreateItem(208432, 25, true);
+                    contents = 208432; count = 25;
                     break;
                 case 208451:
-                    CreateItem(208433, 5, true);
+                    contents = 208433; count = 5;
                     break;
                 case 1298378389:
-                    CreateItem(208403, 5, true);
+                    contents = 208403; count = 5;
                     break;
                 case 1298378390:
-                    CreateItem(208434, 5, true);
+                    contents = 208434; count = 5;
                     break;
                 case 1298378391:
-                    CreateItem(208403, 25, true);
+                    contents = 208403; count = 25;
                     break;
                 case 1298378392:
-                    CreateItem(208434, 25, true);
+                    contents = 208434; count = 25;
                     break;
                 case 1298378521:   // Black market warlord box
 
                     var random = StaticRandom.Instance.Next(0, 10000);
-                    var count = 0;
+                    count = 0;
+                    contents = 208454;
+                    warlordCrests = true;
 
                     if (random >= 9950)
                     {
@@ -689,36 +718,46 @@ namespace WorldServer.World.Interfaces
                         }
                     }
 
-                    CreateItem(208454, (ushort)count, true);
-                    (_Owner as Player).SendClientMessage($"The package contains {count} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
                     break;
 
                 case 1298378528:
-                    CreateItem(208470, 5, true);
+                    contents = 208470; count = 5;
                     break;
                 case 1298378529:
-                    CreateItem(208454, 5, true);
+                    contents = 208454; count = 5;
                     break;
                 case 1298378530:
-                    CreateItem(208470, 25, true);
+                    contents = 208470; count = 25;
                     break;
                 case 1298378531:
-                    CreateItem(208453, 5, true);
+                    contents = 208453; count = 5;
                     break;
                 case 1298378532:
-                    CreateItem(208453, 25, true);
+                    contents = 208453; count = 25;
                     break;
                 case 1298378533:
-                    CreateItem(208470, 5, true);
+                    contents = 208470; count = 5;
                     break;
                 case 1298378534:
-                    CreateItem(208470, 25, true);
+                    contents = 208470; count = 25;
                     break;
 
                 default:
                     return;
             }
-            _playerOwner.ItmInterface.DeleteItem(slot, 1);
+
+            // The box is consumed only once its contents are in the bags (overflow included). It was
+            // deleted whatever CreateItem returned, so a full inventory destroyed the box for nothing.
+            if (CreateItem(contents, (ushort)count, true) != ItemResult.RESULT_OK)
+            {
+                _playerOwner.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_NOT_ENOUGH_INVENTORY_SPACE);
+                return;
+            }
+
+            if (warlordCrests)
+                _playerOwner.SendClientMessage($"The package contains {count} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
+
+            DeleteItem(slot, 1);
         }
 
         public List<Chapter_Reward> GetChapterRewards(byte Tier, Chapter_Info Info)
@@ -877,7 +916,9 @@ namespace WorldServer.World.Interfaces
                     }
                     if (distance != null)
                     {
-                        damage += distance.Info.Dps + 10 * BolsterFactor;
+                        // The bolster term once, as in the Ranged case; it was also added
+                        // unconditionally here, doubling it for every bolstered player.
+                        damage += distance.Info.Dps;
                         if (BolsterFactor > 0f) damage += 10 * BolsterFactor;
                     }
                     break;
@@ -975,9 +1016,10 @@ namespace WorldServer.World.Interfaces
             for (byte i = 0; i < Itm.Info.TalismanSlots; i++)
             {
                 Talisman tali = Itm.GetTalisman(i);
-                if (tali != null)
+                // A talisman whose item row no longer exists grants nothing; it used to throw here.
+                Item_Info taliInfo = tali != null ? ItemService.GetItem_Info(tali.Entry) : null;
+                if (taliInfo != null)
                 {
-                    Item_Info taliInfo = ItemService.GetItem_Info(tali.Entry);
                     foreach (KeyValuePair<byte, ushort> Stats in taliInfo._Stats)
                         Plr.StsInterface.AddItemBonusStat((Stats)Stats.Key, Stats.Value);
 
@@ -1019,13 +1061,16 @@ namespace WorldServer.World.Interfaces
             for (byte i = 0; i < Itm.Info.TalismanSlots; i++)
             {
                 Talisman tali = Itm.GetTalisman(i);
-                if (tali != null)
+                Item_Info taliInfo = tali != null ? ItemService.GetItem_Info(tali.Entry) : null;
+                if (taliInfo != null)
                 {
-                    Item_Info taliInfo = ItemService.GetItem_Info(tali.Entry);
                     foreach (KeyValuePair<byte, ushort> Stats in taliInfo._Stats)
                         Plr.StsInterface.RemoveItemBonusStat((Stats)Stats.Key, Stats.Value);
 
-                    RemoveItemEffects(Itm.Info);
+                    // The talisman's own effects, mirroring ApplyItemEffects(taliInfo) in EquipItem.
+                    // This removed the host item's effects instead (removed again below anyway), so a
+                    // talisman's effect buff stayed on after the item came off.
+                    RemoveItemEffects(taliInfo);
                 }
             }
 
@@ -1097,34 +1142,58 @@ namespace WorldServer.World.Interfaces
             return count;
         }
 
+        /// <summary>
+        /// The bags a requirement may be paid from: the main inventory, then the crafting bag, then
+        /// the currency bag. <see cref="HasItemCountInInventory"/> and <see cref="RemoveItemsImpl"/>
+        /// walk exactly these, so a passed check is always followed by a complete removal. The
+        /// crafting bag, where crafting materials land by preference, used to be missing from both
+        /// while <see cref="GetItemCount"/> counted every slot, so a removal could take less than
+        /// asked yet report success.
+        /// </summary>
+        private void GetConsumableRange(int index, out ushort start, out ushort end)
+        {
+            switch (index)
+            {
+                case 0:
+                    start = INVENTORY_START_SLOT;
+                    end = GetMaxInventorySlot();
+                    break;
+                case 1:
+                    start = CRAFTING_START_SLOT;
+                    end = (ushort)(CRAFTING_START_SLOT + GetMaxCraftingItemSlots());
+                    break;
+                case 2:
+                    start = CURRENCY_START_SLOT;
+                    end = (ushort)(CURRENCY_START_SLOT + GetMaxCurrencyItemSlots());
+                    break;
+                default:
+                    start = 0;
+                    end = 0;
+                    break;
+            }
+        }
+
+        private const int CONSUMABLE_RANGE_COUNT = 3;
+
         public bool HasItemCountInInventory(uint entry, ushort soughtCount)
         {
-            ushort count = 0;
+            int count = 0;
 
-            // Purge all matching items from the standard inventory slots.
-            for (ushort slot = MAX_EQUIPMENT_SLOT; slot < GetMaxInventorySlot(); ++slot)
+            for (int range = 0; range < CONSUMABLE_RANGE_COUNT; ++range)
             {
-                if (Items[slot] == null)
-                    continue;
-                if (Items[slot].Info.Entry != entry)
-                    continue;
+                ushort start, end;
+                GetConsumableRange(range, out start, out end);
 
-                count += Items[slot].Count;
+                for (ushort slot = start; slot < end && slot < Items.Length; ++slot)
+                {
+                    if (Items[slot] == null || Items[slot].Info.Entry != entry)
+                        continue;
 
-                if (count >= soughtCount)
-                    return true;
-            }
+                    count += Items[slot].Count;
 
-            // Continue on to the craft bags.
-            for (ushort slot = CURRENCY_START_SLOT; slot < CURRENCY_START_SLOT + GetMaxCurrencyItemSlots() && soughtCount > 0; ++slot)
-            {
-                if (Items[slot] == null || Items[slot].Info.Entry != entry)
-                    continue;
-
-                count += Items[slot].Count;
-
-                if (count >= soughtCount)
-                    return true;
+                    if (count >= soughtCount)
+                        return true;
+                }
             }
 
             return false;
@@ -1251,7 +1320,9 @@ namespace WorldServer.World.Interfaces
 
         private bool IsMainInventorySlot(ushort slot)
         {
-            return slot >= MAX_EQUIPMENT_SLOT && slot < MAX_EQUIPMENT_SLOT + GetMaxInventorySlot();
+            // GetMaxInventorySlot already counts from INVENTORY_START_SLOT; adding the equipment
+            // slots to it again reached 40 slots past the last bought bag.
+            return slot >= INVENTORY_START_SLOT && slot < GetMaxInventorySlot();
         }
         private bool IsCraftingInventorySlot(ushort slot)
         {
@@ -1267,7 +1338,9 @@ namespace WorldServer.World.Interfaces
         }
         private bool IsBankInventorySlot(ushort slot)
         {
-            return slot >= BANK_START_SLOT && slot <= BANK_END_SLOT;
+            // Bought bank slots only. BANK_END_SLOT accepted every slot to 1039 whatever had been
+            // paid for, so moving items into the unbought range was free bank space.
+            return slot >= BANK_START_SLOT && slot < GetMaxBankSlot();
         }
 
         private ushort GetFreeItemSlotInRange(ushort startIndex, ushort count)
@@ -1569,10 +1642,18 @@ namespace WorldServer.World.Interfaces
 
             if (curItem == null)
             {
+                // An empty back slot: the entry is complete, so finish the packet here. Falling
+                // through dereferenced the missing item.
                 Out.WriteByte(0);
                 Out.WriteByte((byte)slot);
                 Out.WriteUInt16(0);
-                //continue;
+                Out.WriteByte(0);
+
+                if (plr != null)
+                    plr.SendPacket(Out);
+                else
+                    _Owner.DispatchPacket(Out, false);
+                return;
             }
 
             //use old color scheme handling for monsters. New scheme uses Pri/Seconday colors in creature_items table
@@ -2304,6 +2385,16 @@ namespace WorldServer.World.Interfaces
                 if (sourceItem == null)
                     return false;
 
+                // A move of nothing, or onto its own slot, is never sent by the client: all 1,847
+                // client F_TRANSFER_ITEM (0x75) frames in the 1,027 official captures carry a
+                // count of at least 1 and a source different from the destination. Both forged
+                // forms duplicated items. Count 0 into an empty slot took the split branch, whose
+                // Item.Load turns 0 into 1, so a copy appeared while the source kept its count --
+                // for gear as well as stacks. A partial stack moved onto itself took the partial
+                // merge branch with source and destination the same object, so it rose to MaxStack.
+                if (count == 0 || sourceSlot == destinationSlot)
+                    return false;
+
                 // Clients can provide false information here.
                 if (count > sourceItem.Count)
                 {
@@ -2428,7 +2519,9 @@ namespace WorldServer.World.Interfaces
                 }
                 else // Direct move.
                 {
-                    if (count == sourceItem.Count)
+                    bool split = count != sourceItem.Count;
+
+                    if (!split)
                     {   // Move all.
                         sourceItem.SlotId = destinationSlot;
                         Items[sourceSlot] = null;
@@ -2442,8 +2535,16 @@ namespace WorldServer.World.Interfaces
                             Items[destinationSlot] = newDestItem;
                     }
 
-
-                    if (IsEquipmentSlot(sourceSlot) && !IsEquipmentSlot(destinationSlot))
+                    // A split leaves the source stack where it was, so it stays worn or unworn; only
+                    // the new stack can start being worn. Pocket items stack to 20 and some jewellery
+                    // to 2,500, so this happens. The left-behind stack used to be equipped instead
+                    // (a bag item's stats) or unequipped (stats off an item still in its slot).
+                    if (split)
+                    {
+                        if (IsEquipmentSlot(destinationSlot) && Items[destinationSlot] != null)
+                            EquipItem(Items[destinationSlot]);
+                    }
+                    else if (IsEquipmentSlot(sourceSlot) && !IsEquipmentSlot(destinationSlot))
                         UnEquipItem(sourceItem);
                     else if (IsEquipmentSlot(destinationSlot) && !IsEquipmentSlot(sourceSlot))
                         EquipItem(sourceItem);
@@ -2485,13 +2586,16 @@ namespace WorldServer.World.Interfaces
         /// </summary>
         /// <param name="itemId">The item ID to delete.</param>
         /// <param name="count">The number to delete.</param>
-        /// <returns>The number of items successfully removed.</returns>
+        /// <returns>Whether all <paramref name="count"/> items were removed; nothing is removed otherwise.</returns>
         public bool RemoveItems(uint itemId, ushort count)
         {
+            if (count == 0)
+                return false;
+
             List<ushort> removed = new List<ushort>();
             int result = RemoveItemsImpl(itemId, count, ref removed);
             SendItemsInSlots(_playerOwner, removed);
-            return result != 0;
+            return result == count;
         }
 
         /// <summary>
@@ -2536,48 +2640,35 @@ namespace WorldServer.World.Interfaces
         /// <returns>The number of items removed.</returns>
         private int RemoveItemsImpl(uint entry, ushort count, ref List<ushort> removed, bool checkCount = true)
         {
-            if (checkCount && GetItemCount(entry) < count)
+            // Checked over the same bags the removal walks; GetItemCount also counted equipped,
+            // banked and quest items, which this never removes.
+            if (checkCount && !HasItemCountInInventory(entry, count))
                 return 0;
 
             ushort originalCount = count;
 
-            // Purge all matching items from the standard inventory slots.
-            for (ushort slot = MAX_EQUIPMENT_SLOT; slot < GetMaxInventorySlot() && count > 0; ++slot)
+            for (int range = 0; range < CONSUMABLE_RANGE_COUNT && count > 0; ++range)
             {
-                if (Items[slot] == null || Items[slot].Info.Entry != entry)
-                    continue;
+                ushort start, end;
+                GetConsumableRange(range, out start, out end);
 
-                removed.Add(slot);
-
-                if (Items[slot].Count >= count)
+                for (ushort slot = start; slot < end && slot < Items.Length && count > 0; ++slot)
                 {
-                    DeleteItem(slot, count);
-                    count = 0;
-                }
-                else
-                {
-                    count -= Items[slot].Count;
-                    DeleteItem(slot, Items[slot].Count);
-                }
-            }
+                    if (Items[slot] == null || Items[slot].Info.Entry != entry)
+                        continue;
 
-            // Continue on to the craft bags.
-            for (ushort slot = CURRENCY_START_SLOT; slot < CURRENCY_START_SLOT + GetMaxCurrencyItemSlots() && count > 0; ++slot)
-            {
-                if (Items[slot] == null || Items[slot].Info.Entry != entry)
-                    continue;
+                    removed.Add(slot);
 
-                removed.Add(slot);
-
-                if (Items[slot].Count >= count)
-                {
-                    DeleteItem(slot, count);
-                    count = 0;
-                }
-                else
-                {
-                    count -= Items[slot].Count;
-                    DeleteItem(slot, Items[slot].Count);
+                    if (Items[slot].Count >= count)
+                    {
+                        DeleteItem(slot, count);
+                        count = 0;
+                    }
+                    else
+                    {
+                        count -= Items[slot].Count;
+                        DeleteItem(slot, Items[slot].Count);
+                    }
                 }
             }
 
@@ -2636,6 +2727,36 @@ namespace WorldServer.World.Interfaces
         public byte TradingUpdate;
         public KeyValuePair<ushort, Item>[] TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
 
+        /// <summary>
+        /// Seconds the client keeps its Accept button disabled after the other side's offer changes:
+        /// EA_Window_Trade.UpdateOtherTradeOffer (interface/default/ea_tradewindow/source/tradewindow.lua)
+        /// starts its secure-trade timer from GameData.Player.TradeTarget.Timeout. All 305 server
+        /// F_TRADE_STATUS (0x4B) frames in the official captures carry 3 in the byte after the money,
+        /// where the client's own frames carry 0. An accept sooner than that is refused with
+        /// TEXT_TRADE_ERR_PARTNER_CHANGED_OFFER_TOO_RECENTLY, a string the client has because retail
+        /// sent it. A legitimate client cannot trip this; it stops a forged accept from completing a
+        /// trade against an offer the partner swapped a moment earlier.
+        /// </summary>
+        private const byte SECURE_TRADE_TIMEOUT_SECONDS = 3;
+
+        /// <summary>
+        /// Each offered stack's count when it was offered. The partner accepts what the window showed;
+        /// splitting the stack afterwards used to shrink what they received.
+        /// </summary>
+        private ushort[] _tradeCounts = new ushort[MAX_TRADE_SLOT];
+
+        /// <summary>When this side's offer last changed, in milliseconds, for the secure-trade window.</summary>
+        private long _tradeOfferChangedAt;
+
+        /// <summary>Clears this side's offer: no items, no money, nothing recently changed.</summary>
+        private void ResetTradeOffer()
+        {
+            TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+            _tradeCounts = new ushort[MAX_TRADE_SLOT];
+            TradingMoney = 0;
+            _tradeOfferChangedAt = 0;
+        }
+
         public void HandleTrade(PacketIn packet)
         {
             try
@@ -2686,15 +2807,16 @@ namespace WorldServer.World.Interfaces
 
                 if (Status == 0 && TradingAccepted == 0) // New Trade
                 {
-                    if (!CanOpenTrade(target))
+                    Localized_text refusal;
+                    if (!CanOpenTrade(target, out refusal))
                     {
-                        Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_TARGET_ALREADY_TRADING);
+                        Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, refusal);
                         CloseTrade();
                         return;
                     }
 
                     Trading = target;
-                    TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+                    ResetTradeOffer();
                     SendTradeInfo(this);
                     Trading.ItmInterface.SendTradeInfo(this);
                     TradingAccepted = 1;
@@ -2754,6 +2876,10 @@ namespace WorldServer.World.Interfaces
 
                     TradeItems = offer;
                     for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                        _tradeCounts[i] = offer[i].Value?.Count ?? 0;
+                    _tradeOfferChangedAt = TCPManager.GetTimeStampMS();
+
+                    for (int i = 0; i < MAX_TRADE_SLOT; i++)
                     {
                         Item item = TradeItems[i].Value;
                         if (item == null)
@@ -2780,6 +2906,14 @@ namespace WorldServer.World.Interfaces
                 }
                 else if (Status == 2) // Accept trade
                 {
+                    if (TCPManager.GetTimeStampMS() < Trading.ItmInterface._tradeOfferChangedAt + SECURE_TRADE_TIMEOUT_SECONDS * 1000L)
+                    {
+                        Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_PARTNER_CHANGED_OFFER_TOO_RECENTLY);
+                        // Resend our own unaccepted state so the client clears the accept it showed.
+                        SendTradeInfo(this);
+                        return;
+                    }
+
                     TradingAccepted = 2;
 
                     Trading.ItmInterface.SendTradeInfo(this);
@@ -2805,8 +2939,7 @@ namespace WorldServer.World.Interfaces
             if (Trading == null && other.Trading == _playerOwner && CanOpenTrade(target))
             {
                 Trading = target;
-                TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
-                TradingMoney = 0;
+                ResetTradeOffer();
                 TradingAccepted = 1;
             }
 
@@ -2835,6 +2968,16 @@ namespace WorldServer.World.Interfaces
         }
 
         /// <summary>
+        /// Slots an item may be given away from by mail or guild vault deposit: the bags and the bought
+        /// bank slots. Both used to accept any slot, so an equipped item, a quest item or the item in
+        /// the talisman-fusing window (slot 255, still carrying its unfused talismans) could be sent.
+        /// </summary>
+        public bool IsStorageSlot(ushort slot)
+        {
+            return IsBagSlot(slot) || IsBankInventorySlot(slot);
+        }
+
+        /// <summary>
         /// Checks that every offered stack is still where it was offered, owned, unchanged and
         /// listed once, and counts the new main-bag slots it needs and the ones giving it frees.
         /// </summary>
@@ -2852,7 +2995,8 @@ namespace WorldServer.World.Interfaces
                 ushort slot = TradeItems[i].Key;
                 Item itm = GetItemInSlot(slot);
 
-                if (itm == null || itm != offered || offered.Owner != _Owner || !IsBagSlot(slot) || offered.Count == 0)
+                // The count must still be what the partner was shown when they accepted.
+                if (itm == null || itm != offered || offered.Owner != _Owner || !IsBagSlot(slot) || offered.Count == 0 || offered.Count != _tradeCounts[i])
                     return false;
 
                 for (int j = 0; j < i; j++)
@@ -2893,14 +3037,22 @@ namespace WorldServer.World.Interfaces
             else if (GetTotalFreeInventorySlot() + myFreed < myNeeded)
             {
                 AllOk = false;
-                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
-                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_BACKPACK_SPACE_TOO_LOW_YOU);
+                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_BACKPACK_SPACE_TOO_LOW_PARTNER);
             }
             else if (distInter.GetTotalFreeInventorySlot() + otherFreed < otherNeeded)
             {
                 AllOk = false;
-                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
-                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_OVERAGE_CANT_TAKE_ATTACHMENTS);
+                Me.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_BACKPACK_SPACE_TOO_LOW_PARTNER);
+                Other.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_BACKPACK_SPACE_TOO_LOW_YOU);
+            }
+            // Gold is taken from each side before it is given, and AddMoney saturates at the uint
+            // ceiling, so a receiver near it would have had the excess destroyed.
+            else if (!Me.CanAddMoney(distInter.TradingMoney) || !Other.CanAddMoney(TradingMoney))
+            {
+                AllOk = false;
+                Me.SendClientMessage("That trade would exceed the most money a character can hold.", ChatLogFilters.CHATLOGFILTERS_TRADE);
+                Other.SendClientMessage("That trade would exceed the most money a character can hold.", ChatLogFilters.CHATLOGFILTERS_TRADE);
             }
 
             if (AllOk)
@@ -2992,16 +3144,22 @@ namespace WorldServer.World.Interfaces
                 Out.WriteByte(0);
                 Out.WriteUInt16(distInterface != this ? distInterface._Owner.Oid : (ushort)0);
 
-                if (distInterface.TradingAccepted == 2)
-                    Out.Fill(0, 24);
-                else
-                {
-                    Out.WriteUInt32(distInterface.TradingMoney);
-                    Out.WriteByte(3); // ?
-                    Out.WriteByte((byte)distInterface.TradeItems.Count(i => i.Value != null));
-                    for (int i = 0; i < MAX_TRADE_SLOT; i++)
-                        Out.WriteUInt16((ushort)(distInterface.TradeItems[i].Value == null ? 0 : 1));
-                }
+                // The retail layout, decoded from the 305 server F_TRADE_STATUS frames in the official
+                // captures (e.g. BILEROT BURROW DOK LVL 40 RR 100 MOBS 1): money (uint32), the secure-trade
+                // timeout, the number of offered stacks, then each trade position's backpack slot --
+                // "02 00 71 00 72" for two stacks from slots 113 and 114, echoed in the partner's view
+                // too (0x01A2, a crafting-bag slot). All 79 accepted (status 2) frames keep the money and
+                // offer; this used to zero all 24 bytes on accept, and wrote 1 instead of each slot.
+                byte offered = 0;
+                for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                    if (distInterface.TradeItems[i].Value != null)
+                        ++offered;
+
+                Out.WriteUInt32(distInterface.TradingMoney);
+                Out.WriteByte(SECURE_TRADE_TIMEOUT_SECONDS);
+                Out.WriteByte(offered);
+                for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                    Out.WriteUInt16(distInterface.TradeItems[i].Value == null ? (ushort)0 : distInterface.TradeItems[i].Key);
 
                 _playerOwner.SendPacket(Out);
             }
@@ -3016,15 +3174,47 @@ namespace WorldServer.World.Interfaces
         }
         public bool CanOpenTrade(Player plr)
         {
-            if (plr == _playerOwner || plr.Realm != _playerOwner.Realm)
+            Localized_text refusal;
+            return CanOpenTrade(plr, out refusal);
+        }
+
+        /// <summary>
+        /// Whether a trade with <paramref name="plr"/> may open, and if not the client's own message
+        /// for why. The client's string table has one for each refusal below, which is how we know
+        /// retail made them: TEXT_TRADE_ERR_CANT_TRADE_WITH_ENEMIES, _CANT_TRADE_WHILE_DEAD,
+        /// _CANT_TRADE_WITH_DEAD_PLAYERS and _TARGET_ALREADY_TRADING. Every refusal used to be
+        /// reported as "already in another trade".
+        /// </summary>
+        public bool CanOpenTrade(Player plr, out Localized_text refusal)
+        {
+            refusal = Localized_text.TEXT_TRADE_ERR_TARGET_ALREADY_TRADING;
+
+            if (plr == null || plr == _playerOwner)
+            {
+                refusal = Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WITH_YOURSELF;
                 return false;
+            }
+            if (plr.Realm != _playerOwner.Realm)
+            {
+                refusal = Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WITH_ENEMIES;
+                return false;
+            }
+            if (_playerOwner.IsDead)
+            {
+                refusal = Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WHILE_DEAD;
+                return false;
+            }
+            if (plr.IsDead)
+            {
+                refusal = Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WITH_DEAD_PLAYERS;
+                return false;
+            }
             return plr.ItmInterface.Trading == null || plr.ItmInterface.Trading == _playerOwner;
         }
         public void CloseTrade()
         {
             Trading = null;
-            TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
-            TradingMoney = 0;
+            ResetTradeOffer();
             TradingAccepted = 0;
             TradingUpdate = 0;
         }
@@ -3034,7 +3224,10 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(3);
             Out.WriteByte(0);
             Out.WriteUInt16(oid);
-            Out.Fill(0, 24);
+            // Same 24-byte body as SendTradeInfo; retail's close frames carry the timeout byte too.
+            Out.WriteUInt32(0);
+            Out.WriteByte(SECURE_TRADE_TIMEOUT_SECONDS);
+            Out.Fill(0, 19);
             _playerOwner.SendPacket(Out);
 
             CloseTrade();
@@ -3075,6 +3268,15 @@ namespace WorldServer.World.Interfaces
             if (count == 0 || count > itm.Count)
                 count = itm.Count;
 
+            // Wide, like BuyBackItem: SellPrice * count wrapped in uint for large stacks, and the
+            // proceeds must fit, since AddMoney saturates and the item is gone either way.
+            ulong proceeds = (ulong)itm.Info.SellPrice * count;
+            if (proceeds > uint.MaxValue || !_playerOwner.CanAddMoney((uint)proceeds))
+            {
+                _playerOwner.SendClientMessage("You cannot carry any more money.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
             toSend.Add(slotId);
 
             if (count == itm.Count)
@@ -3092,7 +3294,7 @@ namespace WorldServer.World.Interfaces
                 AddBuyBack(New);
             }
 
-            _playerOwner.AddMoney(itm.Info.SellPrice * count);
+            _playerOwner.AddMoney((uint)proceeds);
 
             SendItemsInSlots(_playerOwner, toSend);
             SendBuyBack();
@@ -3391,9 +3593,12 @@ namespace WorldServer.World.Interfaces
                 return;
             List<uint> unfused = modifiedItem.AbortFuseTalisman();
 
+            // The talismans are already off the item, so a full bag must not destroy them; the
+            // window's own cancel (F_INTERFACE_COMMAND 10, command 1) mails them the same way.
             foreach (uint entry in unfused)
             {
-                CreateItem(entry, 1);
+                if (CreateItem(entry, 1) != ItemResult.RESULT_OK && _playerOwner != null)
+                    MailService.MailItem(_playerOwner.CharacterId, entry, 1);
             }
 
             MoveSlot(255, GetFreeInventorySlot(GetItemInSlot(255).Info, true), 1);
@@ -3546,10 +3751,13 @@ namespace WorldServer.World.Interfaces
 
             if (mode == 255)
             {
+                if (!((Player)_Owner).CanAddMoney(itm.GetSecondaryDye()))
+                    return;
                 ((Player)_Owner).AddMoney(itm.GetSecondaryDye());
                 ((Player)_Owner).ItmInterface.DeleteItem(slot, 0);
             }
-            else
+            // The choice comes from the client (1-based); anything past the bag's contents threw.
+            else if (mode >= 1 && mode <= items.Count)
             {
                 if (((Player)_Owner).ItmInterface.CreateItem(items[mode - 1].Key, items[mode - 1].Value) == ItemResult.RESULT_OK)
                     ((Player)_Owner).ItmInterface.DeleteItem(slot, 0);

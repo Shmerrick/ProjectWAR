@@ -454,20 +454,30 @@ namespace WorldServer.World.Interfaces
 
 
 
-            if (sppecialmoment)
-            {
-                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_SPECIALMOMENT);
-                sppecialmoment = false;
-            }
-            else if (critt)
-            {
-                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_CRITICALSUCCESS);
+            // The critical-success bonus applied only to this roll.
+            if (critt)
                 _power -= 6;
+
+            // Deliver the talisman before anything is consumed. CreateItem's result was ignored, so a
+            // full backpack used up every ingredient for nothing, and a result id naming no item
+            // threw on its name with the ingredients still committed.
+            Item_Info product = ItemService.GetItem_Info(itemid);
+            if (product == null)
+            {
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_INVALID_PRODUCT);
+                return;
             }
-                 _myPlayer.SendLocalizeString(ItemService.GetItem_Info(itemid).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
+            if (_myPlayer.ItmInterface.CreateItem(product, 1) != ItemResult.RESULT_OK)
+            {
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_NO_ROOM_IN_BACKPACK);
+                return;
+            }
 
-
-            _myPlayer.ItmInterface.CreateItem(itemid, 1);
+            if (sppecialmoment)
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_SPECIALMOMENT);
+            else if (critt)
+                _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_CRITICALSUCCESS);
+            _myPlayer.SendLocalizeString(product.Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_YOU_CREATED);
 
 
                 if (_myPlayer._Value.CraftingSkillLevel < 200 && (((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))

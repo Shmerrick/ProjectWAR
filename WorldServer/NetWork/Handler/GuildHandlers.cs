@@ -23,6 +23,16 @@ namespace WorldServer.NetWork.Handler
             uint CharacterId = packet.GetUint32();
             byte State = packet.GetUint8();
 
+            // Banner, heraldry, vault and tactic-respec commands act on the sender's own guild, and
+            // unlike the cases below that check it themselves, these dereferenced Guild while null.
+            switch (State)
+            {
+                case 29: case 30: case 37: case 38: case 39: case 40: case 41: case 42: case 52: case 53:
+                    if (!Plr.GldInterface.IsInGuild())
+                        return;
+                    break;
+            }
+
             //Log.Info("state ",""+State);
             switch (State)
             {
@@ -124,6 +134,9 @@ namespace WorldServer.NetWork.Handler
 
                 case 16: // Accepted Alliance Invite
                     {
+                        if (!Plr.GldInterface.IsInGuild())
+                            return;
+
                         if (Plr.GldInterface.AllianceinvitedTo > 0)  // alli invite
                         {
                             Plr.GldInterface.Guild.JoinAlliance(Plr.GldInterface.AllianceinvitedTo);
@@ -155,7 +168,11 @@ namespace WorldServer.NetWork.Handler
                             return;
                         packet.Skip(1);
                         string spell = packet.GetStringToZero();
-                        Plr.GldInterface.Guild.TrainGuildTactics((byte)CharacterId, ushort.Parse(spell));
+                        ushort spellId;
+                        // The slot travels in the CharacterId field; both come from the client.
+                        if (CharacterId > byte.MaxValue || !ushort.TryParse(spell, out spellId))
+                            return;
+                        Plr.GldInterface.Guild.TrainGuildTactics(Plr, (byte)CharacterId, spellId);
                     } break;
 
                 case 22:  // calendar create
@@ -264,7 +281,7 @@ namespace WorldServer.NetWork.Handler
                         ushort spell2 = packet.GetUint16R();
                         packet.Skip(2);
                         ushort spell3 = packet.GetUint16R();
-                        Plr.GldInterface.Guild.SaveBanner((byte)(banner-1),post,spell1,spell2,spell3);
+                        Plr.GldInterface.Guild.SaveBanner(Plr, (byte)(banner-1),post,spell1,spell2,spell3);
                     } break;
 
                 case 30:  // reserve banner

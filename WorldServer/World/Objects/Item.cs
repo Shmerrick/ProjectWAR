@@ -1011,7 +1011,10 @@ namespace WorldServer.World.Objects
             if (_isCreature)
                 return (ushort)_ModelId;
 
-            return (ushort)(AltAppearanceEntry > 0 ? (ushort)ItemService.GetItem_Info(AltAppearanceEntry).ModelId : ModelId);
+            // An appearance item that no longer exists falls back to this item's own model, as
+            // BuildItem does; it used to throw while building the equipment packet.
+            Item_Info appearance = AltAppearanceEntry > 0 ? ItemService.GetItem_Info(AltAppearanceEntry) : null;
+            return (ushort)(appearance != null ? appearance.ModelId : ModelId);
         }
 
         public ushort GetPrimaryColor()
