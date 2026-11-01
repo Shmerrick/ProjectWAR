@@ -172,8 +172,9 @@ namespace WorldServer.API
 
             try
             {
-                AddCorsHeaders(response);
-
+                // No CORS headers: a wildcard origin let any web page open on this machine edit bot gear and
+                // templates. The toolkit calls this API from its own backend, where CORS does not apply, so a
+                // browser preflight for PUT/PATCH/DELETE now fails as it should.
                 if (string.Equals(context.Request.HttpMethod, "OPTIONS", StringComparison.OrdinalIgnoreCase))
                 {
                     response.StatusCode = (int)HttpStatusCode.NoContent;
@@ -1161,13 +1162,6 @@ namespace WorldServer.API
 
                 return JsonConvert.DeserializeObject<T>(body);
             }
-        }
-
-        private static void AddCorsHeaders(HttpListenerResponse response)
-        {
-            response.Headers["Access-Control-Allow-Origin"] = "*";
-            response.Headers["Access-Control-Allow-Methods"] = "GET,PUT,PATCH,DELETE,OPTIONS";
-            response.Headers["Access-Control-Allow-Headers"] = "Content-Type";
         }
 
         private static void WriteError(HttpListenerResponse response, HttpStatusCode statusCode, string error, string detail = null)

@@ -4,32 +4,34 @@ This file is the single source of truth for repository-specific AI-agent instruc
 
 ## Start of session
 
-Read **`docs/handoffs/2026-09-24-repository-audit.md`** for the fresh measured state,
-plan corrections, validation limits and outstanding acceptance work. The current
-incremental SQL series is 00–13; earlier numbered migrations were folded into the base.
-Read `docs/handoffs/2026-09-24-cooldown-milliseconds.md` for the subsequent runtime
-unit migration, database verification and remaining item/client acceptance limits.
-The follow-up `docs/handoffs/2026-09-24-item-cooldown-reliability.md` corrects the
-earlier persistence claim and records duplicate-item and packet batching repairs.
-`docs/handoffs/2026-09-24-item-cooldown-persistence.md` records the subsequent
-character-owned persistence implementation, applied migration 12 and DB checks.
+Run `tools/validation/Get-BugTrackerSummary.ps1` for the current open / in-progress /
+awaiting-retest ledger, and `tools/validation/Invoke-AllValidation.ps1 -Build` to confirm the
+build and every automated check before and after a change. The current incremental SQL series
+is 00–13; earlier numbered migrations were folded into the base dumps.
 
-Read **`docs/handoffs/2026-09-05-commit-handoff.md`** for the historical user retest.
-Its follow-up records the Chaos Wastes entrance code repair, with client retest pending.
-The blue-orb identification remains retracted. Earlier portal/PQ confirmations do
-not establish current gameplay correctness.
+Then read, in this order (newest first; a later document corrects an earlier one, never the reverse):
 
-Read **`docs/handoffs/2026-09-05-stabilization.md`** first. It corrects the earlier checkpoint's
-influence-key diagnosis using the client `maps/zone160/influenceids.csv` and
-`maps/zone060/influenceids.csv`: runtime lookup uses `chapter_infos.InfluenceEntry`, not `Entry`.
-Migrations 32/33 and the 32-bit influence repair must not be reverted to that mistaken premise.
-
-Then read **`docs/handoffs/2026-09-05-checkpoint.md`** for the preceding state of the ward,
-dungeon-influence and Bastion Stair work: what is verified in game, what is open with nothing
-invented to cover it, the one blocker that shapes the rest (BUG-041, missing zone area bitmaps),
-mistakes already made and reverted so they are not repeated, and the conventions in this codebase
-that bite — parallel item tables, a `ChapterId` column that is not a chapter, and influence that
-fails silently.
+1. **`docs/handoffs/2026-10-29-project-analysis.md`** — whole-repository analysis, network and
+   RPC fixes (BUG-215–219), the tracker vocabulary, and the size of the client-retest backlog.
+2. `docs/handoffs/2026-10-12-economy-review.md`, then `2026-10-05-economy-and-duplication.md` —
+   item and gold paths (BUG-177–214), untested in the client.
+3. **`docs/handoffs/2026-09-24-repository-audit.md`** — the measured state, plan corrections,
+   validation limits and outstanding acceptance work. Its follow-ups:
+   `2026-09-24-cooldown-milliseconds.md` (runtime unit migration and its limits),
+   `2026-09-24-item-cooldown-reliability.md` (corrects the earlier persistence claim) and
+   `2026-09-24-item-cooldown-persistence.md` (character-owned persistence, migration 12).
+4. **`docs/handoffs/2026-09-05-stabilization.md`** — corrects the earlier checkpoint's
+   influence-key diagnosis using the client `maps/zone160/influenceids.csv` and
+   `maps/zone060/influenceids.csv`: runtime lookup uses `chapter_infos.InfluenceEntry`, not `Entry`.
+   Migrations 32/33 and the 32-bit influence repair must not be reverted to that mistaken premise.
+5. `docs/handoffs/2026-09-05-commit-handoff.md` — the historical user retest. Its follow-up records
+   the Chaos Wastes entrance code repair, with client retest pending. The blue-orb identification
+   remains retracted. Earlier portal/PQ confirmations do not establish current gameplay correctness.
+6. `docs/handoffs/2026-09-05-checkpoint.md` — the preceding state of the ward, dungeon-influence
+   and Bastion Stair work: what is verified in game, what is open with nothing invented to cover it,
+   the one blocker that shapes the rest (BUG-041, missing zone area bitmaps), mistakes already made
+   and reverted so they are not repeated, and the conventions in this codebase that bite — parallel
+   item tables, a `ChapterId` column that is not a chapter, and influence that fails silently.
 
 ## Baseline Repository Rules
 

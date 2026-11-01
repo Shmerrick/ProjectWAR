@@ -42,7 +42,8 @@ namespace LobbyServer
                 PacketIn packet = new PacketIn(packetBuffer, 0, packetBuffer.Length);
                 long bytesLeft = packet.Length;
 
-                Log.Debug("OnReceive", $"Packet Received : Size {bytesLeft}, OpCode {packet.Opcode}");
+                if (Log.CanDebug())
+                    Log.Debug("OnReceive", $"Packet Received : Size {bytesLeft}, OpCode {packet.Opcode}");
 
                 while (bytesLeft > 0)
                 {

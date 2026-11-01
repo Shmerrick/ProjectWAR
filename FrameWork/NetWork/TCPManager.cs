@@ -718,10 +718,15 @@ namespace FrameWork
         public HashSet<ulong> Errors = new HashSet<ulong>();
         public void HandlePacket(BaseClient client, PacketIn packet)
         {
-            //#if DEBUG
-            Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({packet.Opcode.ToString("X8")})");
-            Log.Dump("HandlePacket", packet.ToArray(), 0, packet.ToArray().Length);
-            //#endif
+            // Every inbound packet passes here; build the messages and copies only when they will be written.
+            if (Log.CanDebug())
+                Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({packet.Opcode.ToString("X8")})");
+
+            if (Log.CanDump())
+            {
+                byte[] dump = packet.ToArray();
+                Log.Dump("HandlePacket", dump, 0, dump.Length);
+            }
 
             if (client == null)
             {

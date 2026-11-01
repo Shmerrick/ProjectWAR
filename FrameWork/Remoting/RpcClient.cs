@@ -127,7 +127,7 @@ namespace FrameWork
 
                 Log.Debug("RpcClient", "Listening on : " + ServerIp + ":" + Info.Port);
 
-                ServerChannel = new TcpServerChannel("Server" + Info.RpcID, Info.Port);
+                ServerChannel = RpcServer.CreateBoundChannel("Server" + Info.RpcID, Info.Ip, Info.Port);
                 ChannelServices.RegisterChannel(ServerChannel, false);
 
                 RegisteredTypes = RpcObject.RegisterHandlers(false, AllowedID);

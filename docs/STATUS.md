@@ -2,7 +2,21 @@
 
 ProjectWAR is a C# private server emulator for Warhammer Online: Age of Reckoning. It targets .NET 4.8, x64. The solution is `ProjectWAR.sln`.
 
-## Current state (2026-10-12)
+## Current state (2026-10-29)
+
+The [project analysis handoff](handoffs/2026-10-29-project-analysis.md) reviews the whole
+repository and fixes four defects it found: WorldServer discarded client frames split across TCP
+reads (BUG-215), the .NET Remoting hub and callback ports listened on every interface (BUG-216),
+the bot editor API allowed any web origin (BUG-217), and per-packet logging allocated regardless of
+level (BUG-218). LobbyServer's equivalent framing defect is recorded, not changed (BUG-219).
+`tools/validation/Invoke-AllValidation.ps1 -Build` now runs the build and all checks in one
+command; all pass. The four services boot and stop cleanly with the fixes. **55 tracker rows are
+fixed but untested in the client** (`Get-BugTrackerSummary.ps1 -Status Retest`), which is now the
+largest risk in the project. [`PLAYTEST_CHECKLIST.md`](PLAYTEST_CHECKLIST.md) turns them into five
+play sessions for one person. On 2026-10-30, 15 more rows were moved to verified by automated
+check, because the existing checks already cover them and playing cannot reproduce them.
+
+## Previous state (2026-10-12)
 
 The [economy review handoff](handoffs/2026-10-12-economy-review.md) follows up the sweep below:
 14 more defects (BUG-201–214), including forged item-move duplication, talisman strings too long to

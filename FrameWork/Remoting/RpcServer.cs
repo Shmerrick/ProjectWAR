@@ -1,7 +1,9 @@
 ﻿
  
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Reflection;
@@ -33,6 +35,26 @@ namespace FrameWork
 
     public class RpcServer
     {
+        /// <summary>
+        /// Creates a remoting listener on one address. <c>new TcpServerChannel(name, port)</c> binds every
+        /// interface, which left the hub and each service's callback port reachable from the network on a
+        /// BinaryFormatter transport; the configured address was recorded and then ignored.
+        /// </summary>
+        public static TcpServerChannel CreateBoundChannel(string name, string ip, int port)
+        {
+            if (!IPAddress.TryParse(ip, out IPAddress address))
+                throw new ArgumentException("RPC address '" + ip + "' is not an IP address.", nameof(ip));
+
+            Hashtable properties = new Hashtable
+            {
+                ["name"] = name,
+                ["port"] = port,
+                ["bindTo"] = address.ToString()
+            };
+
+            return new TcpServerChannel(properties, null);
+        }
+
         public static int PING_TIME = 200;
         public TcpServerChannel Channel;
         public ServerMgr Mgr;
@@ -70,7 +92,7 @@ namespace FrameWork
 
                 Log.Debug("RpcServer", "Start on : " + Ip + ":" + Port);
 
-                Channel = new TcpServerChannel("Server" + Port, Port);
+                Channel = CreateBoundChannel("Server" + Port, Ip, Port);
                 ChannelServices.RegisterChannel(Channel, false);
                 RegisteredTypes = RpcObject.RegisterHandlers(true, AllowedID);
 

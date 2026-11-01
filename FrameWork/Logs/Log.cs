@@ -283,6 +283,12 @@ namespace FrameWork
             return _config.Info.Dump;
         }
 
+        /// <summary>Lets per-packet callers skip building a debug message that would be discarded.</summary>
+        public static bool CanDebug()
+        {
+            return _config.Info.Debug;
+        }
+
         public static void Tcp(string name, MemoryStream Packet, bool Force = false, bool sync = false)
         {
             if (Force || _config.Info.Tcp)

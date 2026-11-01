@@ -1,6 +1,18 @@
 # Validation tools
 
-Latest measured results and limits: [September 24 audit](../../docs/handoffs/2026-09-24-repository-audit.md).
+`./tools/validation/Invoke-AllValidation.ps1 -Build` is the single entry point: it builds
+Release/x64 and fails on any warning, then runs every `Test-*.ps1` here in a fresh Windows
+PowerShell process plus `Get-BugTrackerSummary.ps1`, prints a PASS/FAIL table and exits 1 if
+anything failed (logs go to a timestamped folder under `%TEMP%`). Omit `-Build` to test the
+existing binaries. Passing is not in-client acceptance.
+
+`./tools/validation/Get-BugTrackerSummary.ps1` files every row of
+`docs/INTERNAL_BUG_TRACKER.md` under Open / InProgress / Retest / Resolved / Closed and fails on a
+malformed row or a status it cannot place. `-Status Retest` lists the fixes awaiting the client.
+`docs/PLAYTEST_CHECKLIST.md` groups them into play sessions.
+
+Latest measured results and limits: [October 29 analysis](../../docs/handoffs/2026-10-29-project-analysis.md),
+following the [September 24 audit](../../docs/handoffs/2026-09-24-repository-audit.md).
 The PowerShell database audits use `Use-BuildAssemblies.ps1` to resolve staged
 dependencies under Windows PowerShell 5.1 as well as PowerShell 7. Its resolver is
 removed when each audit finishes; no machine-wide binding configuration is changed.

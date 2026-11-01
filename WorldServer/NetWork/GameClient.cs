@@ -86,10 +86,6 @@ namespace WorldServer.NetWork
             return _Account != null;
         }
 
-        private ushort _opcode;
-        private long _packetSize;
-
-        public bool ReadingData;
         public ushort SequenceID,SessionID,Unk1;
         public byte Unk2;
 
@@ -250,89 +246,97 @@ namespace WorldServer.NetWork
             return base.SendPacketsNoBlock(packetList, lengthPerSend);
         }
 
+        /// <summary>Bytes in a frame besides its payload: the 2-byte length, the 8-byte header and the 2-byte trailer.</summary>
+        private const int FrameOverhead = 12;
+
+        /// <summary>
+        /// Splits the received bytes into frames and dispatches each complete one. TCP does not keep frame
+        /// boundaries, so a frame can arrive across several reads; its bytes were previously discarded,
+        /// and the next read then parsed the middle of that frame as a header. The incomplete tail is now
+        /// kept at the front of the receive buffer, still encrypted, and completed by the next read.
+        /// </summary>
         protected override void OnReceive(byte[] packetBuffer)
         {
             // Wrap the input stream in a PacketIn
-            Log.Debug("HandlePacket", $"Packet...{packetBuffer.Length}");
             PacketIn inStream = new PacketIn(packetBuffer, 0, packetBuffer.Length, true, true);
 
             lock (_syncLock)
             {
-                long bufferLength = inStream.Length;
+                int offset = 0;
 
-                while (bufferLength > 0)
+                // Bounded: every pass consumes one whole frame of at least FrameOverhead bytes.
+                while (packetBuffer.Length - offset >= 2)
                 {
-                    // Read the header
-                    if (!ReadingData)
-                    {
-                        if (bufferLength < 2)
-                        {
-                            Log.Debug("OnReceive", "Invalid header (buffer length " + bufferLength + ")");
-                            return;
-                        }
+                    int payloadSize = Marshal.ConvertToUInt16(packetBuffer, offset);
 
-                        _packetSize = inStream.GetUint16();
-                        bufferLength -= 2;
+                    if (packetBuffer.Length - offset < payloadSize + FrameOverhead)
+                        break;
 
-                        if (bufferLength < _packetSize + 10)
-                            return;
-
-                        inStream.Size = (ulong)_packetSize+10;
-                        Decrypt(inStream);
-
-                        SequenceID = inStream.GetUint16();
-                        SessionID = inStream.GetUint16();
-                        Unk1 = inStream.GetUint16();
-                        Unk2 = inStream.GetUint8();
-                        _opcode = inStream.GetUint8();
-                        bufferLength -= 8;
-
-#if DEBUG
-                        if (bufferLength > _packetSize + 2)
-                            Log.Debug("OnReceive", "Packet contains multiple opcodes " + bufferLength + ">" + (_packetSize + 2));
-#endif
-
-                        ReadingData = true;
-                    }
-                    else
-                    {
-                        ReadingData = false;
-
-                        if (bufferLength >= _packetSize + 2)
-                        {
-                            byte[] bPack = new byte[_packetSize+2];
-                            inStream.Read(bPack, 0, (int)(_packetSize + 2));
-
-                            PacketIn packet = new PacketIn(bPack, 0, bPack.Length)
-                            {
-                                Opcode = _opcode,
-                                Size = (ulong) _packetSize
-                            };
-
-                            if (PacketLog)
-                            {
-                                LogInPacket(packet);
-                            }
-
-                            PLogBuf.Enqueue(packet);
-
-                            if (Plr != null && Plr.IsInWorld())
-                                Plr.ReceivePacket(packet);
-                            else
-                                Server.HandlePacket(this, packet);
-
-                            Log.Tcp("PacketSize", bPack, 0, bPack.Length);
-
-                            bufferLength -= _packetSize + 2;
-                        }
-                        else
-                        {
-                            Log.Error("OnReceive", "Packet size smaller than total received bytes: " + bufferLength + "<" + (_packetSize + 2));
-                            break;
-                        }
-                    }
+                    DispatchFrame(inStream, offset, payloadSize);
+                    offset += payloadSize + FrameOverhead;
                 }
+
+                RetainPartialFrame(packetBuffer, offset);
             }
+        }
+
+        private void DispatchFrame(PacketIn inStream, int offset, int payloadSize)
+        {
+            inStream.Position = offset + 2;
+            inStream.Size = (ulong)(payloadSize + FrameOverhead - 2);
+            Decrypt(inStream);
+
+            SequenceID = inStream.GetUint16();
+            SessionID = inStream.GetUint16();
+            Unk1 = inStream.GetUint16();
+            Unk2 = inStream.GetUint8();
+            byte opcode = inStream.GetUint8();
+
+            byte[] bPack = new byte[payloadSize + 2];
+            inStream.Read(bPack, 0, bPack.Length);
+
+            PacketIn packet = new PacketIn(bPack, 0, bPack.Length)
+            {
+                Opcode = opcode,
+                Size = (ulong)payloadSize
+            };
+
+            if (PacketLog)
+            {
+                LogInPacket(packet);
+            }
+
+            PLogBuf.Enqueue(packet);
+
+            if (Plr != null && Plr.IsInWorld())
+                Plr.ReceivePacket(packet);
+            else
+                Server.HandlePacket(this, packet);
+
+            Log.Tcp("PacketSize", bPack, 0, bPack.Length);
+        }
+
+        /// <summary>Moves the undispatched tail of a read to the front of the receive buffer for the next read to complete.</summary>
+        private void RetainPartialFrame(byte[] packetBuffer, int offset)
+        {
+            int remaining = packetBuffer.Length - offset;
+
+            if (remaining <= 0)
+                return;
+
+            // A frame longer than the receive buffer could never complete, and keeping its head would
+            // only fill the buffer; the stream cannot be resynchronised past it.
+            int frameSize = remaining >= 2 ? Marshal.ConvertToUInt16(packetBuffer, offset) + FrameOverhead : 2;
+
+            if (frameSize > ReceiveBuffer.Length)
+            {
+                Log.Error("OnReceive", "Frame of " + frameSize + " bytes exceeds the " + ReceiveBuffer.Length + "-byte receive buffer.");
+                Server.Disconnect(this, "Oversized frame");
+                return;
+            }
+
+            Buffer.BlockCopy(packetBuffer, offset, ReceiveBuffer, 0, remaining);
+            ReceiveBufferOffset = remaining;
         }
     }
 }

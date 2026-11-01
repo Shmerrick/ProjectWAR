@@ -67,6 +67,7 @@ internal static class RuntimeRegressionChecks
             CheckDungeonRecoveryAndLockouts();
             CheckGroupInstanceSelection();
             CheckEmptyBossBonusCleanup();
+            CheckWorldFrameReassembly();
             Console.WriteLine("PASS: terrain/overlays, region snapshots, influence, PQ state, dungeon recovery/lockouts, instance packets and bonus cleanup.");
         }
         finally
@@ -105,6 +106,79 @@ internal static class RuntimeRegressionChecks
     private static void Assert(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
+    }
+
+    /// <summary>
+    /// A world frame split across TCP reads must be completed by the next read, not discarded; the
+    /// discarded head used to leave the next read parsing the middle of a frame as a header.
+    /// </summary>
+    private static void CheckWorldFrameReassembly()
+    {
+        const byte opcode = 0x42;
+        var server = new TCPManager { POOL_SIZE = 2, BUF_SIZE = 64 };
+        typeof(TCPManager).GetMethod("AllocatePacketBuffers", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(server, null);
+        var received = new List<byte[]>();
+        server.m_packetHandlers[opcode] = (client, packet) => received.Add(packet.ToArray());
+
+        var gameClient = new GameClient(server);
+        MethodInfo onReceive = typeof(GameClient).GetMethod("OnReceive", BindingFlags.Instance | BindingFlags.NonPublic);
+        Action<byte[]> read = bytes =>
+        {
+            // As BaseClient.OnReceiveHandler does: the retained tail, then the new bytes, offset reset.
+            byte[] stream = new byte[gameClient.ReceiveBufferOffset + bytes.Length];
+            Buffer.BlockCopy(gameClient.ReceiveBuffer, 0, stream, 0, gameClient.ReceiveBufferOffset);
+            Buffer.BlockCopy(bytes, 0, stream, gameClient.ReceiveBufferOffset, bytes.Length);
+            gameClient.ReceiveBufferOffset = 0;
+            onReceive.Invoke(gameClient, new object[] { stream });
+        };
+        Func<byte[], byte[]> frame = payload =>
+        {
+            byte[] bytes = new byte[payload.Length + 12];
+            bytes[0] = (byte)(payload.Length >> 8);
+            bytes[1] = (byte)payload.Length;
+            bytes[9] = opcode;
+            Buffer.BlockCopy(payload, 0, bytes, 10, payload.Length);
+            bytes[bytes.Length - 2] = 0xEE;
+            bytes[bytes.Length - 1] = 0xFF;
+            return bytes;
+        };
+        Func<byte[], int, int, byte[]> slice = (bytes, start, count) =>
+        {
+            byte[] part = new byte[count];
+            Buffer.BlockCopy(bytes, start, part, 0, count);
+            return part;
+        };
+
+        byte[] first = frame(new byte[] { 1, 2, 3 });
+        byte[] second = frame(new byte[] { 4, 5, 6, 7, 8 });
+        byte[] both = new byte[first.Length + second.Length];
+        Buffer.BlockCopy(first, 0, both, 0, first.Length);
+        Buffer.BlockCopy(second, 0, both, first.Length, second.Length);
+
+        read(both);
+        Assert(received.Count == 2 && gameClient.ReceiveBufferOffset == 0, "Two coalesced frames dispatch in one read");
+        Assert(received[1].Length == 7 && received[1][0] == 4 && received[1][4] == 8 && received[1][6] == 0xFF,
+            "Dispatched packet carries the payload and trailer");
+
+        received.Clear();
+        read(slice(both, 0, first.Length + 7));
+        Assert(received.Count == 1 && gameClient.ReceiveBufferOffset == 7, "A frame cut mid-header is retained");
+        read(slice(both, first.Length + 7, second.Length - 7));
+        Assert(received.Count == 2 && gameClient.ReceiveBufferOffset == 0 && received[1][0] == 4 && received[1][4] == 8,
+            "The next read completes the retained frame");
+
+        received.Clear();
+        read(slice(second, 0, 1));
+        Assert(received.Count == 0 && gameClient.ReceiveBufferOffset == 1, "A lone length byte is retained");
+        read(slice(second, 1, 11));
+        Assert(received.Count == 0 && gameClient.ReceiveBufferOffset == 12, "A frame cut mid-payload is retained");
+        read(slice(second, 12, second.Length - 12));
+        Assert(received.Count == 1 && gameClient.ReceiveBufferOffset == 0 && received[0][4] == 8, "A frame over three reads completes");
+
+        long id = gameClient.Id;
+        Assert(server.Clients[id] == gameClient, "Client registered before oversized-frame check");
+        read(slice(frame(new byte[60]), 0, 20));
+        Assert(server.Clients[id] == null && gameClient.ReceiveBufferOffset == 0, "A frame larger than the receive buffer disconnects");
     }
 
     private static void CheckStaleChannelCallback()

@@ -79,10 +79,12 @@ http://127.0.0.1:51933/api/bot-editor/
 - `GET career-templates/{careerLine}/{tier}/{variantIndex}/items?q={query}&slotId={slotId}&limit={limit}`
 - `PATCH career-templates/{careerLine}/{tier}/{variantIndex}`
 
-The API sends CORS headers for local UI development:
-
-- `Access-Control-Allow-Origin: *`
-- `Access-Control-Allow-Methods: GET,PUT,DELETE,PATCH,OPTIONS`
+The API sends **no CORS headers** (removed 2026-10-29). It used to send
+`Access-Control-Allow-Origin: *`, which let any web page open on the machine drive the
+PUT/PATCH/DELETE routes. Its consumers do not need CORS: `bot-template-viewer` proxies through its
+own ASP.NET backend (`Controllers/ConnectionController.cs` -> `BotEditorApiClient`), and `warclient`
+uses `BotEditorApiClient` directly. A browser page that calls this API cross-origin will now be
+refused; route it through a backend instead.
 
 ## Response Shapes
 
